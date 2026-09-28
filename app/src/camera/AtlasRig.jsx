@@ -4,7 +4,7 @@ import { useFrame } from '@react-three/fiber'
 import { CameraControls } from '@react-three/drei'
 import * as THREE from 'three'
 import { useStore } from '../state/store.js'
-import { clampCamera, glideVector, MAX_DIST } from '../lib/cameraMath.js'
+import { clampCamera, glideVector, headingDeg, MAX_DIST } from '../lib/cameraMath.js'
 import { bookmarkFromUrl } from '../lib/bookmarks.js'
 import { crossStreets } from '../lib/grid.js'
 
@@ -60,15 +60,14 @@ export default function AtlasRig() {
 
     c.getTarget(tmpT); c.getPosition(tmpP)
     const cl = clampCamera(tmpP.toArray(), tmpT.toArray())
-    if (cl.position.some((v, i) => v !== tmpP.getComponent(i)) || cl.target.some((v, i) => v !== tmpT.getComponent(i))) {
+    if (cl.clamped) {
       c.setLookAt(...cl.position, ...cl.target, false)
     }
 
     const t = state.clock.elapsedTime
     if (t - lastReadout.current > 0.2) {
       lastReadout.current = t
-      const heading = ((-c.azimuthAngle * 180) / Math.PI + 360 * 10) % 360
-      setReadout({ streets: crossStreets(tmpT.x, tmpT.z), altitude: Math.round(tmpP.y), heading: Math.round(heading) })
+      setReadout({ streets: crossStreets(tmpT.x, tmpT.z), altitude: Math.round(tmpP.y), heading: headingDeg(c.azimuthAngle) })
     }
   })
 

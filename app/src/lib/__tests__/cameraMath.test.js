@@ -17,7 +17,7 @@ describe('clampCamera', () => {
     expect(Math.hypot(target[0], target[2])).toBeCloseTo(MAX_DIST)
   })
   it('passes a valid pose through unchanged', () => {
-    expect(clampCamera([100, 200, 300], [0, 0, 0])).toEqual({ position: [100, 200, 300], target: [0, 0, 0] })
+    expect(clampCamera([100, 200, 300], [0, 0, 0])).toEqual({ position: [100, 200, 300], target: [0, 0, 0], clamped: false })
   })
 })
 
@@ -34,5 +34,32 @@ describe('glideVector', () => {
     const v = glideVector(new Set(['KeyW', 'KeyD']), 0)
     expect(Math.hypot(...v)).toBeCloseTo(1)
     expect(glideVector(new Set(), 0)).toEqual([0, 0])
+  })
+})
+
+describe('clampCamera clamped flag (no false fires)', () => {
+  it('reports clamped=false for 5,000 random in-bounds poses', () => {
+    let seed = 7
+    const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647)
+    for (let i = 0; i < 5000; i++) {
+      const target = [rnd() * 2000 - 1000, rnd() * 100, rnd() * 2000 - 1000]
+      const position = [target[0] + rnd() * 1000 - 500, 40 + rnd() * 900, target[2] + rnd() * 1000 - 500]
+      expect(clampCamera(position, target).clamped).toBe(false)
+    }
+  })
+  it('reports clamped=true when a limit applies', () => {
+    expect(clampCamera([0, -50, 0], [0, 0, -10]).clamped).toBe(true)
+    expect(clampCamera([0, 9000, 0], [0, 0, 0]).clamped).toBe(true)
+  })
+})
+
+describe('headingDeg', () => {
+  it('is always within [0, 360) even after many turns', async () => {
+    const { headingDeg } = await import('../cameraMath.js')
+    expect(headingDeg(0)).toBe(0)
+    expect(headingDeg(Math.PI / 2)).toBe(270) // looking west
+    expect(headingDeg(-Math.PI / 2)).toBe(90) // looking east
+    expect(headingDeg(40 * Math.PI + Math.PI / 2)).toBe(270)
+    expect(headingDeg(-40 * Math.PI - Math.PI / 2)).toBe(90)
   })
 })

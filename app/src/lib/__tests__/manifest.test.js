@@ -16,3 +16,12 @@ describe('loadManifest', () => {
     expect((await loadManifest(res(true, { nope: 1 }))).error).toBe('manifest malformed')
   })
 })
+
+describe('groundFiles', () => {
+  it('uses the manifest ground when present, else the known default paths', async () => {
+    const { groundFiles, DEFAULT_GROUND } = await import('../manifest.js')
+    expect(groundFiles({ ground: { land: 'a.glb', river: 'b.glb' } })).toEqual({ land: 'a.glb', river: 'b.glb' })
+    expect(groundFiles(null)).toEqual(DEFAULT_GROUND)
+    expect(DEFAULT_GROUND).toEqual({ land: 'ground/land.glb', river: 'ground/river.glb' })
+  })
+})

@@ -1,7 +1,8 @@
 // app/src/world/Scene.jsx — the whole 3D world.
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import { useStore } from '../state/store.js'
-import { loadManifest } from '../lib/manifest.js'
+import { loadManifest, groundFiles } from '../lib/manifest.js'
+import SafeLoad from './SafeLoad.jsx'
 import { sunForPreset } from '../lib/sun.js'
 import City from './City.jsx'
 import Ground from './Ground.jsx'
@@ -13,6 +14,7 @@ export default function Scene() {
   const [manifest, setManifest] = useState(null)
   const preset = useStore((s) => s.timePreset)
   const ready = useStore((s) => s.load.ready)
+  const failed = useStore((s) => s.load.error !== null)
   const [now, setNow] = useState(() => new Date())
   const sun = useMemo(() => sunForPreset(preset, now), [preset, now])
 
@@ -38,8 +40,8 @@ export default function Scene() {
   return (
     <>
       <SkyRig sun={sun} />
-      <Suspense fallback={null}><Lake sunDirection={sun.direction} /></Suspense>
-      {manifest && <Suspense fallback={null}><Ground ground={manifest.ground} /></Suspense>}
+      <SafeLoad><Suspense fallback={null}><Lake sunDirection={sun.direction} /></Suspense></SafeLoad>
+      {(manifest || failed) && <Ground ground={groundFiles(manifest)} />}
       {manifest && <City tiles={manifest.tiles} />}
       <AtlasRig />
     </>

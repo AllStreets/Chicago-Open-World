@@ -14,8 +14,17 @@ export function clampCamera(position, target) {
   const d = Math.hypot(dx, dy, dz)
   if (d > MAX_DIST) { const k = MAX_DIST / d; dx *= k; dy *= k; dz *= k }
   px = tx + dx; py = ty + dy; pz = tz + dz
+  const lifted = py < MIN_ALT
   py = Math.max(MIN_ALT, py)
-  return { position: [px, py, pz], target: [tx, ty, tz] }
+  // `clamped` comes from the limit checks, not from comparing floats (round-trip noise).
+  const clamped = target[1] < 0 || tr > MAX_DIST || d > MAX_DIST || lifted
+  return { position: [px, py, pz], target: [tx, ty, tz], clamped }
+}
+
+// Compass heading in whole degrees, 0 = north, 90 = east; azimuth is unbounded.
+export function headingDeg(azimuth) {
+  const deg = Math.round((-azimuth * 180) / Math.PI)
+  return ((deg % 360) + 360) % 360
 }
 
 // azimuth: camera heading, 0 = looking north (-Z), +π/2 = looking west (camera-controls convention).

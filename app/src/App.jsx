@@ -2,10 +2,13 @@ import { Canvas } from '@react-three/fiber'
 import * as THREE from 'three'
 import Scene from './world/Scene.jsx'
 import Hud from './hud/Hud.jsx'
+import SafeLoad from './world/SafeLoad.jsx'
+import { useStore } from './state/store.js'
 
 export default function App() {
   return (
     <div className="app">
+      <SafeLoad onError={(e) => useStore.getState().setLoadError(`3D view failed: ${e.message}`)}>
       <Canvas
         shadows
         dpr={[1, 2]}
@@ -14,6 +17,7 @@ export default function App() {
       >
         <Scene />
       </Canvas>
+      </SafeLoad>
       <Hud />
     </div>
   )

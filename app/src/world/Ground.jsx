@@ -1,8 +1,9 @@
 // app/src/world/Ground.jsx — land (city boundary) + river/harbour water.
-import { useEffect, useMemo } from 'react'
+import { Suspense, useEffect, useMemo } from 'react'
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 import { useStore } from '../state/store.js'
+import SafeLoad from './SafeLoad.jsx'
 
 const landMat = new THREE.MeshStandardMaterial({ color: '#8a8780', roughness: 1 })
 const riverMat = new THREE.MeshStandardMaterial({ color: '#2f5a63', roughness: 0.3, metalness: 0, polygonOffset: true, polygonOffsetFactor: -2 })
@@ -19,10 +20,10 @@ function Flat({ file, material }) {
 }
 
 export default function Ground({ ground }) {
-  return (
-    <>
-      <Flat file={ground.land} material={landMat} />
-      <Flat file={ground.river} material={riverMat} />
-    </>
-  )
+  const fail = (file) => (err) => { console.warn(`ground failed: ${file}`, err); useStore.getState().markLoaded(file) }
+  return [[ground.land, landMat], [ground.river, riverMat]].map(([file, mat]) => (
+    <SafeLoad key={file} onError={fail(file)}>
+      <Suspense fallback={null}><Flat file={file} material={mat} /></Suspense>
+    </SafeLoad>
+  ))
 }

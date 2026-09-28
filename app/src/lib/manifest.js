@@ -1,4 +1,7 @@
 // app/src/lib/manifest.js — never-throwing world manifest loader.
+export const DEFAULT_GROUND = { land: 'ground/land.glb', river: 'ground/river.glb' }
+export const groundFiles = (manifest) => manifest?.ground ?? DEFAULT_GROUND
+
 export async function loadManifest(fetchImpl = fetch) {
   try {
     const r = await fetchImpl('/world/manifest.json')
