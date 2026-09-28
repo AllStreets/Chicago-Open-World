@@ -1,0 +1,17 @@
+{
+  "name": "chi-atlas-pipeline",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "fetch": "node fetch/fetch-all.js",
+    "build:world": "node build/build-world.js",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@gltf-transform/core": "^4.5.1",
+    "earcut": "^3.2.4"
+  },
+  "devDependencies": {
+    "vitest": "^5.0.2"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "chi-atlas-open-world",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "fetch": "npm run fetch --prefix pipeline",
+    "build:world": "npm run build:world --prefix pipeline",
+    "dev": "npm run dev --prefix app",
+    "build": "npm run build --prefix app",
+    "test": "npm test --prefix pipeline && npm test --prefix app"
+  }
+}
