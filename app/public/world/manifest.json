@@ -1,0 +1,416 @@
+{
+  "version": 1,
+  "generatedAt": "2026-09-28T23:09:19.991Z",
+  "origin": {
+    "lat": 41.88203,
+    "lon": -87.62784
+  },
+  "tileSize": 500,
+  "sources": [
+    {
+      "name": "City of Chicago Building Footprints",
+      "id": "syp8-uezg",
+      "fetchedAt": "2026-09-28T23:08:37.646Z"
+    },
+    {
+      "name": "City of Chicago Boundary",
+      "id": "qqq8-j68g",
+      "fetchedAt": "2026-09-28T23:08:37.971Z"
+    },
+    {
+      "name": "OpenStreetMap (ODbL) heights, parts, water",
+      "id": "overpass",
+      "fetchedAt": "2026-09-28T23:08:43.547Z"
+    }
+  ],
+  "tiles": [
+    {
+      "key": "0_0",
+      "ring": 0,
+      "file": "tiles/0_0.glb",
+      "meta": "tiles/0_0.json",
+      "buildings": 64,
+      "maxHeight": 249.6
+    },
+    {
+      "key": "1_-4",
+      "ring": 0,
+      "file": "tiles/1_-4.glb",
+      "meta": "tiles/1_-4.json",
+      "buildings": 46,
+      "maxHeight": 163.4
+    },
+    {
+      "key": "0_-4",
+      "ring": 0,
+      "file": "tiles/0_-4.glb",
+      "meta": "tiles/0_-4.json",
+      "buildings": 66,
+      "maxHeight": 450
+    },
+    {
+      "key": "-3_-4",
+      "ring": 0,
+      "file": "tiles/-3_-4.glb",
+      "meta": "tiles/-3_-4.json",
+      "buildings": 92,
+      "maxHeight": 123
+    },
+    {
+      "key": "-1_-4",
+      "ring": 0,
+      "file": "tiles/-1_-4.glb",
+      "meta": "tiles/-1_-4.json",
+      "buildings": 166,
+      "maxHeight": 148.2
+    },
+    {
+      "key": "-2_-4",
+      "ring": 0,
+      "file": "tiles/-2_-4.glb",
+      "meta": "tiles/-2_-4.json",
+      "buildings": 103,
+      "maxHeight": 83.6
+    },
+    {
+      "key": "3_-4",
+      "ring": 0,
+      "file": "tiles/3_-4.glb",
+      "meta": "tiles/3_-4.json",
+      "buildings": 2,
+      "maxHeight": 10
+    },
+    {
+      "key": "1_-3",
+      "ring": 0,
+      "file": "tiles/1_-3.glb",
+      "meta": "tiles/1_-3.json",
+      "buildings": 49,
+      "maxHeight": 196.3
+    },
+    {
+      "key": "0_-3",
+      "ring": 0,
+      "file": "tiles/0_-3.glb",
+      "meta": "tiles/0_-3.json",
+      "buildings": 103,
+      "maxHeight": 212.8
+    },
+    {
+      "key": "-1_-3",
+      "ring": 0,
+      "file": "tiles/-1_-3.glb",
+      "meta": "tiles/-1_-3.json",
+      "buildings": 137,
+      "maxHeight": 220.4
+    },
+    {
+      "key": "-2_-3",
+      "ring": 0,
+      "file": "tiles/-2_-3.glb",
+      "meta": "tiles/-2_-3.json",
+      "buildings": 116,
+      "maxHeight": 136.6
+    },
+    {
+      "key": "-3_-3",
+      "ring": 0,
+      "file": "tiles/-3_-3.glb",
+      "meta": "tiles/-3_-3.json",
+      "buildings": 42,
+      "maxHeight": 102.6
+    },
+    {
+      "key": "3_-3",
+      "ring": 0,
+      "file": "tiles/3_-3.glb",
+      "meta": "tiles/3_-3.json",
+      "buildings": 9,
+      "maxHeight": 10
+    },
+    {
+      "key": "2_-3",
+      "ring": 0,
+      "file": "tiles/2_-3.glb",
+      "meta": "tiles/2_-3.json",
+      "buildings": 9,
+      "maxHeight": 197.5
+    },
+    {
+      "key": "-2_-2",
+      "ring": 0,
+      "file": "tiles/-2_-2.glb",
+      "meta": "tiles/-2_-2.json",
+      "buildings": 43,
+      "maxHeight": 138
+    },
+    {
+      "key": "-1_-2",
+      "ring": 0,
+      "file": "tiles/-1_-2.glb",
+      "meta": "tiles/-1_-2.json",
+      "buildings": 93,
+      "maxHeight": 239.1
+    },
+    {
+      "key": "1_-2",
+      "ring": 0,
+      "file": "tiles/1_-2.glb",
+      "meta": "tiles/1_-2.json",
+      "buildings": 62,
+      "maxHeight": 261.8
+    },
+    {
+      "key": "-3_-2",
+      "ring": 0,
+      "file": "tiles/-3_-2.glb",
+      "meta": "tiles/-3_-2.json",
+      "buildings": 134,
+      "maxHeight": 186.2
+    },
+    {
+      "key": "0_-2",
+      "ring": 0,
+      "file": "tiles/0_-2.glb",
+      "meta": "tiles/0_-2.json",
+      "buildings": 41,
+      "maxHeight": 423
+    },
+    {
+      "key": "2_-2",
+      "ring": 0,
+      "file": "tiles/2_-2.glb",
+      "meta": "tiles/2_-2.json",
+      "buildings": 16,
+      "maxHeight": 177.1
+    },
+    {
+      "key": "3_-2",
+      "ring": 0,
+      "file": "tiles/3_-2.glb",
+      "meta": "tiles/3_-2.json",
+      "buildings": 6,
+      "maxHeight": 20
+    },
+    {
+      "key": "0_-1",
+      "ring": 0,
+      "file": "tiles/0_-1.glb",
+      "meta": "tiles/0_-1.json",
+      "buildings": 56,
+      "maxHeight": 303
+    },
+    {
+      "key": "-1_-1",
+      "ring": 0,
+      "file": "tiles/-1_-1.glb",
+      "meta": "tiles/-1_-1.json",
+      "buildings": 72,
+      "maxHeight": 230
+    },
+    {
+      "key": "-2_-1",
+      "ring": 0,
+      "file": "tiles/-2_-1.glb",
+      "meta": "tiles/-2_-1.json",
+      "buildings": 61,
+      "maxHeight": 222
+    },
+    {
+      "key": "-3_-1",
+      "ring": 0,
+      "file": "tiles/-3_-1.glb",
+      "meta": "tiles/-3_-1.json",
+      "buildings": 62,
+      "maxHeight": 159.6
+    },
+    {
+      "key": "1_-1",
+      "ring": 0,
+      "file": "tiles/1_-1.glb",
+      "meta": "tiles/1_-1.json",
+      "buildings": 13,
+      "maxHeight": 346
+    },
+    {
+      "key": "2_-1",
+      "ring": 0,
+      "file": "tiles/2_-1.glb",
+      "meta": "tiles/2_-1.json",
+      "buildings": 9,
+      "maxHeight": 169
+    },
+    {
+      "key": "-1_0",
+      "ring": 0,
+      "file": "tiles/-1_0.glb",
+      "meta": "tiles/-1_0.json",
+      "buildings": 76,
+      "maxHeight": 259
+    },
+    {
+      "key": "-2_0",
+      "ring": 0,
+      "file": "tiles/-2_0.glb",
+      "meta": "tiles/-2_0.json",
+      "buildings": 37,
+      "maxHeight": 450
+    },
+    {
+      "key": "-3_0",
+      "ring": 0,
+      "file": "tiles/-3_0.glb",
+      "meta": "tiles/-3_0.json",
+      "buildings": 43,
+      "maxHeight": 183
+    },
+    {
+      "key": "1_0",
+      "ring": 0,
+      "file": "tiles/1_0.glb",
+      "meta": "tiles/1_0.json",
+      "buildings": 5,
+      "maxHeight": 10
+    },
+    {
+      "key": "0_1",
+      "ring": 0,
+      "file": "tiles/0_1.glb",
+      "meta": "tiles/0_1.json",
+      "buildings": 38,
+      "maxHeight": 183
+    },
+    {
+      "key": "-1_1",
+      "ring": 0,
+      "file": "tiles/-1_1.glb",
+      "meta": "tiles/-1_1.json",
+      "buildings": 80,
+      "maxHeight": 184
+    },
+    {
+      "key": "-2_1",
+      "ring": 0,
+      "file": "tiles/-2_1.glb",
+      "meta": "tiles/-2_1.json",
+      "buildings": 20,
+      "maxHeight": 292.9
+    },
+    {
+      "key": "-3_1",
+      "ring": 0,
+      "file": "tiles/-3_1.glb",
+      "meta": "tiles/-3_1.json",
+      "buildings": 32,
+      "maxHeight": 193.8
+    },
+    {
+      "key": "1_1",
+      "ring": 0,
+      "file": "tiles/1_1.glb",
+      "meta": "tiles/1_1.json",
+      "buildings": 7,
+      "maxHeight": 10
+    },
+    {
+      "key": "-1_2",
+      "ring": 0,
+      "file": "tiles/-1_2.glb",
+      "meta": "tiles/-1_2.json",
+      "buildings": 34,
+      "maxHeight": 102.6
+    },
+    {
+      "key": "0_2",
+      "ring": 0,
+      "file": "tiles/0_2.glb",
+      "meta": "tiles/0_2.json",
+      "buildings": 45,
+      "maxHeight": 240
+    },
+    {
+      "key": "-3_2",
+      "ring": 0,
+      "file": "tiles/-3_2.glb",
+      "meta": "tiles/-3_2.json",
+      "buildings": 30,
+      "maxHeight": 30.4
+    },
+    {
+      "key": "1_2",
+      "ring": 0,
+      "file": "tiles/1_2.glb",
+      "meta": "tiles/1_2.json",
+      "buildings": 6,
+      "maxHeight": 10
+    },
+    {
+      "key": "-2_2",
+      "ring": 0,
+      "file": "tiles/-2_2.glb",
+      "meta": "tiles/-2_2.json",
+      "buildings": 18,
+      "maxHeight": 45.6
+    },
+    {
+      "key": "0_3",
+      "ring": 0,
+      "file": "tiles/0_3.glb",
+      "meta": "tiles/0_3.json",
+      "buildings": 97,
+      "maxHeight": 158
+    },
+    {
+      "key": "-2_3",
+      "ring": 0,
+      "file": "tiles/-2_3.glb",
+      "meta": "tiles/-2_3.json",
+      "buildings": 6,
+      "maxHeight": 10
+    },
+    {
+      "key": "-3_3",
+      "ring": 0,
+      "file": "tiles/-3_3.glb",
+      "meta": "tiles/-3_3.json",
+      "buildings": 27,
+      "maxHeight": 19
+    },
+    {
+      "key": "-1_3",
+      "ring": 0,
+      "file": "tiles/-1_3.glb",
+      "meta": "tiles/-1_3.json",
+      "buildings": 231,
+      "maxHeight": 38
+    },
+    {
+      "key": "1_3",
+      "ring": 0,
+      "file": "tiles/1_3.glb",
+      "meta": "tiles/1_3.json",
+      "buildings": 10,
+      "maxHeight": 266
+    },
+    {
+      "key": "2_3",
+      "ring": 0,
+      "file": "tiles/2_3.glb",
+      "meta": "tiles/2_3.json",
+      "buildings": 2,
+      "maxHeight": 10
+    },
+    {
+      "key": "3_3",
+      "ring": 0,
+      "file": "tiles/3_3.glb",
+      "meta": "tiles/3_3.json",
+      "buildings": 1,
+      "maxHeight": 10
+    }
+  ],
+  "ground": {
+    "land": "ground/land.glb",
+    "river": "ground/river.glb"
+  }
+}
