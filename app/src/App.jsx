@@ -1,6 +1,7 @@
 import { Canvas } from '@react-three/fiber'
 import * as THREE from 'three'
 import Scene from './world/Scene.jsx'
+import Hud from './hud/Hud.jsx'
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
       >
         <Scene />
       </Canvas>
+      <Hud />
     </div>
   )
 }
