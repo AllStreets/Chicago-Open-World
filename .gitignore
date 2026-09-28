@@ -7,3 +7,4 @@ pipeline/cache/
 test-results/
 playwright-report/
 .superpowers/
+.playwright-mcp/

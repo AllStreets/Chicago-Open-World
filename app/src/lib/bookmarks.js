@@ -5,7 +5,7 @@ export const BOOKMARKS = {
   // From above Willis looking NE across the Loop
   loop: { position: [-1100, 520, 900], target: [150, 40, -500] },
   // Down the main river canyon from the east
-  river: { position: [900, 90, -560], target: [-600, 30, -520] },
+  river: { position: [950, 140, -760], target: [-700, 40, -560] },
   // Museum Campus looking back north at the skyline
   museum: { position: [900, 180, 2600], target: [0, 80, 0] },
 }
