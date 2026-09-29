@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import FieldTextures from './FieldTextures.jsx'
+import Cheers from './Cheers.jsx'
+import { swellNow } from '../audio/cheerMath.js'
 import Crowd from './Crowd.jsx'
 import Scoreboard from './Scoreboard.jsx'
 import WinFlag from './WinFlag.jsx'
@@ -18,7 +20,7 @@ import { fetchAnchors, fieldFans } from './anchors.js'
 
 const MOUNT_M = 3000
 
-function SeatCrowd({ venue, st, cheer = 0 }) {
+function SeatCrowd({ venue, st }) {
   const [seats, setSeats] = useState(null)
   useEffect(() => { let alive = true; fetchAnchors(venue.seats, venue.center).then((a) => alive && setSeats(a)); return () => { alive = false } }, [venue])
   const home = homeTeamFor(venue, st)
@@ -35,7 +37,7 @@ function SeatCrowd({ venue, st, cheer = 0 }) {
   const split = seats.length / 4
   const density = Math.max(crowdDensity(st?.state ?? 'idle', st?.game, venue.capacity), party.minDensity)
   return <Crowd anchors={anchors} split={split} seatCount={shownCount(split, density)} fanCount={party.fans} shirts={shirts} flags={flags}
-    wave={party.wave} cheer={cheer} level={lightLevel(st?.state)} center={venue.center} radius={venue.radius} />
+    wave={party.wave} cheer={() => swellNow(useSports.getState().states[venue.key]?.state, venue.slot + 1, Date.now() / 1000, useSports.getState().swells[venue.key])} level={lightLevel(st?.state)} center={venue.center} radius={venue.radius} />
 }
 
 function PlazaCrowd({ venue, st }) {
@@ -96,6 +98,7 @@ export default function SportsLife() {
   return (
     <>
       <FieldTextures />
+      <Cheers />
       {near.map((v) => <VenueLife key={v.key} venue={v} />)}
     </>
   )

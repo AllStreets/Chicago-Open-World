@@ -93,7 +93,7 @@ export default function Crowd({ anchors, split, seatCount, fanCount = 0, shirts,
   useEffect(() => () => mat.dispose(), [mat])
   useFrame((st) => {
     const u = mat.uniforms
-    u.uTime.value = st.clock.elapsedTime; u.uWave.value = wave; u.uCheer.value = cheer; u.uLevel.value = level
+    u.uTime.value = st.clock.elapsedTime; u.uWave.value = wave; u.uCheer.value = typeof cheer === 'function' ? cheer() : cheer; u.uLevel.value = level
     u.uNight.value = facadeUniforms.uNight.value; u.uSplit.value = split; u.uSeats.value = seatCount; u.uFans.value = fanCount
   })
   return <mesh geometry={geo} material={mat} visible={seatCount + fanCount > 0} castShadow={false} receiveShadow={false} />

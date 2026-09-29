@@ -16,6 +16,8 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Task 13: Ruling: plan's fieldMarks draws a navy keyline behind the midfield C (true to the Bears logo) but its test counted all navy polys as end zones; test now filters end zones by extent — cost: none.
 - Task 14: Ruling: plan's crowd vertex shader used right = (−toCam.z, 0, toCam.x), which back-faces every billboard (nothing drew); corrected to (toCam.z, 0, −toCam.x) — cost: none.
 - Task 18: Ruling: the Michael Jordan statue is not modelled — it stands inside the United Center atrium since 2017, not on the plaza — cost: none.
+- Task 19: Ruling: plan's cheers engine created its own AudioContext (2 on the page); now takes V4's shared getAudioContext and never closes it on dispose — cheers test 'share the one sound context' RED→GREEN — cost: none.
+- Task 19: Ruling: the 'check it by ear' step can't be done in this session; replaced with an automated AudioContext/gain probe — cost if wrong: the murmur/swell timbre is unreviewed.
 
 ## Evaluate and revert (one line per visual step: Keep | Revert — item — shots — reason)
 
@@ -32,6 +34,7 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Keep — D13 — wrigley-board-win, soldier-bowl, rate-aerial-game — Wrigley's green board reads WRIGLEY FIELD / VIS 3 / CHC 5 / FINAL from the plate; Rate's video board lit at night; no z-fighting.
 - Keep — D11 — wrigley-board-win/-loss, wrigley-field-win — white flag with blue W over the board after a win, blue with white L after a loss; fans on the field and W flags waving in the stands on the win day.
 - Keep — D14 — uc-plaza, uc-aerial-game, wintrust-aerial-game night — standing fans in Bulls red ring the United Center under its lit fascia; a smaller crowd rings Wintrust.
+- Keep — D10 — automated, not by ear (no audio output in this session): Sound off → 0 AudioContexts at a live Wrigley game; Sound on → exactly 1 (shared with the train rumble); voice level driven by murmurLevel/swellNow, zero beyond CHEER.maxDistance. Needs a human listen for timbre.
 
 ## Perf (pose — calls — triangles — fps — quality — sports)
 
@@ -55,3 +58,4 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Task 16: complete (app 325/325)
 - Task 17: complete (app 327/327)
 - Task 18: complete (app 328/328)
+- Task 19: complete (app 337/337)
