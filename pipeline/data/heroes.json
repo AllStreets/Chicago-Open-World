@@ -987,7 +987,26 @@
             "style": "video",
             "setback": 14
           }
-        ]
+        ],
+        "rimLights": [
+          {
+            "from": 62,
+            "to": 118,
+            "every": 4,
+            "w": 7,
+            "h": 2.6,
+            "lift": 2.5
+          },
+          {
+            "from": -118,
+            "to": -62,
+            "every": 4,
+            "w": 7,
+            "h": 2.6,
+            "lift": 2.5
+          }
+        ],
+        "rimLightsSource": "Light banks run along the east and west upper-deck canopy edges (2003 renovation); spacing from aerial imagery"
       },
       "aliases": [
         "Bears"
@@ -1184,27 +1203,27 @@
         "lights": [
           {
             "angle": 75,
-            "h": 14
+            "h": 20
           },
           {
             "angle": -75,
-            "h": 14
+            "h": 20
           },
           {
             "angle": 115,
-            "h": 14
+            "h": 20
           },
           {
             "angle": -115,
-            "h": 14
+            "h": 20
           },
           {
             "angle": 155,
-            "h": 14
+            "h": 20
           },
           {
             "angle": -155,
-            "h": 14
+            "h": 20
           }
         ],
         "scoreboard": {
@@ -1213,7 +1232,26 @@
           "style": "video",
           "setback": 10
         },
-        "roofDepth": 0.3
+        "roofDepth": 0.3,
+        "rimLights": [
+          {
+            "from": 62,
+            "to": 170,
+            "every": 9,
+            "w": 8,
+            "h": 3,
+            "lift": 2
+          },
+          {
+            "from": -170,
+            "to": -62,
+            "every": 9,
+            "w": 8,
+            "h": 3,
+            "lift": 2
+          }
+        ],
+        "rimLightsSource": "Rate Field's floodlight banks sit on the upper-deck roof around the bowl; towers raised to read from the Loop (D5), per aerial imagery"
       },
       "aliases": [
         "Guaranteed Rate Field",

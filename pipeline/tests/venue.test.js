@@ -183,3 +183,21 @@ describe('buildVenue — seat anchors', () => {
     for (let i = 0; i < 4; i++) expect(Math.abs(a[i] - b[i])).toBeLessThan(0.03)
   })
 })
+
+describe('buildVenue — rim light rows', () => {
+  const OUTF = rect(0, 0, 220, -360)
+  const spec = {
+    kind: 'football', center: [110, -180], axis: [0, -1], outerInset: 12, rim: [[-180, 28], [-90, 40], [0, 28], [90, 52], [180, 28]],
+    rimLights: [{ from: 62, to: 118, every: 4, w: 7, h: 2.6, lift: 2.5 }, { from: -118, to: -62, every: 4, w: 7, h: 2.6, lift: 2.5 }],
+  }
+  const lamps = buildVenue(OUTF, spec).filter((m) => m.facade === F.lamp)
+  it('mounts one lamp per step along both long rims, above the rim, inside the footprint', () => {
+    expect(lamps).toHaveLength(30)
+    for (const l of lamps) {
+      expect(Math.min(...ys(l.mesh))).toBeGreaterThan(28 + 1.2 + 2.5 - 1e-6)
+      for (const [x, z] of xz(l.mesh)) { expect(x).toBeGreaterThan(-0.5); expect(x).toBeLessThan(220.5); expect(z).toBeLessThan(0.5); expect(z).toBeGreaterThan(-360.5) }
+    }
+    expect(lamps.some((l) => xz(l.mesh)[0][0] < 110)).toBe(true)
+    expect(lamps.some((l) => xz(l.mesh)[0][0] > 110)).toBe(true)
+  })
+})

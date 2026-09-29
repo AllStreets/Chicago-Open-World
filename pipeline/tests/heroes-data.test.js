@@ -13,3 +13,15 @@ describe('heroes.json sports venues', () => {
     for (const h of S) expect(Boolean(h.venue)).toBe(h.sports.kind !== 'arena')
   })
 })
+
+describe('stadium night lights', () => {
+  const sf = H.find((h) => h.key === 'soldierfield').venue, rf = H.find((h) => h.key === 'ratefield').venue
+  it('Soldier Field has rim light rows on both long sides', () => {
+    expect(sf.rimLights.some((r) => r.from > 0)).toBe(true)
+    expect(sf.rimLights.some((r) => r.to < 0)).toBe(true)
+  })
+  it('Rate Field has rim rows on the upper-deck roof and towers at least 20 m', () => {
+    expect(rf.rimLights.length).toBe(2)
+    for (const l of rf.lights) expect(l.h).toBeGreaterThanOrEqual(20)
+  })
+})

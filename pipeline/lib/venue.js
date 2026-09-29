@@ -294,6 +294,21 @@ export function buildVenue(outline, spec) {
     put(head.rest, F.steel, S.steel[spec.steel ?? 'gray'], { part: 'light' })
   }
 
+  // ── rim light rows (Soldier Field's canopy edges, Rate Field's upper-deck roof) ──
+  for (const R of spec.rimLights || []) {
+    for (let a = R.from; a <= R.to + 1e-6; a += R.every) {
+      const d = rot(ref, a)
+      const r = Math.max(...rayHits(outer, center, d))
+      const at = fitInside(outer, center, d, r - 1.2, R.w, 1.0)
+      const rimTop = rimAt(at) + 1.2 + (roofAt(at) ? (spec.roofRise ?? 6) : 0)
+      const base = rimTop + (R.lift ?? 2)
+      const head = box(at, mul(d, -1), R.w, 1.0, base, base + R.h)
+      put(head.front, F.lamp, S.lamp.flood, { part: 'lamp' })
+      put(head.rest, F.steel, S.steel[spec.steel ?? 'gray'], { part: 'light' })
+      put(spire({ at, base: rimTop, top: base, r0: 0.25, r1: 0.25, sides: 6 }), F.steel, S.steel[spec.steel ?? 'gray'], { part: 'light' })
+    }
+  }
+
   // ── scoreboards / video boards ──
   const boards = [...(spec.boards || [])]
   if (spec.scoreboard) boards.push({ angle: 0, ...spec.scoreboard })
