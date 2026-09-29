@@ -17,7 +17,8 @@
 .dock-btn.active { color: var(--accent); border-color: rgba(var(--accent-rgb), 0.45); background: rgba(var(--accent-rgb), 0.08); }
 .dock-btn[aria-disabled="true"] { opacity: 0.4; cursor: default; }
 
-.dock-row.features { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+.dock-row.features { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+.dock-row.features .dock-btn span { overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 .dock-row.features .dock-btn { flex-direction: column; height: 40px; gap: 2px; font-size: 9px; letter-spacing: 0.06em; padding: 0 2px; position: relative; }
 .dock-row.features .dock-btn svg { font-size: 15px; }
 .dock-row.features .chip-live { position: absolute; top: -6px; right: -4px; font-size: 7px; padding: 0 3px; }
