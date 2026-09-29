@@ -91,3 +91,7 @@ export function styleIndex(key) {
   if (!i) throw new Error(`styleIndex: unknown style ${key}`)
   return i
 }
+
+// A landmark mesh that names its own material (V6: 'georgia-pink-marble', 'seahorse-bronze', …) uses that row;
+// otherwise the hero's part styling decides, as for V2 venue parts.
+export const partStyle = (b, v) => (v.style ? styleIndex(v.style) : meshStyle(b, v.part))

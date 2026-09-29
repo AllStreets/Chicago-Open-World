@@ -33,3 +33,12 @@ describe('V6 style rows keep the build palette order', () => {
     expect(() => styleIndex('no-such-style')).toThrow(/no-such-style/)
   })
 })
+
+describe('landmark meshes carry their own style', () => {
+  it('a mesh with a V6 style key uses that palette row; otherwise the hero part styling applies', async () => {
+    const { partStyle } = await import('../lib/styles.js')
+    expect(partStyle({ styleIndex: 7, styleParts: ['rim'] }, { style: 'georgia-pink-marble', part: 'rim' })).toBe(styleIndex('georgia-pink-marble'))
+    expect(partStyle({ styleIndex: 7, styleParts: ['rim'] }, { part: 'rim' })).toBe(7)
+    expect(partStyle({ styleIndex: 7, styleParts: ['rim'] }, { part: 'pool', style: null })).toBe(0)
+  })
+})

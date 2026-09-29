@@ -49,12 +49,13 @@ export function applyHero(b, spec) {
     pieces = pieces.map((p) => (p.top === bodyTop ? { ...p, top: spec.heightM } : p))
   }
 
-  let venueMeshes, clear
+  let venueMeshes, clear, detached, runtime
   if (spec.landmark) {
     const r = buildLandmark({ ...b, height: spec.heightM ?? b.height }, spec.landmark)
     if (r.replace) pieces = r.pieces ?? []
     venueMeshes = r.meshes
     clear = r.clear
+    detached = r.detached; runtime = r.runtime
   }
 
   const extraMeshes = (spec.crowns || []).map((c) => {
@@ -69,7 +70,7 @@ export function applyHero(b, spec) {
   if (spec.facade) b.facadeOverride = spec.facade
   if (spec.tint) b.seedOverride = seedForTint(spec.tint)
   if (spec.wallStyle) b.seedOverride = STYLE.wall[spec.wallStyle]
-  return { pieces, extraMeshes, venueMeshes, clear }
+  return { pieces, extraMeshes, venueMeshes, clear, detached, runtime }
 }
 
 // OSM ids are unique per element type only: way 123 and relation 123 are different buildings.

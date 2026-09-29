@@ -5,7 +5,7 @@ import { convexHull, box, STYLE } from './venue.js'
 import { orientedBox, lathe, DOME, SACRED_STYLE } from './sacred.js'
 import { drum, spire, pyramid } from './crowns.js'
 
-import { add2, mul2, left, bearing, sub3, at3, mesh, tri, merge, tube, disc, ringAround } from './meshkit.js'
+import { add2, mul2, left, bearing, sub3, at3, mesh, tri, merge, tube, disc, ringAround, revolve, place, slab, norm3 } from './meshkit.js'
 import { LANDMARK_FACADES } from './facadeIds.js'
 export { LANDMARK_FACADES }
 const F = LANDMARK_FACADES
@@ -63,21 +63,84 @@ function bean(b) {
   return { replace: true, pieces: [], meshes: [{ mesh: out, facade: F.chrome, seed: 0.1, part: 'bean' }], clear: [ringAround(c, 42)] }
 }
 
-// ── Buckingham Fountain ──────────────────────────────────────────────────────
-function fountain(b) {
-  const c = b.centroid, stone = STYLE.wall.limestone
-  const meshes = [
-    { mesh: disc(c, 42.3, 0.45, 72), facade: F.water, seed: 0.1, part: 'pool' },
-    { mesh: lathe(c, 0, 42.7, [[1, 0], [1, 0.025], [0.99, 0.025], [0.99, 0.012]], 72), facade: F.wall, seed: stone, part: 'rim' },
-    { mesh: drum({ at: c, base: 0, top: 9.4, r: 1.9, sides: 16 }), facade: F.wall, seed: stone, part: 'column' },
-  ]
-  for (const [r, base, top] of [[13.7, 1.0, 3.2], [7.3, 4.6, 6.4], [4.9, 7.8, 9.2]]) {
-    const h = top - base
-    meshes.push({ mesh: lathe(c, base, r, [[0.2, 0], [0.55, (h / r) * 0.45], [0.95, (h / r) * 0.9], [1, h / r]], 40), facade: F.wall, seed: stone, part: 'basin' })
-    meshes.push({ mesh: disc(c, r * 0.97, top - 0.05, 40), facade: F.water, seed: 0.1, part: 'basin-water' })
+// ── Buckingham Fountain (1927) ───────────────────────────────────────────────
+// https://en.wikipedia.org/wiki/Buckingham_Fountain — pool 280 ft (85 m); basins 103/60/24 ft (31/18/7.3 m);
+// upper lip 25 ft (7.6 m) above the lower basin's water; centre jet 150 ft (46 m); 193 jets; Georgia pink marble;
+// four pairs of bronze seahorses (Marcel Loyau) for Illinois, Wisconsin, Michigan and Indiana.
+export const FOUNTAIN = {
+  poolR: 42.5, poolWater: 0.35, poolRim: 0.6,
+  basins: [
+    { r: 15.7, base: 0, rim: 1.9, water: 1.6, lobes: 16 },
+    { r: 9.15, base: 3.4, rim: 5.1, water: 4.8, lobes: 12 },
+    { r: 3.66, base: 7.6, rim: 9.2, water: 8.95, lobes: 8 },
+  ],
+  crownTop: 10.6,
+  seahorses: { ring: 20.5, bearings: [45, 135, 225, 315], gap: 3.2 },
+  jets: { centre: 46, seahorse: 6, ring: 3.5, lower: 2.5 },
+}
+const MARBLE = 'georgia-pink-marble'
+export const SEAHORSE_MOUTH = [2.3, 1.68, 0]
+
+// One bronze seahorse rearing from a rock: S-curved body, arched neck, muzzle, coiled fishtail, webbed forefins, crest.
+export function seahorseUnit() {
+  const m = mesh()
+  const spine = Array.from({ length: 15 }, (_, i) => { const t = i / 14; return [-2.2 + 3.4 * t, 1.0 + 2.6 * Math.sin(t * Math.PI * 0.85), 0] })
+  const radius = (t) => 0.55 * Math.sin(Math.PI * Math.min(1, 0.15 + t)) + 0.12
+  for (let i = 0; i < 14; i++) tube(m, spine[i], spine[i + 1], radius(i / 14), 8)
+  tube(m, spine[14], SEAHORSE_MOUTH, 0.32, 8)
+  let prev = spine[0]
+  for (let k = 1; k <= 10; k++) {
+    const a = k * 0.6, r = 0.9 * (1 - k / 12), p = [-2.2 - 0.6 * Math.sin(a), 1.0 - 0.36 * (1 - Math.cos(a)), r * Math.sin(a * 0.5)]
+    tube(m, prev, p, 0.22 * (1 - k / 12) + 0.05, 6); prev = p
   }
-  meshes.push({ mesh: spire({ at: c, base: 9.2, top: 17, r0: 0.45, r1: 0.12, sides: 10 }), facade: F.paint, seed: STYLE.paint.white, part: 'jet' })
-  return { replace: true, pieces: [], meshes, clear: [ringAround(c, 58)] }
+  for (const z of [-0.45, 0.45]) {
+    const hip = [spine[9][0], spine[9][1] - 0.2, z], hoof = [hip[0] + 1.0, hip[1] - 1.1, z * 1.4]
+    tube(m, hip, hoof, 0.16, 6); slab(m, [hoof[0] + 0.2, hoof[2]], [1, 0], 0.7, 0.08, hoof[1] - 0.05, hoof[1] + 0.45)
+  }
+  for (let i = 6; i < 13; i++) slab(m, [spine[i][0], 0], [1, 0], 0.35, 0.06, spine[i][1] + radius(i / 14) * 0.8, spine[i][1] + radius(i / 14) + 0.35)
+  const rock = revolve([0, 0], [[1.6, 0], [1.4, 0.7], [0.9, 1.1], [0, 1.2]], { sides: 10, lobes: 5, depth: 0.18 })
+  return merge(rock, m)
+}
+
+export function seahorseSpots(c) {
+  const S = FOUNTAIN.seahorses
+  return S.bearings.flatMap((b) => {
+    const out = bearing(b), side = left(out), pc = add2(c, mul2(out, S.ring))
+    return [-1, 1].map((k) => ({ at: add2(pc, mul2(side, (k * S.gap) / 2)), yawDeg: b }))
+  })
+}
+
+export function fountainEmitters(c) {
+  const Fq = FOUNTAIN, [lo, md, up] = Fq.basins
+  const e = [{ kind: 'centre', p: [c[0], Fq.crownTop, c[1]], dir: [0, 1, 0], h: Fq.jets.centre - Fq.crownTop, floor: up.water }]
+  for (const s of seahorseSpots(c)) {
+    const f = bearing(s.yawDeg)
+    e.push({ kind: 'seahorse', p: [s.at[0] + f[0] * SEAHORSE_MOUTH[0], Fq.poolWater - 0.2 + SEAHORSE_MOUTH[1], s.at[1] + f[1] * SEAHORSE_MOUTH[0]], dir: norm3([-f[0] * 0.5, 0.87, -f[1] * 0.5]), h: Fq.jets.seahorse, floor: Fq.poolWater })
+  }
+  for (let k = 0; k < 16; k++) { const a = (k / 16) * Math.PI * 2, r = up.r - 0.3; e.push({ kind: 'ring', p: [c[0] + Math.cos(a) * r, up.rim, c[1] + Math.sin(a) * r], dir: norm3([Math.cos(a) * 0.25, 1, Math.sin(a) * 0.25]), h: Fq.jets.ring, floor: md.water }) }
+  for (let k = 0; k < 24; k++) { const a = (k / 24) * Math.PI * 2, r = lo.r - 0.6; e.push({ kind: 'lower', p: [c[0] + Math.cos(a) * r, lo.rim, c[1] + Math.sin(a) * r], dir: norm3([Math.cos(a) * 0.35, 1, Math.sin(a) * 0.35]), h: Fq.jets.lower, floor: Fq.poolWater }) }
+  return e
+}
+
+function fountain(b) {
+  const c = b.centroid, Fq = FOUNTAIN, meshes = []
+  const push = (m, facade, style, part) => meshes.push({ mesh: m, facade, seed: 0.5, style, part })
+  push(revolve(c, [[Fq.poolR + 0.6, 0], [Fq.poolR + 0.6, Fq.poolRim], [Fq.poolR, Fq.poolRim], [Fq.poolR, Fq.poolWater]], { sides: 96 }), F.stone, MARBLE, 'rim')
+  push(revolve(c, [[Fq.poolR, Fq.poolWater], [0, Fq.poolWater]], { sides: 96 }), F.water, null, 'pool')
+  for (const bs of Fq.basins) {
+    const prof = [[bs.r * 0.3, bs.base], [bs.r * 0.92, bs.rim - 0.9], [bs.r, bs.rim], [bs.r - 0.4, bs.rim], [bs.r - 0.4, bs.water]]
+    push(revolve(c, prof, { sides: 64, lobes: bs.lobes, depth: 0.05 }), F.stone, MARBLE, 'basin')
+    push(revolve(c, [[bs.r - 0.4, bs.water], [0, bs.water]], { sides: 64, lobes: bs.lobes, depth: 0.05 }), F.water, null, 'basin-water')
+  }
+  push(revolve(c, [[2.4, Fq.basins[0].water], [1.6, 2.3], [1.4, Fq.basins[1].base]], { sides: 24 }), F.stone, MARBLE, 'pedestal')
+  push(revolve(c, [[1.3, Fq.basins[1].water], [0.8, 5.6], [0.7, Fq.basins[2].base]], { sides: 24 }), F.stone, MARBLE, 'pedestal')
+  push(revolve(c, [[0.9, Fq.basins[2].water], [0.5, 9.6], [0.7, 10.1], [0.25, Fq.crownTop], [0, Fq.crownTop]], { sides: 16 }), F.stone, MARBLE, 'crown')
+  const unit = seahorseUnit()
+  for (const s of seahorseSpots(c)) push(place(unit, { at: s.at, y: Fq.poolWater - 0.2, yawDeg: s.yawDeg }), F.bronze, 'seahorse-bronze', 'seahorse')
+  return {
+    replace: true, pieces: [], meshes, clear: [ringAround(c, 58)],
+    runtime: { fountain: { centre: [c[0], c[1]], emitters: fountainEmitters(c) }, plazas: [{ key: 'buckingham', c: [c[0], c[1]], r: 62, avoid: [{ c: [c[0], c[1]], r: Fq.poolR + 1.2 }] }] },
+  }
 }
 
 // ── Chicago Theatre sign ─────────────────────────────────────────────────────

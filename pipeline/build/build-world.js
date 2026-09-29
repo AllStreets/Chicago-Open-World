@@ -18,13 +18,14 @@ import { shapePieces } from '../lib/shapes.js'
 import { applyHero, findByOsm, matchesOsm } from '../lib/heroes.js'
 import { VENUE_FACADES, STYLE, convexHull } from '../lib/venue.js'
 import { venueRecord, encodeAnchors, plazaAnchors } from '../lib/sportsSites.js'
+import { collectRuntime } from '../lib/landmarkRuntime.js'
 import { detectBridges, buildBridge, makeRibbonCutter, bridgeSidecar } from '../lib/bridges.js'
 import { shapeSacred } from '../lib/sacred.js'
 import { horizonBoxes } from '../lib/horizon.js'
 import { venueZones, filterTrees, assertNoVenueTrees, outsideZones, cutZones } from '../lib/trees.js'
 import { createBlock, addTileToBlock, blockLayers, blockSidecar } from '../lib/blocks.js'
 import { bAcc, appendBuilding, appendLayer, asLayer } from '../lib/layers.js'
-import { createStyleRegistry, assignHeroStyles, meshStyle, writeStylePalettePng, addMaterialStyles, styleIndex } from '../lib/styles.js'
+import { createStyleRegistry, assignHeroStyles, meshStyle, writeStylePalettePng, addMaterialStyles, styleIndex, partStyle } from '../lib/styles.js'
 import { applyOsmLooks } from '../lib/osmLook.js'
 import { lakePolygons, landMinusWater, joinLines, lakeSide } from '../lib/lake.js'
 import { bakeShore, SHORE } from '../lib/shore.js'
@@ -126,10 +127,15 @@ async function main() {
   for (const b of buildings) if (!heroFor.has(b) && /\b(screen|scoreboard)\b/i.test(b.name ?? '')) { b.facadeOverride = 'screen'; b.seedOverride = STYLE.screen.video }
   for (const b of buildings) {
     const h = heroFor.get(b)
-    if (h) { const r = applyHero(b, h); b.pieces = r.pieces; b.extraMeshes = r.extraMeshes; b.venueMeshes = r.venueMeshes; b.clearPolys = r.clear; b.venueTop = (r.venueMeshes || []).reduce((t, v) => { for (let k = 1; k < v.mesh.positions.length; k += 3) t = Math.max(t, v.mesh.positions[k]); return t }, 0); b.hero = h.key; b.crownTop = Math.max(0, ...r.extraMeshes.flatMap((m) => m.positions.filter((_, i) => i % 3 === 1)), ...(h.spireCounts ? r.pieces.map((q) => q.top) : [])) }
+    if (h) { const r = applyHero(b, h); b.pieces = r.pieces; b.extraMeshes = r.extraMeshes; b.venueMeshes = r.venueMeshes; b.clearPolys = r.clear; b.detached = r.detached; b.runtime = r.runtime; b.venueTop = (r.venueMeshes || []).reduce((t, v) => { for (let k = 1; k < v.mesh.positions.length; k += 3) t = Math.max(t, v.mesh.positions[k]); return t }, 0); b.hero = h.key; b.crownTop = Math.max(0, ...r.extraMeshes.flatMap((m) => m.positions.filter((_, i) => i % 3 === 1)), ...(h.spireCounts ? r.pieces.map((q) => q.top) : [])) }
     else b.pieces = shapePieces(b)
   }
   log(`heroes applied: ${heroFor.size}`)
+  const landmarkRuntime = collectRuntime(buildings.filter((b) => b.hero && (b.runtime || b.detached)).map((b) => ({ key: b.hero, runtime: b.runtime, detached: b.detached })))
+  rmSync(join(OUT, 'landmarks'), { recursive: true, force: true })
+  for (const b of buildings) for (const d of b.detached ?? []) await writeMeshGlb(join(OUT, 'landmarks', `${d.key}.glb`), d.mesh)
+  writeFileSync(join(OUT, 'landmarks.json'), JSON.stringify(landmarkRuntime))
+  log(`landmark runtime: ${Object.keys(landmarkRuntime).join(', ')}; plazas ${landmarkRuntime.plazas.length}`)
 
   // ── Skyline validation ─────────────────────────────────────────────────────
   const skyline = loadJson(join(ROOT, 'data', 'skyline.json')).buildings
@@ -336,7 +342,7 @@ async function main() {
       for (const pc of parapets) appendBuilding(L0, extrudeBuilding(pc), PARAPET_FACADE, seed, i, st)
       const crownStyle = (m) => (m.facade != null ? meshStyle(b, 'crown') : st) // own-surface crowns skip the wall recolour
       for (const m of b.extraMeshes || []) appendBuilding(L0, m, m.facade ?? family, m.seed ?? seed, i, crownStyle(m))
-      for (const v of b.venueMeshes || []) { appendBuilding(L0, v.mesh, v.facade, v.seed, i, meshStyle(b, v.part)); appendBuilding(L1, v.mesh, v.facade, v.seed, i, meshStyle(b, v.part)) }
+      for (const v of b.venueMeshes || []) { const vs = partStyle(b, v); appendBuilding(L0, v.mesh, v.facade, v.seed, i, vs); appendBuilding(L1, v.mesh, v.facade, v.seed, i, vs) }
       // LOD1: heroes and part-buildings keep their shape (they are the skyline); plain footprints simplify
       if (keepsShapeAtDistance(b)) { for (const pc of b.pieces) appendBuilding(L1, extrudeBuilding(pc), family, seed, i, st); for (const m of b.extraMeshes || []) appendBuilding(L1, m, m.facade ?? family, m.seed ?? seed, i, crownStyle(m)) }
       else if (b.area >= 80) for (const pc of lod1Pieces(b)) appendBuilding(L1, extrudeBuilding(pc), family, seed, i, st)
@@ -486,7 +492,7 @@ async function main() {
     tiles, blocks: blockList, land: 'ground/land.glb', lake: 'ground/lake.glb', landMask: 'land.json', transit: 'transit.json', trains: 'trains.glb', styles: 'styles.json', stylePalette: 'style-palette.png',
     shore: { file: 'water/shore.png', ...shore.grid, maxDist: SHORE.maxDist },
     heightfield: { file: 'heightfield.png', ...hf.grid, scale: HEIGHTFIELD.scale }, minimap: { file: 'minimap.png', bounds: mmBounds, size: 2048 },
-    venues: 'venues.json', bridges: 'bridges.json', schedules: existsSync(join(ROOT, 'data', 'schedules.json')) ? 'schedules.json' : null,
+    venues: 'venues.json', bridges: 'bridges.json', landmarkRuntime: 'landmarks.json', schedules: existsSync(join(ROOT, 'data', 'schedules.json')) ? 'schedules.json' : null,
   }, null, 1))
   log('manifest written')
   const dirBytes = (d) => readdirSync(d, { withFileTypes: true }).reduce((sum, e) => sum + (e.isDirectory() ? dirBytes(join(d, e.name)) : statSync(join(d, e.name)).size), 0)
