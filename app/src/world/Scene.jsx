@@ -2,7 +2,7 @@
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { useThree } from '@react-three/fiber'
 import { useStore } from '../state/store.js'
-import { loadManifest } from '../lib/manifest.js'
+import { loadManifest, worldUrl } from '../lib/manifest.js'
 import SafeLoad from './SafeLoad.jsx'
 import { sunForPreset } from '../lib/sun.js'
 import TileStreamer from './TileStreamer.jsx'
@@ -16,6 +16,7 @@ import AtlasRig from '../camera/AtlasRig.jsx'
 import PostFX from './PostFX.jsx'
 import PerfWatch from './PerfWatch.jsx'
 import { QUALITY } from '../lib/quality.js'
+import { loadHeightfield, clearanceAt } from '../lib/clearance.js'
 
 export default function Scene() {
   const [manifest, setManifest] = useState(null)
@@ -42,6 +43,7 @@ export default function Scene() {
       setLoadTotal(3) // land + façade textures + 'tiles-planned'; TileStreamer adds the near tiles
       setManifest(r.manifest)
       useStore.getState().setManifest(r.manifest)
+      if (r.manifest.heightfield) loadHeightfield(worldUrl(r.manifest.heightfield.file, r.manifest.version), r.manifest.heightfield)
       if (r.manifest.landMask) fetch(`/world/${r.manifest.landMask}`).then((x) => x.json()).then((j) => useStore.getState().setIsWater(makeIsWater(j.rings))).catch(() => {})
     })
     Promise.all([loadFacadeTextures(), loadGroundTextures()]).catch(() => {}).finally(() => useStore.getState().markLoaded('facades'))
@@ -49,7 +51,7 @@ export default function Scene() {
 
   useEffect(() => { if (ready) window.__worldReady = true }, [ready])
   const gl = useThree((s) => s.gl)
-  useEffect(() => { if (new URLSearchParams(window.location.search).has('stats')) { window.__gl = gl; window.__store = useStore } }, [gl])
+  useEffect(() => { if (new URLSearchParams(window.location.search).has('stats')) { window.__gl = gl; window.__store = useStore; window.__clearanceAt = clearanceAt } }, [gl])
 
   return (
     <>
