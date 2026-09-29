@@ -25,7 +25,8 @@ import { parapetPiece, PARAPET_FACADE } from '../lib/roofs.js'
 import { roofProps } from '../lib/props.js'
 import { minimapSvg } from '../lib/minimap.js'
 import { bufferPolyline } from '../lib/ribbon.js'
-import { roadHalfWidth, isElevatedRail, scatterInPolygon, GROUND_Y } from '../lib/ground.js'
+import { roadHalfWidth, isElevatedRail, scatterInPolygon, GROUND_Y, flatMesh } from '../lib/ground.js'
+import { waterLayer, keepWater, breakwaterBuildings, CALM } from '../lib/water.js'
 import { WORLD_BBOX, RING0_BBOX } from '../lib/sources.js'
 import { validateSkyline, assertSkyline } from '../lib/skyline.js'
 import { clipPolysToTile, splitLineByTiles, splitLineWithContext, writeTileGlb, mergeGroundLayers, blockKeyFor, BLOCK_TILES } from '../lib/tilepack.js'
@@ -51,23 +52,6 @@ function osmPolys(elements) {
     }
   }
   return out.filter((p) => p.outer.length >= 3).map((p) => ({ ...p, bbox: ringBBox(p.outer) }))
-}
-
-function flatMesh(polys, y) {
-  const positions = [], normals = [], uvs = []
-  for (const { outer, holes } of polys) {
-    const flat = [], hi = []
-    for (const [x, z] of outer) flat.push(x, z)
-    for (const h of holes) { hi.push(flat.length / 2); for (const [x, z] of h) flat.push(x, z) }
-    const t = earcut(flat, hi.length ? hi : undefined, 2)
-    for (let i = 0; i < t.length; i += 3) {
-      let [a, b, c] = [t[i], t[i + 1], t[i + 2]]
-      const cr = (flat[b * 2 + 1] - flat[a * 2 + 1]) * (flat[c * 2] - flat[a * 2]) - (flat[b * 2] - flat[a * 2]) * (flat[c * 2 + 1] - flat[a * 2 + 1])
-      if (cr < 0) [b, c] = [c, b]
-      for (const k of [a, b, c]) { positions.push(flat[k * 2], y, flat[k * 2 + 1]); normals.push(0, 1, 0); uvs.push(flat[k * 2], flat[k * 2 + 1]) }
-    }
-  }
-  return { positions, normals, uvs }
 }
 
 const acc = () => ({ positions: [], normals: [], uvs: [] })
@@ -168,7 +152,7 @@ async function main() {
   const greens = osmPolys(uniq(chunks('parks')))
   const parks = greens.filter((p) => p.tags.natural !== 'beach' && p.tags.leisure !== 'pitch'), beaches = greens.filter((p) => p.tags.natural === 'beach')
   const pitches = greens.filter((p) => p.tags.leisure === 'pitch')
-  const water = osmPolys(uniq(chunks('water')))
+  const water = osmPolys(uniq(chunks('water'))).filter((p) => keepWater(p.tags))
   const roads = uniq(chunks('roads')).filter((e) => e.geometry && roadHalfWidth(e.tags || {}))
   const rail = uniq(chunks('rail')).filter((e) => e.geometry)
   const treeNodes = uniq(chunks('trees')).map((n) => project(n.lon, n.lat))
@@ -219,6 +203,10 @@ async function main() {
     sacredShaped++
   }
   log(`sacred buildings shaped: ${sacredShaped}, material only: ${sacredTinted}`)
+  // ── Breakwaters: low concrete lines that shape the harbours (B7) ──────────
+  const breakwaters = breakwaterBuildings(uniq(chunks('shore')).filter((e) => e.geometry).map((e) => ({ id: e.id, points: e.geometry.map((p) => project(p.lon, p.lat)), tags: e.tags || {} })))
+  for (const b of breakwaters) buildings.push(b)
+  log(`breakwaters: ${breakwaters.length}`)
 
   // ── Per-tile assembly ──────────────────────────────────────────────────────
   rmSync(join(OUT, 'tiles'), { recursive: true, force: true })
@@ -283,7 +271,7 @@ async function main() {
     const parksM = flatMesh(clipPolysToTile(polysFor('parks', bounds), bounds), GROUND_Y.parks)
     const beachesM = flatMesh(clipPolysToTile(polysFor('beaches', bounds), bounds), GROUND_Y.beaches)
     const pitchesM = flatMesh(clipPolysToTile(polysFor('pitches', bounds), bounds), GROUND_Y.pitches)
-    const waterM = flatMesh(clipPolysToTile(polysFor('water', bounds), bounds), GROUND_Y.water)
+    const waterM = waterLayer(clipPolysToTile(polysFor('water', bounds), bounds), GROUND_Y.water)
     const hasContent = L0.positions.length || t.roads.positions.length || parksM.positions.length || waterM.positions.length
     if (!hasContent) continue
     const ground0 = mergeGroundLayers({ roads: t.roads, sidewalks: t.walks, parks: parksM, pitches: pitchesM, beaches: beachesM, rail: t.rail })

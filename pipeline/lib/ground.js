@@ -1,9 +1,10 @@
+import earcut from 'earcut'
 // pipeline/lib/ground.js — rules for roads, rail and tree scatter.
 import { pointInRing, ringBBox } from './geom.js'
 import { hashSeed } from './buildings.js'
 
 // Ground surface heights (m). Water sits below every street layer so bridges cross it.
-export const GROUND_Y = { water: 0.04, beaches: 0.07, parks: 0.08, pitches: 0.09, rail: 0.09, sidewalks: 0.1, roads: 0.12 }
+export const GROUND_Y = { lake: 0.02, water: 0.04, beaches: 0.07, parks: 0.08, pitches: 0.09, rail: 0.09, sidewalks: 0.1, roads: 0.12 }
 
 export const ROAD_WIDTHS = {
   motorway: 22, trunk: 18, primary: 16, secondary: 14, tertiary: 12, unclassified: 10,
@@ -35,4 +36,22 @@ export function scatterInPolygon(ring, spacing, seed) {
     }
   }
   return out
+}
+
+// Polygons (outer + holes, local metres) → flat up-facing triangles at height y; uv = world xz.
+export function flatMesh(polys, y) {
+  const positions = [], normals = [], uvs = []
+  for (const { outer, holes } of polys) {
+    const flat = [], hi = []
+    for (const [x, z] of outer) flat.push(x, z)
+    for (const h of holes) { hi.push(flat.length / 2); for (const [x, z] of h) flat.push(x, z) }
+    const t = earcut(flat, hi.length ? hi : undefined, 2)
+    for (let i = 0; i < t.length; i += 3) {
+      let [a, b, c] = [t[i], t[i + 1], t[i + 2]]
+      const cr = (flat[b * 2 + 1] - flat[a * 2 + 1]) * (flat[c * 2] - flat[a * 2]) - (flat[b * 2] - flat[a * 2]) * (flat[c * 2 + 1] - flat[a * 2 + 1])
+      if (cr < 0) [b, c] = [c, b]
+      for (const k of [a, b, c]) { positions.push(flat[k * 2], y, flat[k * 2 + 1]); normals.push(0, 1, 0); uvs.push(flat[k * 2], flat[k * 2 + 1]) }
+    }
+  }
+  return { positions, normals, uvs }
 }

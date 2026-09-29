@@ -31,7 +31,9 @@ const FILTERS = {
   trees: ['node["natural"="tree"]'],
   stadiums: ['way["leisure"="stadium"]', 'relation["leisure"="stadium"]'],
   rail: ['way["railway"~"^(subway|light_rail|rail)$"]'],
-  water: ['relation["water"="river"]', 'way["water"="river"]', 'way["waterway"="canal"]["area"]', 'way["water"="canal"]', 'way["water"="harbour"]', 'relation["water"="harbour"]'],
+  water: ['relation["water"="river"]', 'way["water"="river"]', 'way["waterway"="canal"]["area"]', 'way["water"="canal"]', 'way["water"="harbour"]', 'relation["water"="harbour"]',
+    'way["natural"="water"]', 'relation["natural"="water"]["water"~"^(lagoon|pond|basin|reservoir)$"]'],
+  shore: ['way["man_made"~"^(breakwater|groyne)$"]'],
 }
 
 export function overpassQuery(kind, { s, w, n, e }) {

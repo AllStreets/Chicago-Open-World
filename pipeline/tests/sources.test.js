@@ -45,3 +45,15 @@ describe('world bbox + chunks', () => {
     expect(overpassQuery('allbuildings', WORLD_BBOX)).toContain('relation["building"]')
   })
 })
+
+describe('water + shore kinds (B5, B7)', () => {
+  it('water pulls lagoons and ponds, not only rivers and harbours', () => {
+    const q = overpassQuery('water', WORLD_BBOX)
+    expect(q).toContain('way["natural"="water"]')
+    expect(q).toContain('lagoon')
+    expect(q).toContain('relation["water"="harbour"]')
+  })
+  it('shore pulls breakwaters', () => {
+    expect(overpassQuery('shore', WORLD_BBOX)).toContain('"man_made"~"^(breakwater|groyne)$"')
+  })
+})

@@ -28,3 +28,17 @@ describe('ground rules', () => {
     expect(GROUND_Y.water).toBeGreaterThan(0)
   })
 })
+
+import { flatMesh } from '../lib/ground.js'
+
+describe('flat meshes + lake level', () => {
+  it('flatMesh triangulates a polygon with a hole, facing up', () => {
+    const m = flatMesh([{ outer: [[0, 0], [10, 0], [10, -10], [0, -10]], holes: [[[3, -3], [7, -3], [7, -7], [3, -7]]] }], 0.04)
+    expect(m.positions.length / 9).toBe(8)
+    for (let i = 1; i < m.normals.length; i += 3) expect(m.normals[i]).toBe(1)
+  })
+  it('the lake sits just under the polygon water', () => {
+    expect(GROUND_Y.lake).toBe(0.02)
+    expect(GROUND_Y.lake).toBeLessThan(GROUND_Y.water)
+  })
+})
