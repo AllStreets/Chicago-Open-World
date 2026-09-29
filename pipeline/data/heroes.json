@@ -758,6 +758,21 @@
       "aliases": [
         "Merchandise Mart",
         "theMART"
+      ],
+      "landmark": {
+        "type": "martRiverFace",
+        "facingBearing": 180,
+        "pierEvery": 6.1,
+        "pierTop": 78
+      },
+      "beacon": {
+        "lat": 41.88807,
+        "lon": -87.63537,
+        "y": 110
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Merchandise_Mart",
+        "OpenStreetMap way 28293211"
       ]
     },
     {
@@ -1815,6 +1830,138 @@
         "https://en.wikipedia.org/wiki/Art_Institute_of_Chicago_Building",
         "https://en.wikipedia.org/wiki/Modern_Wing",
         "OpenStreetMap relation 1870546"
+      ]
+    },
+    {
+      "key": "picasso",
+      "name": "The Picasso",
+      "match": {
+        "synthetic": true,
+        "lat": 41.88385,
+        "lon": -87.63008,
+        "radius": 10
+      },
+      "crowns": [],
+      "landmark": {
+        "type": "picasso",
+        "heightM": 15.2,
+        "facingBearing": 180
+      },
+      "aliases": [
+        "Chicago Picasso",
+        "Daley Plaza"
+      ],
+      "beacon": {
+        "lat": 41.88385,
+        "lon": -87.63008,
+        "y": 22
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Chicago_Picasso"
+      ]
+    },
+    {
+      "key": "flamingo",
+      "name": "Flamingo",
+      "match": {
+        "synthetic": true,
+        "lat": 41.8793,
+        "lon": -87.62985,
+        "radius": 14
+      },
+      "crowns": [],
+      "landmark": {
+        "type": "flamingo",
+        "heightM": 16.2
+      },
+      "aliases": [
+        "Calder Flamingo",
+        "Federal Plaza"
+      ],
+      "beacon": {
+        "lat": 41.8793,
+        "lon": -87.62985,
+        "y": 23
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Flamingo_(sculpture)"
+      ]
+    },
+    {
+      "key": "culturalcenter",
+      "name": "Chicago Cultural Center",
+      "match": {
+        "osmId": 15899437
+      },
+      "heightM": 30,
+      "crowns": [],
+      "landmark": {
+        "type": "culturalCenter",
+        "domes": [
+          {
+            "at": {
+              "lat": 41.88361,
+              "lon": -87.62498
+            },
+            "r": 5.8,
+            "kind": "tiffany"
+          },
+          {
+            "at": {
+              "lat": 41.88415,
+              "lon": -87.62498
+            },
+            "r": 6.1,
+            "kind": "healy-millet"
+          }
+        ]
+      },
+      "aliases": [
+        "Cultural Center",
+        "Tiffany dome",
+        "Preston Bradley Hall"
+      ],
+      "beacon": {
+        "lat": 41.88388,
+        "lon": -87.62498,
+        "y": 40
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Chicago_Cultural_Center",
+        "OpenStreetMap relation 15899437"
+      ]
+    },
+    {
+      "key": "unionstation",
+      "name": "Union Station",
+      "match": {
+        "osmId": 203442440
+      },
+      "crowns": [],
+      "landmark": {
+        "type": "unionStation",
+        "facingBearing": 90,
+        "columns": 20,
+        "columnH": 16,
+        "hall": {
+          "L": 67,
+          "W": 30,
+          "rise": 8
+        }
+      },
+      "aliases": [
+        "Chicago Union Station",
+        "Great Hall",
+        "Amtrak"
+      ],
+      "beacon": {
+        "lat": 41.87867,
+        "lon": -87.63983,
+        "y": 40
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Chicago_Union_Station",
+        "OpenStreetMap way 203442440"
       ]
     }
   ]

@@ -101,4 +101,67 @@ function artInstitute(b, spec) {
   return { meshes }
 }
 
-export const CIVIC = { crownFountain, lurie, bpBridge, artInstitute }
+// ── The Picasso (1967) ─ https://en.wikipedia.org/wiki/Chicago_Picasso — 50 ft (15.2 m), 162 short tons of Cor-Ten.
+function picasso(b, spec) {
+  const c = b.centroid, f = bearing(spec.facingBearing ?? 180), s = left(f), H = spec.heightM ?? 15.2, m = mesh(), base = slab(mesh(), c, f, 9, 6, 0, 0.6)
+  const Q = (a, o, y) => at3(add2(add2(c, mul2(f, a)), mul2(s, o)), y)
+  for (const o of [-1, 1]) slab(m, add2(c, mul2(s, o * 2.2)), f, 1.2, 0.6, 0.6, 4.5)             // legs
+  slab(m, add2(c, mul2(f, 0.3)), f, 0.4, 2.4, 4, H - 1.6)                                          // the long face
+  for (const o of [-1, 1]) for (let i = 0; i < 6; i++) {                                           // swept "wings"
+    const y0 = 4 + i * 1.8, y1 = y0 + 1.8, sw = (y) => 2.2 + 1.8 * Math.sin(((y - 4) / (H - 4)) * Math.PI)
+    const q = [Q(-0.3, o * 0.5, y0), Q(-3.5, o * sw(y0), y0), Q(-3.5, o * sw(y1), y1), Q(-0.3, o * 0.5, y1)]
+    quad(m, ...q, [s[0] * o, 0, s[1] * o]); quad(m, ...q, [-s[0] * o, 0, -s[1] * o])
+  }
+  let prev = null
+  for (let k = 0; k <= 16; k++) { const t = (k / 16) * Math.PI * 2, q = Q(0.1, Math.cos(t) * 2.8, H - 4.32 + Math.sin(t) * 4.1); if (prev) tube(m, prev, q, 0.22, 5); prev = q }  // head ring
+  for (let i = 0; i < 10; i++) { const y = 5.5 + i * 0.85; tube(m, Q(-0.2, 0, y), Q(-3.4, (i % 2 ? 1 : -1) * 2.6, y + 0.4), 0.06, 4) }  // rods
+  return { replace: true, pieces: [], clear: [ringAround(c, 12)], meshes: [P(m, F.bronze, 'corten', 'sculpture'), P(base, F.stone, 'aic-plinth-granite', 'plinth')],
+    runtime: { plazas: [{ key: 'picasso', c: [c[0], c[1]], r: 30, avoid: [{ c: [c[0], c[1]], r: 7 }] }] } }
+}
+
+// ── Flamingo (Alexander Calder, 1974) ─ https://en.wikipedia.org/wiki/Flamingo_(sculpture) — 53 ft (16.2 m), vermilion.
+function flamingo(b, spec) {
+  const c = b.centroid, H = spec.heightM ?? 16.2, m = mesh(), Pt = (dx, dz) => [c[0] + dx, c[1] + dz]
+  const arch = (a0, a1, h, n = 14) => {
+    let prev = null
+    for (let i = 0; i <= n; i++) { const t = i / n, q = at3(add2(mul2(a0, 1 - t), mul2(a1, t)), h * Math.sin(Math.PI * t)); if (prev) tube(m, prev, q, 0.9 - 0.5 * Math.sin(Math.PI * t) + 0.1, 6); prev = q }
+  }
+  arch(Pt(-9, -2), Pt(8, 3), H - 0.5); arch(Pt(-2, 7), Pt(3, -8), 0.7 * H); arch(Pt(4, 6), Pt(9, -1), 0.4 * H)
+  return { replace: true, pieces: [], clear: [ringAround(c, 16)], meshes: [P(m, F.paint, 'calder-red', 'flamingo')],
+    runtime: { plazas: [{ key: 'flamingo', c: [c[0], c[1]], r: 32, avoid: [{ c: [c[0], c[1]], r: 10 }] }] } }
+}
+
+// ── Chicago Cultural Center ─ https://en.wikipedia.org/wiki/Chicago_Cultural_Center — the Tiffany dome (38 ft) over
+// Preston Bradley Hall (Washington St side) and the Healy & Millet dome (40 ft) over the G.A.R. Hall (Randolph side).
+// Both sit under protective skylights, so from outside they read as glazed roof lanterns that glow at night.
+function culturalCenter(b, spec) {
+  const { u } = obOf(b), top = b.height, meshes = []
+  for (const d of spec.domes) {
+    const at = local(d.at), r = d.r, ring = rectRing(at, u, 2 * r + 1.6, 2 * r + 1.6)
+    meshes.push(P(slab(mesh(), at, u, 2 * r + 1.6, 2 * r + 1.6, top, top + 1.2), F.stone, 'tender-limestone', 'skylight-curb'))
+    meshes.push(P(pyramid({ ring, base: top + 1.2, top: top + 1.2 + 0.45 * r }), F.signal, d.kind === 'tiffany' ? 'tiffany-glass' : 'healy-millet-glass', `dome:${d.kind}`))
+  }
+  return { meshes }
+}
+
+// ── Chicago Union Station (1925) ─ https://en.wikipedia.org/wiki/Chicago_Union_Station — the Canal Street colonnade
+// and the barrel-vaulted skylight of the Great Hall (219 ft long, 115 ft high inside).
+function unionStation(b, spec) {
+  const f = bearing(spec.facingBearing ?? 90), { c, face, side, o0, o1 } = faceOf(b, f), H = spec.columnH ?? 16, n = spec.columns ?? 20
+  const span = o1 - o0 - 6, front = add2(c, mul2(f, face + 2.2)), mid = (o0 + o1) / 2, hall = spec.hall ?? { L: 67, W: 30, rise: 8 }
+  const cols = merge(...Array.from({ length: n }, (_, i) => drum({ at: add2(front, mul2(side, mid - span / 2 + (span * i) / (n - 1))), base: 0, top: H, r: 0.95, sides: 12 })))
+  const ent = slab(mesh(), add2(front, mul2(side, mid)), f, 3.4, span + 2.4, H, H + 2.2)
+  return { meshes: [P(cols, F.stone, 'union-limestone', 'column'), P(ent, F.stone, 'union-limestone', 'entablature'), P(barrel(c, side, hall.L, hall.W, b.height - 4, hall.rise), F.wall, 'conservatory-glass', 'great-hall', 0.35)] }
+}
+
+// ── Merchandise Mart (1930) ─ https://en.wikipedia.org/wiki/Merchandise_Mart — the river façade's limestone piers
+// and corner towers above the main block.
+function martRiverFace(b, spec) {
+  const f = bearing(spec.facingBearing ?? 180), { c, face, side, o0, o1 } = faceOf(b, f), top = spec.pierTop ?? 78, every = spec.pierEvery ?? 6.1
+  const piers = mesh(), towers = mesh(), n = Math.max(1, Math.floor((o1 - o0) / every))
+  for (let i = 0; i <= n; i++) slab(piers, add2(add2(c, mul2(f, face + 0.45)), mul2(side, o0 + ((o1 - o0) * i) / n)), f, 0.9, 1.1, 0, top)
+  for (const o of [o0 + 4, o1 - 4]) slab(towers, add2(add2(c, mul2(f, face - 4)), mul2(side, o)), f, 8, 8, top, top + 9)
+  return { meshes: [P(piers, F.stone, 'mart-limestone', 'pier'), P(towers, F.stone, 'mart-limestone', 'corner-tower')] }
+}
+
+export const CIVIC = { crownFountain, lurie, bpBridge, artInstitute, picasso, flamingo, culturalCenter, unionStation, martRiverFace }

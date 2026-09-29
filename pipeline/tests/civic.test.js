@@ -64,3 +64,40 @@ describe('Art Institute', () => {
     expect(Math.max(...c.map((q) => q[1]))).toBeCloseTo(24.35)
   })
 })
+
+describe('the Picasso and the Flamingo', () => {
+  it('the Picasso: 50 ft (15.2 m) of Cor-Ten on a granite plinth', () => {
+    const r = buildLandmark(synth([-186, -202], 10), { type: 'picasso', heightM: 15.2, facingBearing: 180 })
+    const s = r.meshes.filter((m) => m.part === 'sculpture')
+    expect(s[0].facade).toBe(F.bronze); expect(s[0].style).toBe('corten')
+    expect(ymax(s)).toBeCloseTo(15.2, 0)
+  })
+  it('the Flamingo: 53 ft (16.2 m) of arches in Calder red', () => {
+    const r = buildLandmark(synth([-167, 303], 14), { type: 'flamingo', heightM: 16.2 })
+    expect(r.meshes[0].facade).toBe(F.paint); expect(r.meshes[0].style).toBe('calder-red')
+    expect(ymax(r.meshes)).toBeCloseTo(16.2, 0)
+    expect(r.runtime.plazas[0].key).toBe('flamingo')
+  })
+})
+
+describe('Cultural Center, Union Station, Merchandise Mart', () => {
+  it('Cultural Center: the Tiffany (south) and Healy & Millet (north) skylights glow on the roof', () => {
+    const r = buildLandmark(box(213, -262, 261, -149, 30), { type: 'culturalCenter', domes: [{ at: ll([237, -175]), r: 5.8, kind: 'tiffany' }, { at: ll([237, -235]), r: 6.1, kind: 'healy-millet' }] })
+    const t = r.meshes.find((m) => m.part === 'dome:tiffany'), h = r.meshes.find((m) => m.part === 'dome:healy-millet')
+    expect(t.facade).toBe(F.signal); expect(t.style).toBe('tiffany-glass'); expect(h.style).toBe('healy-millet-glass')
+    expect(Math.min(...pts([t]).map((q) => q[1]))).toBeGreaterThanOrEqual(30)
+    expect(Math.min(...pts([t]).map((q) => q[2]))).toBeGreaterThan(Math.min(...pts([h]).map((q) => q[2])))   // Tiffany is the southern one
+  })
+  it('Union Station: a Canal Street colonnade and the Great Hall vault', () => {
+    const r = buildLandmark(box(-1091, 315, -995, 432, 30.4), { type: 'unionStation', facingBearing: 90, columns: 20, columnH: 16, hall: { L: 67, W: 30, rise: 8 } })
+    const cols = pts(r.meshes.filter((m) => m.part === 'column'))
+    expect(Math.min(...cols.map((q) => q[0]))).toBeGreaterThan(-995)                // in front of the east (Canal St) face
+    expect(r.meshes.find((m) => m.part === 'great-hall').style).toBe('conservatory-glass')
+  })
+  it('Mart: limestone piers march along the river (south) face', () => {
+    const r = buildLandmark(box(-100, -20, 100, 20, 104), { type: 'martRiverFace', facingBearing: 180, pierEvery: 6.1, pierTop: 78 })
+    const piers = pts(r.meshes.filter((m) => m.part === 'pier'))
+    expect(piers.every((q) => q[2] >= 19.9)).toBe(true)
+    expect(Math.max(...piers.map((q) => q[1]))).toBeCloseTo(78)
+  })
+})
