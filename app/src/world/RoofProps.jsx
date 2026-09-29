@@ -27,7 +27,8 @@ function Kind({ type, items }) {
     ref.current.instanceMatrix.needsUpdate = true
     ref.current.computeBoundingSphere()
   }, [items])
-  return <instancedMesh ref={ref} args={[GEOS[type], MATS[type], items.length]} castShadow receiveShadow />
+  // only water towers are tall enough for their shadow to read; HVAC boxes and penthouses skip the shadow pass
+  return <instancedMesh ref={ref} args={[GEOS[type], MATS[type], items.length]} castShadow={type === 0} receiveShadow />
 }
 
 export default function RoofProps({ props }) {

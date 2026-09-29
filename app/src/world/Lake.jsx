@@ -29,5 +29,5 @@ export default function Lake({ sunRef }) {
     u.distortionScale.value = p.night > 0.5 ? 0.8 : 1.6 // calm night water → long light streaks
     u.size.value = 2.5
   })
-  return <water ref={ref} args={[geom, config]} rotation-x={-Math.PI / 2} position={[0, -0.6, 0]} />
+  return <water ref={ref} args={[geom, config]} rotation-x={-Math.PI / 2} position={[0, -2, 0]} />
 }

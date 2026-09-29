@@ -22,8 +22,7 @@ const mat = (o) => new THREE.MeshStandardMaterial({ roughness: 0.95, metalness: 
 
 export function groundMaterials(g) {
   return {
-    // the base land plane yields to everything drawn on it (streets, parks, fountains, fields)
-    land: mat({ map: tex(g, 'concrete'), color: '#86827a', polygonOffset: true, polygonOffsetFactor: 4, polygonOffsetUnits: 4 }),
+    land: mat({ map: tex(g, 'concrete'), color: '#86827a' }),
     river: mat({ color: '#1f4652', roughness: 0.08, metalness: 0.9, normalMap: riverNormals(), normalScale: new THREE.Vector2(0.35, 0.35), polygonOffset: true, polygonOffsetFactor: -2 }),
     parks: mat({ map: tex(g, 'grass'), color: '#d6e8c4', polygonOffset: true, polygonOffsetFactor: -3 }),
     pitches: mat({ map: tex(g, 'pitch'), color: '#ffffff', polygonOffset: true, polygonOffsetFactor: -3.5 }),

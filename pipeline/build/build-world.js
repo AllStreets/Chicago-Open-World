@@ -18,6 +18,7 @@ import { shapePieces } from '../lib/shapes.js'
 import { applyHero } from '../lib/heroes.js'
 import { VENUE_FACADES, STYLE, convexHull } from '../lib/venue.js'
 import { shapeSacred } from '../lib/sacred.js'
+import { horizonBoxes } from '../lib/horizon.js'
 import { parapetPiece, PARAPET_FACADE } from '../lib/roofs.js'
 import { roofProps } from '../lib/props.js'
 import { minimapSvg } from '../lib/minimap.js'
@@ -305,10 +306,33 @@ async function main() {
   const cityB = loadJson(join(CACHE, 'city-boundary.json')).data
   const landPolys = cityB.features.flatMap((f) => (f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates))
     .map(([outer, ...holes]) => ({ outer: simplifyRing(openRing(outer.map(([lon, lat]) => project(lon, lat))), 2), holes: holes.map((h) => simplifyRing(openRing(h.map(([lon, lat]) => project(lon, lat))), 2)) }))
+  // The suburbs are land too: without them the lake plane shows west of Harlem Ave like an ocean.
+  const cityPts = landPolys.flatMap((p) => p.outer)
+  const cMinX = Math.min(...cityPts.map((p) => p[0])), cMinZ = Math.min(...cityPts.map((p) => p[1])), cMaxZ = Math.max(...cityPts.map((p) => p[1]))
+  const shoreX = (near) => Math.max(...cityPts.filter((p) => Math.abs(p[1] - near) < 800).map((p) => p[0]))
+  const FAR = 60000, box = (a, b, c, d) => ({ outer: [[a, b], [c, b], [c, d], [a, d]], holes: [] })
+  const region = [box(-FAR, -FAR, cMinX + 300, FAR), box(-FAR, -FAR, shoreX(cMinZ), cMinZ + 300), box(-FAR, cMaxZ - 300, shoreX(cMaxZ), FAR)]
   mkdirSync(join(OUT, 'ground'), { recursive: true })
-  await writeMeshGlb(join(OUT, 'ground', 'land.glb'), flatMesh(landPolys, 0))
-  writeFileSync(join(OUT, 'land.json'), JSON.stringify({ rings: landPolys.map((p) => simplifyRing(p.outer, 20).map(([x, z]) => [Math.round(x), Math.round(z)])) }))
+  await writeMeshGlb(join(OUT, 'ground', 'land.glb'), flatMesh([...landPolys, ...region], 0))
+  writeFileSync(join(OUT, 'land.json'), JSON.stringify({ rings: [...landPolys, ...region].map((p) => simplifyRing(p.outer, 20).map(([x, z]) => [Math.round(x), Math.round(z)])) }))
   const [x0, z0] = project(WORLD_BBOX.w, WORLD_BBOX.n), [x1, z1] = project(WORLD_BBOX.e, WORLD_BBOX.s)
+  // ── Horizon: simple blocks on Chicago's grid beyond the detailed world, streamed like far blocks ──
+  const isLand = (p) => landPolys.some((q) => pointInRing(p, q.outer) && !q.holes.some((h) => pointInRing(p, h)))
+  const hBoxes = horizonBoxes({ inner: { minX: x0, maxX: x1, minZ: z0, maxZ: z1 }, band: 3000, isLand, seed: 7 })
+  const hChunks = new Map()
+  const HSIZE = TILE_SIZE * BLOCK_TILES
+  hBoxes.forEach((hb, i) => {
+    const k = `h-${Math.floor(hb.outer[0][0] / HSIZE)}_${Math.floor(hb.outer[0][1] / HSIZE)}`
+    if (!hChunks.has(k)) hChunks.set(k, bAcc())
+    appendBuilding(hChunks.get(k), extrudeBuilding({ outer: hb.outer, holes: [], base: 0, top: hb.top }), FACADE_FAMILIES.indexOf(hb.family), hb.seed, i)
+  })
+  for (const [k, acc0] of hChunks) {
+    const [bx, bz] = k.slice(2).split('_').map(Number)
+    await writeTileGlb(join(OUT, 'blocks', `${k}.glb`), { buildings: asLayer(acc0) })
+    blockList.push({ key: k, file: `blocks/${k}.glb`, horizon: true, bounds: { minX: bx * HSIZE, maxX: (bx + 1) * HSIZE, minZ: bz * HSIZE, maxZ: (bz + 1) * HSIZE } })
+  }
+  log(`horizon: ${hBoxes.length} buildings in ${hChunks.size} chunks`)
+
   const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2, half = Math.max(x1 - x0, z1 - z0) / 2 + 300
   const mmBounds = { minX: +(cx - half).toFixed(1), minZ: +(cz - half).toFixed(1), maxX: +(cx + half).toFixed(1), maxZ: +(cz + half).toFixed(1) }
   const svg = minimapSvg({

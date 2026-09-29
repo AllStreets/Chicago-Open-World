@@ -4,10 +4,10 @@
 
 **THE CITY, AT FULL SCALE**
 
-<img alt="phase" src="https://img.shields.io/badge/phase-2_beauty_pass-45d8ff?style=for-the-badge&labelColor=030509"/>
-<img alt="buildings" src="https://img.shields.io/badge/real_buildings-2,517-ff3b53?style=for-the-badge&labelColor=030509"/>
-<img alt="setbacks" src="https://img.shields.io/badge/OSM_setbacks-187_towers-45d8ff?style=for-the-badge&labelColor=030509"/>
-<img alt="trees" src="https://img.shields.io/badge/seasonal_trees-28,862-ff3b53?style=for-the-badge&labelColor=030509"/>
+<img alt="phase" src="https://img.shields.io/badge/phase-2.5_expanded_city-45d8ff?style=for-the-badge&labelColor=030509"/>
+<img alt="buildings" src="https://img.shields.io/badge/real_buildings-105,971-ff3b53?style=for-the-badge&labelColor=030509"/>
+<img alt="landmarks" src="https://img.shields.io/badge/landmarks-41-45d8ff?style=for-the-badge&labelColor=030509"/>
+<img alt="skyline" src="https://img.shields.io/badge/top_50_skyline-verified-ff3b53?style=for-the-badge&labelColor=030509"/>
 <a href="LICENSE"><img alt="license" src="https://img.shields.io/badge/license-MIT-45d8ff?style=for-the-badge&labelColor=030509"/></a>
 <br/>
 <img alt="stack" src="https://img.shields.io/badge/stack-React_19_·_Three.js_·_R3F-6b7382?style=flat-square&labelColor=030509"/>
@@ -58,6 +58,35 @@ grid — so the HUD always knows which corner you are over.
 </tr>
 </table>
 
+### The expanded city (Phase 2.5)
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/phase25-wrigley-night.png" alt="Wrigley Field lit for a night game" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/phase25-soldier-field.png" alt="Soldier Field inside its colonnades" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Wrigley under the lights — ivy, the hand-turned scoreboard, the grandstand roof.</em></td>
+<td><em>Soldier Field — the bowl rising out of its limestone colonnades.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/phase25-ukrainian-village.png" alt="Onion domes in Ukrainian Village" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/phase25-st-mary-dusk.png" alt="St. Mary of the Angels at dusk" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Ukrainian Village — Orthodox cathedrals get their onion domes.</em></td>
+<td><em>St. Mary of the Angels, dome and twin towers, stained glass coming on at dusk.</em></td>
+</tr>
+</table>
+
+- **The whole north–south spine** — Addison (Wrigleyville) to 35th Street, Western Avenue to the lake: 110 km², 105,971 buildings from OpenStreetMap, enriched with City of Chicago data, streamed in 500 m tiles and 2 km far blocks with meshopt compression.
+- **A skyline you can check** — the top 50 towers are validated against a curated list on every build (St. Regis, One Chicago, NEMA, 400 Lake Shore included); 41 landmarks are hand-specified — setbacks, crowns, spires, tints.
+- **Stadiums** — Wrigley, Rate Field and Soldier Field are built as real venues: raked two-tier bowls, surfaced fields (infield clay, mound, foul lines, yard lines, end zones), light towers, scoreboards, the Wrigley marquee and ivy, Soldier Field's colonnades — and they light up for a night game.
+- **Sacred buildings** — about 220 churches, cathedrals, synagogues, temples and a mosque get gabled naves, steepled towers facing the street, onion domes or a dome and minaret, and lancet windows that glow like stained glass at night.
+- **Civic icons** — the Centennial Wheel (with its LED rim), Cloud Gate in mirror steel, Buckingham Fountain, Pritzker Pavilion's steel headdress and trellis, the Chicago Theatre sign, the Adler and Shedd domes, the Field Museum's porticos, the 1869 Water Tower.
+- **No edge of the world** — beyond the detailed area, 50,000 simple buildings on Chicago's real street grid carry the city to the horizon, with suburbs beyond the city limits.
+- **Human controls** — ⌘K search with fly-over flights, arrow keys, on-screen control dock, views you can step through, help card; the whole HUD scales together on any window size.
+
 ### The beauty pass
 
 - **Façades** — eight Chicago façade families (Loop limestone, art deco, prewar brick, curtain glass, precast, River North loft, three-flat, industrial) generated with Z-Image, cropped to whole window bays by autocorrelation and made seamless. Glass reflects the live sky; every tower gets its own tint.
@@ -84,22 +113,24 @@ npm run dev            # http://localhost:5173
 ```
 
 The generated world is committed, so `npm run dev` works straight after install.
-Jump to a view with `?view=streeterville|loop|river|museum|hancock|willis|wabash` and `?time=live|dawn|day|dusk|night`.
+Everything is reachable with the keyboard, the mouse and the on-screen dock — `?view=` / `?time=` URL parameters exist only for tests and screenshots.
 
 ## Controls
 
 | Input | Action |
 |---|---|
-| Drag | rotate |
-| Scroll | zoom (toward cursor) |
-| `W` `A` `S` `D` | glide |
-| `↑` `↓` / `←` `→` | pitch / rotate |
-| `Shift` | boost |
-| `O` | orbit |
+| `⌘K` / `Ctrl+K` / `/` | search any landmark, neighbourhood or view — Enter flies you there |
+| `↑` `↓` `←` `→` or `W` `A` `S` `D` | glide over the city (`Shift` for faster) |
+| `Shift` + arrows or `Q` / `E` | turn and tilt |
+| `R` / `F` or `Page Up` / `Page Down` | rise and descend |
+| Scroll or `+` / `−` | zoom toward the cursor |
+| Drag | turn and tilt |
+| Double-click | fly to that spot |
+| `[` / `]` | previous / next view |
+| `H` · `N` · `O` | home · face north · slow orbit |
 | `1`–`5` | LIVE · DAWN · DAY · DUSK · NIGHT |
-| `Q` | quality LOW / HIGH / ULTRA |
-| Minimap click | fly there |
-| Any key | skip the intro flight |
+| `?` · `Esc` | help card · close / stop a flight |
+| Control dock & minimap | the same moves as buttons; click the minimap to fly |
 
 ## Under the hood
 
@@ -127,10 +158,11 @@ npm run e2e --prefix app          # hero-view screenshot baselines (Playwright)
 
 - [x] **1 · Foundation** — real footprints and heights, land, river, lake, sky, Atlas camera, HUD shell
 - [x] **2 · Beauty pass** — generated façades, lit windows, living sky, rooftops, parks & trees, the L, post-processing, minimap, intro flight
-- [ ] **3 · Heroes** — Blender-modelled landmarks (Willis, Hancock, Marina City, …)
-- [ ] **4 · Guide** — VISIT / LIVE / WORK lenses, ⌘K palette, tours
+- [x] **2.5 · Expanded city** — Wrigleyville → 35th St, verified top-50 skyline, 41 landmarks, stadiums, sacred buildings, civic icons, horizon fill, streaming, human-first controls
+- [ ] **3 · Heroes** — Blender refinement of the procedural landmarks (Aqua's waves, Marina City's petals, …)
+- [ ] **4 · Guide** — VISIT / LIVE / WORK lenses: places (bars, restaurants, venues), neighbourhoods, jobs, tours
 - [ ] **5 · Alive** — live L trains and weather via the CHI ATLAS API, Scan mode
-- [ ] **6 · Neighborhood ring** — streaming tiles out to Wrigleyville, Wicker Park, Pilsen
+- [ ] **6 · Further rings** — streaming the rest of the city
 - [ ] **7 · Traversal** — glide mode
 
 Design spec: [docs/superpowers/specs/2026-09-28-chi-atlas-open-world-design.md](docs/superpowers/specs/2026-09-28-chi-atlas-open-world-design.md)

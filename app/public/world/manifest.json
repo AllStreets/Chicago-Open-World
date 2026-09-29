@@ -1,6 +1,6 @@
 {
  "version": 3,
- "generatedAt": "2026-09-29T04:19:21.653Z",
+ "generatedAt": "2026-09-29T04:41:05.806Z",
  "origin": {
   "lat": 41.88203,
   "lon": -87.62784
@@ -8890,6 +8890,523 @@
     "maxX": -6000,
     "minZ": -4000,
     "maxZ": -2000
+   }
+  },
+  {
+   "key": "h--5_-6",
+   "file": "blocks/h--5_-6.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -10000,
+    "maxX": -8000,
+    "minZ": -12000,
+    "maxZ": -10000
+   }
+  },
+  {
+   "key": "h--5_-5",
+   "file": "blocks/h--5_-5.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -10000,
+    "maxX": -8000,
+    "minZ": -10000,
+    "maxZ": -8000
+   }
+  },
+  {
+   "key": "h--5_-4",
+   "file": "blocks/h--5_-4.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -10000,
+    "maxX": -8000,
+    "minZ": -8000,
+    "maxZ": -6000
+   }
+  },
+  {
+   "key": "h--5_-3",
+   "file": "blocks/h--5_-3.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -10000,
+    "maxX": -8000,
+    "minZ": -6000,
+    "maxZ": -4000
+   }
+  },
+  {
+   "key": "h--5_-2",
+   "file": "blocks/h--5_-2.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -10000,
+    "maxX": -8000,
+    "minZ": -4000,
+    "maxZ": -2000
+   }
+  },
+  {
+   "key": "h--5_-1",
+   "file": "blocks/h--5_-1.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -10000,
+    "maxX": -8000,
+    "minZ": -2000,
+    "maxZ": 0
+   }
+  },
+  {
+   "key": "h--5_0",
+   "file": "blocks/h--5_0.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -10000,
+    "maxX": -8000,
+    "minZ": 0,
+    "maxZ": 2000
+   }
+  },
+  {
+   "key": "h--5_1",
+   "file": "blocks/h--5_1.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -10000,
+    "maxX": -8000,
+    "minZ": 2000,
+    "maxZ": 4000
+   }
+  },
+  {
+   "key": "h--5_2",
+   "file": "blocks/h--5_2.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -10000,
+    "maxX": -8000,
+    "minZ": 4000,
+    "maxZ": 6000
+   }
+  },
+  {
+   "key": "h--5_3",
+   "file": "blocks/h--5_3.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -10000,
+    "maxX": -8000,
+    "minZ": 6000,
+    "maxZ": 8000
+   }
+  },
+  {
+   "key": "h--5_4",
+   "file": "blocks/h--5_4.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -10000,
+    "maxX": -8000,
+    "minZ": 8000,
+    "maxZ": 10000
+   }
+  },
+  {
+   "key": "h--4_-6",
+   "file": "blocks/h--4_-6.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -8000,
+    "maxX": -6000,
+    "minZ": -12000,
+    "maxZ": -10000
+   }
+  },
+  {
+   "key": "h--4_-5",
+   "file": "blocks/h--4_-5.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -8000,
+    "maxX": -6000,
+    "minZ": -10000,
+    "maxZ": -8000
+   }
+  },
+  {
+   "key": "h--4_-4",
+   "file": "blocks/h--4_-4.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -8000,
+    "maxX": -6000,
+    "minZ": -8000,
+    "maxZ": -6000
+   }
+  },
+  {
+   "key": "h--4_-3",
+   "file": "blocks/h--4_-3.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -8000,
+    "maxX": -6000,
+    "minZ": -6000,
+    "maxZ": -4000
+   }
+  },
+  {
+   "key": "h--4_-2",
+   "file": "blocks/h--4_-2.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -8000,
+    "maxX": -6000,
+    "minZ": -4000,
+    "maxZ": -2000
+   }
+  },
+  {
+   "key": "h--4_-1",
+   "file": "blocks/h--4_-1.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -8000,
+    "maxX": -6000,
+    "minZ": -2000,
+    "maxZ": 0
+   }
+  },
+  {
+   "key": "h--4_0",
+   "file": "blocks/h--4_0.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -8000,
+    "maxX": -6000,
+    "minZ": 0,
+    "maxZ": 2000
+   }
+  },
+  {
+   "key": "h--4_1",
+   "file": "blocks/h--4_1.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -8000,
+    "maxX": -6000,
+    "minZ": 2000,
+    "maxZ": 4000
+   }
+  },
+  {
+   "key": "h--4_2",
+   "file": "blocks/h--4_2.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -8000,
+    "maxX": -6000,
+    "minZ": 4000,
+    "maxZ": 6000
+   }
+  },
+  {
+   "key": "h--4_3",
+   "file": "blocks/h--4_3.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -8000,
+    "maxX": -6000,
+    "minZ": 6000,
+    "maxZ": 8000
+   }
+  },
+  {
+   "key": "h--4_4",
+   "file": "blocks/h--4_4.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -8000,
+    "maxX": -6000,
+    "minZ": 8000,
+    "maxZ": 10000
+   }
+  },
+  {
+   "key": "h--3_-6",
+   "file": "blocks/h--3_-6.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -6000,
+    "maxX": -4000,
+    "minZ": -12000,
+    "maxZ": -10000
+   }
+  },
+  {
+   "key": "h--3_-5",
+   "file": "blocks/h--3_-5.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -6000,
+    "maxX": -4000,
+    "minZ": -10000,
+    "maxZ": -8000
+   }
+  },
+  {
+   "key": "h--3_-4",
+   "file": "blocks/h--3_-4.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -6000,
+    "maxX": -4000,
+    "minZ": -8000,
+    "maxZ": -6000
+   }
+  },
+  {
+   "key": "h--3_-3",
+   "file": "blocks/h--3_-3.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -6000,
+    "maxX": -4000,
+    "minZ": -6000,
+    "maxZ": -4000
+   }
+  },
+  {
+   "key": "h--3_-2",
+   "file": "blocks/h--3_-2.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -6000,
+    "maxX": -4000,
+    "minZ": -4000,
+    "maxZ": -2000
+   }
+  },
+  {
+   "key": "h--3_-1",
+   "file": "blocks/h--3_-1.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -6000,
+    "maxX": -4000,
+    "minZ": -2000,
+    "maxZ": 0
+   }
+  },
+  {
+   "key": "h--3_0",
+   "file": "blocks/h--3_0.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -6000,
+    "maxX": -4000,
+    "minZ": 0,
+    "maxZ": 2000
+   }
+  },
+  {
+   "key": "h--3_1",
+   "file": "blocks/h--3_1.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -6000,
+    "maxX": -4000,
+    "minZ": 2000,
+    "maxZ": 4000
+   }
+  },
+  {
+   "key": "h--3_2",
+   "file": "blocks/h--3_2.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -6000,
+    "maxX": -4000,
+    "minZ": 4000,
+    "maxZ": 6000
+   }
+  },
+  {
+   "key": "h--3_3",
+   "file": "blocks/h--3_3.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -6000,
+    "maxX": -4000,
+    "minZ": 6000,
+    "maxZ": 8000
+   }
+  },
+  {
+   "key": "h--3_4",
+   "file": "blocks/h--3_4.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -6000,
+    "maxX": -4000,
+    "minZ": 8000,
+    "maxZ": 10000
+   }
+  },
+  {
+   "key": "h--2_-6",
+   "file": "blocks/h--2_-6.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -4000,
+    "maxX": -2000,
+    "minZ": -12000,
+    "maxZ": -10000
+   }
+  },
+  {
+   "key": "h--2_-5",
+   "file": "blocks/h--2_-5.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -4000,
+    "maxX": -2000,
+    "minZ": -10000,
+    "maxZ": -8000
+   }
+  },
+  {
+   "key": "h--2_-4",
+   "file": "blocks/h--2_-4.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -4000,
+    "maxX": -2000,
+    "minZ": -8000,
+    "maxZ": -6000
+   }
+  },
+  {
+   "key": "h--2_3",
+   "file": "blocks/h--2_3.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -4000,
+    "maxX": -2000,
+    "minZ": 6000,
+    "maxZ": 8000
+   }
+  },
+  {
+   "key": "h--2_4",
+   "file": "blocks/h--2_4.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -4000,
+    "maxX": -2000,
+    "minZ": 8000,
+    "maxZ": 10000
+   }
+  },
+  {
+   "key": "h--1_-6",
+   "file": "blocks/h--1_-6.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -2000,
+    "maxX": 0,
+    "minZ": -12000,
+    "maxZ": -10000
+   }
+  },
+  {
+   "key": "h--1_-5",
+   "file": "blocks/h--1_-5.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -2000,
+    "maxX": 0,
+    "minZ": -10000,
+    "maxZ": -8000
+   }
+  },
+  {
+   "key": "h--1_-4",
+   "file": "blocks/h--1_-4.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -2000,
+    "maxX": 0,
+    "minZ": -8000,
+    "maxZ": -6000
+   }
+  },
+  {
+   "key": "h--1_3",
+   "file": "blocks/h--1_3.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -2000,
+    "maxX": 0,
+    "minZ": 6000,
+    "maxZ": 8000
+   }
+  },
+  {
+   "key": "h--1_4",
+   "file": "blocks/h--1_4.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": -2000,
+    "maxX": 0,
+    "minZ": 8000,
+    "maxZ": 10000
+   }
+  },
+  {
+   "key": "h-0_3",
+   "file": "blocks/h-0_3.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": 0,
+    "maxX": 2000,
+    "minZ": 6000,
+    "maxZ": 8000
+   }
+  },
+  {
+   "key": "h-0_4",
+   "file": "blocks/h-0_4.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": 0,
+    "maxX": 2000,
+    "minZ": 8000,
+    "maxZ": 10000
+   }
+  },
+  {
+   "key": "h-1_3",
+   "file": "blocks/h-1_3.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": 2000,
+    "maxX": 4000,
+    "minZ": 6000,
+    "maxZ": 8000
+   }
+  },
+  {
+   "key": "h-1_4",
+   "file": "blocks/h-1_4.glb",
+   "horizon": true,
+   "bounds": {
+    "minX": 2000,
+    "maxX": 4000,
+    "minZ": 8000,
+    "maxZ": 10000
    }
   }
  ],
