@@ -41,7 +41,7 @@ if (li == 0) totalEmissiveRadiance += vec3(1.0, 0.68, 0.36) * uNight * 0.07; // 
 }
 
 export function createGroundMaterial() {
-  const m = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.92, metalness: 0, polygonOffset: true, polygonOffsetFactor: -4 })
+  const m = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.92, metalness: 0, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 })
   m.onBeforeCompile = patchGroundShader
   m.customProgramCacheKey = () => 'ground-v1'
   return m

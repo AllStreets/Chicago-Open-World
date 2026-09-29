@@ -676,6 +676,154 @@
       "facade": "arena",
       "wallStyle": "glass-steel",
       "crowns": []
+    },
+    {
+      "key": "centennialwheel",
+      "name": "Centennial Wheel",
+      "match": {
+        "osmId": 686996484
+      },
+      "crowns": [],
+      "landmark": {
+        "type": "wheel",
+        "heightM": 59.7
+      }
+    },
+    {
+      "key": "cloudgate",
+      "name": "Cloud Gate",
+      "match": {
+        "osmId": 137060274
+      },
+      "crowns": [],
+      "landmark": {
+        "type": "bean"
+      }
+    },
+    {
+      "key": "buckingham",
+      "name": "Buckingham Fountain",
+      "match": {
+        "synthetic": true,
+        "lat": 41.8758,
+        "lon": -87.61928,
+        "radius": 43
+      },
+      "crowns": [],
+      "landmark": {
+        "type": "fountain"
+      }
+    },
+    {
+      "key": "pritzker",
+      "name": "Jay Pritzker Pavilion",
+      "match": {
+        "osmId": 126978545
+      },
+      "crowns": [],
+      "landmark": {
+        "type": "pavilion",
+        "facingBearing": 90,
+        "lawn": {
+          "dist": 70,
+          "L": 118,
+          "W": 80,
+          "h": 20
+        }
+      }
+    },
+    {
+      "key": "chicagotheatre",
+      "name": "Chicago Theatre",
+      "match": {
+        "osmId": 124873919
+      },
+      "crowns": [],
+      "landmark": {
+        "type": "theatreSign",
+        "facingBearing": 90
+      }
+    },
+    {
+      "key": "adler",
+      "name": "Adler Planetarium",
+      "match": {
+        "osmId": 24825591
+      },
+      "heightM": 14,
+      "facade": "arena",
+      "wallStyle": "limestone",
+      "crowns": [],
+      "landmark": {
+        "type": "museum",
+        "dome": {
+          "r": 11,
+          "style": "copper"
+        }
+      }
+    },
+    {
+      "key": "shedd",
+      "name": "Shedd Aquarium",
+      "match": {
+        "osmId": 17430414
+      },
+      "heightM": 18,
+      "facade": "arena",
+      "wallStyle": "limestone",
+      "crowns": [],
+      "landmark": {
+        "type": "museum",
+        "dome": {
+          "r": 12,
+          "style": "slate",
+          "sides": 8
+        }
+      }
+    },
+    {
+      "key": "fieldmuseum",
+      "name": "Field Museum",
+      "match": {
+        "osmId": 24825537
+      },
+      "heightM": 24,
+      "facade": "arena",
+      "wallStyle": "limestone",
+      "crowns": [],
+      "landmark": {
+        "type": "museum",
+        "portico": {
+          "ends": 2,
+          "columns": 8,
+          "h": 14
+        }
+      }
+    },
+    {
+      "key": "historicwatertower",
+      "name": "Chicago Water Tower",
+      "match": {
+        "osmId": 130147025
+      },
+      "heightM": 55.4,
+      "facade": "arena",
+      "wallStyle": "limestone",
+      "crowns": [],
+      "landmark": {
+        "type": "castellated",
+        "heightM": 55.4
+      }
+    },
+    {
+      "key": "crownhall",
+      "name": "S.R. Crown Hall",
+      "match": {
+        "osmId": 157657436
+      },
+      "facade": "arena",
+      "wallStyle": "glass-steel",
+      "crowns": []
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
  "version": 3,
- "generatedAt": "2026-09-29T04:04:26.779Z",
+ "generatedAt": "2026-09-29T04:19:21.653Z",
  "origin": {
   "lat": 41.88203,
   "lon": -87.62784
@@ -49,6 +49,13 @@
    "top": 25
   },
   {
+   "key": "fieldmuseum",
+   "name": "Field Museum",
+   "x": 900,
+   "z": 1757,
+   "top": 26
+  },
+  {
    "key": "nema",
    "name": "NEMA Chicago",
    "x": 395,
@@ -68,6 +75,20 @@
    "x": 854,
    "z": 2194,
    "top": 51
+  },
+  {
+   "key": "shedd",
+   "name": "Shedd Aquarium",
+   "x": 1179,
+   "z": 1602,
+   "top": 37
+  },
+  {
+   "key": "adler",
+   "name": "Adler Planetarium",
+   "x": 1762,
+   "z": 1740,
+   "top": 31
   },
   {
    "key": "unitedcenter",
@@ -175,6 +196,27 @@
    "top": 262
   },
   {
+   "key": "chicagotheatre",
+   "name": "Chicago Theatre",
+   "x": 50,
+   "z": -374,
+   "top": 25
+  },
+  {
+   "key": "pritzker",
+   "name": "Jay Pritzker Pavilion",
+   "x": 494,
+   "z": -165,
+   "top": 36
+  },
+  {
+   "key": "cloudgate",
+   "name": "Cloud Gate",
+   "x": 374,
+   "z": -73,
+   "top": 10
+  },
+  {
    "key": "crain",
    "name": "Crain Communications Building (150 N Michigan)",
    "x": 238,
@@ -217,6 +259,13 @@
    "top": 261
   },
   {
+   "key": "historicwatertower",
+   "name": "Chicago Water Tower",
+   "x": 282,
+   "z": -1682,
+   "top": 55
+  },
+  {
    "key": "tribune",
    "name": "Tribune Tower",
    "x": 376,
@@ -245,6 +294,13 @@
    "top": 134
   },
   {
+   "key": "centennialwheel",
+   "name": "Centennial Wheel",
+   "x": 1690,
+   "z": -1074,
+   "top": 60
+  },
+  {
    "key": "ratefield",
    "name": "Rate Field",
    "x": -486,
@@ -252,11 +308,25 @@
    "top": 60
   },
   {
+   "key": "crownhall",
+   "name": "S.R. Crown Hall",
+   "x": 47,
+   "z": 5424,
+   "top": 8
+  },
+  {
    "key": "wrigleyfield",
    "name": "Wrigley Field",
    "x": -2299,
    "z": -7349,
    "top": 53
+  },
+  {
+   "key": "buckingham",
+   "name": "Buckingham Fountain",
+   "x": 711,
+   "z": 692,
+   "top": 17
   }
  ],
  "tallest": [
@@ -1417,7 +1487,7 @@
    "lod0": "tiles/-7_12.glb",
    "lod1": "tiles/-7_12.lod1.glb",
    "meta": "tiles/-7_12.json",
-   "buildings": 328,
+   "buildings": 327,
    "maxHeight": 11.4
   },
   {
@@ -2437,7 +2507,7 @@
    "lod0": "tiles/-4_1.glb",
    "lod1": "tiles/-4_1.lod1.glb",
    "meta": "tiles/-4_1.json",
-   "buildings": 37,
+   "buildings": 36,
    "maxHeight": 103
   },
   {
@@ -2617,7 +2687,7 @@
    "lod0": "tiles/-1_1.glb",
    "lod1": "tiles/-1_1.lod1.glb",
    "meta": "tiles/-1_1.json",
-   "buildings": 92,
+   "buildings": 90,
    "maxHeight": 184
   },
   {
@@ -2722,7 +2792,7 @@
    "lod0": "tiles/0_2.glb",
    "lod1": "tiles/0_2.lod1.glb",
    "meta": "tiles/0_2.json",
-   "buildings": 57,
+   "buildings": 56,
    "maxHeight": 245
   },
   {
@@ -2737,7 +2807,7 @@
    "lod0": "tiles/0_1.glb",
    "lod1": "tiles/0_1.lod1.glb",
    "meta": "tiles/0_1.json",
-   "buildings": 47,
+   "buildings": 46,
    "maxHeight": 183
   },
   {
@@ -2752,7 +2822,7 @@
    "lod0": "tiles/0_3.glb",
    "lod1": "tiles/0_3.lod1.glb",
    "meta": "tiles/0_3.json",
-   "buildings": 157,
+   "buildings": 156,
    "maxHeight": 281.2
   },
   {
@@ -2828,7 +2898,7 @@
    "lod1": "tiles/2_3.lod1.glb",
    "meta": "tiles/2_3.json",
    "buildings": 6,
-   "maxHeight": 9
+   "maxHeight": 36.6
   },
   {
    "key": "3_3",
@@ -2843,7 +2913,7 @@
    "lod1": "tiles/3_3.lod1.glb",
    "meta": "tiles/3_3.json",
    "buildings": 13,
-   "maxHeight": 9
+   "maxHeight": 31.1
   },
   {
    "key": "3_4",
@@ -3187,7 +3257,7 @@
    "lod0": "tiles/-8_-2.glb",
    "lod1": "tiles/-8_-2.lod1.glb",
    "meta": "tiles/-8_-2.json",
-   "buildings": 158,
+   "buildings": 153,
    "maxHeight": 19
   },
   {
@@ -3262,7 +3332,7 @@
    "lod0": "tiles/-4_9.glb",
    "lod1": "tiles/-4_9.lod1.glb",
    "meta": "tiles/-4_9.json",
-   "buildings": 658,
+   "buildings": 657,
    "maxHeight": 37.2
   },
   {
@@ -3622,7 +3692,7 @@
    "lod0": "tiles/-2_0.glb",
    "lod1": "tiles/-2_0.lod1.glb",
    "meta": "tiles/-2_0.json",
-   "buildings": 46,
+   "buildings": 44,
    "maxHeight": 527
   },
   {
@@ -3637,7 +3707,7 @@
    "lod0": "tiles/-1_-2.glb",
    "lod1": "tiles/-1_-2.lod1.glb",
    "meta": "tiles/-1_-2.json",
-   "buildings": 121,
+   "buildings": 118,
    "maxHeight": 239.1
   },
   {
@@ -3667,7 +3737,7 @@
    "lod0": "tiles/1_-1.glb",
    "lod1": "tiles/1_-1.lod1.glb",
    "meta": "tiles/1_-1.json",
-   "buildings": 59,
+   "buildings": 58,
    "maxHeight": 346
   },
   {
@@ -3682,7 +3752,7 @@
    "lod0": "tiles/0_-1.glb",
    "lod1": "tiles/0_-1.lod1.glb",
    "meta": "tiles/0_-1.json",
-   "buildings": 70,
+   "buildings": 68,
    "maxHeight": 278
   },
   {
@@ -3772,8 +3842,8 @@
    "lod0": "tiles/1_1.glb",
    "lod1": "tiles/1_1.lod1.glb",
    "meta": "tiles/1_1.json",
-   "buildings": 6,
-   "maxHeight": 9
+   "buildings": 7,
+   "maxHeight": 17
   },
   {
    "key": "3_-2",
@@ -4207,7 +4277,7 @@
    "lod0": "tiles/-7_-6.glb",
    "lod1": "tiles/-7_-6.lod1.glb",
    "meta": "tiles/-7_-6.json",
-   "buildings": 619,
+   "buildings": 618,
    "maxHeight": 58.4
   },
   {
@@ -4432,7 +4502,7 @@
    "lod0": "tiles/-1_-3.glb",
    "lod1": "tiles/-1_-3.lod1.glb",
    "meta": "tiles/-1_-3.json",
-   "buildings": 145,
+   "buildings": 144,
    "maxHeight": 220.4
   },
   {
@@ -4703,7 +4773,7 @@
    "lod1": "tiles/3_-3.lod1.glb",
    "meta": "tiles/3_-3.json",
    "buildings": 30,
-   "maxHeight": 59.7
+   "maxHeight": 60
   },
   {
    "key": "-1_9",
@@ -5377,7 +5447,7 @@
    "lod0": "tiles/-1_-9.glb",
    "lod1": "tiles/-1_-9.lod1.glb",
    "meta": "tiles/-1_-9.json",
-   "buildings": 25,
+   "buildings": 24,
    "maxHeight": 9
   },
   {
@@ -6727,7 +6797,7 @@
    "lod0": "tiles/-3_-16.glb",
    "lod1": "tiles/-3_-16.lod1.glb",
    "meta": "tiles/-3_-16.json",
-   "buildings": 13,
+   "buildings": 12,
    "maxHeight": 64.6
   },
   {
@@ -6847,7 +6917,7 @@
    "lod0": "tiles/3_10.glb",
    "lod1": "tiles/3_10.lod1.glb",
    "meta": "tiles/3_10.json",
-   "buildings": 12,
+   "buildings": 11,
    "maxHeight": 26.6
   },
   {

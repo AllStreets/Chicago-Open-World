@@ -4,6 +4,7 @@ import { spire, antenna, pyramid, drum, sloped } from './crowns.js'
 import { signedArea } from './geom.js'
 import { insetRing } from './roofs.js'
 import { buildVenue, convexHull, STYLE } from './venue.js'
+import { buildLandmark } from './landmarks.js'
 import { project } from '../../shared/project.js'
 
 // Mirror of the façade shader's curtain-glass tint buckets: g = fract(seed * 3.7).
@@ -48,6 +49,13 @@ export function applyHero(b, spec) {
     pieces = pieces.map((p) => (p.top === bodyTop ? { ...p, top: spec.heightM } : p))
   }
 
+  let venueMeshes
+  if (spec.landmark) {
+    const r = buildLandmark({ ...b, height: spec.heightM ?? b.height }, spec.landmark)
+    if (r.replace) pieces = r.pieces ?? []
+    venueMeshes = r.meshes
+  }
+
   const extraMeshes = (spec.crowns || []).map((c) => {
     const at = [cx + (c.at?.[0] ?? 0), cz + (c.at?.[1] ?? 0)]
     const ring = c.scale ? scaleRing(main.outer, [cx, cz], c.scale, c.offset) : undefined
@@ -57,5 +65,5 @@ export function applyHero(b, spec) {
   if (spec.facade) b.facadeOverride = spec.facade
   if (spec.tint) b.seedOverride = seedForTint(spec.tint)
   if (spec.wallStyle) b.seedOverride = STYLE.wall[spec.wallStyle]
-  return { pieces, extraMeshes }
+  return { pieces, extraMeshes, venueMeshes }
 }

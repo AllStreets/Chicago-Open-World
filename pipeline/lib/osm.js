@@ -38,6 +38,8 @@ const posInt = (v) => { const n = parseInt(v, 10); return Number.isFinite(n) && 
 
 export function osmToBuilding(el) {
   const tags = el.tags || {}
+  // below-grade structures (garages under Millennium Park, concourses) are not part of the skyline
+  if (Number(tags.layer) < 0 || tags.location === 'underground') return null
   const polygons = osmBuildingPolys(el)
   if (!polygons.length) return null
   const area = polygons.reduce((s, p) => s + Math.abs(signedArea(p.outer)) - p.holes.reduce((t, h) => t + Math.abs(signedArea(h)), 0), 0)

@@ -100,7 +100,7 @@ function tri(out, a, b, c, want, ua = [0, 0], ub = [0, 0], uc = [0, 0]) {
 const quad = (out, a, b, c, d, want, ua, ub, uc, ud) => { tri(out, a, b, c, want, ua, ub, uc); tri(out, a, c, d, want, ua, uc, ud) }
 
 // Oriented box: centre (ground xz), base/top heights, fwd = facing direction. Returns front + rest meshes.
-function box(c, fwd, w, dpt, base, top) {
+export function box(c, fwd, w, dpt, base, top) {
   const f = norm(fwd), r = [-f[1], f[0]]
   const P = (sr, sf, y) => { const q = add(add(c, mul(r, (sr * w) / 2)), mul(f, (sf * dpt) / 2)); return [q[0], y, q[1]] }
   const front = mesh(), rest = mesh()

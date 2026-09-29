@@ -109,7 +109,14 @@ async function main() {
   // ── Heroes + pieces ────────────────────────────────────────────────────────
   const heroes = existsSync(join(ROOT, 'data', 'heroes.json')) ? loadJson(join(ROOT, 'data', 'heroes.json')).heroes : []
   const heroFor = new Map()
-  for (const h of heroes) {
+  // monuments that OSM maps as fountains/artworks rather than buildings get a stand-in footprint
+  for (const h of heroes.filter((x) => x.match.synthetic)) {
+    const c = project(h.match.lon, h.match.lat), r = h.match.radius ?? 20
+    const outer = Array.from({ length: 24 }, (_, i) => [c[0] + r * Math.cos((i / 24) * Math.PI * 2), c[1] + r * Math.sin((i / 24) * Math.PI * 2)])
+    const b = { id: `m-${h.key}`, osmId: null, source: 'monument', tags: {}, name: h.name, address: null, stories: null, year: null, polygons: [{ outer, holes: [] }], area: Math.PI * r * r, centroid: c, bbox: ringBBox(outer), height: 0, heightSource: 'default', parts: null }
+    buildings.push(b); heroFor.set(b, h)
+  }
+  for (const h of heroes.filter((x) => !x.match.synthetic)) {
     let b = h.match.osmId ? buildings.find((x) => x.osmId === h.match.osmId) : null
     if (!b && h.match.lat) { const p = project(h.match.lon, h.match.lat); b = bIdx.query(p, 200).find((x) => x.polygons.some((q) => pointInRing(p, q.outer))) }
     if (!b) throw new Error(`hero not found in OSM data: ${h.name} (${JSON.stringify(h.match)})`)
@@ -166,8 +173,14 @@ async function main() {
   const treeNodes = uniq(chunks('trees')).map((n) => project(n.lon, n.lat))
   for (const p of parks) if (['park', 'garden'].includes(p.tags.leisure)) treeNodes.push(...scatterInPolygon(p.outer, 22, p.outer.length))
   // no park trees inside rebuilt venues (Soldier Field sits inside Burnham Park)
-  const venueHulls = buildings.filter((b) => b.venueMeshes?.length).map((b) => b.venueMeshes.find((v) => v.fieldRing) && convexHull(b.polygons.flatMap((p) => p.outer)))
-  for (let i = treeNodes.length - 1; i >= 0; i--) if (venueHulls.some((h) => pointInRing(treeNodes[i], h))) treeNodes.splice(i, 1)
+  const venueHulls = buildings.filter((b) => b.venueMeshes?.some((v) => v.fieldRing) || b.hero === 'buckingham').map((b) => convexHull(b.polygons.flatMap((p) => p.outer)))
+  // …nor trees growing through rooftops: drop any tree inside a building footprint
+  const footIdx = buildGridIndex(buildings.filter((b) => b.area > 30), 200, (b) => b.centroid)
+  const inBuilding = (p) => footIdx.query(p, 400).some((b) => p[0] >= b.bbox.minX && p[0] <= b.bbox.maxX && p[1] >= b.bbox.minZ && p[1] <= b.bbox.maxZ && b.polygons.some((q) => pointInRing(p, q.outer)))
+  const keptTrees = treeNodes.filter((p) => !venueHulls.some((h) => pointInRing(p, h)) && !inBuilding(p))
+  log(`trees removed from venues and rooftops: ${treeNodes.length - keptTrees.length}`)
+  treeNodes.length = 0
+  for (const p of keptTrees) treeNodes.push(p)
   log(`parks ${parks.length}, water ${water.length}, roads ${roads.length}, rail ${rail.length}, trees ${treeNodes.length}`)
 
   // ── Churches, cathedrals, mosques, synagogues, temples ─────────────────────

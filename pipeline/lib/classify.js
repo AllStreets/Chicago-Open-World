@@ -27,6 +27,11 @@ export function classifyFacade({ height, year, area, type }) {
     if (HOUSE.has(type)) return F['three-flat-brick']
     if (INDUSTRIAL.has(type)) return F['industrial']
     if (type === 'church' || type === 'cathedral') return F['loop-limestone']
+    // campuses: collegiate stone before the war, poured concrete in the 1955–85 building boom
+    if (['university', 'college', 'school'].includes(type) && known) {
+      if (year < 1945) return F['loop-limestone']
+      if (year >= 1955 && year <= 1985 && height < 60) return F['precast-concrete']
+    }
     if ((type === 'apartments' || type === 'residential') && height < 20) return known && year < 1940 ? F['prewar-brick'] : F['three-flat-brick']
   }
   if (height >= 60 && (!known || year >= 1960)) return F['curtain-glass']

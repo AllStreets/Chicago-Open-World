@@ -100,7 +100,7 @@ vec3 venueAlbedo(int vi, float s, vec2 uv, vec3 wp, vec3 n, vec3 grain, vec3 roo
     }
     if (s < 0.275) {  // limestone
       float joint = step(fract(y / 1.1), 0.04) + step(fract(uv.x / 2.2), 0.02);
-      return vec3(0.80, 0.76, 0.66) * (0.93 + 0.1 * grain.r) * (1.0 - 0.18 * min(joint, 1.0));
+      return vec3(0.70, 0.66, 0.57) * (0.93 + 0.1 * grain.r) * (1.0 - 0.18 * min(joint, 1.0));
     }
     if (s < 0.425) {  // glass and steel bands
       float band = step(fract(y / 4.5), 0.28);
@@ -119,6 +119,9 @@ vec3 venueAlbedo(int vi, float s, vec2 uv, vec3 wp, vec3 n, vec3 grain, vec3 roo
     return mix(vec3(0.16, 0.2, 0.24), vec3(0.55, 0.56, 0.58), mull);
   }
   if (vi == 17) return vec3(0.64, 0.07, 0.06);
+  if (vi == 21) return vec3(0.95);                                          // mirror-polished steel
+  if (vi == 22) return vec3(0.1, 0.27, 0.31) * (0.85 + 0.3 * grain.b);        // fountain water
+  if (vi == 23) return vec3(0.9, 0.9, 0.88);                                 // white steel carrying LEDs
   if (vi == 19) {   // sacred walls: limestone, brick, grey stone, cream brick, with lancet windows
     if (n.y > 0.6) return roofAlb;
     bool stone = s < 0.225 || (s > 0.475 && s < 0.725);
@@ -181,9 +184,13 @@ diffuseColor.rgb *= alb;
 `
 const FRAG_ROUGH = /* glsl */ `
 roughnessFactor = mix(roughnessFactor, 0.06, win * 0.95);
+if (isVenue && vi == 21) roughnessFactor = 0.05;
+if (isVenue && vi == 22) roughnessFactor = 0.1;
+if (isVenue && vi == 23) roughnessFactor = 0.4;
 `
 const FRAG_METAL = /* glsl */ `
 metalnessFactor = mix(metalnessFactor, 0.9, win * 0.85);
+if (isVenue && vi == 21) metalnessFactor = 1.0;
 `
 const FRAG_EMISSIVE = /* glsl */ `
 if (isVenue && uNight > 0.001) {
@@ -203,6 +210,11 @@ if (isVenue && uNight > 0.001) {
     totalEmissiveRadiance += glass * lw * on * 0.7 * uNight * uLitBoost;
   }
   if (vi == 20 && vSeed > 0.475 && vSeed < 0.725) totalEmissiveRadiance += vec3(1.0, 0.75, 0.35) * 0.12 * uNight; // floodlit gold domes
+  if (vi == 23) {   // the wheel's LEDs: a slow rainbow around the rim
+    vec3 hue = clamp(abs(mod(fract(vMUv.x) * 6.0 + vec3(0.0, 4.0, 2.0), 6.0) - 3.0) - 1.0, 0.0, 1.0);
+    totalEmissiveRadiance += mix(hue, vec3(1.0), 0.25) * 1.6 * uNight * uLitBoost;
+  }
+  if (vi == 22) totalEmissiveRadiance += vec3(0.35, 0.6, 1.0) * 0.22 * uNight;   // floodlit fountain
   if (vi == 17) totalEmissiveRadiance += (vec3(1.0, 0.18, 0.12) * 0.5 + vec3(1.0, 0.95, 0.85) * step(0.55, owHash(floor(vMUv * vec2(3.0, 4.0)))) * 0.8) * uNight * uLitBoost;
 }
 if (!isRoof && !isParapet && !isVenue && uNight > 0.001) {

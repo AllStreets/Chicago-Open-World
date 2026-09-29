@@ -76,7 +76,7 @@ function gableRoof({ c, u, v, L, W }, eave, rise) {
 }
 
 // Surface of revolution from a profile of [radius, height] multiples of r.
-function lathe(at, y0, r, profile, sides = 16) {
+export function lathe(at, y0, r, profile, sides = 16) {
   const out = mesh(), cy = y0 + r * 0.6
   const ring = (j) => Array.from({ length: sides }, (_, k) => {
     const a = (k / sides) * Math.PI * 2
@@ -93,7 +93,7 @@ function lathe(at, y0, r, profile, sides = 16) {
   return out
 }
 const ONION = [[1, 0], [1.18, 0.35], [1.12, 0.75], [0.8, 1.1], [0.42, 1.38], [0.14, 1.62], [0.05, 1.85], [0, 2.1]]
-const DOME = [[1, 0], [0.97, 0.25], [0.87, 0.5], [0.71, 0.71], [0.5, 0.87], [0.26, 0.97], [0, 1]]
+export const DOME = [[1, 0], [0.97, 0.25], [0.87, 0.5], [0.71, 0.71], [0.5, 0.87], [0.26, 0.97], [0, 1]]
 
 const squareRing = (c, u, v, h) => [add(add(c, mul(u, -h)), mul(v, -h)), add(add(c, mul(u, h)), mul(v, -h)), add(add(c, mul(u, h)), mul(v, h)), add(add(c, mul(u, -h)), mul(v, h))]
 const octRing = (c, u, v, r) => Array.from({ length: 8 }, (_, i) => { const a = ((i + 0.5) / 8) * Math.PI * 2; return add(add(c, mul(u, Math.cos(a) * r)), mul(v, Math.sin(a) * r)) })

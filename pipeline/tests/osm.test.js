@@ -30,4 +30,9 @@ describe('osm buildings', () => {
     expect(osmToBuilding({ type: 'way', id: 4, geometry: g(sq(0, 0, 2)), tags: { building: 'yes' } })).toBeNull()
     expect(osmToBuilding({ type: 'way', id: 5, geometry: g([[0, 0], [10, 0]]).slice(0, 2), tags: { building: 'yes' } })).toBeNull()
   })
+  it('drops underground structures (garages under plazas) but keeps above-ground buildings on layer ≥ 0', () => {
+    expect(osmToBuilding({ type: 'way', id: 3, geometry: g(sq(0, 0, 20)), tags: { building: 'commercial', layer: '-1' } })).toBe(null)
+    expect(osmToBuilding({ type: 'way', id: 4, geometry: g(sq(0, 0, 20)), tags: { building: 'yes', location: 'underground' } })).toBe(null)
+    expect(osmToBuilding({ type: 'way', id: 5, geometry: g(sq(0, 0, 20)), tags: { building: 'yes', layer: '1' } })).not.toBe(null)
+  })
 })
