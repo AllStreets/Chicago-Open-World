@@ -13,6 +13,8 @@ import { flyPose, flightDuration, flightLift, liftAboveRoofs } from '../lib/flig
 import { clearanceAt } from '../lib/clearance.js'
 import { createRestTracker } from '../lib/rest.js'
 import { VIEW_ORDER, VIEW_NAMES } from '../lib/views.js'
+import { followStep, shouldExitFollow } from '../transit/followCam.js'
+import { getTrains } from '../transit/simStore.js'
 
 const GLIDE_MPS = 140
 const BOOST = 3
@@ -71,6 +73,8 @@ export default function AtlasRig() {
     const typing = (e) => ['INPUT', 'TEXTAREA'].includes(e.target?.tagName) || useStore.getState().paletteOpen
     const down = (e) => {
       if (typing(e) || e.metaKey || e.ctrlKey) return
+      const st0 = useStore.getState()
+      if (st0.follow && shouldExitFollow(e)) { st0.stopFollow(); return } // any key takes back control
       keys.current.add(e.code)
       if (e.code.startsWith('Arrow') || e.code === 'PageUp' || e.code === 'PageDown') e.preventDefault()
       const s = useStore.getState()
@@ -93,7 +97,7 @@ export default function AtlasRig() {
   // Mouse: grabbing the city cancels a flight; double-click flies to the spot.
   useEffect(() => {
     const el = gl.domElement
-    const cancel = () => { if (flightRun.current) useStore.getState().clearFlight() }
+    const cancel = () => { const s = useStore.getState(); if (flightRun.current) s.clearFlight(); if (s.follow) s.stopFollow() }
     const dbl = (e) => {
       const c = ref.current
       if (!c) return
@@ -161,6 +165,12 @@ export default function AtlasRig() {
       publishReadout(c, now)
       window.__camRest = false
       return
+    }
+    const fw = useStore.getState().follow
+    if (fw) {
+      const r = followStep(fw, getTrains())
+      if (r.ended) useStore.getState().stopFollow(r.ended)
+      else { c.setLookAt(...r.pose.position, ...r.pose.target, true); publishReadout(c, now); window.__camRest = false; return } // smoothed by camera-controls
     }
     const f = flightRun.current
     if (f) {

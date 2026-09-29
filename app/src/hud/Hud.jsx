@@ -8,6 +8,7 @@ import ControlDock from './ControlDock.jsx'
 import CommandPalette from './CommandPalette.jsx'
 import HelpOverlay from './HelpOverlay.jsx'
 import FlightChip from './FlightChip.jsx'
+import FollowChip from './FollowChip.jsx'
 import { useEffect, useState } from 'react'
 import { useStore } from '../state/store.js'
 import { hudScale, hudCompact } from '../lib/hudScale.js'
@@ -33,6 +34,7 @@ export default function Hud() {
       <ControlDock />
       <TransitLegend />
       <FlightChip />
+      <FollowChip />
       <CommandPalette />
       <HelpOverlay />
       <LoadingScreen />

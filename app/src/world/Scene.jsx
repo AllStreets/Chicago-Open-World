@@ -20,12 +20,14 @@ import { QUALITY } from '../lib/quality.js'
 import { loadHeightfield, clearanceAt } from '../lib/clearance.js'
 import TransitLayer from '../transit/TransitLayer.jsx'
 import Trains from '../transit/Trains.jsx'
+import { followNearest } from '../transit/actions.js'
 
 export default function Scene() {
   const [manifest, setManifest] = useState(null)
   const preset = useStore((s) => s.timePreset)
   const ready = useStore((s) => s.load.ready)
   const quality = useStore((s) => s.quality)
+  const transit = useStore((s) => s.transit)
   const [now, setNow] = useState(() => new Date())
   const sun = useMemo(() => sunForPreset(preset, now), [preset, now])
   const sunRef = useRef(null)
@@ -55,6 +57,12 @@ export default function Scene() {
   }, [])
 
   useEffect(() => { if (ready) window.__worldReady = true }, [ready])
+  useEffect(() => { // test-only ?follow= (people use ⌘K or a train card)
+    const q = new URLSearchParams(window.location.search), f = q.get('follow')
+    if (!f || !ready || !transit) return
+    const id = setTimeout(() => { followNearest(f); const v = q.get('followView'); if (v) useStore.getState().setFollowView(v) }, 500)
+    return () => clearTimeout(id)
+  }, [ready, transit])
   const gl = useThree((s) => s.gl)
   const threeScene = useThree((s) => s.scene)
   const threeCamera = useThree((s) => s.camera)

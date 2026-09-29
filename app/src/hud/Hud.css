@@ -60,3 +60,7 @@
 .tl-swatch { width: 18px; height: 4px; border-radius: 2px; opacity: 0.35; box-shadow: none; }
 .tl-line.on .tl-swatch { opacity: 1; box-shadow: 0 0 6px currentColor; }
 .hud-root[data-compact="true"] .transit-legend { max-height: 30vh; width: 200px; }
+
+.follow-chip { position: absolute; top: 132px; left: 50%; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 8px; animation: hud-rise 0.3s ease both; }
+.follow-chip .hud-pill { padding: 2px 8px; font-size: 10px; }
+.follow-hint { color: var(--text-faint); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
