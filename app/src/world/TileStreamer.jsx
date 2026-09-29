@@ -1,13 +1,14 @@
 // app/src/world/TileStreamer.jsx — streams the city around the camera target:
 // LOD0 tiles near, LOD1 tiles in blocks that touch them, whole 2 km blocks beyond.
-import { Suspense, useCallback, useEffect, useRef, useState } from 'react'
+import { Suspense, useCallback, useEffect, useRef, useState, startTransition } from 'react'
 import { useStore } from '../state/store.js'
-import { planWorld } from '../lib/tilePlan.js'
+import { planWorld, admitTiles } from '../lib/tilePlan.js'
 import { useGroundMaterials } from './materials/useGroundMaterials.js'
 import SafeLoad from './SafeLoad.jsx'
 import TileContent from './TileContent.jsx'
 
 const NEAR_M = 3000 // what the loading screen waits for; the rest streams in behind the intro
+const CONCURRENT = 6 // tiles decoding at once — nearest first, so the city fills in outward
 
 export default function TileStreamer({ manifest }) {
   const mats = useGroundMaterials()
@@ -15,13 +16,16 @@ export default function TileStreamer({ manifest }) {
   const counted = useRef(null)
   const last = useRef(null)
   const readout = useStore((s) => s.readout)
+  const ready = useRef(new Set())
+  const [, setTick] = useState(0)
 
   useEffect(() => {
     if (readout.x === undefined) return // wait for the camera's first real pose
     const k = `${Math.round(readout.x / 100)}:${Math.round(readout.z / 100)}`
     if (k === last.current) return
     last.current = k
-    setPlan((cur) => {
+    // a transition keeps what's on screen until the new detail level has loaded (no blink)
+    startTransition(() => setPlan((cur) => {
       const next = planWorld([readout.x, readout.z], manifest, cur)
       if (!counted.current) {
         const boundsOf = (id) => (id.startsWith('t:') ? manifest.tiles.find((t) => `t:${t.key}` === id) : manifest.blocks.find((b) => `b:${b.key}` === id)).bounds
@@ -36,18 +40,27 @@ export default function TileStreamer({ manifest }) {
       // a counted tile that leaves the plan before loading must not hold the loading screen forever
       if (counted.current) for (const id of counted.current) if (!next.has(id)) queueMicrotask(() => useStore.getState().markLoaded(id))
       return next
-    })
+    }))
   }, [readout, manifest])
 
-  const onReady = useCallback((id) => { if (counted.current?.has(id)) useStore.getState().markLoaded(id) }, [])
+  const onReady = useCallback((id, lod) => {
+    const k = `${id}:${lod}`
+    if (!ready.current.has(k)) { ready.current.add(k); setTick((t) => t + 1) } // admit the next tile in the queue
+    if (counted.current?.has(id)) useStore.getState().markLoaded(id)
+  }, [])
   if (!mats) return null
   const tiles = new Map(manifest.tiles.map((t) => [`t:${t.key}`, t]))
   const blocks = new Map((manifest.blocks ?? []).map((b) => [`b:${b.key}`, b]))
-  return [...plan.entries()].map(([id, lod]) => {
+  const tx = readout.x ?? 0, tz = readout.z ?? 0
+  const entries = [...plan.entries()].map(([id, lod]) => {
+    const bb = (tiles.get(id) ?? blocks.get(id)).bounds
+    return [id, lod, Math.hypot((bb.minX + bb.maxX) / 2 - tx, (bb.minZ + bb.maxZ) / 2 - tz)]
+  })
+  return admitTiles(entries, ready.current, CONCURRENT).map(([id, lod]) => {
     const t = tiles.get(id), b = blocks.get(id)
     const file = b ? b.file : lod === 'lod0' ? t.lod0 : t.lod1
     return (
-      <SafeLoad key={`${id}:${lod}`} onError={() => onReady(id)}>
+      <SafeLoad key={id} onError={() => onReady(id)}>
         <Suspense fallback={null}>
           <TileContent id={id} file={file} meta={t?.meta} lod={lod} mats={mats} onReady={onReady} />
         </Suspense>

@@ -49,13 +49,13 @@ export default function Scene() {
 
   useEffect(() => { if (ready) window.__worldReady = true }, [ready])
   const gl = useThree((s) => s.gl)
-  useEffect(() => { if (new URLSearchParams(window.location.search).has('stats')) window.__gl = gl }, [gl])
+  useEffect(() => { if (new URLSearchParams(window.location.search).has('stats')) { window.__gl = gl; window.__store = useStore } }, [gl])
 
   return (
     <>
       <SkyRig target={sun} sunRef={sunRef} instant={reducedMotion} shadowMap={QUALITY[quality].shadowMap} fog={QUALITY[quality].fog} />
       <SafeLoad><Suspense fallback={null}><Lake sunRef={sunRef} /></Suspense></SafeLoad>
-      {manifest && <SafeLoad onError={() => useStore.getState().markLoaded('land')}><Suspense fallback={null}><Land file={manifest.land} /></Suspense></SafeLoad>}
+      {manifest && <Land file={manifest.land} />}
       {manifest && <TileStreamer manifest={manifest} />}
       <AtlasRig />
       <PostFX />

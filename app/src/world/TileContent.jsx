@@ -10,6 +10,20 @@ import ElevatedL from './ElevatedL.jsx'
 
 export const groundMaterial = createGroundMaterial()
 
+// Release a tile's GPU memory only if it stays gone for a while. Disposing immediately made tiles
+// re-suspend (blink out) whenever React remounted them — StrictMode in dev, plan churn while flying.
+const RELEASE_MS = 8000
+const pendingRelease = new Map()
+function retain(url) { clearTimeout(pendingRelease.get(url)); pendingRelease.delete(url) }
+function release(url, scene) {
+  clearTimeout(pendingRelease.get(url))
+  pendingRelease.set(url, setTimeout(() => {
+    pendingRelease.delete(url)
+    scene.traverse((o) => o.isMesh && o.geometry.dispose())
+    useGLTF.clear(url)
+  }, RELEASE_MS))
+}
+
 export default function TileContent({ id, file, meta, lod, mats, onReady }) {
   const url = `/world/${file}`
   const { scene } = useGLTF(url, false, true)
@@ -28,14 +42,14 @@ export default function TileContent({ id, file, meta, lod, mats, onReady }) {
     })
     return scene
   }, [scene, mats, lod])
-  useEffect(() => { onReady?.(id) }, [onReady, id])
+  useEffect(() => { onReady?.(id, lod) }, [onReady, id, lod])
   useEffect(() => {
     if (lod !== 'lod0' || !meta) return
     let alive = true
     fetch(`/world/${meta}`).then((r) => r.json()).then((j) => alive && setSide(j)).catch(() => {})
     return () => { alive = false }
   }, [meta, lod])
-  useEffect(() => () => { scene.traverse((o) => o.isMesh && o.geometry.dispose()); useGLTF.clear(url) }, [scene, url])
+  useEffect(() => { retain(url); return () => release(url, scene) }, [scene, url])
   return (
     <>
       <primitive object={obj} />

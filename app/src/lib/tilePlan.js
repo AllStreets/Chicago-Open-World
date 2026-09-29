@@ -38,3 +38,14 @@ export function planWorld(target, manifest, current) {
   }
   return plan
 }
+
+// Gradual load-in: loaded tiles always render; new ones start loading `limit` at a time, nearest first.
+// entries: [id, lod, distance][]; ready: Set of `${id}:${lod}` that have finished loading.
+export function admitTiles(entries, ready, limit) {
+  const loadedIds = new Set([...ready].map((k) => k.slice(0, k.lastIndexOf(':'))))
+  const out = [], waiting = []
+  for (const e of entries) (loadedIds.has(e[0]) ? out : waiting).push(e)
+  waiting.sort((a, b) => a[2] - b[2])
+  const admitted = [...out, ...waiting.slice(0, limit)]
+  return admitted.sort((a, b) => a[2] - b[2])
+}

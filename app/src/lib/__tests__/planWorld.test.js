@@ -28,3 +28,18 @@ describe('planWorld', () => {
     expect(p.size).toBeLessThan(120)
   })
 })
+
+describe('admitTiles (gradual load-in)', () => {
+  it('keeps everything already loaded and admits only the nearest few new ones', async () => {
+    const { admitTiles } = await import('../tilePlan.js')
+    const entries = [['t:a', 'lod0', 10], ['t:b', 'lod0', 20], ['b:c', 'block', 3000], ['t:d', 'lod1', 900], ['t:e', 'lod1', 1200]]
+    const ready = new Set(['b:c:block'])
+    const out = admitTiles(entries, ready, 2).map(([id]) => id)
+    expect(out).toEqual(['t:a', 't:b', 'b:c']) // c already loaded; a,b nearest of the new ones
+  })
+  it('a tile changing detail keeps showing while its new level loads', async () => {
+    const { admitTiles } = await import('../tilePlan.js')
+    const out = admitTiles([['t:a', 'lod0', 10]], new Set(['t:a:lod1']), 0)
+    expect(out.map(([id]) => id)).toEqual(['t:a'])
+  })
+})
