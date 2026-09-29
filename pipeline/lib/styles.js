@@ -1,0 +1,61 @@
+// pipeline/lib/styles.js — the style palette: one row per sourced look, indexed per vertex by _STYLE (spec B.6).
+// Row 0 is "no style". The app builds a float DataTexture from styles.json; the PNG is a review swatch sheet.
+import sharp from 'sharp'
+import { mkdirSync } from 'node:fs'
+import { dirname } from 'node:path'
+import { FINISH_PRESETS, FINISHES, hexToRgb } from './looks.js'
+
+export const STYLE_COLS = 7
+export const MAX_STYLES = 256
+
+export function styleEntry(key, look) {
+  const p = FINISH_PRESETS[look.finish]
+  const c = look.crownLight && look.crownLight.render !== false ? look.crownLight : null
+  return {
+    key, finish: look.finish, base: look.base, glass: look.glass, mullion: look.mullion, spandrel: look.spandrel,
+    top: look.top ?? look.base, topFromM: look.top ? look.topFromM ?? 0 : 0, topM: look.top ? look.topM : 0,
+    roughness: p.roughness, metalness: p.metalness,
+    crown: c ? { kind: c.kind, color: c.color, fromM: c.fromM, toM: c.toM, intensity: c.intensity } : null,
+  }
+}
+
+export function createStyleRegistry() {
+  const rows = [{ key: 'none' }]
+  const byKey = new Map([['none', 0]])
+  return {
+    add(key, look) {
+      if (byKey.has(key)) return byKey.get(key)
+      if (!look || look.render === false || rows.length >= MAX_STYLES) return 0
+      rows.push(styleEntry(key, look))
+      byKey.set(key, rows.length - 1)
+      return rows.length - 1
+    },
+    indexOf: (key) => byKey.get(key) ?? 0,
+    get size() { return rows.length },
+    toJSON: () => ({ version: 1, cols: STYLE_COLS, styles: rows }),
+  }
+}
+
+export function meshStyle(b, part) {
+  if (!b?.styleIndex) return 0
+  if (part === undefined) return b.styleIndex
+  return (b.styleParts ?? []).includes(part) ? b.styleIndex : 0
+}
+
+export async function writeStylePalettePng(path, json, cell = 16) {
+  const rows = json.styles, w = STYLE_COLS * cell, h = rows.length * cell
+  const buf = Buffer.alloc(w * h * 4)
+  rows.forEach((s, r) => {
+    const grey = s.finish ? Math.round((255 * (FINISHES.indexOf(s.finish) + 1)) / FINISHES.length) : 0
+    const cols = s.base ? [s.base, s.glass, s.mullion, s.spandrel, s.top, s.crown?.color ?? '#000000', null] : Array(STYLE_COLS).fill('#000000')
+    cols.forEach((hex, c) => {
+      const [R, G, B] = hex ? hexToRgb(hex) : [grey, grey, grey]
+      for (let y = r * cell; y < (r + 1) * cell; y++) for (let x = c * cell; x < (c + 1) * cell; x++) {
+        const i = (y * w + x) * 4
+        buf[i] = R; buf[i + 1] = G; buf[i + 2] = B; buf[i + 3] = 255
+      }
+    })
+  })
+  mkdirSync(dirname(path), { recursive: true })
+  await sharp(buf, { raw: { width: w, height: h, channels: 4 } }).png().toFile(path)
+}
