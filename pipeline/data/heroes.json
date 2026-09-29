@@ -1393,6 +1393,15 @@
       "aliases": [
         "The Bean",
         "Bean"
+      ],
+      "beacon": {
+        "lat": 41.88266,
+        "lon": -87.62336,
+        "y": 18
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Cloud_Gate",
+        "OpenStreetMap way 137060274"
       ]
     },
     {
@@ -1425,6 +1434,14 @@
       "aliases": [
         "fountain",
         "Clarence Buckingham Memorial Fountain"
+      ],
+      "beacon": {
+        "lat": 41.8758,
+        "lon": -87.61928,
+        "y": 56
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Buckingham_Fountain"
       ]
     },
     {

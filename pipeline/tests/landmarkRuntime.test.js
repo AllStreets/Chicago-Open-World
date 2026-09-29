@@ -20,3 +20,24 @@ describe('landmark runtime', () => {
     expect(r.runtime.fountain.emitters.length).toBeGreaterThan(0)
   })
 })
+
+import { readFileSync } from 'node:fs'
+import { landmarkEntry, validateLandmarkRegistry, V6_LANDMARKS } from '../lib/landmarkRuntime.js'
+
+describe('landmark registry (E9)', () => {
+  const heroes = JSON.parse(readFileSync(new URL('../data/heroes.json', import.meta.url), 'utf8')).heroes
+  it('every V6 landmark is registered with an alias, a source and a beacon', () => {
+    expect(V6_LANDMARKS).toHaveLength(16)
+    expect(validateLandmarkRegistry(heroes)).toBe(true)
+  })
+  it('a missing source or beacon is named in the error', () => {
+    const broken = heroes.map((h) => (h.key === 'picasso' ? { ...h, sources: [], beacon: undefined } : h))
+    expect(() => validateLandmarkRegistry(broken)).toThrow(/picasso: no https source[\s\S]*picasso: no VISIT beacon/)
+  })
+  it('manifest rows carry the beacon anchor', () => {
+    const b = { centroid: [100, 200], pieces: [{ top: 30 }], venueTop: 0, extraMeshes: [] }
+    expect(landmarkEntry(b, { key: 'k', name: 'K', aliases: ['k2'] })).toEqual({ key: 'k', name: 'K', aliases: ['k2'], x: 100, z: 200, top: 30, beacon: [100, 36, 200] })
+    const withBeacon = landmarkEntry(b, { key: 'k', name: 'K', beacon: { lat: 41.88203, lon: -87.62784, y: 50 } })
+    expect(withBeacon.beacon).toEqual([0, 50, 0])
+  })
+})

@@ -18,7 +18,7 @@ import { shapePieces } from '../lib/shapes.js'
 import { applyHero, findByOsm, matchesOsm } from '../lib/heroes.js'
 import { VENUE_FACADES, STYLE, convexHull } from '../lib/venue.js'
 import { venueRecord, encodeAnchors, plazaAnchors } from '../lib/sportsSites.js'
-import { collectRuntime } from '../lib/landmarkRuntime.js'
+import { collectRuntime, validateLandmarkRegistry, landmarkEntry } from '../lib/landmarkRuntime.js'
 import { detectBridges, buildBridge, makeRibbonCutter, bridgeSidecar } from '../lib/bridges.js'
 import { shapeSacred } from '../lib/sacred.js'
 import { horizonBoxes } from '../lib/horizon.js'
@@ -104,6 +104,7 @@ async function main() {
   const greens = osmPolys(uniq(chunks('parks')))
   // ── Heroes + pieces ────────────────────────────────────────────────────────
   const heroes = existsSync(join(ROOT, 'data', 'heroes.json')) ? loadJson(join(ROOT, 'data', 'heroes.json')).heroes : []
+  validateLandmarkRegistry(heroes)
   const heroFor = new Map()
   // monuments that OSM maps as fountains/artworks rather than buildings get a stand-in footprint
   for (const h of heroes.filter((x) => x.match.synthetic)) {
@@ -492,7 +493,7 @@ async function main() {
     ],
     skyline: { missing: sky.missing, wrongHeight: sky.wrongHeight },
     landmarks: [
-      ...buildings.filter((b) => b.hero).map((b) => ({ key: b.hero, name: heroes.find((h) => h.key === b.hero)?.name ?? b.name, aliases: heroes.find((h) => h.key === b.hero)?.aliases ?? [], x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(b.venueTop ?? 0, ...b.pieces.map((p) => p.top), ...(b.extraMeshes || []).flatMap((m) => m.positions.filter((_, i) => i % 3 === 1)))) })),
+      ...buildings.filter((b) => b.hero).map((b) => landmarkEntry(b, heroes.find((h) => h.key === b.hero))),
       ...bridges.filter((b) => !b.generic).map((b) => ({ key: `bridge-${b.key}`, name: b.name, aliases: b.aliases, x: Math.round(b.centre[0]), z: Math.round(b.centre[1]), top: 8, beacon: [Math.round(b.centre[0]), 14, Math.round(b.centre[1])] })),
     ],
     tallest: buildings.filter((b) => !b.hero && b.name && b.pieces.length && Math.max(...b.pieces.map((p) => p.top)) > 150).map((b) => ({ key: b.id, name: b.name, x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(...b.pieces.map((p) => p.top))) })),
