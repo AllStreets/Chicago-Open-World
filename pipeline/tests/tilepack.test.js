@@ -6,6 +6,15 @@ import { MeshoptDecoder } from 'meshoptimizer'
 import { clipPolysToTile, splitLineByTiles, writeTileGlb } from '../lib/tilepack.js'
 import { signedArea } from '../lib/geom.js'
 describe('tilepack', () => {
+  it('large building ids survive compression exactly (blocks hold thousands)', async () => {
+    const path = join(mkdtempSync(join(tmpdir(), 't-')), 'big.glb')
+    const tri = { positions: [0, 0, 0, 10, 0, 0, 0, 10, 0], normals: [0, 0, 1, 0, 0, 1, 0, 0, 1], uvs: [0, 0, 10, 0, 0, 10] }
+    await writeTileGlb(path, { buildings: { ...tri, extra: { BLDG: new Float32Array([0, 4500, 9000]) } } })
+    await MeshoptDecoder.ready
+    const doc = await new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({ 'meshopt.decoder': MeshoptDecoder }).read(path)
+    const a = doc.getRoot().listMeshes()[0].listPrimitives()[0].getAttribute('_BLDG')
+    expect([a.getScalar(0), a.getScalar(1), a.getScalar(2)].sort((x, y) => x - y)).toEqual([0, 4500, 9000])
+  })
   it('clips a polygon spanning two tiles into exactly the tile part', () => {
     const p = [{ outer: [[400, -10], [600, -10], [600, -110], [400, -110]], holes: [] }]
     const a = clipPolysToTile(p, { minX: 0, maxX: 500, minZ: -500, maxZ: 0 })

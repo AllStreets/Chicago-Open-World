@@ -20,6 +20,7 @@ import { VENUE_FACADES, STYLE, convexHull } from '../lib/venue.js'
 import { shapeSacred } from '../lib/sacred.js'
 import { horizonBoxes } from '../lib/horizon.js'
 import { venueZones, filterTrees, assertNoVenueTrees } from '../lib/trees.js'
+import { createBlock, addTileToBlock, blockLayers, blockSidecar } from '../lib/blocks.js'
 import { MANIFEST_VERSION, manifestStamp, sortCacheFiles } from '../lib/manifest.js'
 import { parapetPiece, PARAPET_FACADE } from '../lib/roofs.js'
 import { roofProps } from '../lib/props.js'
@@ -280,11 +281,8 @@ async function main() {
     await writeTileGlb(join(OUT, 'tiles', `${key}.lod1.glb`), { buildings: asLayer(L1), ground: ground1, water: waterM })
     // accumulate the tile's far-detail content into its 2 km block
     const bk = blockKeyFor(key)
-    if (!blocks.has(bk)) blocks.set(bk, { b: bAcc(), g: { ...acc(), extra: { LAYER: [] } }, w: acc() })
-    const B = blocks.get(bk)
-    for (const k of ['positions', 'normals', 'uvs']) { for (const v of L1[k]) B.b[k].push(v); for (const v of ground1[k]) B.g[k].push(v); for (const v of waterM[k]) B.w[k].push(v) }
-    for (const v of L1.fac) B.b.fac.push(v); for (const v of L1.seed) B.b.seed.push(v); for (const v of L1.bldg) B.b.bldg.push(v)
-    for (const v of ground1.extra.LAYER) B.g.extra.LAYER.push(v)
+    if (!blocks.has(bk)) blocks.set(bk, createBlock())
+    addTileToBlock(blocks.get(bk), key, { buildings: L1, ground: ground1, water: waterM, count: meta.length })
     writeFileSync(join(OUT, 'tiles', `${key}.json`), JSON.stringify({ buildings: meta, trees: t.trees, props: t.props, columns: t.columns }))
     tiles.push({ key, block: bk, bounds, lod0: `tiles/${key}.glb`, lod1: `tiles/${key}.lod1.glb`, meta: `tiles/${key}.json`, buildings: t.b.length, maxHeight: Math.max(0, ...meta.map((m) => m.height)) })
     if (++n % 50 === 0) log(`tiles written: ${n}`)
@@ -296,8 +294,9 @@ async function main() {
   const blockList = []
   for (const [bk, B] of blocks) {
     const [bx, bz] = bk.split('_').map(Number), size = TILE_SIZE * BLOCK_TILES
-    await writeTileGlb(join(OUT, 'blocks', `${bk}.glb`), { buildings: asLayer(B.b), ground: { ...B.g, extra: { LAYER: new Float32Array(B.g.extra.LAYER) } }, water: B.w })
-    blockList.push({ key: bk, file: `blocks/${bk}.glb`, bounds: { minX: bx * size, maxX: (bx + 1) * size, minZ: bz * size, maxZ: (bz + 1) * size } })
+    await writeTileGlb(join(OUT, 'blocks', `${bk}.glb`), blockLayers(B))
+    writeFileSync(join(OUT, 'blocks', `${bk}.json`), JSON.stringify(blockSidecar(B)))
+    blockList.push({ key: bk, file: `blocks/${bk}.glb`, meta: `blocks/${bk}.json`, bounds: { minX: bx * size, maxX: (bx + 1) * size, minZ: bz * size, maxZ: (bz + 1) * size } })
   }
   log(`blocks: ${blockList.length}`)
 
@@ -320,10 +319,11 @@ async function main() {
   const hBoxes = horizonBoxes({ inner: { minX: x0, maxX: x1, minZ: z0, maxZ: z1 }, band: 3000, isLand, seed: 7 })
   const hChunks = new Map()
   const HSIZE = TILE_SIZE * BLOCK_TILES
-  hBoxes.forEach((hb, i) => {
+  hBoxes.forEach((hb) => {
     const k = `h-${Math.floor(hb.outer[0][0] / HSIZE)}_${Math.floor(hb.outer[0][1] / HSIZE)}`
-    if (!hChunks.has(k)) hChunks.set(k, bAcc())
-    appendBuilding(hChunks.get(k), extrudeBuilding({ outer: hb.outer, holes: [], base: 0, top: hb.top }), FACADE_FAMILIES.indexOf(hb.family), hb.seed, i)
+    if (!hChunks.has(k)) hChunks.set(k, { ...bAcc(), n: 0 })
+    const H = hChunks.get(k)
+    appendBuilding(H, extrudeBuilding({ outer: hb.outer, holes: [], base: 0, top: hb.top }), FACADE_FAMILIES.indexOf(hb.family), hb.seed, H.n++)
   })
   for (const [k, acc0] of hChunks) {
     const [bx, bz] = k.slice(2).split('_').map(Number)
