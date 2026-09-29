@@ -1,5 +1,5 @@
 // app/src/world/Scene.jsx — the whole 3D world.
-import { Suspense, useEffect, useMemo, useState } from 'react'
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { useStore } from '../state/store.js'
 import { loadManifest, groundFiles } from '../lib/manifest.js'
 import SafeLoad from './SafeLoad.jsx'
@@ -17,6 +17,8 @@ export default function Scene() {
   const failed = useStore((s) => s.load.error !== null)
   const [now, setNow] = useState(() => new Date())
   const sun = useMemo(() => sunForPreset(preset, now), [preset, now])
+  const sunRef = useRef(null)
+  const reducedMotion = useMemo(() => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false, [])
 
   useEffect(() => {
     if (preset !== 'LIVE') return
@@ -39,8 +41,8 @@ export default function Scene() {
 
   return (
     <>
-      <SkyRig sun={sun} />
-      <SafeLoad><Suspense fallback={null}><Lake sunDirection={sun.direction} /></Suspense></SafeLoad>
+      <SkyRig target={sun} sunRef={sunRef} instant={reducedMotion} />
+      <SafeLoad><Suspense fallback={null}><Lake sunRef={sunRef} /></Suspense></SafeLoad>
       {(manifest || failed) && <Ground ground={groundFiles(manifest)} />}
       {manifest && <City tiles={manifest.tiles} />}
       <AtlasRig />

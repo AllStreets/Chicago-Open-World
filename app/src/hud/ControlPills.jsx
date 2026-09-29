@@ -1,5 +1,12 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useStore } from '../state/store.js'
+import { sunForPreset } from '../lib/sun.js'
+import { phaseFor } from '../lib/skyPalette.js'
+
+function livePhase() {
+  const s = sunForPreset('LIVE', new Date())
+  return phaseFor((s.altitude * 180) / Math.PI, s.direction[0])
+}
 
 const TIMES = ['LIVE', 'DAWN', 'DAY', 'DUSK', 'NIGHT']
 const MODES = ['FLY', 'ORBIT']
@@ -9,6 +16,8 @@ export default function ControlPills() {
   const setTime = useStore((s) => s.setTimePreset)
   const mode = useStore((s) => s.cameraMode)
   const setMode = useStore((s) => s.setCameraMode)
+  const [phase, setPhase] = useState(livePhase)
+  useEffect(() => { const id = setInterval(() => setPhase(livePhase()), 60_000); return () => clearInterval(id) }, [])
 
   useEffect(() => {
     const onKey = (e) => {
@@ -30,7 +39,7 @@ export default function ControlPills() {
       </div>
       <div className="pill-row small">
         {TIMES.map((t) => (
-          <button key={t} type="button" className={`hud-pill ${time === t ? 'active' : ''}`} onClick={() => setTime(t)}>{t}</button>
+          <button key={t} type="button" className={`hud-pill ${time === t ? 'active' : ''}`} onClick={() => setTime(t)}>{t === 'LIVE' ? `LIVE · ${phase}` : t}</button>
         ))}
       </div>
     </div>

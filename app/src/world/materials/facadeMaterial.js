@@ -67,6 +67,11 @@ alb = mix(vec3(0.62, 0.6, 0.57), alb, uReady);
 win *= uReady;
 alb *= mix(0.55, 1.0, smoothstep(0.0, 14.0, vWPos.y));   // ground contact
 alb *= 0.88 + 0.24 * vSeed;                              // per-building variation
+if (fi == 3) {                                           // curtain glass: bronze-black, green, silver, blue
+  float g = fract(vSeed * 3.7);
+  vec3 tint = g < 0.28 ? vec3(0.30, 0.28, 0.27) : g < 0.5 ? vec3(0.62, 0.8, 0.74) : g < 0.78 ? vec3(0.86, 0.9, 0.98) : vec3(0.72, 0.8, 0.95);
+  alb *= tint;
+}
 diffuseColor.rgb *= alb;
 `
 const FRAG_ROUGH = /* glsl */ `
@@ -78,12 +83,18 @@ metalnessFactor = mix(metalnessFactor, 0.9, win * 0.85);
 const FRAG_EMISSIVE = /* glsl */ `
 if (!isRoof && uNight > 0.001) {
   vec2 cell = floor(tuv * T.zw);
+  vec2 cf = fract(tuv * T.zw);
+  // inset rectangle inside each cell: frames/mullions stay dark (matters for all-glass walls)
+  float inset = smoothstep(0.03, 0.09, cf.x) * smoothstep(0.03, 0.09, 1.0 - cf.x)
+              * smoothstep(0.05, 0.12, cf.y) * smoothstep(0.08, 0.18, 1.0 - cf.y);
   float h = owHash(cell + vec2(vSeed * 173.0, vSeed * 91.0));
-  float lit = step(h, 0.16 + 0.42 * uNight);
-  vec3 warm = vec3(1.0, 0.70, 0.40), cool = vec3(0.72, 0.84, 1.0);
-  vec3 wc = mix(warm, cool, step(0.72, owHash(cell.yx + vSeed * 7.0)));
-  float flicker = 0.7 + 0.6 * owHash(cell * 1.7 + 3.1);
-  totalEmissiveRadiance += wc * win * lit * uNight * flicker * 2.2 * uLitBoost;
+  float floorH = owHash(vec2(cell.y, vSeed * 57.0));          // whole office floors light together
+  float busy = mix(0.05, 0.5, fract(vSeed * 7.31));           // some towers dark, some busy
+  float lit = step(h * 0.55 + floorH * 0.45, busy * (0.45 + 0.55 * uNight));
+  vec3 warm = vec3(1.0, 0.72, 0.45), cool = vec3(0.78, 0.86, 1.0);
+  vec3 wc = mix(warm, cool, step(0.7, owHash(vec2(cell.y, vSeed * 13.0))));
+  float level = 0.45 + 0.55 * owHash(cell * 1.7 + 3.1);
+  totalEmissiveRadiance += wc * win * inset * lit * uNight * level * 0.9 * uLitBoost;
 }
 `
 
@@ -105,7 +116,7 @@ export function patchFacadeShader(shader) {
 export function createFacadeMaterial() {
   const m = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.86, metalness: 0.02 })
   m.onBeforeCompile = patchFacadeShader
-  m.customProgramCacheKey = () => 'facade-v1'
+  m.customProgramCacheKey = () => 'facade-v3'
   return m
 }
 
