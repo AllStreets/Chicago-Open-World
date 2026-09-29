@@ -9,6 +9,7 @@ import RoofProps from './RoofProps.jsx'
 import ElevatedL from './ElevatedL.jsx'
 import { worldUrl } from '../lib/manifest.js'
 import { disposeObject } from './dispose.js'
+import { waterMaterial, REFLECT_LAYER } from './materials/waterSurface.js'
 
 export const groundMaterial = createGroundMaterial()
 
@@ -36,10 +37,10 @@ export default function TileContent({ id, file, meta, lod, mats, version, onRead
       const layer = o.name || o.parent?.name
       o.receiveShadow = true
       o.castShadow = false
-      if (layer === 'buildings') { o.material = buildingMaterial; o.castShadow = lod === 'lod0' }
+      if (layer === 'buildings') { o.material = buildingMaterial; o.castShadow = lod === 'lod0'; o.layers.enable(REFLECT_LAYER) }
       else if (layer === 'ground') o.material = groundMaterial
-      else if (layer === 'water') o.material = mats.river
-      else if (layer === 'elevated') { o.material = mats.elevated; o.castShadow = true }
+      else if (layer === 'water') { o.material = waterMaterial; o.receiveShadow = false }
+      else if (layer === 'elevated') { o.material = mats.elevated; o.castShadow = true; o.layers.enable(REFLECT_LAYER) }
       else o.material = mats.land
     })
     return scene

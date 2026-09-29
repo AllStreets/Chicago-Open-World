@@ -37,3 +37,13 @@ describe('venues stay tree-free (D1)', () => {
     expect(() => assertNoVenueTrees([['0_0', [[5, 50, 1, 0]]]], zones)).not.toThrow()
   })
 })
+
+import { outsideZones } from '../lib/trees.js'
+
+describe('mapped pitches inside venues (the venue paints its own field)', () => {
+  it('drops a pitch polygon whose centre is inside a venue zone, keeps park pitches', () => {
+    const zone = [[0, 0], [100, 0], [100, 100], [0, 100]]
+    const inVenue = { bbox: { minX: 20, minZ: 20, maxX: 60, maxZ: 80 } }, park = { bbox: { minX: 300, minZ: 0, maxX: 360, maxZ: 90 } }
+    expect(outsideZones([inVenue, park], [zone])).toEqual([park])
+  })
+})

@@ -14,3 +14,11 @@ export function groupByTile(buildings) {
   }
   return m
 }
+
+// Every tile a bbox touches: polygons (water, parks) claim their tiles even where no building stands.
+export function tileKeysForBBox({ minX, minZ, maxX, maxZ }) {
+  const out = []
+  for (let tx = Math.floor(minX / TILE_SIZE); tx <= Math.floor(maxX / TILE_SIZE); tx++)
+    for (let tz = Math.floor(minZ / TILE_SIZE); tz <= Math.floor(maxZ / TILE_SIZE); tz++) out.push(`${tx}_${tz}`)
+  return out
+}

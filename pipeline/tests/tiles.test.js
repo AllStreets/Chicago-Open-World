@@ -19,3 +19,12 @@ describe('tiles', () => {
     expect(g.get('-1_0')).toHaveLength(1)
   })
 })
+
+import { tileKeysForBBox } from '../lib/tiles.js'
+
+describe('tiles a polygon covers (water-only tiles exist)', () => {
+  it('every tile the bbox touches, so a harbour with no buildings still gets its tile', () => {
+    expect(tileKeysForBBox({ minX: 1000, minZ: -228, maxX: 1472, maxZ: 1524 }).sort()).toEqual(['2_-1', '2_0', '2_1', '2_2', '2_3'].sort())
+    expect(tileKeysForBBox({ minX: 10, minZ: 10, maxX: 20, maxZ: 20 })).toEqual(['0_0'])
+  })
+})

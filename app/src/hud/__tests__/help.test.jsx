@@ -19,4 +19,9 @@ describe('help + flight chip', () => {
     render(<FlightChip />)
     expect(screen.getByText(/Flying to/i)).toHaveTextContent('Wrigley Field')
   })
+  it('the help card says where water reflections are switched', () => {
+    useStore.getState().setHelpOpen(true)
+    render(<HelpOverlay />)
+    expect(screen.getByText(/water reflections/i)).toBeInTheDocument()
+  })
 })

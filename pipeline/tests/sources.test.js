@@ -57,3 +57,10 @@ describe('water + shore kinds (B5, B7)', () => {
     expect(overpassQuery('shore', WORLD_BBOX)).toContain('"man_made"~"^(breakwater|groyne)$"')
   })
 })
+
+describe('coast kind', () => {
+  it('pulls the Lake Michigan coastline, so land is the real shore, not the city limits in the lake', () => {
+    expect(overpassQuery('coast', WORLD_BBOX)).toContain('rel["natural"="water"]["name"="Lake Michigan"];way(r)(')
+  })
+})
+

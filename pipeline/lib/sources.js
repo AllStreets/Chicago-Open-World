@@ -34,6 +34,8 @@ const FILTERS = {
   water: ['relation["water"="river"]', 'way["water"="river"]', 'way["waterway"="canal"]["area"]', 'way["water"="canal"]', 'way["water"="harbour"]', 'relation["water"="harbour"]',
     'way["natural"="water"]', 'relation["natural"="water"]["water"~"^(lagoon|pond|basin|reservoir)$"]'],
   shore: ['way["man_made"~"^(breakwater|groyne)$"]'],
+  // the Great Lakes are mapped as a natural=water relation, not coastline: take its shoreline member ways
+  coast: ['rel["natural"="water"]["name"="Lake Michigan"];way(r)'],
 }
 
 export function overpassQuery(kind, { s, w, n, e }) {

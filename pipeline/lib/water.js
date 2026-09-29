@@ -3,6 +3,7 @@
 import { flatMesh } from './ground.js'
 import { openRing, signedArea, ringCentroid, ringBBox } from './geom.js'
 import { STYLE } from './venue.js'
+import { insetRing } from './roofs.js'
 
 export const CALM = { river: 0.6, sheltered: 0.35, lake: 1.0 }
 
@@ -45,14 +46,20 @@ export function breakwaterBuildings(ways) {
   ways.forEach((w, i) => {
     const pts = w.points
     const closed = pts.length >= 4 && pts[0][0] === pts[pts.length - 1][0] && pts[0][1] === pts[pts.length - 1][1]
-    const outer = closed ? openRing(pts) : strokeRing(pts, BREAKWATER.width / 2)
-    const area = Math.abs(signedArea(outer))
+    let outer = closed ? openRing(pts) : strokeRing(pts, BREAKWATER.width / 2), holes = []
+    // A closed way is a breakwater's own footprint only when it is thin (mean width ≤ 20 m). A loop around a
+    // whole harbour (Monroe Harbor is mapped that way) is a wall along its outline, never a slab over the water.
+    if (closed && outer.length >= 3) {
+      const perim = outer.reduce((t, p, k) => t + Math.hypot(outer[(k + 1) % outer.length][0] - p[0], outer[(k + 1) % outer.length][1] - p[1]), 0)
+      if ((2 * Math.abs(signedArea(outer))) / perim > 20) holes = [insetRing(outer, BREAKWATER.width)]
+    }
+    const area = Math.abs(signedArea(outer)) - holes.reduce((t, h) => t + Math.abs(signedArea(h)), 0)
     if (outer.length < 3 || area < 1) return
     out.push({
       id: `bw${w.id ?? i}`, osmId: null, source: 'osm-breakwater', tags: w.tags ?? {}, name: w.tags?.name ?? 'Breakwater',
-      address: null, stories: null, year: null, polygons: [{ outer, holes: [] }], area, centroid: ringCentroid(outer), bbox: ringBBox(outer),
+      address: null, stories: null, year: null, polygons: [{ outer, holes }], area, centroid: ringCentroid(outer), bbox: ringBBox(outer),
       height: BREAKWATER.top, heightSource: 'default', parts: null,
-      pieces: [{ outer, holes: [], base: 0, top: BREAKWATER.top }],
+      pieces: [{ outer, holes, base: 0, top: BREAKWATER.top }],
       facadeOverride: 'wall', seedOverride: STYLE.wall.concrete, noParapet: true,
     })
   })

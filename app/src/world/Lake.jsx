@@ -1,33 +1,21 @@
-// app/src/world/Lake.jsx — Lake Michigan: a large reflective water plane under the land.
-import { useMemo, useRef } from 'react'
-import { extend, useFrame, useLoader } from '@react-three/fiber'
-import * as THREE from 'three'
-import { Water } from 'three/examples/jsm/objects/Water.js'
-import { paletteFor } from '../lib/skyPalette.js'
+// app/src/world/Lake.jsx — Lake Michigan: the pipeline's baked lake mesh (land and mapped water cut out,
+// 120 × 160 km) in the one shared water material. Loaded imperatively: it never holds the loading screen.
+import { useEffect, useState } from 'react'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { waterMaterial } from './materials/waterSurface.js'
+import { worldUrl } from '../lib/manifest.js'
+import { disposeObject } from './dispose.js'
 
-extend({ Water })
-
-export default function Lake({ sunRef }) {
-  const ref = useRef()
-  const normals = useLoader(THREE.TextureLoader, '/textures/waternormals.jpg')
-  normals.wrapS = normals.wrapT = THREE.RepeatWrapping
-  const geom = useMemo(() => new THREE.PlaneGeometry(40000, 40000), [])
-  const config = useMemo(() => ({
-    textureWidth: 1024, textureHeight: 1024, waterNormals: normals,
-    sunDirection: new THREE.Vector3(0, 1, 0), sunColor: 0xffffff,
-    waterColor: 0x0b2733, distortionScale: 1.6, alpha: 0.96, fog: true,
-  }), [normals])
-  useFrame((_, dt) => {
-    const w = ref.current, s = sunRef.current
-    if (!w || !s) return
-    const u = w.material.uniforms
-    u.time.value += dt * 0.35
-    u.sunDirection.value.set(...s)
-    const p = paletteFor((Math.asin(Math.max(-1, Math.min(1, s[1]))) * 180) / Math.PI)
-    u.waterColor.value.copy(p.water)
-    u.sunColor.value.copy(p.sunColor)
-    u.distortionScale.value = p.night > 0.5 ? 0.8 : 1.6 // calm night water → long light streaks
-    u.size.value = 2.5
-  })
-  return <water ref={ref} args={[geom, config]} rotation-x={-Math.PI / 2} position={[0, -2, 0]} />
+export default function Lake({ file, version }) {
+  const [scene, setScene] = useState(null)
+  useEffect(() => {
+    let alive = true, loaded = null
+    new GLTFLoader().loadAsync(worldUrl(file, version)).then((g) => {
+      loaded = g.scene
+      g.scene.traverse((o) => { if (o.isMesh) { o.material = waterMaterial; o.receiveShadow = false; o.frustumCulled = false } })
+      if (alive) setScene(g.scene); else disposeObject(g.scene)
+    }).catch((e) => console.warn('lake failed', e))
+    return () => { alive = false; disposeObject(loaded) }
+  }, [file, version])
+  return scene ? <primitive object={scene} /> : null
 }

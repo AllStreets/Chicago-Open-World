@@ -41,3 +41,8 @@ export function assertNoVenueTrees(tileTrees, zones) {
   }
   if (bad.length) throw new Error(`trees inside venues (${bad.length}): ${bad.slice(0, 10).join('; ')}`)
 }
+
+// Polygons (by bbox centre) that lie outside every venue zone — mapped pitches inside a stadium are dropped,
+// because the venue builder paints the real field.
+export const outsideZones = (polys, zones) =>
+  polys.filter((p) => !zones.some((z) => pointInRing([(p.bbox.minX + p.bbox.maxX) / 2, (p.bbox.minZ + p.bbox.maxZ) / 2], z)))

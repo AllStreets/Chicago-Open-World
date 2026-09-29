@@ -12,16 +12,16 @@ import { osmToBuilding } from '../lib/osm.js'
 import { enrichFromCity, buildGridIndex } from '../lib/enrich.js'
 import { classifyFacade, FACADE_FAMILIES } from '../lib/classify.js'
 import { extrudeBuilding } from '../lib/extrude.js'
-import { tileKeyFor, tileBounds, TILE_SIZE } from '../lib/tiles.js'
+import { tileKeyFor, tileBounds, TILE_SIZE, tileKeysForBBox } from '../lib/tiles.js'
 import { writeMeshGlb } from '../lib/glb.js'
 import { shapePieces } from '../lib/shapes.js'
 import { applyHero, findByOsm, matchesOsm } from '../lib/heroes.js'
 import { VENUE_FACADES, STYLE, convexHull } from '../lib/venue.js'
 import { shapeSacred } from '../lib/sacred.js'
 import { horizonBoxes } from '../lib/horizon.js'
-import { venueZones, filterTrees, assertNoVenueTrees } from '../lib/trees.js'
+import { venueZones, filterTrees, assertNoVenueTrees, outsideZones } from '../lib/trees.js'
 import { createBlock, addTileToBlock, blockLayers, blockSidecar } from '../lib/blocks.js'
-import { lakePolygons } from '../lib/lake.js'
+import { lakePolygons, landMinusWater, joinLines, lakeSide } from '../lib/lake.js'
 import { bakeShore, SHORE } from '../lib/shore.js'
 import { bakeHeightfield, meshPoints, boundsUnion, HEIGHTFIELD } from '../lib/heightfield.js'
 import { encodeHeights } from '../lib/raster.js'
@@ -176,6 +176,10 @@ async function main() {
   // Trees: never in a venue (Soldier Field sits inside Burnham Park), a landmark clearing, or through a roof —
   // courtyards are open ground. Filtered on the rounded coordinates the sidecars store.
   const zones = venueZones(buildings, (b) => heroFor.get(b))
+  const pitchesKept = outsideZones(pitches, zones.map((z) => z.ring))
+  log(`pitches inside venues dropped: ${pitches.length - pitchesKept.length}`)
+  pitches.length = 0
+  for (const p of pitchesKept) pitches.push(p)
   const footIdx = buildGridIndex(buildings.filter((b) => b.area > 30), 200, (b) => b.centroid)
   const clearings = buildings.flatMap((b) => b.clearPolys ?? [])
   const { kept: keptTrees, removed } = filterTrees(treeNodes, { zones: zones.map((z) => z.ring), clearings, nearBuildings: (p) => footIdx.query(p, 400) })
@@ -219,6 +223,12 @@ async function main() {
   const T = new Map()
   const tile = (k) => { if (!T.has(k)) T.set(k, { b: [], roads: acc(), walks: acc(), roadsLod1: acc(), rail: acc(), elevated: acc(), trees: [], props: [], columns: [] }); return T.get(k) }
   for (const b of buildings) tile(tileKeyFor(b.centroid)).b.push(b)
+  // tiles that hold only water or park (the middle of Monroe Harbor) must exist too, or the lake shows a hole
+  const [wx0, wz0] = project(WORLD_BBOX.w, WORLD_BBOX.n), [wx1, wz1] = project(WORLD_BBOX.e, WORLD_BBOX.s)
+  for (const p of [...water, ...parks, ...beaches, ...pitches]) {
+    const bb = { minX: Math.max(p.bbox.minX, wx0), maxX: Math.min(p.bbox.maxX, wx1), minZ: Math.max(p.bbox.minZ, wz0), maxZ: Math.min(p.bbox.maxZ, wz1) }
+    if (bb.minX < bb.maxX && bb.minZ < bb.maxZ) for (const k of tileKeysForBBox(bb)) tile(k)
+  }
   for (const e of roads) {
     const pts = e.geometry.map((p) => project(p.lon, p.lat)), hw = roadHalfWidth(e.tags)
     for (const [k, pieces] of splitLineWithContext(pts)) for (const { line: l, before, after } of pieces) {
@@ -315,9 +325,17 @@ async function main() {
   const FAR = 60000, box = (a, b, c, d) => ({ outer: [[a, b], [c, b], [c, d], [a, d]], holes: [] })
   const region = [box(-FAR, -FAR, cMinX + 300, FAR), box(-FAR, -FAR, shoreX(cMinZ), cMinZ + 300), box(-FAR, cMaxZ - 300, shoreX(cMaxZ), FAR)]
   // Land is solid: enclave holes in the city boundary (other municipalities) are still land, never lake.
-  const landSolid = [...landPolys, ...region].map((p) => ({ outer: p.outer, holes: [] }))
+  const landLimits = [...landPolys, ...region].map((p) => ({ outer: p.outer, holes: [] }))
+  // The city limits run out into the lake; the real shore is Lake Michigan's own outline (its outer member ways).
+  const coastEls = uniq(chunks('coast'))
+  const lakeRel = coastEls.find((e) => e.type === 'relation')
+  const outerIds = new Set((lakeRel?.members || []).filter((m) => m.role === 'outer').map((m) => m.ref))
+  const shoreLines = coastEls.filter((e) => e.type === 'way' && e.geometry && (!lakeRel || outerIds.has(e.id))).map((e) => e.geometry.map((p) => project(p.lon, p.lat)))
+  const lakeSideP = lakeSide(joinLines(shoreLines, 5), 60000)
+  const landSolid = lakeSideP.length ? landMinusWater({ land: landLimits, water: lakeSideP }) : landLimits
+  log(`shoreline: ${shoreLines.length} ways, lake side ${lakeSideP.length ? 'cut' : 'MISSING — using city limits'}`)
   mkdirSync(join(OUT, 'ground'), { recursive: true })
-  await writeMeshGlb(join(OUT, 'ground', 'land.glb'), flatMesh(landSolid, 0))
+  await writeMeshGlb(join(OUT, 'ground', 'land.glb'), flatMesh(landMinusWater({ land: landSolid, water }), 0))
   writeFileSync(join(OUT, 'land.json'), JSON.stringify({ rings: [...landPolys, ...region].map((p) => simplifyRing(p.outer, 20).map(([x, z]) => [Math.round(x), Math.round(z)])) }))
   const [x0, z0] = project(WORLD_BBOX.w, WORLD_BBOX.n), [x1, z1] = project(WORLD_BBOX.e, WORLD_BBOX.s)
   // ── Horizon: simple blocks on Chicago's grid beyond the detailed world, streamed like far blocks ──

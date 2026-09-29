@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import * as THREE from 'three'
 import { patchGroundShader, groundUniforms, GROUND_TEXTURES, LAYER_RANK, createGroundMaterial } from '../groundShader.js'
 import { groundMaterials } from '../groundMaterials.js'
+import { waterMaterial } from '../waterSurface.js'
 const std = () => ({ vertexShader: THREE.ShaderLib.standard.vertexShader, fragmentShader: THREE.ShaderLib.standard.fragmentShader, uniforms: {} })
 describe('ground shader', () => {
   it('samples a texture array by per-vertex layer', () => {
@@ -22,8 +23,10 @@ describe('ground shader', () => {
     expect(roads).toBeGreaterThan(sidewalks); expect(sidewalks).toBeGreaterThan(rail)
     expect(rail).toBeGreaterThan(pitches); expect(pitches).toBeGreaterThan(parks); expect(parks).toBe(beaches)
   })
-  it('the river is never pulled in front of the streets that bridge it', () => {
-    const river = groundMaterials(null).river, ground = createGroundMaterial()
-    expect(river.polygonOffsetFactor).toBeGreaterThan(ground.polygonOffsetFactor) // strictly behind, even when quantized heights tie
+  it('water is never pulled in front of the streets that bridge it', () => {
+    expect(waterMaterial.polygonOffsetFactor).toBeGreaterThan(createGroundMaterial().polygonOffsetFactor)
+  })
+  it('there is one water material: the ground set no longer carries a river', () => {
+    expect(groundMaterials(null).river).toBeUndefined()
   })
 })

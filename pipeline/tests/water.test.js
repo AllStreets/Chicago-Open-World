@@ -47,3 +47,14 @@ describe('breakwaters (B7)', () => {
     expect(Math.abs(signedArea(b.polygons[0].outer))).toBeCloseTo(160, 6)
   })
 })
+
+describe('closed breakwater loops (harbour outlines)', () => {
+  it('a closed loop around a whole harbour is a wall along its outline, not a slab over the water', () => {
+    const loop = [[0, 0], [500, 0], [500, -500], [0, -500], [0, 0]]
+    const [b] = breakwaterBuildings([{ id: 9, points: loop, tags: { man_made: 'breakwater' } }])
+    expect(b.polygons[0].holes.length).toBe(1)
+    const outerA = Math.abs(signedArea(b.polygons[0].outer)), holeA = Math.abs(signedArea(b.polygons[0].holes[0]))
+    expect(outerA - holeA).toBeLessThan(500 * 4 * BREAKWATER.width * 1.2)
+  })
+})
+

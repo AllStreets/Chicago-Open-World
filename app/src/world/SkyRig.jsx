@@ -9,6 +9,7 @@ import { stepSun } from '../lib/sunTween.js'
 import { facadeUniforms } from './materials/facadeMaterial.js'
 import { applySkyGain } from './materials/skyGain.js'
 import { createRestTracker } from '../lib/rest.js'
+import { REFLECT_LAYER } from './materials/waterSurface.js'
 
 const SKY_GAIN = 0.42
 
@@ -18,6 +19,8 @@ export default function SkyRig({ target, sunRef, instant = false, shadowMap = 40
   const { scene } = useThree()
   const sky = useRef(), light = useRef(), hemi = useRef(), stars = useRef()
   useEffect(() => { if (sky.current) applySkyGain(sky.current.material, SKY_GAIN) }, [])
+  // the mirrored camera sees only REFLECT_LAYER: sky, stars and both lights must be on it
+  useEffect(() => { for (const r of [sky, stars, hemi, light]) r.current?.layers.enable(REFLECT_LAYER) }, [])
   const cur = useRef(target.direction.slice())
   const skyRest = useRef(createRestTracker({ frames: 20, eps: 1e-5 }))
   if (!sunRef.current) sunRef.current = cur.current

@@ -7587,6 +7587,111 @@
    "maxHeight": 1.8
   },
   {
+   "key": "4_9",
+   "block": "1_2",
+   "bounds": {
+    "minX": 2000,
+    "maxX": 2500,
+    "minZ": 4500,
+    "maxZ": 5000
+   },
+   "lod0": "tiles/4_9.glb",
+   "lod1": "tiles/4_9.lod1.glb",
+   "meta": "tiles/4_9.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "2_-4",
+   "block": "0_-1",
+   "bounds": {
+    "minX": 1000,
+    "maxX": 1500,
+    "minZ": -2000,
+    "maxZ": -1500
+   },
+   "lod0": "tiles/2_-4.glb",
+   "lod1": "tiles/2_-4.lod1.glb",
+   "meta": "tiles/2_-4.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "2_0",
+   "block": "0_0",
+   "bounds": {
+    "minX": 1000,
+    "maxX": 1500,
+    "minZ": 0,
+    "maxZ": 500
+   },
+   "lod0": "tiles/2_0.glb",
+   "lod1": "tiles/2_0.lod1.glb",
+   "meta": "tiles/2_0.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "-1_-14",
+   "block": "-1_-4",
+   "bounds": {
+    "minX": -500,
+    "maxX": 0,
+    "minZ": -7000,
+    "maxZ": -6500
+   },
+   "lod0": "tiles/-1_-14.glb",
+   "lod1": "tiles/-1_-14.lod1.glb",
+   "meta": "tiles/-1_-14.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "-12_8",
+   "block": "-3_2",
+   "bounds": {
+    "minX": -6000,
+    "maxX": -5500,
+    "minZ": 4000,
+    "maxZ": 4500
+   },
+   "lod0": "tiles/-12_8.glb",
+   "lod1": "tiles/-12_8.lod1.glb",
+   "meta": "tiles/-12_8.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "5_12",
+   "block": "1_3",
+   "bounds": {
+    "minX": 2500,
+    "maxX": 3000,
+    "minZ": 6000,
+    "maxZ": 6500
+   },
+   "lod0": "tiles/5_12.glb",
+   "lod1": "tiles/5_12.lod1.glb",
+   "meta": "tiles/5_12.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "1_-8",
+   "block": "0_-2",
+   "bounds": {
+    "minX": 500,
+    "maxX": 1000,
+    "minZ": -4000,
+    "maxZ": -3500
+   },
+   "lod0": "tiles/1_-8.glb",
+   "lod1": "tiles/1_-8.lod1.glb",
+   "meta": "tiles/1_-8.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
    "key": "-7_13",
    "block": "-2_3",
    "bounds": {
@@ -7613,21 +7718,6 @@
    "lod0": "tiles/-8_13.glb",
    "lod1": "tiles/-8_13.lod1.glb",
    "meta": "tiles/-8_13.json",
-   "buildings": 0,
-   "maxHeight": 0
-  },
-  {
-   "key": "-12_8",
-   "block": "-3_2",
-   "bounds": {
-    "minX": -6000,
-    "maxX": -5500,
-    "minZ": 4000,
-    "maxZ": 4500
-   },
-   "lod0": "tiles/-12_8.glb",
-   "lod1": "tiles/-12_8.lod1.glb",
-   "meta": "tiles/-12_8.json",
    "buildings": 0,
    "maxHeight": 0
   },
@@ -8052,21 +8142,6 @@
    "maxHeight": 0
   },
   {
-   "key": "2_-4",
-   "block": "0_-1",
-   "bounds": {
-    "minX": 1000,
-    "maxX": 1500,
-    "minZ": -2000,
-    "maxZ": -1500
-   },
-   "lod0": "tiles/2_-4.glb",
-   "lod1": "tiles/2_-4.lod1.glb",
-   "meta": "tiles/2_-4.json",
-   "buildings": 0,
-   "maxHeight": 0
-  },
-  {
    "key": "7_18",
    "block": "1_4",
    "bounds": {
@@ -8123,21 +8198,6 @@
    "lod0": "tiles/6_16.glb",
    "lod1": "tiles/6_16.lod1.glb",
    "meta": "tiles/6_16.json",
-   "buildings": 0,
-   "maxHeight": 0
-  },
-  {
-   "key": "5_12",
-   "block": "1_3",
-   "bounds": {
-    "minX": 2500,
-    "maxX": 3000,
-    "minZ": 6000,
-    "maxZ": 6500
-   },
-   "lod0": "tiles/5_12.glb",
-   "lod1": "tiles/5_12.lod1.glb",
-   "meta": "tiles/5_12.json",
    "buildings": 0,
    "maxHeight": 0
   },
@@ -8487,21 +8547,6 @@
    "maxHeight": 0
   },
   {
-   "key": "-1_-14",
-   "block": "-1_-4",
-   "bounds": {
-    "minX": -500,
-    "maxX": 0,
-    "minZ": -7000,
-    "maxZ": -6500
-   },
-   "lod0": "tiles/-1_-14.glb",
-   "lod1": "tiles/-1_-14.lod1.glb",
-   "meta": "tiles/-1_-14.json",
-   "buildings": 0,
-   "maxHeight": 0
-  },
-  {
    "key": "-1_-20",
    "block": "-1_-5",
    "bounds": {
@@ -8513,21 +8558,6 @@
    "lod0": "tiles/-1_-20.glb",
    "lod1": "tiles/-1_-20.lod1.glb",
    "meta": "tiles/-1_-20.json",
-   "buildings": 0,
-   "maxHeight": 0
-  },
-  {
-   "key": "1_-8",
-   "block": "0_-2",
-   "bounds": {
-    "minX": 500,
-    "maxX": 1000,
-    "minZ": -4000,
-    "maxZ": -3500
-   },
-   "lod0": "tiles/1_-8.glb",
-   "lod1": "tiles/1_-8.lod1.glb",
-   "meta": "tiles/1_-8.json",
    "buildings": 0,
    "maxHeight": 0
   },

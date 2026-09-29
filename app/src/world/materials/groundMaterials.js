@@ -12,19 +12,12 @@ function tex(g, name) {
   t.anisotropy = 8
   return t
 }
-function riverNormals() {
-  const t = loader.load('/textures/waternormals.jpg')
-  t.wrapS = t.wrapT = THREE.RepeatWrapping
-  t.repeat.set(1 / 40, 1 / 40)
-  return t
-}
 const mat = (o) => new THREE.MeshStandardMaterial({ roughness: 0.95, metalness: 0, ...o })
 
 export function groundMaterials(g) {
   return {
     // a constant nudge back (no slope term, so the lake 2 m below can't overtake it at grazing angles)
     land: mat({ map: tex(g, 'concrete'), color: '#86827a', polygonOffset: true, polygonOffsetFactor: 0, polygonOffsetUnits: 2 }),
-    river: mat({ color: '#1f4652', roughness: 0.08, metalness: 0.9, normalMap: riverNormals(), normalScale: new THREE.Vector2(0.35, 0.35), }), // no offset: the streets (−1) always draw over it, even where far-block heights are quantized
     parks: mat({ map: tex(g, 'grass'), color: '#d6e8c4', polygonOffset: true, polygonOffsetFactor: -3 }),
     pitches: mat({ map: tex(g, 'pitch'), color: '#ffffff', polygonOffset: true, polygonOffsetFactor: -3.5 }),
     beaches: mat({ map: tex(g, 'sand'), color: '#fff7e6', polygonOffset: true, polygonOffsetFactor: -3 }),

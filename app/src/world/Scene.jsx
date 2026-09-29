@@ -1,5 +1,5 @@
 // app/src/world/Scene.jsx — the whole 3D world.
-import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useThree } from '@react-three/fiber'
 import { useStore } from '../state/store.js'
 import { loadManifest, worldUrl } from '../lib/manifest.js'
@@ -11,6 +11,7 @@ import { loadFacadeTextures } from './materials/facadeMaterial.js'
 import { loadGroundTextures } from './materials/groundShader.js'
 import { makeIsWater } from '../lib/landMask.js'
 import Lake from './Lake.jsx'
+import WaterRig from './WaterRig.jsx'
 import SkyRig from './SkyRig.jsx'
 import AtlasRig from '../camera/AtlasRig.jsx'
 import PostFX from './PostFX.jsx'
@@ -51,12 +52,16 @@ export default function Scene() {
 
   useEffect(() => { if (ready) window.__worldReady = true }, [ready])
   const gl = useThree((s) => s.gl)
-  useEffect(() => { if (new URLSearchParams(window.location.search).has('stats')) { window.__gl = gl; window.__store = useStore; window.__clearanceAt = clearanceAt } }, [gl])
+  const threeScene = useThree((s) => s.scene)
+  const threeCamera = useThree((s) => s.camera)
+  useEffect(() => { if (new URLSearchParams(window.location.search).has('stats')) { window.__gl = gl; window.__store = useStore; window.__clearanceAt = clearanceAt; window.__scene = threeScene; window.__camera = threeCamera } }, [gl, threeScene, threeCamera])
 
   return (
     <>
       <SkyRig target={sun} sunRef={sunRef} instant={reducedMotion} shadowMap={QUALITY[quality].shadowMap} fog={QUALITY[quality].fog} />
-      <SafeLoad><Suspense fallback={null}><Lake sunRef={sunRef} /></Suspense></SafeLoad>
+      {manifest?.lake && <Lake file={manifest.lake} version={manifest.version} />}
+      <WaterRig sunRef={sunRef} shore={manifest?.shore ?? null} version={manifest?.version} />
+  
       {manifest && <Land file={manifest.land} version={manifest.version} />}
       {manifest && <TileStreamer manifest={manifest} />}
       <AtlasRig />
