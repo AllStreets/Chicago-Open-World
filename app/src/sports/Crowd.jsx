@@ -4,7 +4,7 @@ import * as THREE from 'three'
 import { useFrame } from '@react-three/fiber'
 import { facadeUniforms } from '../world/materials/facadeMaterial.js'
 
-const VERT = /* glsl */ `
+export const CROWD_VERT = /* glsl */ `
 #include <common>
 #include <fog_pars_vertex>
 attribute vec4 aAnchor;
@@ -21,7 +21,7 @@ void main() {
   float ph = fract(sin(dot(aAnchor.xz, vec2(12.9898, 78.233))) * 43758.5453);
   vSkin = ph;
   vec3 toCam = cameraPosition - aAnchor.xyz; toCam.y = 0.0;
-  vec3 right = normalize(vec3(-toCam.z, 0.0, toCam.x) + vec3(1e-5));
+  vec3 right = normalize(vec3(toCam.z, 0.0, -toCam.x) + vec3(1e-5)); // quad +x → camera's right: front-facing, flags unmirrored
   float bob = 0.03 * sin(uTime * (1.1 + ph) + ph * 40.0) + uCheer * 0.35 * step(0.4, ph);
   vec3 p = position;
   if (aPart > 0.5) p.x += 0.12 * sin(uTime * 5.0 + ph * 30.0) * (p.y - 1.3);
@@ -74,7 +74,7 @@ function baseGeometry(standing) {
 
 export default function Crowd({ anchors, split, seatCount, fanCount = 0, shirts, flags, wave = 0, cheer = 0, level = 1, standing = false, center, radius }) {
   const mat = useMemo(() => new THREE.ShaderMaterial({
-    vertexShader: VERT, fragmentShader: FRAG, fog: true,
+    vertexShader: CROWD_VERT, fragmentShader: FRAG, fog: true,
     uniforms: THREE.UniformsUtils.merge([THREE.UniformsLib.fog, { uTime: { value: 0 }, uWave: { value: 0 }, uCheer: { value: 0 }, uNight: { value: 0 }, uLevel: { value: 1 }, uSplit: { value: 0 }, uSeats: { value: 0 }, uFans: { value: 0 } }]),
   }), [])
   const geo = useMemo(() => {

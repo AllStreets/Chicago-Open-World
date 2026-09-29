@@ -14,6 +14,7 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Task 11: Ruling: cache key 'facade-v9' (V2 already used v8, so v8 would not invalidate compiled programs); plan's GLSL comment used backticks inside the JS template literal — replaced with quotes — cost: none.
 - Task 12: Ruling: found a pre-V5 bug — Burnham Park's ground polygon (polygon offset −1) overdrew Soldier Field's field at oblique angles (black at night, unpainted by day). Fixed in the pipeline: `cutZones` subtracts venue hulls from park polygons (6111 → 6107) — test trees 'cutZones' RED→GREEN — cost: none.
 - Task 13: Ruling: plan's fieldMarks draws a navy keyline behind the midfield C (true to the Bears logo) but its test counted all navy polys as end zones; test now filters end zones by extent — cost: none.
+- Task 14: Ruling: plan's crowd vertex shader used right = (−toCam.z, 0, toCam.x), which back-faces every billboard (nothing drew); corrected to (toCam.z, 0, −toCam.x) — cost: none.
 
 ## Evaluate and revert (one line per visual step: Keep | Revert — item — shots — reason)
 
@@ -25,6 +26,7 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Keep — D5 — rate-from-loop night — Rate Field is now a visible floodlight cluster on the south horizon (was a single dot).
 - Keep — D14 — uc-aerial / wintrust-aerial -game night — UC fascia glows warm (brighter on game nights); Wintrust concourse glass bands light on game nights. Not garish; no coefficient change.
 - Keep — D3 — soldier-top (+LOW, +soccer), wrigley-top, rate-top, wrigley-aerial night — NFL field with BEARS/CHICAGO end zones, orange C, numbers and hashes; IFAB pitch for the Fire; MLB diamonds with checker/stripe mowing, clay, foul lines; LOW identical in layout.
+- Keep — D8 — wrigley-bowl ×2, soldier-bowl, wrigley-aerial-game night — full stands in home-team shirts (Cubs blue/red, Bears navy/orange), heads visible, lit at night; texture at 140 m. After fixing the plan's billboard basis (quads faced away → culled; W flags would have been mirrored) — crowdShader test RED→GREEN.
 
 ## Perf (pose — calls — triangles — fps — quality — sports)
 
@@ -43,3 +45,4 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Task 12: code complete (app 291/291); evaluation after rebuild
 - Task 12: complete — evaluated D2/D4/D5/D6/D14 keep (app 291/291, pipeline 356/356)
 - Task 13: complete (app 304/304)
+- Task 14: complete (app 314/314)
