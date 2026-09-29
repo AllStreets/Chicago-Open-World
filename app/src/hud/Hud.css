@@ -34,10 +34,7 @@
 .load-pct { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em; color: var(--text-muted); }
 .load-error { cursor: pointer; color: var(--red); border-color: rgba(var(--red-rgb), 0.4); }
 
-@media (max-width: 720px) {
-  .hud-hints { display: none; }
-  .hud-wordmark { min-width: 0; }
-}
+.hud-root[data-compact="true"] .hud-hints { display: none; }
 
 .flight-chip { position: absolute; top: 132px; left: 50%; transform: translateX(-50%); animation: hud-rise 0.3s ease both; }
 .help { width: min(720px, calc(100vw - 32px)); padding: 22px 24px 18px; gap: 16px; max-height: 80vh; overflow: auto; }
@@ -47,3 +44,6 @@
 .help-grid p { font-size: 13px; color: var(--text-muted); margin: 6px 0; display: flex; gap: 10px; align-items: baseline; }
 .help-grid .hud-kbd { flex-shrink: 0; min-width: 72px; justify-content: center; }
 .help-ok { align-self: flex-end; }
+.cmdk.help { max-height: 88vh; overflow: auto; }
+.help-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 560px) { .help-grid { grid-template-columns: 1fr; } }

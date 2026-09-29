@@ -8,6 +8,7 @@ import { sunForPreset } from '../lib/sun.js'
 import TileStreamer from './TileStreamer.jsx'
 import Land from './Land.jsx'
 import { loadFacadeTextures } from './materials/facadeMaterial.js'
+import { loadGroundTextures } from './materials/groundShader.js'
 import { makeIsWater } from '../lib/landMask.js'
 import Lake from './Lake.jsx'
 import SkyRig from './SkyRig.jsx'
@@ -38,12 +39,12 @@ export default function Scene() {
     if (['LIVE', 'DAWN', 'DAY', 'DUSK', 'NIGHT'].includes(t)) setTimePreset(t)
     loadManifest().then((r) => {
       if (!r.ok) { setLoadError(r.error); return }
-      setLoadTotal(2) // land + façade textures; TileStreamer adds the first tile set
+      setLoadTotal(3) // land + façade textures + 'tiles-planned'; TileStreamer adds the near tiles
       setManifest(r.manifest)
       useStore.getState().setManifest(r.manifest)
       if (r.manifest.landMask) fetch(`/world/${r.manifest.landMask}`).then((x) => x.json()).then((j) => useStore.getState().setIsWater(makeIsWater(j.rings))).catch(() => {})
     })
-    loadFacadeTextures().catch(() => {}).finally(() => useStore.getState().markLoaded('facades'))
+    Promise.all([loadFacadeTextures(), loadGroundTextures()]).catch(() => {}).finally(() => useStore.getState().markLoaded('facades'))
   }, [])
 
   useEffect(() => { if (ready) window.__worldReady = true }, [ready])

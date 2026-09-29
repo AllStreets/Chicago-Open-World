@@ -19,3 +19,22 @@ export function planTiles([tx, tz], tiles, current) {
   }
   return plan
 }
+
+// Whole-world plan: LOD0 tiles near the camera; blocks that touch them split into LOD1 tiles;
+// every other block within range renders as one 2 km block. Keys: 't:<tile>' | 'b:<block>'.
+export function planWorld(target, manifest, current) {
+  const curTiles = new Map([...current].filter(([k]) => k.startsWith('t:')).map(([k, v]) => [k.slice(2), v]))
+  const near = planTiles(target, manifest.tiles, curTiles)
+  const plan = new Map()
+  const lod0Blocks = new Set()
+  const byKey = new Map(manifest.tiles.map((t) => [t.key, t]))
+  for (const [k, lod] of near) if (lod === 'lod0') { plan.set(`t:${k}`, 'lod0'); lod0Blocks.add(byKey.get(k).block) }
+  for (const b of manifest.blocks ?? []) {
+    const [cx, cz] = centre(b.bounds)
+    const was = current.has(`b:${b.key}`)
+    if (Math.hypot(cx - target[0], cz - target[1]) > LOD1_M * (was ? HYST : 1) + 1000) continue
+    if (!lod0Blocks.has(b.key)) { plan.set(`b:${b.key}`, 'block'); continue }
+    for (const t of manifest.tiles) if (t.block === b.key && !plan.has(`t:${t.key}`)) plan.set(`t:${t.key}`, 'lod1')
+  }
+  return plan
+}

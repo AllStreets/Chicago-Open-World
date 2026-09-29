@@ -11,4 +11,3 @@
 .mm-player { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform: translate(-50%, -70%);
   border-left: 7px solid transparent; border-right: 7px solid transparent; border-bottom: 14px solid var(--accent);
   filter: drop-shadow(0 0 6px rgba(var(--accent-rgb), 0.9)); }
-@media (max-width: 720px) { .mm { width: 140px; } .mm-view { width: 140px; height: 140px; } }

@@ -8,12 +8,22 @@ import ControlDock from './ControlDock.jsx'
 import CommandPalette from './CommandPalette.jsx'
 import HelpOverlay from './HelpOverlay.jsx'
 import FlightChip from './FlightChip.jsx'
+import { useEffect, useState } from 'react'
 import { useStore } from '../state/store.js'
+import { hudScale, hudCompact } from '../lib/hudScale.js'
 
 export default function Hud() {
   const manifest = useStore((s) => s.manifest)
+  const [size, setSize] = useState(() => [window.innerWidth, window.innerHeight])
+  useEffect(() => {
+    const on = () => setSize([window.innerWidth, window.innerHeight])
+    window.addEventListener('resize', on)
+    return () => window.removeEventListener('resize', on)
+  }, [])
+  // The whole HUD shrinks together (designed at 1280×800) so nothing is ever cut off.
+  const scale = hudScale(size[0], size[1])
   return (
-    <div className="hud-root">
+    <div className="hud-root" style={{ zoom: scale }} data-compact={hudCompact(size[0], size[1])}>
       <div className="hud-vignette" />
       <WordmarkBlock />
       <ControlPills />

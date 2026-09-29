@@ -23,7 +23,7 @@ import { bufferPolyline } from '../lib/ribbon.js'
 import { roadHalfWidth, isElevatedRail, scatterInPolygon } from '../lib/ground.js'
 import { WORLD_BBOX, RING0_BBOX } from '../lib/sources.js'
 import { validateSkyline } from '../lib/skyline.js'
-import { clipPolysToTile, splitLineByTiles, writeTileGlb } from '../lib/tilepack.js'
+import { clipPolysToTile, splitLineByTiles, writeTileGlb, mergeGroundLayers, blockKeyFor, BLOCK_TILES } from '../lib/tilepack.js'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const CACHE = join(ROOT, 'cache', 'world')
@@ -196,6 +196,7 @@ async function main() {
     .map((i) => i.p).filter((p) => p.bbox.maxX > bounds.minX && p.bbox.minX < bounds.maxX && p.bbox.maxZ > bounds.minZ && p.bbox.minZ < bounds.maxZ)
 
   const tiles = []
+  const blocks = new Map()
   let n = 0
   for (const [key, t] of T) {
     const bounds = tileBounds(key)
@@ -223,13 +224,30 @@ async function main() {
     const waterM = flatMesh(clipPolysToTile(polysFor('water', bounds), bounds), 0.15)
     const hasContent = L0.positions.length || t.roads.positions.length || parksM.positions.length || waterM.positions.length
     if (!hasContent) continue
-    await writeTileGlb(join(OUT, 'tiles', `${key}.glb`), { buildings: asLayer(L0), roads: t.roads, sidewalks: t.walks, parks: parksM, pitches: pitchesM, beaches: beachesM, water: waterM, rail: t.rail, elevated: t.elevated })
-    await writeTileGlb(join(OUT, 'tiles', `${key}.lod1.glb`), { buildings: asLayer(L1), roads: t.roadsLod1, parks: parksM, pitches: pitchesM, beaches: beachesM, water: waterM })
+    const ground0 = mergeGroundLayers({ roads: t.roads, sidewalks: t.walks, parks: parksM, pitches: pitchesM, beaches: beachesM, rail: t.rail })
+    const ground1 = mergeGroundLayers({ roads: t.roadsLod1, parks: parksM, pitches: pitchesM, beaches: beachesM })
+    await writeTileGlb(join(OUT, 'tiles', `${key}.glb`), { buildings: asLayer(L0), ground: ground0, water: waterM, elevated: t.elevated })
+    await writeTileGlb(join(OUT, 'tiles', `${key}.lod1.glb`), { buildings: asLayer(L1), ground: ground1, water: waterM })
+    // accumulate the tile's far-detail content into its 2 km block
+    const bk = blockKeyFor(key)
+    if (!blocks.has(bk)) blocks.set(bk, { b: bAcc(), g: { ...acc(), extra: { LAYER: [] } }, w: acc() })
+    const B = blocks.get(bk)
+    for (const k of ['positions', 'normals', 'uvs']) { for (const v of L1[k]) B.b[k].push(v); for (const v of ground1[k]) B.g[k].push(v); for (const v of waterM[k]) B.w[k].push(v) }
+    for (const v of L1.fac) B.b.fac.push(v); for (const v of L1.seed) B.b.seed.push(v); for (const v of L1.bldg) B.b.bldg.push(v)
+    for (const v of ground1.extra.LAYER) B.g.extra.LAYER.push(v)
     writeFileSync(join(OUT, 'tiles', `${key}.json`), JSON.stringify({ buildings: meta, trees: t.trees, props: t.props, columns: t.columns }))
-    tiles.push({ key, bounds, lod0: `tiles/${key}.glb`, lod1: `tiles/${key}.lod1.glb`, meta: `tiles/${key}.json`, buildings: t.b.length, maxHeight: Math.max(0, ...meta.map((m) => m.height)) })
+    tiles.push({ key, block: bk, bounds, lod0: `tiles/${key}.glb`, lod1: `tiles/${key}.lod1.glb`, meta: `tiles/${key}.json`, buildings: t.b.length, maxHeight: Math.max(0, ...meta.map((m) => m.height)) })
     if (++n % 50 === 0) log(`tiles written: ${n}`)
   }
   log(`tiles: ${tiles.length}`)
+  rmSync(join(OUT, 'blocks'), { recursive: true, force: true })
+  const blockList = []
+  for (const [bk, B] of blocks) {
+    const [bx, bz] = bk.split('_').map(Number), size = TILE_SIZE * BLOCK_TILES
+    await writeTileGlb(join(OUT, 'blocks', `${bk}.glb`), { buildings: asLayer(B.b), ground: { ...B.g, extra: { LAYER: new Float32Array(B.g.extra.LAYER) } }, water: B.w })
+    blockList.push({ key: bk, file: `blocks/${bk}.glb`, bounds: { minX: bx * size, maxX: (bx + 1) * size, minZ: bz * size, maxZ: (bz + 1) * size } })
+  }
+  log(`blocks: ${blockList.length}`)
 
   // ── Land, land mask, minimap ───────────────────────────────────────────────
   const cityB = loadJson(join(CACHE, 'city-boundary.json')).data
@@ -262,7 +280,7 @@ async function main() {
     skyline: { missing: sky.missing, wrongHeight: sky.wrongHeight },
     landmarks: buildings.filter((b) => b.hero).map((b) => ({ key: b.hero, name: heroes.find((h) => h.key === b.hero)?.name ?? b.name, x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(...b.pieces.map((p) => p.top), ...(b.extraMeshes || []).flatMap((m) => m.positions.filter((_, i) => i % 3 === 1)))) })),
     tallest: buildings.filter((b) => !b.hero && b.name && b.pieces.length && Math.max(...b.pieces.map((p) => p.top)) > 150).map((b) => ({ key: b.id, name: b.name, x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(...b.pieces.map((p) => p.top))) })),
-    tiles, land: 'ground/land.glb', landMask: 'land.json', minimap: { file: 'minimap.png', bounds: mmBounds, size: 2048 },
+    tiles, blocks: blockList, land: 'ground/land.glb', landMask: 'land.json', minimap: { file: 'minimap.png', bounds: mmBounds, size: 2048 },
   }, null, 1))
   log('manifest written')
 }

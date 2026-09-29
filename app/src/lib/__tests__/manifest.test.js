@@ -17,6 +17,13 @@ describe('loadManifest', () => {
   })
 })
 
+describe('manifest v3', () => {
+  it('accepts the streamed-world shape (tiles + land, no ground block)', async () => {
+    const r = await loadManifest(async () => ({ ok: true, status: 200, json: async () => ({ version: 3, tiles: [], land: 'ground/land.glb' }) }))
+    expect(r.ok).toBe(true)
+  })
+})
+
 describe('groundFiles', () => {
   it('uses the manifest ground when present, else the known default paths', async () => {
     const { groundFiles, DEFAULT_GROUND } = await import('../manifest.js')

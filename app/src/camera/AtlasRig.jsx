@@ -148,7 +148,7 @@ export default function AtlasRig() {
     if (!c) return
     const now = state.clock.elapsedTime
     if (!useStore.getState().introDone) {
-      if (!useStore.getState().load.ready) return // hold on the opening frame while the city streams in
+      if (!useStore.getState().load.ready) { publishReadout(c, now); return } // hold the opening frame, but tell the streamer where we are
       introStart.current ??= now
       const t = (now - introStart.current) / INTRO_SECONDS
       const p = introPose(t)

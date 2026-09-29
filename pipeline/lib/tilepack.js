@@ -65,3 +65,22 @@ export async function writeTileGlb(path, layers) {
   mkdirSync(dirname(path), { recursive: true })
   await (await getIO()).write(path, doc)
 }
+
+// Ground surfaces share one mesh per tile; the shader picks the texture by layer index.
+export const GROUND_LAYERS = ['roads', 'sidewalks', 'parks', 'pitches', 'beaches', 'rail']
+export function mergeGroundLayers(layers) {
+  const out = { positions: [], normals: [], uvs: [], layer: [] }
+  for (const [name, m] of Object.entries(layers)) {
+    const idx = GROUND_LAYERS.indexOf(name)
+    if (idx < 0 || !m?.positions.length) continue
+    for (const v of m.positions) out.positions.push(v)
+    for (const v of m.normals) out.normals.push(v)
+    for (const v of m.uvs) out.uvs.push(v)
+    for (let i = 0; i < m.positions.length / 3; i++) out.layer.push(idx)
+  }
+  return { positions: out.positions, normals: out.normals, uvs: out.uvs, extra: { LAYER: new Float32Array(out.layer) } }
+}
+
+// 2 km blocks (4×4 tiles) for far-away detail.
+export const BLOCK_TILES = 4
+export const blockKeyFor = (tileKey) => tileKey.split('_').map((n) => Math.floor(Number(n) / BLOCK_TILES)).join('_')

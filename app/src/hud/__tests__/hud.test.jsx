@@ -42,3 +42,15 @@ describe('Hud', () => {
     expect(useStore.getState().quality).toBe('ULTRA')
   })
 })
+
+describe('responsive HUD', () => {
+  it('scales as one piece to the window and hides the hint bar when compact', async () => {
+    const { act } = await import('@testing-library/react')
+    window.innerWidth = 600; window.innerHeight = 900
+    const { container } = render(<Hud />)
+    await act(async () => { window.dispatchEvent(new Event('resize')) })
+    const root = container.querySelector('.hud-root')
+    expect(root.style.zoom).toBe('0.55')
+    expect(root).toHaveAttribute('data-compact', 'true')
+  })
+})

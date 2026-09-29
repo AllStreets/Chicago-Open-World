@@ -36,3 +36,19 @@ describe('tilepack', () => {
     expect(prim.getAttribute('_BLDG').getScalar(0)).toBe(1234)
   })
 })
+
+describe('ground merge + blocks', () => {
+  it('mergeGroundLayers stacks layers into one mesh with a per-vertex layer index', async () => {
+    const { mergeGroundLayers, GROUND_LAYERS } = await import('../lib/tilepack.js')
+    const tri = { positions: [0, 0, 0, 1, 0, 0, 0, 0, 1], normals: [0, 1, 0, 0, 1, 0, 0, 1, 0], uvs: [0, 0, 1, 0, 0, 1] }
+    const m = mergeGroundLayers({ roads: tri, parks: tri, beaches: { positions: [], normals: [], uvs: [] } })
+    expect(m.positions).toHaveLength(18)
+    const r = GROUND_LAYERS.indexOf('roads'), p = GROUND_LAYERS.indexOf('parks')
+    expect([...m.extra.LAYER]).toEqual([r, r, r, p, p, p])
+  })
+  it('blockKeyFor groups 4×4 tiles into 2 km blocks', async () => {
+    const { blockKeyFor } = await import('../lib/tilepack.js')
+    expect(blockKeyFor('0_0')).toBe('0_0'); expect(blockKeyFor('3_3')).toBe('0_0')
+    expect(blockKeyFor('4_0')).toBe('1_0'); expect(blockKeyFor('-1_-1')).toBe('-1_-1'); expect(blockKeyFor('-5_2')).toBe('-2_0')
+  })
+})
