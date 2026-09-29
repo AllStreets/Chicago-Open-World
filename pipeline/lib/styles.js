@@ -59,3 +59,14 @@ export async function writeStylePalettePng(path, json, cell = 16) {
   mkdirSync(dirname(path), { recursive: true })
   await sharp(buf, { raw: { width: w, height: h, channels: 4 } }).png().toFile(path)
 }
+
+// Heroes are registered first and in heroes.json order, so their rows are stable across builds and never crowded out.
+export function assignHeroStyles(buildings, heroes, registry) {
+  for (const h of heroes) if (h.look) registry.add(h.key, h.look)
+  const byKey = new Map(heroes.map((h) => [h.key, h]))
+  for (const b of buildings) {
+    if (!b.hero) continue
+    b.styleIndex = registry.indexOf(b.hero)
+    b.styleParts = byKey.get(b.hero)?.look?.parts ?? []
+  }
+}

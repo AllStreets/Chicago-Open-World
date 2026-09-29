@@ -12,7 +12,7 @@ describe('reproducible builds (H4)', () => {
     expect(manifestStamp({})).toEqual({})
     expect(manifestStamp({ CHI_BUILD_STAMP: '1' }, () => new Date('2026-09-29T12:00:00Z'))).toEqual({ generatedAt: '2026-09-29T12:00:00.000Z' })
   })
-  it('V1 tile format is manifest v4', () => {
-    expect(MANIFEST_VERSION).toBe(4)
+  it('V2 tile format is manifest v5', () => {
+    expect(MANIFEST_VERSION).toBe(5)
   })
 })

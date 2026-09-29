@@ -54,3 +54,16 @@ describe('style registry', () => {
     expect(px(1, 1)).toEqual([0, 0, 0])          // row 0 = none = black
   })
 })
+
+import { assignHeroStyles } from '../lib/styles.js'
+describe('assignHeroStyles', () => {
+  it('gives each hero building its row and listed parts, in heroes.json order; others untouched', () => {
+    const heroes = [{ key: 'willis', look: look() }, { key: 'soldierfield', look: look({ parts: ['column'] }) }, { key: 'crownhall', look: look({ render: false, note: 'n' }) }]
+    const bs = [{ hero: 'soldierfield' }, { hero: 'willis' }, { hero: 'crownhall' }, { hero: undefined }]
+    const r = createStyleRegistry()
+    assignHeroStyles(bs, heroes, r)
+    expect(bs.map((b) => b.styleIndex)).toEqual([2, 1, 0, undefined])
+    expect(bs[0].styleParts).toEqual(['column'])
+    expect(bs[1].styleParts).toEqual([])
+  })
+})

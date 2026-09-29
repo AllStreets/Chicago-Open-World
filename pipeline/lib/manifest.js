@@ -1,5 +1,5 @@
 // pipeline/lib/manifest.js — world manifest constants and reproducible build output.
-export const MANIFEST_VERSION = 4
+export const MANIFEST_VERSION = 5
 
 // A timestamp only when asked for (CHI_BUILD_STAMP=1): two builds of the same cache are byte-identical.
 export function manifestStamp(env = process.env, now = () => new Date()) {

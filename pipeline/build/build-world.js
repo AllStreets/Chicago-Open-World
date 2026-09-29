@@ -22,6 +22,7 @@ import { horizonBoxes } from '../lib/horizon.js'
 import { venueZones, filterTrees, assertNoVenueTrees, outsideZones } from '../lib/trees.js'
 import { createBlock, addTileToBlock, blockLayers, blockSidecar } from '../lib/blocks.js'
 import { bAcc, appendBuilding, appendLayer, asLayer } from '../lib/layers.js'
+import { createStyleRegistry, assignHeroStyles, meshStyle, writeStylePalettePng } from '../lib/styles.js'
 import { lakePolygons, landMinusWater, joinLines, lakeSide } from '../lib/lake.js'
 import { bakeShore, SHORE } from '../lib/shore.js'
 import { bakeHeightfield, meshPoints, boundsUnion, HEIGHTFIELD } from '../lib/heightfield.js'
@@ -211,6 +212,11 @@ async function main() {
   for (const b of breakwaters) buildings.push(b)
   log(`breakwaters: ${breakwaters.length}`)
 
+  // ── Sourced looks (V2): hero rows first; OSM-tagged looks are added in Task 9 ──
+  const styles = createStyleRegistry()
+  assignHeroStyles(buildings, heroes, styles)
+  log(`styles: ${styles.size - 1} rows`)
+
   // ── Per-tile assembly ──────────────────────────────────────────────────────
   rmSync(join(OUT, 'tiles'), { recursive: true, force: true })
   mkdirSync(join(OUT, 'tiles'), { recursive: true })
@@ -267,13 +273,14 @@ async function main() {
       const family = b.facadeOverride ? (VENUE_FACADES[b.facadeOverride] ?? FACADE_FAMILIES.indexOf(b.facadeOverride)) : classifyFacade({ height: top, year: b.year ?? 0, area: b.area, type: b.tags?.building })
       const seed = b.seedOverride ?? hashSeed(b.id)
       const parapets = b.noParapet ? [] : b.pieces.map(parapetPiece).filter(Boolean)
-      for (const pc of b.pieces) appendBuilding(L0, extrudeBuilding(pc), family, seed, i)
-      for (const pc of parapets) appendBuilding(L0, extrudeBuilding(pc), PARAPET_FACADE, seed, i)
-      for (const m of b.extraMeshes || []) appendBuilding(L0, m, family, seed, i)
-      for (const v of b.venueMeshes || []) { appendBuilding(L0, v.mesh, v.facade, v.seed, i); appendBuilding(L1, v.mesh, v.facade, v.seed, i) }
+      const st = meshStyle(b)
+      for (const pc of b.pieces) appendBuilding(L0, extrudeBuilding(pc), family, seed, i, st)
+      for (const pc of parapets) appendBuilding(L0, extrudeBuilding(pc), PARAPET_FACADE, seed, i, st)
+      for (const m of b.extraMeshes || []) appendBuilding(L0, m, family, seed, i, st)
+      for (const v of b.venueMeshes || []) { appendBuilding(L0, v.mesh, v.facade, v.seed, i, meshStyle(b, v.part)); appendBuilding(L1, v.mesh, v.facade, v.seed, i, meshStyle(b, v.part)) }
       // LOD1: heroes and part-buildings keep their shape (they are the skyline); plain footprints simplify
-      if (keepsShapeAtDistance(b)) { for (const pc of b.pieces) appendBuilding(L1, extrudeBuilding(pc), family, seed, i); for (const m of b.extraMeshes || []) appendBuilding(L1, m, family, seed, i) }
-      else if (b.area >= 80) for (const pc of lod1Pieces(b)) appendBuilding(L1, extrudeBuilding(pc), family, seed, i)
+      if (keepsShapeAtDistance(b)) { for (const pc of b.pieces) appendBuilding(L1, extrudeBuilding(pc), family, seed, i, st); for (const m of b.extraMeshes || []) appendBuilding(L1, m, family, seed, i, st) }
+      else if (b.area >= 80) for (const pc of lod1Pieces(b)) appendBuilding(L1, extrudeBuilding(pc), family, seed, i, st)
       if (top > 15) for (const pr of roofProps(b, b.pieces)) t.props.push(pr)
       meta.push({ id: b.id, name: b.name, address: b.address, stories: b.stories, year: b.year, height: Math.round(top * 10) / 10, hero: b.hero ?? null })
     })
@@ -374,6 +381,9 @@ async function main() {
   }, mmBounds, 2048)
   await sharp(Buffer.from(svg), { limitInputPixels: false }).png().toFile(join(OUT, 'minimap.png'))
   log('minimap written')
+  writeFileSync(join(OUT, 'styles.json'), JSON.stringify(styles.toJSON()))
+  await writeStylePalettePng(join(OUT, 'style-palette.png'), styles.toJSON())
+  log(`style palette written: ${styles.size} rows`)
 
   const [r0x, r0z] = project(RING0_BBOX.w, RING0_BBOX.n), [r1x, r1z] = project(RING0_BBOX.e, RING0_BBOX.s)
   writeFileSync(join(OUT, 'manifest.json'), JSON.stringify({
@@ -384,11 +394,12 @@ async function main() {
       { name: 'City of Chicago Building Footprints (enrichment)', id: 'syp8-uezg' },
       { name: 'City of Chicago Boundary', id: 'qqq8-j68g' },
       { name: 'Wikipedia — List of tallest buildings in Chicago', id: 'skyline.json' },
+      { name: 'Landmark colours and materials — sourced per look in heroes.json', id: 'heroes.json#look' },
     ],
     skyline: { missing: sky.missing, wrongHeight: sky.wrongHeight },
     landmarks: buildings.filter((b) => b.hero).map((b) => ({ key: b.hero, name: heroes.find((h) => h.key === b.hero)?.name ?? b.name, aliases: heroes.find((h) => h.key === b.hero)?.aliases ?? [], x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(b.venueTop ?? 0, ...b.pieces.map((p) => p.top), ...(b.extraMeshes || []).flatMap((m) => m.positions.filter((_, i) => i % 3 === 1)))) })),
     tallest: buildings.filter((b) => !b.hero && b.name && b.pieces.length && Math.max(...b.pieces.map((p) => p.top)) > 150).map((b) => ({ key: b.id, name: b.name, x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(...b.pieces.map((p) => p.top))) })),
-    tiles, blocks: blockList, land: 'ground/land.glb', lake: 'ground/lake.glb', landMask: 'land.json',
+    tiles, blocks: blockList, land: 'ground/land.glb', lake: 'ground/lake.glb', landMask: 'land.json', styles: 'styles.json', stylePalette: 'style-palette.png',
     shore: { file: 'water/shore.png', ...shore.grid, maxDist: SHORE.maxDist },
     heightfield: { file: 'heightfield.png', ...hf.grid, scale: HEIGHTFIELD.scale }, minimap: { file: 'minimap.png', bounds: mmBounds, size: 2048 },
   }, null, 1))
