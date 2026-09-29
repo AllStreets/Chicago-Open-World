@@ -5,7 +5,7 @@ import { RiCloseLine } from 'react-icons/ri'
 import { useSports } from '../sports/sportsStore.js'
 import { boardLines } from '../sports/scoreboard.js'
 import { stateLabel, gameLabel, dataChip } from '../sports/tonight.js'
-import { formatChicago } from '../sports/chicagoTime.js'
+import { whenChicago } from '../sports/chicagoTime.js'
 
 export default function VenueCard() {
   const key = useSports((s) => s.cardVenue)
@@ -33,7 +33,7 @@ export default function VenueCard() {
         <div className="vc-score">{lines.rows.map((r) => <div key={r.abbr} className="vc-row"><span>{r.abbr}</span><span>{r.score ?? '–'}</span></div>)}</div>
       )}
       <p className="vc-status">{lines.status}</p>
-      {st?.next && <p className="vc-next">Next: {gameLabel(st.next)} · {formatChicago(Date.parse(st.next.start))}</p>}
+      {st?.next && <p className="vc-next">Next: {gameLabel(st.next)} · {whenChicago(Date.parse(st.next.start))}</p>}
       <p className="vc-foot"><span className={`chip chip-${chip.toLowerCase()}`}>{chip}</span> {chip === 'ESPN' ? `ESPN schedule as of ${generatedAt?.slice(0, 10)}` : 'Simulated schedule — typical home dates'}</p>
     </div>
   )

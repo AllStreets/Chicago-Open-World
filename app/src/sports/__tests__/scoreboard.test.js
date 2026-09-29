@@ -34,7 +34,7 @@ describe('scoreboard', () => {
     expect(mid.rows[1].score).toBe(simScore(sim, T('2026-07-10T01:35:00Z')).home)
     const idle = boardLines(W, { state: 'idle', game: null, next: sim }, T('2026-07-09T12:00:00Z'))
     expect(idle).toMatchObject({ title: 'WRIGLEY FIELD', rows: [] })
-    expect(idle.status).toBe('NEXT MIL · THU 7:05 PM')
+    expect(idle.status).toBe('NEXT MIL · TONIGHT 7:05 PM') // same Chicago date: said as tonight (V5 review #1)
   })
   it('setScoreboard (Phase 5) overrides the numbers until cleared', () => {
     setScoreboard('wrigleyfield', { home: 9, away: 1, status: 'BOT 8TH' })

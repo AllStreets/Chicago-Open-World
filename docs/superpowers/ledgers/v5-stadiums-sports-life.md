@@ -84,3 +84,9 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Task 20: complete (app 346/346)
 - Task 21: complete — perf 3/3 (≤ 492 calls wide; live +2–3 per bowl, +0 at LOW), pipeline 356/356, app 346/346, TZ=Asia/Tokyo sports+audio 80/80, schedules 594 games, world 186.2 MB, e2e 10/10 ×3.
 - V5 done: D2–D15 kept (D2 tuned, D9 tuned, D12 tuned); pre-V5 Soldier Field park overdraw fixed.
+- Final review: fresh reviewer (opus) on 81acb26..a6572d1 — 0 Critical, 3 Important, 2 Minor.
+- Final: fixed #1 undated 'NEXT WED' labels and 'tonight' for a game days away — whenChicago (Tonight/Today/Tomorrow/dated), ⌘K 'Go to the next game' when nothing is on today — v5ReviewFixes #1 ×2 RED→GREEN; old expectations in scoreboard/tonight tests updated (they encoded the defect).
+- Final: fixed #2 Rate Field board naming the Sox as their own opponent (merged Crosstown record) — opponent now relative to the venue's teams — v5ReviewFixes #2 RED→GREEN.
+- Final: fixed #3 unlit W/L flag (only ever flies after dark on weeknights) — emissive self-map driven by uNight — v5ReviewFixes #3 RED→GREEN; verified by night shot.
+- Final: minor (deferred): #4 WinFlag PlaneGeometry never disposed on unmount.
+- Final: minor (deferred): #5 Games dock button lacks pressed/aria-expanded state.

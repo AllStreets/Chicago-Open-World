@@ -1,7 +1,8 @@
 // app/src/sports/scoreboard.js — what each board says, and how it is drawn (a 1024 × 512 canvas).
 import { gameWindow } from './gameState.js'
 import { hashFrac } from './simSchedule.js'
-import { formatChicago } from './chicagoTime.js'
+import { whenChicago } from './chicagoTime.js'
+import { teamByKey } from '../../../shared/teams.js'
 import { useSports } from './sportsStore.js'
 
 const frac = (g, nowMs) => { const w = gameWindow(g); return Math.max(0, Math.min(1, (nowMs - w.start) / (w.end - w.start))) }
@@ -19,7 +20,7 @@ export const ordinal = (n) => { const s = n % 100 >= 11 && n % 100 <= 13 ? 'th' 
 
 export function periodLabel(game, nowMs, state) {
   if (state === 'postgame') return 'FINAL'
-  if (state === 'pregame') return `STARTS ${formatChicago(Date.parse(game.start)).toUpperCase()}`
+  if (state === 'pregame') return `STARTS ${whenChicago(Date.parse(game.start), nowMs).toUpperCase()}`
   if (state !== 'live') return ''
   const f = frac(game, nowMs)
   if (game.sport === 'baseball') { const h = Math.min(17, Math.floor(f * 18)); return `${h % 2 ? 'BOT' : 'TOP'} ${ordinal(Math.floor(h / 2) + 1).toUpperCase()}` }
@@ -33,7 +34,9 @@ export function boardLines(venue, st, nowMs, override = null) {
   const title = venue.name.toUpperCase(), g = st?.game
   if (!g || !st || st.state === 'idle') {
     const n = st?.next
-    return { title, rows: [], status: n ? `NEXT ${n.chicagoHome === false ? n.home.abbr : n.away.abbr} · ${formatChicago(Date.parse(n.start)).toUpperCase()}` : 'WELCOME' }
+    // the visitor relative to THIS venue's team (a merged Crosstown record may carry the other club's chicagoHome)
+    const homeHere = n && (venue.teams?.length ? venue.teams.some((k) => teamByKey(k)?.abbr === n.home.abbr) : n.chicagoHome !== false)
+    return { title, rows: [], status: n ? `NEXT ${homeHere ? n.away.abbr : n.home.abbr} · ${whenChicago(Date.parse(n.start), nowMs).toUpperCase()}` : 'WELCOME' }
   }
   let score = null
   if (override) score = { home: override.home, away: override.away }

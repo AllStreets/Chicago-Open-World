@@ -24,3 +24,14 @@ export function chicagoToUtc(date, hour, minute = 0) {
 export function addDays(date, n) { const [y, m, d] = date.split('-').map(Number); return new Date(Date.UTC(y, m - 1, d + n)).toISOString().slice(0, 10) }
 export function weekday(date) { const [y, m, d] = date.split('-').map(Number); return new Date(Date.UTC(y, m - 1, d)).getUTCDay() }
 export const formatChicago = (ms) => short.format(new Date(ms)).replace(/ /g, ' ').replace(',', '')
+
+// When a game is, said the way a person would: "Tonight 7:05 PM", "Tomorrow 1:20 PM", else with its date
+// ("Sun Oct 4 12:00 PM") — a weekday alone makes a game weeks away read as this week.
+const dayFmt = new Intl.DateTimeFormat('en-US', { timeZone: TZ, weekday: 'short', month: 'short', day: 'numeric' })
+const timeFmt = new Intl.DateTimeFormat('en-US', { timeZone: TZ, hour: 'numeric', minute: '2-digit' })
+export function whenChicago(ms, nowMs = Date.now()) {
+  const d = chicagoDate(ms), today = chicagoDate(nowMs), time = timeFmt.format(new Date(ms)).replace(/\u202f/g, ' ')
+  if (d === today) return `${chicagoParts(ms).hour >= 17 ? 'Tonight' : 'Today'} ${time}`
+  if (d === addDays(today, 1)) return `Tomorrow ${time}`
+  return `${dayFmt.format(new Date(ms)).replace(',', '')} ${time}`
+}

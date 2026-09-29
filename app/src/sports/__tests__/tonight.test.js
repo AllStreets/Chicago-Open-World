@@ -20,7 +20,7 @@ describe('tonight', () => {
   })
   it('labels', () => {
     expect(stateLabel({ state: 'live' })).toBe('LIVE'); expect(stateLabel({ state: 'postgame' })).toBe('FINAL')
-    expect(stateLabel({ state: 'idle', next: g() })).toBe('NEXT THU 7:05 PM'); expect(stateLabel(undefined)).toBe('NO GAMES')
+    expect(stateLabel({ state: 'idle', next: g() }, now)).toMatch(/^NEXT (TONIGHT|TOMORROW|[A-Z]{3} [A-Z]{3} \d+) 7:05 PM$/) // dated (V5 review #1); expect(stateLabel(undefined)).toBe('NO GAMES')
     expect(gameLabel(g())).toBe('MIL @ CHC')
     expect(dataChip({ game: g({ simulated: true }) }, 'LIVE')).toBe('SIMULATED'); expect(dataChip({ game: g() }, 'LIVE')).toBe('ESPN') // provenance, never confused with a game in progress
   })
