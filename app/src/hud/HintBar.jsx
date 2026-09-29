@@ -1,4 +1,4 @@
-const HINTS = [['Drag', 'rotate'], ['Scroll', 'zoom'], ['WASD', 'glide'], ['↑↓', 'pitch'], ['Shift', 'boost'], ['O', 'orbit'], ['1–5', 'time']]
+const HINTS = [['Drag', 'rotate'], ['Scroll', 'zoom'], ['WASD', 'glide'], ['↑↓', 'pitch'], ['Shift', 'boost'], ['O', 'orbit'], ['Q', 'quality'], ['1–5', 'time']]
 
 export default function HintBar() {
   return (

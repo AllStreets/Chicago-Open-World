@@ -36,4 +36,9 @@ describe('Hud', () => {
     rerender(<Hud />)
     expect(screen.getByText(/WORLD DATA UNAVAILABLE/)).toBeInTheDocument()
   })
+  it('Q cycles quality', () => {
+    render(<Hud />)
+    fireEvent.keyDown(window, { code: 'KeyQ' })
+    expect(useStore.getState().quality).toBe('ULTRA')
+  })
 })

@@ -19,4 +19,9 @@ describe('store', () => {
     useStore.getState().setLoadError('manifest 404')
     expect(useStore.getState().load).toMatchObject({ ready: true, error: 'manifest 404' })
   })
+  it('quality defaults to HIGH and can be set', () => {
+    expect(useStore.getState().quality).toBe('HIGH')
+    useStore.getState().setQuality('LOW')
+    expect(useStore.getState().quality).toBe('LOW')
+  })
 })

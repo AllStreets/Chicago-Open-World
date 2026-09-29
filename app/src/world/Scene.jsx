@@ -9,11 +9,15 @@ import Ground from './Ground.jsx'
 import Lake from './Lake.jsx'
 import SkyRig from './SkyRig.jsx'
 import AtlasRig from '../camera/AtlasRig.jsx'
+import PostFX from './PostFX.jsx'
+import PerfWatch from './PerfWatch.jsx'
+import { QUALITY } from '../lib/quality.js'
 
 export default function Scene() {
   const [manifest, setManifest] = useState(null)
   const preset = useStore((s) => s.timePreset)
   const ready = useStore((s) => s.load.ready)
+  const quality = useStore((s) => s.quality)
   const failed = useStore((s) => s.load.error !== null)
   const [now, setNow] = useState(() => new Date())
   const sun = useMemo(() => sunForPreset(preset, now), [preset, now])
@@ -41,11 +45,13 @@ export default function Scene() {
 
   return (
     <>
-      <SkyRig target={sun} sunRef={sunRef} instant={reducedMotion} />
+      <SkyRig target={sun} sunRef={sunRef} instant={reducedMotion} shadowMap={QUALITY[quality].shadowMap} />
       <SafeLoad><Suspense fallback={null}><Lake sunRef={sunRef} /></Suspense></SafeLoad>
       {(manifest || failed) && <Ground ground={groundFiles(manifest)} />}
       {manifest && <City tiles={manifest.tiles} />}
       <AtlasRig />
+      <PostFX />
+      <PerfWatch />
     </>
   )
 }

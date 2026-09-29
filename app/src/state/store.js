@@ -3,6 +3,8 @@ import { create } from 'zustand'
 export const useStore = create((set) => ({
   timePreset: 'LIVE',
   cameraMode: 'FLY',
+  quality: 'HIGH',
+  setQuality: (quality) => set({ quality }),
   readout: { streets: 'STATE & MADISON', altitude: 0, heading: 0 },
   load: { total: 0, done: 0, keys: [], error: null, ready: false },
   setTimePreset: (timePreset) => set({ timePreset }),
