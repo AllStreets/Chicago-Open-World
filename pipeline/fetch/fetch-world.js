@@ -11,9 +11,11 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 const save = (name, data) => writeFileSync(join(CACHE, name), JSON.stringify({ fetchedAt: new Date().toISOString(), data }))
 
 async function getJson(url, init = {}) {
-  for (let attempt = 1; attempt <= 5; attempt++) {
+  for (let attempt = 1; attempt <= 6; attempt++) {
     try {
-      const res = await fetch(url, { ...init, headers: { 'User-Agent': USER_AGENT, ...(init.headers || {}) }, signal: AbortSignal.timeout(240_000) })
+      // Overpass: main endpoint first, mirror on later attempts
+      const u = Array.isArray(url) ? url[attempt <= 3 ? 0 : 1] : url
+      const res = await fetch(u, { ...init, headers: { 'User-Agent': USER_AGENT, ...(init.headers || {}) }, signal: AbortSignal.timeout(240_000) })
       if (res.ok) return await res.json()
       console.warn(`  ! HTTP ${res.status} (attempt ${attempt})`)
     } catch (e) { console.warn(`  ! ${e.message} (attempt ${attempt})`) }
@@ -22,7 +24,7 @@ async function getJson(url, init = {}) {
   throw new Error(`failed: ${String(url).slice(0, 100)}`)
 }
 
-const KINDS = { allbuildings: [4, 6], parts: [2, 3], water: [2, 3], parks: [2, 3], roads: [3, 4], trees: [2, 3], rail: [2, 3] }
+const KINDS = { allbuildings: [6, 8], parts: [2, 3], water: [2, 3], parks: [2, 3], roads: [3, 4], trees: [2, 3], rail: [2, 3] }
 const ENDPOINTS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter']
 
 for (const [kind, [nx, ny]] of Object.entries(KINDS)) {
@@ -31,7 +33,7 @@ for (const [kind, [nx, ny]] of Object.entries(KINDS)) {
     const name = `osm-${kind}-${i}.json`
     if (existsSync(join(CACHE, name))) continue
     const body = new URLSearchParams({ data: overpassQuery(kind, bb) })
-    const data = await getJson(ENDPOINTS[i % 2], { method: 'POST', body })
+    const data = await getJson(ENDPOINTS, { method: 'POST', body })
     save(name, data)
     console.log(`  ✓ ${name} (${data.elements?.length ?? 0})`)
     await sleep(3000)

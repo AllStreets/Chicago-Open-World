@@ -18,8 +18,17 @@ export const FACADE_COLORS = [
 
 const F = Object.fromEntries(FACADE_FAMILIES.map((n, i) => [n, i]))
 
-export function classifyFacade({ height, year, area }) {
+const HOUSE = new Set(['house', 'detached', 'semidetached_house', 'terrace'])
+const INDUSTRIAL = new Set(['industrial', 'warehouse', 'manufacture', 'factory'])
+
+export function classifyFacade({ height, year, area, type }) {
   const known = year > 1800
+  if (type) {
+    if (HOUSE.has(type)) return F['three-flat-brick']
+    if (INDUSTRIAL.has(type)) return F['industrial']
+    if (type === 'church' || type === 'cathedral') return F['loop-limestone']
+    if ((type === 'apartments' || type === 'residential') && height < 20) return known && year < 1940 ? F['prewar-brick'] : F['three-flat-brick']
+  }
   if (height >= 60 && (!known || year >= 1960)) return F['curtain-glass']
   if (height >= 40 && known && year >= 1925 && year < 1960) return F['art-deco']
   if (height >= 40 && known && year < 1925) return F['loop-limestone']

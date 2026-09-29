@@ -22,4 +22,10 @@ describe('classifyFacade', () => {
     expect(classifyFacade({ height: 12, year: 0, area: 6000 })).toBe(id('industrial'))
     expect(classifyFacade({ height: 45, year: 0, area: 1500 })).toBe(id('precast-concrete'))
   })
+  it('uses the OSM building type for neighbourhood buildings', () => {
+    expect(classifyFacade({ height: 9, year: 1905, area: 180, type: 'house' })).toBe(id('three-flat-brick'))
+    expect(classifyFacade({ height: 12, year: 0, area: 900, type: 'warehouse' })).toBe(id('industrial'))
+    expect(classifyFacade({ height: 15, year: 1920, area: 700, type: 'apartments' })).toBe(id('prewar-brick'))
+    expect(classifyFacade({ height: 16, year: 1890, area: 600, type: 'church' })).toBe(id('loop-limestone'))
+  })
 })
