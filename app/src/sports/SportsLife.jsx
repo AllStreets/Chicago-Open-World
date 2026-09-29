@@ -5,6 +5,8 @@ import { useFrame } from '@react-three/fiber'
 import FieldTextures from './FieldTextures.jsx'
 import Crowd from './Crowd.jsx'
 import Scoreboard from './Scoreboard.jsx'
+import WinFlag from './WinFlag.jsx'
+import { flagKind } from './winFlag.js'
 import { boardLines } from './scoreboard.js'
 import Players, { Ball } from './Players.jsx'
 import { uniformColors } from './formations.js'
@@ -45,7 +47,13 @@ function Boards({ venue, st }) {
   useFrame(({ camera }) => { if (group.current) group.current.visible = lifeVisible([camera.position.x, 0, camera.position.z], venue.center, 'HIGH', BOARD_RANGE_M) })
   if (!venue.boards?.length) return null
   const lines = boardLines(venue, st, now, override)
-  return <group ref={group}>{venue.boards.map((b, i) => <Scoreboard key={i} board={b} lines={lines} />)}</group>
+  const kind = venue.flagPole ? flagKind(st) : null
+  return (
+    <group ref={group}>
+      {venue.boards.map((b, i) => <Scoreboard key={i} board={b} lines={lines} />)}
+      {kind && <WinFlag pole={venue.flagPole} normal={venue.boards[0].normal} kind={kind} />}
+    </group>
+  )
 }
 
 function VenueLife({ venue }) {
