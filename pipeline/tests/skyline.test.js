@@ -54,4 +54,14 @@ describe('skyline', () => {
     const r = validateSkyline([], [{ name: 'Far', lat: 42.5, lon: -87.6, heightM: 100 }], { s: 41.8, w: -87.7, n: 41.95, e: -87.59 })
     expect(r.missing).toEqual([])
   })
+  it('ignores antennas and counts crowns (architectural height), and reports how it matched', () => {
+    const sky = [{ name: 'W', lat: 41.88203, lon: -87.62784, heightM: 442 }]
+    const box = [[-20, 20], [20, 20], [20, -20], [-20, -20]], mast = [[0, 0], [1, 0], [1, -1], [0, -1]]
+    const b = [{ centroid: [0, 0], area: 1600, polygons: [{ outer: box, holes: [] }], pieces: [{ outer: box, top: 442 }, { outer: mast, top: 527 }] }]
+    const r = validateSkyline(b, sky, { s: 41.8, w: -87.7, n: 41.95, e: -87.59 })
+    expect(r.wrongHeight).toEqual([])
+    expect(r.matches[0]).toMatchObject({ name: 'W', via: 'contains' })
+    b[0].pieces = [{ outer: box, top: 400 }]; b[0].crownTop = 442
+    expect(validateSkyline(b, sky, { s: 41.8, w: -87.7, n: 41.95, e: -87.59 }).wrongHeight).toEqual([])
+  })
 })

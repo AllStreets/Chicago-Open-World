@@ -65,6 +65,15 @@ describe('OSM joins', () => {
   })
 })
 
+describe('untagged parts', () => {
+  it('a part with no height or levels inherits the building height (not a 10 m default)', () => {
+    const a = normalizeFootprint(row([[sq(0, 0, 20)]]))
+    a.height = 257
+    applyBuildingParts([a], [{ outer: sq(0, 0, 20), holes: [], center: [10, -10], tags: { 'building:part': 'yes' } }])
+    expect(a.parts[0].top).toBe(257)
+  })
+})
+
 describe('hashSeed', () => {
   it('is deterministic and in [0,1)', () => {
     expect(hashSeed('358897')).toBe(hashSeed('358897'))

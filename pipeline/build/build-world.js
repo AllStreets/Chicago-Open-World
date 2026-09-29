@@ -115,15 +115,30 @@ async function main() {
   }
   for (const b of buildings) {
     const h = heroFor.get(b)
-    if (h) { const r = applyHero(b, h); b.pieces = r.pieces; b.extraMeshes = r.extraMeshes; b.hero = h.key }
+    if (h) { const r = applyHero(b, h); b.pieces = r.pieces; b.extraMeshes = r.extraMeshes; b.hero = h.key; b.crownTop = Math.max(0, ...r.extraMeshes.flatMap((m) => m.positions.filter((_, i) => i % 3 === 1)), ...(h.spireCounts ? r.pieces.map((q) => q.top) : [])) }
     else b.pieces = shapePieces(b)
   }
   log(`heroes applied: ${heroFor.size}`)
 
   // ── Skyline validation ─────────────────────────────────────────────────────
   const skyline = loadJson(join(ROOT, 'data', 'skyline.json')).buildings
-  const inWorld = buildings.filter((b) => b.pieces.length && Math.max(...b.pieces.map((p) => p.top)) > 120)
-  const sky = validateSkyline(inWorld, skyline, WORLD_BBOX)
+  let sky = validateSkyline(buildings.filter((b) => b.pieces.length), skyline, WORLD_BBOX)
+  // The skyline list is the authority for the tallest towers: correct non-landmark heights that OSM gets wrong.
+  let fixed = 0
+  for (const m of sky.matches) {
+    const b = m.building
+    if (b.hero || m.via !== 'contains' || Math.abs(m.got - m.expected) / m.expected <= 0.08) continue
+    const minArea = 0.03 * b.area
+    const body = b.pieces.filter((q) => Math.abs(signedArea(q.outer)) >= minArea)
+    const bodyTop = Math.max(...body.map((q) => q.top))
+    const isBody = (q) => Math.abs(signedArea(q.outer)) >= minArea
+    b.pieces = bodyTop > m.expected
+      ? b.pieces.map((q) => (isBody(q) && q.top > m.expected ? { ...q, top: m.expected, base: Math.min(q.base, m.expected - 1) } : q)) // cap every body piece
+      : b.pieces.map((q) => (isBody(q) && q.top === bodyTop ? { ...q, top: m.expected } : q))
+    b.skylineFixed = true; fixed++
+  }
+  if (fixed) sky = validateSkyline(buildings.filter((b) => b.pieces.length), skyline, WORLD_BBOX)
+  log(`skyline heights corrected from the list: ${fixed}`)
   log(`skyline: missing ${sky.missing.length}, wrong height ${sky.wrongHeight.length}`)
   for (const m of sky.missing) console.log(`   missing: ${m}`)
   for (const w of sky.wrongHeight) console.log(`   height: ${w.name} expected ${w.expected} got ${w.got}`)

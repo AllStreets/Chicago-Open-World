@@ -76,7 +76,8 @@ export function applyBuildingParts(buildings, osmParts) {
       outer: p.outer,
       holes: p.holes,
       base: parseHeightTag(p.tags.min_height) ?? 0,
-      top: resolveHeight({ osmHeight: p.tags.height, osmLevels: p.tags['building:levels'] }),
+      // untagged parts inherit the building's height instead of a generic default
+      top: p.tags.height || p.tags['building:levels'] ? resolveHeight({ osmHeight: p.tags.height, osmLevels: p.tags['building:levels'] }) : b.height,
     })
   }
   for (const [b, parts] of byBuilding) {

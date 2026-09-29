@@ -1,6 +1,6 @@
 // pipeline/lib/skyline.js — the tallest-buildings list (from Wikipedia) and validation against the build.
 import { project } from '../../shared/project.js'
-import { pointInRing } from './geom.js'
+import { pointInRing, signedArea } from './geom.js'
 
 const dms = (d, m = 0, s = 0) => Number(d) + Number(m) / 60 + Number(s) / 3600
 
@@ -33,16 +33,25 @@ export function parseTallestWikitext(text) {
 
 const inBox = ({ lat, lon }, { s, w, n, e }) => lat >= s && lat <= n && lon >= w && lon <= e
 
+// Architectural height: body pieces (antenna-sized pieces ignored) plus any crown (spire) meshes.
+export function architecturalTop(b) {
+  const minArea = 0.03 * (b.area ?? 0)
+  const body = b.pieces.filter((q) => !q.outer || Math.abs(signedArea(q.outer)) >= minArea)
+  return Math.max(0, ...(body.length ? body : b.pieces).map((q) => q.top), b.crownTop ?? 0)
+}
+
 export function validateSkyline(buildings, skyline, bbox) {
-  const missing = [], wrongHeight = []
+  const missing = [], wrongHeight = [], matches = []
   for (const e of skyline) {
     if (!inBox(e, bbox)) continue
     const p = project(e.lon, e.lat)
+    let via = 'contains'
     let b = buildings.find((x) => x.polygons.some((q) => pointInRing(p, q.outer)))
-    if (!b) b = buildings.find((x) => Math.hypot(x.centroid[0] - p[0], x.centroid[1] - p[1]) < 60)
+    if (!b) { via = 'near'; b = buildings.find((x) => Math.hypot(x.centroid[0] - p[0], x.centroid[1] - p[1]) < 60) }
     if (!b) { missing.push(e.name); continue }
-    const got = Math.max(...b.pieces.map((q) => q.top))
+    const got = architecturalTop(b)
+    matches.push({ name: e.name, via, building: b, expected: e.heightM, got })
     if (Math.abs(got - e.heightM) / e.heightM > 0.08) wrongHeight.push({ name: e.name, expected: e.heightM, got: Math.round(got * 10) / 10 })
   }
-  return { missing, wrongHeight }
+  return { missing, wrongHeight, matches }
 }

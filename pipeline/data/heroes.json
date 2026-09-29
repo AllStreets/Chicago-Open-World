@@ -21,7 +21,8 @@
       },
       "facade": "curtain-glass",
       "tint": "silver",
-      "crowns": []
+      "crowns": [],
+      "spireCounts": true
     },
     {
       "key": "stregis",
