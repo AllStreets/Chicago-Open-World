@@ -5,7 +5,7 @@ import { convexHull, box, STYLE } from './venue.js'
 import { orientedBox, lathe, DOME, SACRED_STYLE } from './sacred.js'
 import { drum, spire, pyramid } from './crowns.js'
 
-import { add2, mul2, left, bearing, sub3, at3, mesh, tri, merge, tube, disc, ringAround, revolve, place, slab, norm3 } from './meshkit.js'
+import { add2, mul2, left, bearing, sub3, at3, mesh, tri, merge, tube, disc, ringAround, revolve, place, slab, norm3, gridSurface } from './meshkit.js'
 import { LANDMARK_FACADES } from './facadeIds.js'
 export { LANDMARK_FACADES }
 const F = LANDMARK_FACADES
@@ -40,27 +40,36 @@ function wheel(b, spec) {
   ] }
 }
 
-// ── Cloud Gate ───────────────────────────────────────────────────────────────
-function bean(b) {
-  const { c, u, v } = obOf(b)
-  const HL = 10.05, HW = 6.4, S = 48, T = 28, out = mesh()
-  const sec = (s) => {
-    const top = 0.3 + 9.7 * Math.pow(Math.max(0, 1 - s * s), 0.4)
-    const bottom = 3.7 * Math.max(0, 1 - (s / 0.75) ** 2)
-    return { yc: (top + bottom) / 2, hh: (top - bottom) / 2, w: HW * Math.pow(Math.max(0, 1 - s * s), 0.5) }
+// ── Cloud Gate (Anish Kapoor, 2006) ──────────────────────────────────────────
+// https://en.wikipedia.org/wiki/Cloud_Gate — 10 × 20 × 13 m; the omphalos arch is 12 ft (3.7 m) high and its
+// concave apex 27 ft (8.2 m) above the ground; polished type-304 stainless steel.
+export const BEAN = { L: 20, W: 13, H: 10, arch: 3.7, omphalos: 8.2 }
+export function beanMesh(c, u) {
+  const v = left(u), HL = BEAN.L / 2, HW = BEAN.W / 2, S = 64, T = 48
+  const top = (s) => BEAN.H * Math.pow(Math.max(0, 1 - s * s), 0.32)
+  const mid = (s) => 0.45 * top(s)
+  const width = (s) => HW * Math.pow(Math.max(0, 1 - s * s), 0.5)
+  const under = (s, q) => {
+    const arch = BEAN.arch * Math.max(0, 1 - (s / 0.78) ** 2) * (1 - 0.35 * q * q)
+    const d = Math.hypot(s * HL, q * width(s))
+    return Math.max(0, Math.min(top(s) - 1.2, arch + (BEAN.omphalos - BEAN.arch) * Math.exp(-((d / 2.6) ** 2))))
   }
   const pt = (i, j) => {
-    const s = -1 + (2 * i) / S, t = (j / T) * Math.PI * 2, q = sec(s)
-    const g = add2(add2(c, mul2(u, s * HL)), mul2(v, q.w * Math.cos(t)))
-    return { p: [g[0], q.yc + q.hh * Math.sin(t), g[1]], ctr: [c[0] + u[0] * s * HL, q.yc, c[1] + u[1] * s * HL] }
+    const s = -1 + (2 * i) / S, t = (j / T) * Math.PI * 2, q = Math.cos(t), st = Math.sin(t)
+    const y = st >= 0 ? mid(s) + (top(s) - mid(s)) * Math.pow(st, 0.7) : mid(s) + (under(s, q) - mid(s)) * Math.pow(-st, 0.7)
+    const g = add2(add2(c, mul2(u, s * HL)), mul2(v, width(s) * q))
+    return [g[0], y, g[1]]
   }
-  for (let i = 0; i < S; i++) for (let j = 0; j < T; j++) {
-    const a = pt(i, j), b2 = pt(i + 1, j), cc = pt(i + 1, j + 1), d = pt(i, j + 1)
-    const want = sub3(a.p, a.ctr)
-    tri(out, a.p, b2.p, cc.p, want, [i, j], [i + 1, j], [i + 1, j + 1]); tri(out, a.p, cc.p, d.p, want, [i, j], [i + 1, j + 1], [i, j + 1])
+  return gridSurface(pt, S, T, -1, true, { smooth: true })   // −1: ∂s × ∂t points inward here; smooth: a mirror shows facets
+}
+function bean(b) {
+  const { c, u } = obOf(b)
+  return {
+    replace: true, pieces: [], meshes: [],
+    detached: [{ key: 'cloudgate', mesh: beanMesh(c, u), centre: [c[0], c[1]] }],
+    clear: [ringAround(c, 42)], // Grainger Plaza: open granite around the sculpture
+    runtime: { cloudgate: { centre: [c[0], c[1]], radius: 11 }, plazas: [{ key: 'cloudgate', c: [c[0], c[1]], r: 38, avoid: [{ c: [c[0], c[1]], r: 11 }] }] },
   }
-  // AT&T Plaza: open granite around the sculpture
-  return { replace: true, pieces: [], meshes: [{ mesh: out, facade: F.chrome, seed: 0.1, part: 'bean' }], clear: [ringAround(c, 42)] }
 }
 
 // ── Buckingham Fountain (1927) ───────────────────────────────────────────────

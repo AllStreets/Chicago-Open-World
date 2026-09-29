@@ -18,15 +18,25 @@ describe('landmarks', () => {
     expect(meshes.some((m) => m.facade === F.led)).toBe(true)
     expect(meshes.filter((m) => m.part === 'gondola').length).toBeGreaterThanOrEqual(1)
   })
-  it('Cloud Gate: a 20 m chrome bean with an arch you can walk under', () => {
-    const { meshes } = buildLandmark(B(rect(-10, -6.4, 10, 6.4)), { type: 'bean' })
-    expect(meshes.every((m) => m.facade === F.chrome)).toBe(true)
-    const p = pts(meshes)
-    expect(ext(p, 1)[1]).toBeCloseTo(10, 0)
-    const [x0, x1] = ext(p, 0); expect(x1 - x0).toBeGreaterThan(19)
-    // under the middle of the bean the surface starts ~3.7 m up
-    const under = p.filter((q) => Math.abs(q[0]) < 1 && Math.abs(q[2]) < 1)
-    expect(Math.min(...under.map((q) => q[1]))).toBeGreaterThan(3)
+  it('Cloud Gate: 20 × 13 × 10 m, a 3.7 m arch you can walk under, the omphalos apex at 8.2 m', () => {
+    const r = buildLandmark(B(rect(-10, -6.4, 10, 6.4)), { type: 'bean' })
+    expect(r.meshes).toHaveLength(0)
+    const [d] = r.detached
+    expect(d.key).toBe('cloudgate')
+    const p = []; for (let i = 0; i < d.mesh.positions.length; i += 3) p.push([...d.mesh.positions.slice(i, i + 3), ...d.mesh.normals.slice(i, i + 3)])
+    const [x0, x1] = ext(p, 0), [z0, z1] = ext(p, 2)
+    expect(Math.max(x1 - x0, z1 - z0)).toBeCloseTo(20, 0)
+    expect(Math.min(x1 - x0, z1 - z0)).toBeCloseTo(13, 0)
+    expect(ext(p, 1)[1]).toBeCloseTo(10, 1)
+    expect(ext(p, 1)[0]).toBeLessThan(0.3)                                                  // rests on its ends
+    const apex = p.filter((q) => Math.hypot(q[0], q[2]) < 0.8 && q[1] < 9.5)
+    expect(Math.min(...apex.map((q) => q[1]))).toBeCloseTo(8.2, 0)
+    expect(apex.every((q) => q[4] < -0.5)).toBe(true)                                        // the cavity faces down
+    const under = p.filter((q) => Math.hypot(q[0], q[2]) < 3 && q[1] < 9)
+    expect(under.every((q) => q[1] > 3.5)).toBe(true)                                        // headroom under the arch
+    const topV = p.filter((q) => Math.hypot(q[0], q[2]) < 0.8 && q[1] > 9.5)
+    expect(topV.every((q) => q[4] > 0.9)).toBe(true)
+    expect(r.runtime.plazas[0].avoid[0].r).toBe(11)
   })
   it('Buckingham Fountain: a wide pool of water and three stacked basins', () => {
     const { meshes } = buildLandmark({ id: 'f', polygons: [], centroid: [0, 0] }, { type: 'fountain' })

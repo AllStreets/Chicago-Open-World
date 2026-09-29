@@ -53,3 +53,19 @@ describe('meshkit', () => {
     expect(F).toMatchObject({ stone: 25, grid: 26, signal: 27, face: 28, bronze: 29, chrome: 21, water: 22, led: 23 })
   })
 })
+
+describe('gridSurface smooth normals', () => {
+  it('smooth: shared grid points get one averaged normal (a mirror must not show its facets)', async () => {
+    const { gridSurface } = await import('../lib/meshkit.js')
+    const S = 16, T = 24, R = 5
+    const pt = (i, j) => { const th = (i / S) * Math.PI, ph = (j / T) * Math.PI * 2; return [R * Math.sin(th) * Math.cos(ph), R * Math.cos(th), R * Math.sin(th) * Math.sin(ph)] }
+    const m = gridSurface(pt, S, T, -1, true, { smooth: true }), flat = gridSurface(pt, S, T, -1, true)
+    expect(m.positions).toEqual(flat.positions)
+    for (let k = 0; k < m.positions.length; k += 3) {
+      const p = m.positions.slice(k, k + 3), n = m.normals.slice(k, k + 3), f = flat.normals.slice(k, k + 3), l = Math.hypot(...p)
+      if (l < 1e-6 || Math.abs(p[1]) > 4.9) continue // poles are degenerate
+      expect(n[0] * p[0] / l + n[1] * p[1] / l + n[2] * p[2] / l).toBeGreaterThan(0.995) // outward (sign −1) and radial
+      expect(n[0] * f[0] + n[1] * f[1] + n[2] * f[2]).toBeGreaterThan(0.9)               // same side as the flat facet
+    }
+  })
+})

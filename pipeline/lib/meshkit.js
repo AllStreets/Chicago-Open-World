@@ -89,13 +89,32 @@ export function revolve(at, profile, { sides = 48, lobes = 0, depth = 0 } = {}) 
 }
 
 // Parametric patch pt(i, j) for i ∈ [0, S], j ∈ [0, T]; normals = sign · (∂/∂i × ∂/∂j), taken per quad from its diagonals.
-export function gridSurface(pt, S, T, sign = 1, wrapT = true) {
+// { smooth: true }: every grid point takes the average of its four quads' normals (a mirror shows flat facets).
+export function gridSurface(pt, S, T, sign = 1, wrapT = true, { smooth = false } = {}) {
   const out = mesh()
+  const J = (j) => (wrapT ? ((j % T) + T) % T : j)
+  const quadN = (i, j) => { const j1 = wrapT ? (j + 1) % T : j + 1, a = pt(i, j), b = pt(i + 1, j), c = pt(i + 1, j1), d = pt(i, j1); return cross3(sub3(c, a), sub3(d, b)).map((x) => x * sign) }
+  const vN = (i, j) => {
+    const s = [0, 0, 0]
+    for (const [di, dj] of [[0, 0], [-1, 0], [0, -1], [-1, -1]]) {
+      const qi = i + di, qj = wrapT ? J(j + dj) : j + dj
+      if (qi < 0 || qi >= S || qj < 0 || qj >= T) continue
+      const n = quadN(qi, qj); s[0] += n[0]; s[1] += n[1]; s[2] += n[2]
+    }
+    return norm3(s)
+  }
   for (let i = 0; i < S; i++) for (let j = 0; j < T; j++) {
     const j1 = wrapT ? (j + 1) % T : j + 1
     const a = pt(i, j), b = pt(i + 1, j), c = pt(i + 1, j1), d = pt(i, j1)
-    const n = cross3(sub3(c, a), sub3(d, b)).map((x) => x * sign)
+    const n = quadN(i, j), from = out.positions.length
     tri(out, a, b, c, n, [i, j], [i + 1, j], [i + 1, j + 1]); tri(out, a, c, d, n, [i, j], [i + 1, j + 1], [i, j + 1])
+    if (!smooth) continue
+    // tri() may swap b/c to face `n`; set each written vertex's normal from the grid point it sits on
+    const grid = [[i, j], [i + 1, j], [i + 1, j1], [i, j1]], pts = [a, b, c, d]
+    for (let k = from; k < out.positions.length; k += 3) {
+      const p = out.positions.slice(k, k + 3), g = grid[pts.findIndex((q) => q[0] === p[0] && q[1] === p[1] && q[2] === p[2])]
+      const nn = vN(g[0], g[1]); out.normals[k] = nn[0]; out.normals[k + 1] = nn[1]; out.normals[k + 2] = nn[2]
+    }
   }
   return out
 }
