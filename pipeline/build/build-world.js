@@ -21,6 +21,10 @@ import { shapeSacred } from '../lib/sacred.js'
 import { horizonBoxes } from '../lib/horizon.js'
 import { venueZones, filterTrees, assertNoVenueTrees } from '../lib/trees.js'
 import { createBlock, addTileToBlock, blockLayers, blockSidecar } from '../lib/blocks.js'
+import { lakePolygons } from '../lib/lake.js'
+import { bakeShore, SHORE } from '../lib/shore.js'
+import { bakeHeightfield, meshPoints, boundsUnion, HEIGHTFIELD } from '../lib/heightfield.js'
+import { encodeHeights } from '../lib/raster.js'
 import { MANIFEST_VERSION, manifestStamp, sortCacheFiles } from '../lib/manifest.js'
 import { parapetPiece, PARAPET_FACADE } from '../lib/roofs.js'
 import { roofProps } from '../lib/props.js'
@@ -310,8 +314,10 @@ async function main() {
   const shoreX = (near) => Math.max(...cityPts.filter((p) => Math.abs(p[1] - near) < 800).map((p) => p[0]))
   const FAR = 60000, box = (a, b, c, d) => ({ outer: [[a, b], [c, b], [c, d], [a, d]], holes: [] })
   const region = [box(-FAR, -FAR, cMinX + 300, FAR), box(-FAR, -FAR, shoreX(cMinZ), cMinZ + 300), box(-FAR, cMaxZ - 300, shoreX(cMaxZ), FAR)]
+  // Land is solid: enclave holes in the city boundary (other municipalities) are still land, never lake.
+  const landSolid = [...landPolys, ...region].map((p) => ({ outer: p.outer, holes: [] }))
   mkdirSync(join(OUT, 'ground'), { recursive: true })
-  await writeMeshGlb(join(OUT, 'ground', 'land.glb'), flatMesh([...landPolys, ...region], 0))
+  await writeMeshGlb(join(OUT, 'ground', 'land.glb'), flatMesh(landSolid, 0))
   writeFileSync(join(OUT, 'land.json'), JSON.stringify({ rings: [...landPolys, ...region].map((p) => simplifyRing(p.outer, 20).map(([x, z]) => [Math.round(x), Math.round(z)])) }))
   const [x0, z0] = project(WORLD_BBOX.w, WORLD_BBOX.n), [x1, z1] = project(WORLD_BBOX.e, WORLD_BBOX.s)
   // ── Horizon: simple blocks on Chicago's grid beyond the detailed world, streamed like far blocks ──
@@ -331,6 +337,21 @@ async function main() {
     blockList.push({ key: k, file: `blocks/${k}.glb`, horizon: true, bounds: { minX: bx * HSIZE, maxX: (bx + 1) * HSIZE, minZ: bz * HSIZE, maxZ: (bz + 1) * HSIZE } })
   }
   log(`horizon: ${hBoxes.length} buildings in ${hChunks.size} chunks`)
+
+  // ── Lake Michigan, the shoreline texture, the camera heightfield ────────────
+  const lakePolys = lakePolygons({ center: [shoreX(0), 0], land: landSolid, water })
+  const lakeM = flatMesh(lakePolys, GROUND_Y.lake)
+  await writeMeshGlb(join(OUT, 'ground', 'lake.glb'), { ...lakeM, extra: { CALM: new Float32Array(lakeM.positions.length / 3).fill(CALM.lake) } })
+  log(`lake: ${lakePolys.length} polygons, ${lakeM.positions.length / 9} triangles`)
+  const shoreXs = []
+  for (let z = z0; z <= z1; z += 250) shoreXs.push(shoreX(z))
+  const shoreBounds = { minX: Math.min(...shoreXs) - 600, maxX: Math.max(...shoreXs) + 1600, minZ: z0 - 2000, maxZ: z1 + 2000 }
+  const shore = bakeShore({ bounds: shoreBounds, land: [...landSolid, ...breakwaters.map((b) => b.polygons[0])], water })
+  mkdirSync(join(OUT, 'water'), { recursive: true })
+  await sharp(Buffer.from(shore.pixels), { raw: { width: shore.grid.width, height: shore.grid.height, channels: 1 } }).png({ compressionLevel: 9 }).toFile(join(OUT, 'water', 'shore.png'))
+  const hf = bakeHeightfield({ pieces: [...buildings.flatMap((b) => b.pieces), ...hBoxes], points: meshPoints(buildings) }, boundsUnion([...tiles.map((t) => t.bounds), ...blockList.map((b) => b.bounds)]))
+  await sharp(Buffer.from(encodeHeights(hf.heights, HEIGHTFIELD.scale)), { raw: { width: hf.grid.width, height: hf.grid.height, channels: 3 } }).png({ compressionLevel: 9 }).toFile(join(OUT, 'heightfield.png'))
+  log(`shore ${shore.grid.width}×${shore.grid.height} px, heightfield ${hf.grid.width}×${hf.grid.height} px`)
 
   const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2, half = Math.max(x1 - x0, z1 - z0) / 2 + 300
   const mmBounds = { minX: +(cx - half).toFixed(1), minZ: +(cz - half).toFixed(1), maxX: +(cx + half).toFixed(1), maxZ: +(cz + half).toFixed(1) }
@@ -355,7 +376,9 @@ async function main() {
     skyline: { missing: sky.missing, wrongHeight: sky.wrongHeight },
     landmarks: buildings.filter((b) => b.hero).map((b) => ({ key: b.hero, name: heroes.find((h) => h.key === b.hero)?.name ?? b.name, aliases: heroes.find((h) => h.key === b.hero)?.aliases ?? [], x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(b.venueTop ?? 0, ...b.pieces.map((p) => p.top), ...(b.extraMeshes || []).flatMap((m) => m.positions.filter((_, i) => i % 3 === 1)))) })),
     tallest: buildings.filter((b) => !b.hero && b.name && b.pieces.length && Math.max(...b.pieces.map((p) => p.top)) > 150).map((b) => ({ key: b.id, name: b.name, x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(...b.pieces.map((p) => p.top))) })),
-    tiles, blocks: blockList, land: 'ground/land.glb', landMask: 'land.json', minimap: { file: 'minimap.png', bounds: mmBounds, size: 2048 },
+    tiles, blocks: blockList, land: 'ground/land.glb', lake: 'ground/lake.glb', landMask: 'land.json',
+    shore: { file: 'water/shore.png', ...shore.grid, maxDist: SHORE.maxDist },
+    heightfield: { file: 'heightfield.png', ...hf.grid, scale: HEIGHTFIELD.scale }, minimap: { file: 'minimap.png', bounds: mmBounds, size: 2048 },
   }, null, 1))
   log('manifest written')
 }
