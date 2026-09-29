@@ -6,6 +6,9 @@ describe('paletteFor', () => {
     expect(paletteFor(-18).night).toBe(1); expect(paletteFor(-18).stars).toBe(1)
     expect(paletteFor(60).night).toBe(0); expect(paletteFor(60).stars).toBe(0)
   })
+  it('is fully dark (night 1, stars 1) at and below -12°', () => {
+    for (let e = -30; e <= -12; e += 0.5) { expect(paletteFor(e).night).toBe(1); expect(paletteFor(e).stars).toBe(1) }
+  })
   it('never returns NaN or negative values across -90..90', () => {
     for (let e = -90; e <= 90; e += 0.5) {
       const p = paletteFor(e)

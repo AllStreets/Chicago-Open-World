@@ -28,7 +28,7 @@ export default function Ground({ ground }) {
   const mats = useMemo(() => (g ? groundMaterials(g) : null), [g])
   useFrame((_, dt) => {
     if (!mats) return
-    mats.roads.emissiveIntensity = facadeUniforms.uNight.value * 0.18
+    mats.roads.emissiveIntensity = facadeUniforms.uNight.value * 0.07
     if (mats.river.normalMap) mats.river.normalMap.offset.x += dt * 0.004 // slow current, west → east
   })
   if (!mats) return null

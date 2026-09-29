@@ -1,8 +1,8 @@
 // app/src/world/SkyRig.jsx — the living sky: tweened sun, palette-driven light, stars, sky reflections.
 import { useEffect, useMemo, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { Sky, Stars, Environment } from '@react-three/drei'
-import * as THREE from 'three'
+import { Sky, Stars } from '@react-three/drei'
+import SkyEnvironment from './SkyEnvironment.jsx'
 import { paletteFor } from '../lib/skyPalette.js'
 import { stepSun } from '../lib/sunTween.js'
 import { facadeUniforms } from './materials/facadeMaterial.js'
@@ -19,7 +19,6 @@ export default function SkyRig({ target, sunRef, instant = false, shadowMap = 40
   const cur = useRef(target.direction.slice())
   if (!sunRef.current) sunRef.current = cur.current
   const envSun = useMemo(() => target.direction.map((v) => v * DIST), [target])
-  const envNight = paletteFor((target.altitude * 180) / Math.PI)
 
   useFrame(({ camera }, dt) => {
     cur.current = instant ? target.direction.slice() : stepSun(cur.current, target.direction, Math.min(dt, 0.1))
@@ -61,14 +60,8 @@ export default function SkyRig({ target, sunRef, instant = false, shadowMap = 40
         shadow-camera-near={100}
         shadow-camera-far={12000}
       />
-      {/* Sky-lit reflections for glass + river; re-captured when the preset target changes */}
-      <Environment key={envSun.join(',')} frames={1} resolution={128} background={false}>
-        <Sky ref={(o) => o && applySkyGain(o.material, SKY_GAIN)} sunPosition={envSun} turbidity={3.2} rayleigh={1.2} mieCoefficient={0.003} mieDirectionalG={0.82} />
-        <mesh scale={100}>
-          <sphereGeometry args={[1, 16, 8]} />
-          <meshBasicMaterial color={envNight.fog} side={THREE.BackSide} transparent opacity={envNight.night * 0.95} />
-        </mesh>
-      </Environment>
+      {/* Sky-lit reflections for glass + river, captured deterministically every ~2° of sun */}
+      <SkyEnvironment direction={target.direction} gain={SKY_GAIN} />
     </>
   )
 }

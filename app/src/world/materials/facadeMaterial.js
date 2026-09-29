@@ -137,13 +137,15 @@ export async function loadFacadeTextures() {
   const size = 1024
   const [alb, win] = await Promise.all([
     loadLayerArray(list.map((f) => `/textures/${f.albedo}`), size),
-    loadLayerArray(list.map((f) => `/textures/${f.win}`), size, { srgb: false }),
+    loadLayerArray(list.map((f) => `/textures/${f.win}`), size, { srgb: false, fallback: 0 }), // missing mask = no windows
   ])
-  const roof = await new THREE.TextureLoader().loadAsync('/textures/ground/gravel.jpg').catch(() => null)
-  if (roof) { roof.wrapS = roof.wrapT = THREE.RepeatWrapping; roof.colorSpace = THREE.SRGBColorSpace; roof.anisotropy = 8 }
+  // roof gravel loads on its own so it can never hold up the façades
+  new THREE.TextureLoader().loadAsync('/textures/ground/gravel.jpg').then((roof) => {
+    roof.wrapS = roof.wrapT = THREE.RepeatWrapping; roof.colorSpace = THREE.SRGBColorSpace; roof.anisotropy = 8
+    facadeUniforms.uRoof.value = roof
+  }).catch(() => {})
   facadeUniforms.uAlbedo.value = alb
   facadeUniforms.uWin.value = win
-  if (roof) facadeUniforms.uRoof.value = roof
   list.forEach((f) => facadeUniforms.uTile.value[f.index].set(f.tileW, f.tileH, f.bays, f.floors))
   facadeUniforms.uReady.value = 1
 }

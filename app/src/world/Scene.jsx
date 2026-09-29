@@ -44,7 +44,7 @@ export default function Scene() {
     loadManifest().then((r) => {
       if (!r.ok) { setLoadError(r.error); return }
       const g = r.manifest.ground
-      setLoadTotal(r.manifest.tiles.length + Object.keys(g).length + (r.manifest.trees ? 1 : 0) + (r.manifest.columns ? 1 : 0) + (r.manifest.props ? 1 : 0))
+      setLoadTotal(r.manifest.tiles.length + Object.keys(g).length + (r.manifest.trees ? 1 : 0) + (r.manifest.columns ? 1 : 0) + (r.manifest.props ? 1 : 0) + 1) // + façade textures
       setManifest(r.manifest)
       useStore.getState().setManifest(r.manifest)
     })

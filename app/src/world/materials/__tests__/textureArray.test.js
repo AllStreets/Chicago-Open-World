@@ -12,3 +12,13 @@ describe('packLayers', () => {
     expect([...out.slice(16, 20)]).toEqual([0, 0, 255, 255]) // layer 1 starts after layer 0
   })
 })
+
+describe('fallbackLayer', () => {
+  it('fills a missing layer with the given value (0 for window masks, 128 for albedo)', async () => {
+    const { fallbackLayer } = await import('../textureArray.js')
+    const mask = fallbackLayer(2, 0)
+    expect(mask).toHaveLength(16)
+    expect([...mask.slice(0, 4)]).toEqual([0, 0, 0, 255])
+    expect([...fallbackLayer(1, 128)]).toEqual([128, 128, 128, 255])
+  })
+})
