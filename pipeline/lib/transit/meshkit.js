@@ -113,3 +113,39 @@ export function chunksOf(pts, len) {
 
 export const toLayer = (m) => ({ positions: m.positions, normals: m.normals, colors: m.colors, extra: { KIND: new Float32Array(m.kind), ALONG: new Float32Array(m.along) } })
 export const triCount = (m) => m.positions.length / 9
+
+// ── rolling-stock primitives (V4) ─────────────────────────────────────────────
+export function cylinder(m, c, axis, r, halfLen, seg, col, kind, caps = true) {
+  const A = axis === 'x' ? [1, 0, 0] : axis === 'y' ? [0, 1, 0] : [0, 0, 1]
+  const U = axis === 'y' ? [1, 0, 0] : [0, 1, 0], V = cross3(A, U)
+  const at = (k, h) => { const a = (k / seg) * Math.PI * 2; return [0, 1, 2].map((i) => c[i] + A[i] * h + (U[i] * Math.cos(a) + V[i] * Math.sin(a)) * r) }
+  const top = [0, 1, 2].map((i) => c[i] + A[i] * halfLen), bot = [0, 1, 2].map((i) => c[i] - A[i] * halfLen), nA = A.map((v) => -v)
+  for (let k = 0; k < seg; k++) {
+    const mid = ((k + 0.5) / seg) * Math.PI * 2, n = [0, 1, 2].map((i) => U[i] * Math.cos(mid) + V[i] * Math.sin(mid))
+    quad(m, at(k, -halfLen), at(k + 1, -halfLen), at(k + 1, halfLen), at(k, halfLen), n, col, kind)
+    if (caps) { tri(m, top, at(k, halfLen), at(k + 1, halfLen), A, col, kind); tri(m, bot, at(k + 1, -halfLen), at(k, -halfLen), nA, col, kind) }
+  }
+}
+
+export function extrudeX(m, profile, x0, x1, col, kind, { caps = [true, true] } = {}) {
+  const cz = profile.reduce((a, p) => a + p[0], 0) / profile.length, cy = profile.reduce((a, p) => a + p[1], 0) / profile.length
+  profile.forEach(([z0, y0], k) => {
+    const [z1, y1] = profile[(k + 1) % profile.length]
+    let n = unit3([0, z1 - z0, -(y1 - y0)])
+    if (n[1] * ((y0 + y1) / 2 - cy) + n[2] * ((z0 + z1) / 2 - cz) < 0) n = n.map((v) => -v)
+    quad(m, [x0, y0, z0], [x1, y0, z0], [x1, y1, z1], [x0, y1, z1], n, col, kind)
+    if (caps[0]) tri(m, [x0, cy, cz], [x0, y0, z0], [x0, y1, z1], [-1, 0, 0], col, kind)
+    if (caps[1]) tri(m, [x1, cy, cz], [x1, y0, z0], [x1, y1, z1], [1, 0, 0], col, kind)
+  })
+}
+
+const facing = (n, mid, from) => (n[0] * (mid[0] - from[0]) + n[1] * (mid[1] - from[1]) + n[2] * (mid[2] - from[2]) < 0 ? n.map((v) => -v) : n)
+export function quadFacing(m, a, b, c, d, from, col, kind) {
+  const n = unit3(cross3([c[0] - a[0], c[1] - a[1], c[2] - a[2]], [d[0] - b[0], d[1] - b[1], d[2] - b[2]]))
+  const mid = [0, 1, 2].map((i) => (a[i] + b[i] + c[i] + d[i]) / 4)
+  quad(m, a, b, c, d, facing(n, mid, from), col, kind)
+}
+export function triFacing(m, a, b, c, from, col, kind) {
+  const n = unit3(cross3([b[0] - a[0], b[1] - a[1], b[2] - a[2]], [c[0] - a[0], c[1] - a[1], c[2] - a[2]]))
+  tri(m, a, b, c, facing(n, [0, 1, 2].map((i) => (a[i] + b[i] + c[i]) / 3), from), col, kind)
+}

@@ -46,3 +46,28 @@ describe('meshkit', () => {
     expect(l.colors).toHaveLength(18); expect(triCount(m)).toBe(2)
   })
 })
+
+import { cylinder, extrudeX, quadFacing } from '../lib/transit/meshkit.js'
+
+describe('meshkit primitives for rolling stock (V4)', () => {
+  it('a wheel: 4·seg triangles, touching the rail at y = 0', () => {
+    const m = createMesh()
+    cylinder(m, [0, 0.35, 0], 'z', 0.35, 0.07, 32, [1, 1, 1], KIND.dark)
+    expect(triCount(m)).toBe(128)
+    expect(Math.min(...m.positions.filter((_, i) => i % 3 === 1))).toBeCloseTo(0, 9)
+  })
+  it('extrudeX: normals point away from the profile, caps face ±X', () => {
+    const m = createMesh()
+    extrudeX(m, [[1, 0], [1, 2], [-1, 2], [-1, 0]], -5, 5, [1, 1, 1], KIND.stainless)
+    for (let i = 0; i < m.positions.length / 3; i++) {
+      const p = m.positions.slice(i * 3, i * 3 + 3), n = m.normals.slice(i * 3, i * 3 + 3)
+      expect(p[0] * n[0] + (p[1] - 1) * n[1] + p[2] * n[2]).toBeGreaterThan(0)
+    }
+    expect(triCount(m)).toBe(4 * 2 + 2 * 4)
+  })
+  it('quadFacing orients a slanted quad away from a point inside', () => {
+    const m = createMesh()
+    quadFacing(m, [5, 1, -1], [5, 1, 1], [4.7, 3, 1], [4.7, 3, -1], [0, 2, 0], [1, 1, 1], KIND.glass)
+    expect(m.normals[0]).toBeGreaterThan(0.9)
+  })
+})

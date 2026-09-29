@@ -1,40 +1,521 @@
 {
   "sources": {
-    "ctaColours": "CTA GTFS routes.txt route_color (C60C30, 00A1DE, 62361B, 009B3A, F9461C, E27EA6, 522398, F9E300) — https://www.transitchicago.com/downloads/sch_data/google_transit.zip",
-    "metraColour": "Metra brand blue, single colour per spec Addendum B.3 / backlog default 3 — https://metra.com/",
-    "loopJunctions": "Chicago-L.org, The Loop — junctions and interlocking towers — https://www.chicago-l.org/operations/lines/loop.html",
-    "routes": "OpenStreetMap route relations (ODbL) via Overpass — https://www.openstreetmap.org/copyright"
+    "ctaColours": "CTA GTFS routes.txt route_color (C60C30, 00A1DE, 62361B, 009B3A, F9461C, E27EA6, 522398, F9E300) \u2014 https://www.transitchicago.com/downloads/sch_data/google_transit.zip",
+    "metraColour": "Metra brand blue, single colour per spec Addendum B.3 / backlog default 3 \u2014 https://metra.com/",
+    "loopJunctions": "Chicago-L.org, The Loop \u2014 junctions and interlocking towers \u2014 https://www.chicago-l.org/operations/lines/loop.html",
+    "routes": "OpenStreetMap route relations (ODbL) via Overpass \u2014 https://www.openstreetmap.org/copyright",
+    "stockSources": "Car dimensions per model: see each rollingStock entry's source \u2014 https://en.wikipedia.org/wiki/Chicago_%22L%22#Rolling_stock"
   },
   "lines": [
-    { "id": "red", "name": "Red Line", "operator": "cta", "refs": ["red"], "names": ["red line"], "colour": "#c60c30", "glow": 1.0, "source": "ctaColours", "expect": { "inBounds": true, "minSegments": 6, "minKm": 6, "maxKm": 90 } },
-    { "id": "blue", "name": "Blue Line", "operator": "cta", "refs": ["blue"], "names": ["blue line"], "colour": "#00a1de", "glow": 1.0, "source": "ctaColours", "expect": { "inBounds": true, "minSegments": 6, "minKm": 6, "maxKm": 90 } },
-    { "id": "brown", "name": "Brown Line", "operator": "cta", "refs": ["brown", "brn"], "names": ["brown line"], "colour": "#62361b", "glow": 1.0, "source": "ctaColours", "expect": { "inBounds": true, "minSegments": 6, "minKm": 6, "maxKm": 90 } },
-    { "id": "green", "name": "Green Line", "operator": "cta", "refs": ["green", "g"], "names": ["green line"], "colour": "#009b3a", "glow": 1.0, "source": "ctaColours", "expect": { "inBounds": true, "minSegments": 6, "minKm": 6, "maxKm": 90 } },
-    { "id": "orange", "name": "Orange Line", "operator": "cta", "refs": ["orange", "org"], "names": ["orange line"], "colour": "#f9461c", "glow": 1.0, "source": "ctaColours", "expect": { "inBounds": true, "minSegments": 6, "minKm": 6, "maxKm": 90 } },
-    { "id": "pink", "name": "Pink Line", "operator": "cta", "refs": ["pink"], "names": ["pink line"], "colour": "#e27ea6", "glow": 1.0, "source": "ctaColours", "expect": { "inBounds": true, "minSegments": 6, "minKm": 6, "maxKm": 90 } },
-    { "id": "purple", "name": "Purple Line", "operator": "cta", "refs": ["purple", "p"], "names": ["purple line"], "colour": "#522398", "glow": 1.0, "source": "ctaColours", "expect": { "inBounds": true, "minSegments": 6, "minKm": 6, "maxKm": 90 } },
-    { "id": "yellow", "name": "Yellow Line", "operator": "cta", "refs": ["yellow", "y"], "names": ["yellow line"], "colour": "#f9e300", "glow": 1.0, "source": "ctaColours", "expect": { "inBounds": false } },
-    { "id": "up-n", "name": "Union Pacific North", "operator": "metra", "refs": ["up-n", "upn"], "names": ["union pacific north"], "colour": "#005596", "glow": 0.55, "source": "metraColour", "expect": { "inBounds": true, "minSegments": 2, "minKm": 2, "maxKm": 70 } },
-    { "id": "up-nw", "name": "Union Pacific Northwest", "operator": "metra", "refs": ["up-nw", "upnw"], "names": ["union pacific northwest"], "colour": "#005596", "glow": 0.55, "source": "metraColour", "expect": { "inBounds": true, "minSegments": 2, "minKm": 2, "maxKm": 70 } },
-    { "id": "up-w", "name": "Union Pacific West", "operator": "metra", "refs": ["up-w", "upw"], "names": ["union pacific west"], "colour": "#005596", "glow": 0.55, "source": "metraColour", "expect": { "inBounds": true, "minSegments": 2, "minKm": 2, "maxKm": 70 } },
-    { "id": "md-n", "name": "Milwaukee District North", "operator": "metra", "refs": ["md-n", "mdn"], "names": ["milwaukee district north"], "colour": "#005596", "glow": 0.55, "source": "metraColour", "expect": { "inBounds": true, "minSegments": 2, "minKm": 2, "maxKm": 70 } },
-    { "id": "md-w", "name": "Milwaukee District West", "operator": "metra", "refs": ["md-w", "mdw"], "names": ["milwaukee district west"], "colour": "#005596", "glow": 0.55, "source": "metraColour", "expect": { "inBounds": true, "minSegments": 2, "minKm": 2, "maxKm": 70 } },
-    { "id": "ncs", "name": "North Central Service", "operator": "metra", "refs": ["ncs"], "names": ["north central service"], "colour": "#005596", "glow": 0.55, "source": "metraColour", "expect": { "inBounds": true, "minSegments": 2, "minKm": 2, "maxKm": 70 } },
-    { "id": "bnsf", "name": "BNSF", "operator": "metra", "refs": ["bnsf"], "names": ["bnsf"], "colour": "#005596", "glow": 0.55, "source": "metraColour", "expect": { "inBounds": true, "minSegments": 2, "minKm": 2, "maxKm": 70 } },
-    { "id": "hc", "name": "Heritage Corridor", "operator": "metra", "refs": ["hc"], "names": ["heritage corridor"], "colour": "#005596", "glow": 0.55, "source": "metraColour", "expect": { "inBounds": true, "minSegments": 2, "minKm": 2, "maxKm": 70 } },
-    { "id": "sws", "name": "SouthWest Service", "operator": "metra", "refs": ["sws"], "names": ["southwest service"], "colour": "#005596", "glow": 0.55, "source": "metraColour", "expect": { "inBounds": true, "minSegments": 2, "minKm": 2, "maxKm": 70 } },
-    { "id": "ri", "name": "Rock Island", "operator": "metra", "refs": ["ri"], "names": ["rock island"], "colour": "#005596", "glow": 0.55, "source": "metraColour", "expect": { "inBounds": true, "minSegments": 2, "minKm": 2, "maxKm": 70 } },
-    { "id": "me", "name": "Metra Electric", "operator": "metra", "refs": ["me"], "names": ["metra electric"], "colour": "#005596", "glow": 0.55, "source": "metraColour", "expect": { "inBounds": true, "minSegments": 2, "minKm": 2, "maxKm": 70 } }
+    {
+      "id": "red",
+      "name": "Red Line",
+      "operator": "cta",
+      "refs": [
+        "red"
+      ],
+      "names": [
+        "red line"
+      ],
+      "colour": "#c60c30",
+      "glow": 1.0,
+      "source": "ctaColours",
+      "expect": {
+        "inBounds": true,
+        "minSegments": 6,
+        "minKm": 6,
+        "maxKm": 90
+      }
+    },
+    {
+      "id": "blue",
+      "name": "Blue Line",
+      "operator": "cta",
+      "refs": [
+        "blue"
+      ],
+      "names": [
+        "blue line"
+      ],
+      "colour": "#00a1de",
+      "glow": 1.0,
+      "source": "ctaColours",
+      "expect": {
+        "inBounds": true,
+        "minSegments": 6,
+        "minKm": 6,
+        "maxKm": 90
+      }
+    },
+    {
+      "id": "brown",
+      "name": "Brown Line",
+      "operator": "cta",
+      "refs": [
+        "brown",
+        "brn"
+      ],
+      "names": [
+        "brown line"
+      ],
+      "colour": "#62361b",
+      "glow": 1.0,
+      "source": "ctaColours",
+      "expect": {
+        "inBounds": true,
+        "minSegments": 6,
+        "minKm": 6,
+        "maxKm": 90
+      }
+    },
+    {
+      "id": "green",
+      "name": "Green Line",
+      "operator": "cta",
+      "refs": [
+        "green",
+        "g"
+      ],
+      "names": [
+        "green line"
+      ],
+      "colour": "#009b3a",
+      "glow": 1.0,
+      "source": "ctaColours",
+      "expect": {
+        "inBounds": true,
+        "minSegments": 6,
+        "minKm": 6,
+        "maxKm": 90
+      }
+    },
+    {
+      "id": "orange",
+      "name": "Orange Line",
+      "operator": "cta",
+      "refs": [
+        "orange",
+        "org"
+      ],
+      "names": [
+        "orange line"
+      ],
+      "colour": "#f9461c",
+      "glow": 1.0,
+      "source": "ctaColours",
+      "expect": {
+        "inBounds": true,
+        "minSegments": 6,
+        "minKm": 6,
+        "maxKm": 90
+      }
+    },
+    {
+      "id": "pink",
+      "name": "Pink Line",
+      "operator": "cta",
+      "refs": [
+        "pink"
+      ],
+      "names": [
+        "pink line"
+      ],
+      "colour": "#e27ea6",
+      "glow": 1.0,
+      "source": "ctaColours",
+      "expect": {
+        "inBounds": true,
+        "minSegments": 6,
+        "minKm": 6,
+        "maxKm": 90
+      }
+    },
+    {
+      "id": "purple",
+      "name": "Purple Line",
+      "operator": "cta",
+      "refs": [
+        "purple",
+        "p"
+      ],
+      "names": [
+        "purple line"
+      ],
+      "colour": "#522398",
+      "glow": 1.0,
+      "source": "ctaColours",
+      "expect": {
+        "inBounds": true,
+        "minSegments": 6,
+        "minKm": 6,
+        "maxKm": 90
+      }
+    },
+    {
+      "id": "yellow",
+      "name": "Yellow Line",
+      "operator": "cta",
+      "refs": [
+        "yellow",
+        "y"
+      ],
+      "names": [
+        "yellow line"
+      ],
+      "colour": "#f9e300",
+      "glow": 1.0,
+      "source": "ctaColours",
+      "expect": {
+        "inBounds": false
+      }
+    },
+    {
+      "id": "up-n",
+      "name": "Union Pacific North",
+      "operator": "metra",
+      "refs": [
+        "up-n",
+        "upn"
+      ],
+      "names": [
+        "union pacific north"
+      ],
+      "colour": "#005596",
+      "glow": 0.55,
+      "source": "metraColour",
+      "expect": {
+        "inBounds": true,
+        "minSegments": 2,
+        "minKm": 2,
+        "maxKm": 70
+      }
+    },
+    {
+      "id": "up-nw",
+      "name": "Union Pacific Northwest",
+      "operator": "metra",
+      "refs": [
+        "up-nw",
+        "upnw"
+      ],
+      "names": [
+        "union pacific northwest"
+      ],
+      "colour": "#005596",
+      "glow": 0.55,
+      "source": "metraColour",
+      "expect": {
+        "inBounds": true,
+        "minSegments": 2,
+        "minKm": 2,
+        "maxKm": 70
+      }
+    },
+    {
+      "id": "up-w",
+      "name": "Union Pacific West",
+      "operator": "metra",
+      "refs": [
+        "up-w",
+        "upw"
+      ],
+      "names": [
+        "union pacific west"
+      ],
+      "colour": "#005596",
+      "glow": 0.55,
+      "source": "metraColour",
+      "expect": {
+        "inBounds": true,
+        "minSegments": 2,
+        "minKm": 2,
+        "maxKm": 70
+      }
+    },
+    {
+      "id": "md-n",
+      "name": "Milwaukee District North",
+      "operator": "metra",
+      "refs": [
+        "md-n",
+        "mdn"
+      ],
+      "names": [
+        "milwaukee district north"
+      ],
+      "colour": "#005596",
+      "glow": 0.55,
+      "source": "metraColour",
+      "expect": {
+        "inBounds": true,
+        "minSegments": 2,
+        "minKm": 2,
+        "maxKm": 70
+      }
+    },
+    {
+      "id": "md-w",
+      "name": "Milwaukee District West",
+      "operator": "metra",
+      "refs": [
+        "md-w",
+        "mdw"
+      ],
+      "names": [
+        "milwaukee district west"
+      ],
+      "colour": "#005596",
+      "glow": 0.55,
+      "source": "metraColour",
+      "expect": {
+        "inBounds": true,
+        "minSegments": 2,
+        "minKm": 2,
+        "maxKm": 70
+      }
+    },
+    {
+      "id": "ncs",
+      "name": "North Central Service",
+      "operator": "metra",
+      "refs": [
+        "ncs"
+      ],
+      "names": [
+        "north central service"
+      ],
+      "colour": "#005596",
+      "glow": 0.55,
+      "source": "metraColour",
+      "expect": {
+        "inBounds": true,
+        "minSegments": 2,
+        "minKm": 2,
+        "maxKm": 70
+      }
+    },
+    {
+      "id": "bnsf",
+      "name": "BNSF",
+      "operator": "metra",
+      "refs": [
+        "bnsf"
+      ],
+      "names": [
+        "bnsf"
+      ],
+      "colour": "#005596",
+      "glow": 0.55,
+      "source": "metraColour",
+      "expect": {
+        "inBounds": true,
+        "minSegments": 2,
+        "minKm": 2,
+        "maxKm": 70
+      }
+    },
+    {
+      "id": "hc",
+      "name": "Heritage Corridor",
+      "operator": "metra",
+      "refs": [
+        "hc"
+      ],
+      "names": [
+        "heritage corridor"
+      ],
+      "colour": "#005596",
+      "glow": 0.55,
+      "source": "metraColour",
+      "expect": {
+        "inBounds": true,
+        "minSegments": 2,
+        "minKm": 2,
+        "maxKm": 70
+      }
+    },
+    {
+      "id": "sws",
+      "name": "SouthWest Service",
+      "operator": "metra",
+      "refs": [
+        "sws"
+      ],
+      "names": [
+        "southwest service"
+      ],
+      "colour": "#005596",
+      "glow": 0.55,
+      "source": "metraColour",
+      "expect": {
+        "inBounds": true,
+        "minSegments": 2,
+        "minKm": 2,
+        "maxKm": 70
+      }
+    },
+    {
+      "id": "ri",
+      "name": "Rock Island",
+      "operator": "metra",
+      "refs": [
+        "ri"
+      ],
+      "names": [
+        "rock island"
+      ],
+      "colour": "#005596",
+      "glow": 0.55,
+      "source": "metraColour",
+      "expect": {
+        "inBounds": true,
+        "minSegments": 2,
+        "minKm": 2,
+        "maxKm": 70
+      }
+    },
+    {
+      "id": "me",
+      "name": "Metra Electric",
+      "operator": "metra",
+      "refs": [
+        "me"
+      ],
+      "names": [
+        "metra electric"
+      ],
+      "colour": "#005596",
+      "glow": 0.55,
+      "source": "metraColour",
+      "expect": {
+        "inBounds": true,
+        "minSegments": 2,
+        "minKm": 2,
+        "maxKm": 70
+      }
+    }
   ],
   "junctions": [
-    { "name": "Tower 18 (Lake & Wells)", "lat": 41.88574, "lon": -87.6338, "size": 36, "tower": true, "source": "loopJunctions" },
-    { "name": "Lake & Wabash junction", "lat": 41.88574, "lon": -87.6261, "size": 27, "tower": false, "source": "loopJunctions" },
-    { "name": "Tower 12 (Van Buren & Wabash)", "lat": 41.8768, "lon": -87.626, "size": 27, "tower": true, "source": "loopJunctions" },
-    { "name": "Van Buren & Wells junction", "lat": 41.8768, "lon": -87.6337, "size": 27, "tower": false, "source": "loopJunctions" }
+    {
+      "name": "Tower 18 (Lake & Wells)",
+      "lat": 41.88574,
+      "lon": -87.6338,
+      "size": 36,
+      "tower": true,
+      "source": "loopJunctions"
+    },
+    {
+      "name": "Lake & Wabash junction",
+      "lat": 41.88574,
+      "lon": -87.6261,
+      "size": 27,
+      "tower": false,
+      "source": "loopJunctions"
+    },
+    {
+      "name": "Tower 12 (Van Buren & Wabash)",
+      "lat": 41.8768,
+      "lon": -87.626,
+      "size": 27,
+      "tower": true,
+      "source": "loopJunctions"
+    },
+    {
+      "name": "Van Buren & Wells junction",
+      "lat": 41.8768,
+      "lon": -87.6337,
+      "size": 27,
+      "tower": false,
+      "source": "loopJunctions"
+    }
   ],
   "stationLooks": {
-    "cta": { "finish": "concrete", "base": "#a7a39a", "glass": "#1c2630", "mullion": "#2b3137", "spandrel": "#3a4540", "material": "Cast-concrete platform deck, painted steel canopy and posts, dark-glass windbreaks (CTA elevated stations)", "source": ["https://en.wikipedia.org/wiki/Chicago_%22L%22", "https://www.transitchicago.com/"] },
-    "metra": { "finish": "concrete", "base": "#b0aca3", "glass": "#223038", "mullion": "#394049", "spandrel": "#5b6770", "material": "Concrete low-level platforms with steel-frame shelters and grey standing-seam canopies (Metra city stations)", "source": ["https://en.wikipedia.org/wiki/Metra", "https://metra.com/"] }
+    "cta": {
+      "finish": "concrete",
+      "base": "#a7a39a",
+      "glass": "#1c2630",
+      "mullion": "#2b3137",
+      "spandrel": "#3a4540",
+      "material": "Cast-concrete platform deck, painted steel canopy and posts, dark-glass windbreaks (CTA elevated stations)",
+      "source": [
+        "https://en.wikipedia.org/wiki/Chicago_%22L%22",
+        "https://www.transitchicago.com/"
+      ]
+    },
+    "metra": {
+      "finish": "concrete",
+      "base": "#b0aca3",
+      "glass": "#223038",
+      "mullion": "#394049",
+      "spandrel": "#5b6770",
+      "material": "Concrete low-level platforms with steel-frame shelters and grey standing-seam canopies (Metra city stations)",
+      "source": [
+        "https://en.wikipedia.org/wiki/Metra",
+        "https://metra.com/"
+      ]
+    }
   },
-  "requiredStations": ["clark\\s*/\\s*lake", "merchandise mart", "washington\\s*/\\s*wells", "quincy", "adams\\s*/\\s*wabash", "roosevelt", "fullerton", "belmont", "sedgwick", "ogilvie", "union station"]
+  "requiredStations": [
+    "clark\\s*/\\s*lake",
+    "merchandise mart",
+    "washington\\s*/\\s*wells",
+    "quincy",
+    "adams\\s*/\\s*wabash",
+    "roosevelt",
+    "fullerton",
+    "belmont",
+    "sedgwick",
+    "ogilvie",
+    "union station"
+  ],
+  "rollingStock": {
+    "cta5000": {
+      "name": "CTA 5000-series",
+      "length": 14.63,
+      "width": 2.84,
+      "height": 3.66,
+      "floor": 1.09,
+      "truckCentres": 10.06,
+      "wheelbase": 2.08,
+      "wheel": 0.711,
+      "doorWidth": 1.27,
+      "source": "https://en.wikipedia.org/wiki/5000-series_(CTA)"
+    },
+    "cta7000": {
+      "name": "CTA 7000-series",
+      "length": 14.63,
+      "width": 2.84,
+      "height": 3.66,
+      "floor": 1.09,
+      "truckCentres": 10.06,
+      "wheelbase": 2.08,
+      "wheel": 0.711,
+      "doorWidth": 1.27,
+      "source": "https://en.wikipedia.org/wiki/7000-series_(CTA)"
+    },
+    "metraCoach": {
+      "name": "Metra bi-level gallery car",
+      "length": 25.91,
+      "width": 3.2,
+      "height": 4.83,
+      "floor": 1.22,
+      "truckCentres": 18.14,
+      "wheelbase": 2.59,
+      "wheel": 0.914,
+      "doorWidth": 1.5,
+      "source": "https://en.wikipedia.org/wiki/Gallery_car"
+    },
+    "metraLoco": {
+      "name": "Metra MP36PH-3C",
+      "length": 20.98,
+      "width": 3.25,
+      "height": 4.7,
+      "floor": 1.75,
+      "truckCentres": 12.8,
+      "wheelbase": 2.72,
+      "wheel": 1.016,
+      "doorWidth": 0.6,
+      "source": "https://en.wikipedia.org/wiki/MPI_MPXpress"
+    }
+  }
 }
