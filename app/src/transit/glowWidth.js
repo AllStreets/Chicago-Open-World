@@ -1,5 +1,5 @@
 // app/src/transit/glowWidth.js — how wide the line glow is: its physical strip up close, never under 2 px far away (B.3).
-export const GLOW_DEFAULTS = { minPx: 2, baseHalfM: 0.18, dayLevel: 0.15 }
+export const GLOW_DEFAULTS = { minPx: 3, baseHalfM: 0.18, dayLevel: 0.2 }
 
 export const worldPerPixel = (dist, tanHalfFov, viewportH) => (2 * Math.max(0, dist) * tanHalfFov) / Math.max(1, viewportH)
 

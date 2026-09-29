@@ -21,10 +21,10 @@ describe('glow width', () => {
     expect(Number.isFinite(glowHalfWidth(500, T(42), 0))).toBe(true)
     expect(Number.isFinite(glowHalfWidth(-5, T(42), 1000))).toBe(true)
   })
-  it('glow level: 15 % by day, full at night, clamped; GLSL mirrors the constants', () => {
-    expect(glowLevel(0)).toBeCloseTo(0.15); expect(glowLevel(1)).toBe(1); expect(glowLevel(3)).toBe(1)
-    expect(glowLevel(-1)).toBeCloseTo(0.15); expect(glowLevel(0.5)).toBeCloseTo(0.575)
+  it('glow level: 20 % by day (tuned from 15 %, evaluate-and-revert), full at night, clamped; GLSL mirrors the constants', () => {
+    expect(glowLevel(0)).toBeCloseTo(0.2); expect(glowLevel(1)).toBe(1); expect(glowLevel(3)).toBe(1)
+    expect(glowLevel(-1)).toBeCloseTo(0.2); expect(glowLevel(0.5)).toBeCloseTo(0.6)
     expect(GLOW_GLSL).toContain('float owGlowHalfWidth(')
-    expect(GLOW_GLSL).toContain('0.150 + 0.850 * clamp(night, 0.0, 1.0)')
+    expect(GLOW_GLSL).toContain('0.200 + 0.800 * clamp(night, 0.0, 1.0)')
   })
 })
