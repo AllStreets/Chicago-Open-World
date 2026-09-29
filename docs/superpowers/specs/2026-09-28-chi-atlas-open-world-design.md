@@ -309,3 +309,150 @@ Phase 3 (Blender) now **refines** these (sculptural detail) instead of creating 
 - Shadow camera follows the camera target (snapped to 50 m).
 - Budgets: first load < 60 MB; total `public/world` < 200 MB; HIGH ≤ 300 draw calls & ≤ 4 M triangles/frame incl. shadow pass on M-series; 60 fps target.
 - Camera: target clamped to the world bounds rectangle; max camera–target distance 6 km.
+
+---
+
+## Addendum B — Vision pass: water, transit, sports life, landmark detail, true colours (approved 2026-09-29)
+
+Requested 2026-09-29 after Phase 2.5. The exhaustive item list, with a clause-by-clause trace of the request, is `docs/superpowers/backlog/2026-09-29-vision-backlog.md`; its IDs (B1…I-7.2) are cited below. Execution order and push points: `docs/superpowers/plans/2026-09-29-vision-master-plan.md`.
+
+**Mode.** No human in the loop: the executor decides and records rulings. Coding starts only after the user's explicit "go ahead". This addendum supersedes §5 *Water*, §5 *L tracks*, §5 *Budgets*, §10 *Trains* and §13 where they conflict.
+
+### B.1 Standing rules
+1. **Realism with a restrained neon accent.**
+   - Geometry, colours and materials are faithful and sourced (every value carries a `source` in pipeline data).
+   - Transit lines add a glow in their official colour: at most ~15 % by day, full at dusk and night. It must stay legible from street level, bird's-eye and every angle in between, and never look cartoonish.
+2. **Evaluate and revert.** Every colour, material or glow change is screenshotted before and after at fixed poses (day, dusk, night). A change that looks unpleasing is reverted in its own commit, with a ledger line.
+3. **README is history.**
+   - Existing images are never modified.
+   - New shots get new filenames.
+   - A "How it came together" gallery runs chronologically from Phase 1.
+4. **Human-first.** Every feature has a button, a ⌘K entry and a help-card line. URL parameters are for tests only.
+5. **Live data degrades gracefully.**
+   - Every feed has a simulated or scheduled fallback and a `LIVE` / `SIMULATED` chip.
+   - No error UI.
+   - At runtime, all feeds go through the CHI ATLAS API. Build-time fetches are allowed and cached.
+6. **Budgets** (supersede §5 and A.5):
+   - HIGH: ≤ 900 draw calls per frame, including the shadow and post passes, measured at the wide Streeterville and Loop poses.
+   - ≤ 4 M triangles per frame; 60 fps on M-series; ≤ 200 MB `public/world`.
+   - Every new system ships with a LOW-quality fallback.
+   - Additions per system: transit ≤ 12 calls, crowds and players ≤ 3 per venue, water ≤ 2 (one shared reflection pass).
+
+### B.2 Water (backlog B1–B10)
+- **One water material** (`WaterSurface`) covers everything:
+  - the Lake Michigan plane;
+  - every OSM water polygon: river, harbours, lagoons.
+- **Shared reflection:** a single planar-reflection render per frame (mirror about y = 0, ½ resolution at HIGH, off at LOW). Every water mesh samples it in screen space, so the lake and harbour reflect the same skyline.
+- **Calm factor:** the pipeline writes a per-vertex `_CALM` value (river 0.6, harbour or lagoon 0.35, open lake 1.0). It scales normal-map amplitude and speed; colour and reflection are shared.
+- **Seams and levels:**
+  - The lake plane moves to y = 0.02, just under the polygon water at 0.04.
+  - Land keeps its constant depth nudge.
+  - A shoreline tint (foam and depth) comes from a distance-to-shore texture baked by the pipeline (`water/shore.png`, 4 m/px over the lake band).
+- **Extent:** the lake plane grows to 120 km east–west and 160 km north–south, centred on the shoreline. Its far colour blends into the sky's horizon colour, so it has no grey band and no edge at a 6 km camera distance.
+- **Other effects:**
+  - Night reflections come free from the shared reflection pass: lit windows, bridge lights, track glow.
+  - The river still turns green on March 17, driven by a date function tested in isolation.
+
+### B.3 Transit (C1–C20)
+- **Data (build time)**, `pipeline/build/build-transit.js` → `app/public/world/transit.json` plus per-tile track meshes:
+  - Lines come from OSM `route=subway|light_rail|train` relations inside the bounds: CTA Red, Blue, Brown, Green, Orange, Pink, Purple, and the Metra lines.
+  - Each line has an ordered centreline per direction and track, a `grade` per segment (`elevated | embankment | at_grade | subway`), and a station list (CTA/OSM stations with platforms).
+- **Colours (official, tested):** Red #c60c30, Blue #00a1de, Brown #62361b, Green #009b3a, Orange #f9461c, Pink #e27ea6, Purple #522398, Yellow #f9e300. Metra is a single blue at a dimmer glow.
+  - Shared trackage (the Loop, the north-side corridor) shows each line's colour as side-by-side strips.
+- **Structure:**
+  - Elevated sections get instanced steel bents and girders, merged ties, running rails and third rail, and the Loop junction boxes.
+  - Embankments get retaining walls and a ballast top.
+  - Subway sections draw nothing, except a ghosted line in Scan.
+  - Stations get platforms, canopies, stairs and colour signage, generated from station data.
+- **Glow:**
+  - One ribbon mesh per tile, carrying a line-colour attribute.
+  - Additive blending with selective bloom.
+  - Width is compensated with distance in the vertex shader, with a screen-space minimum of ~2 px, so the line reads from any altitude.
+  - Day/night intensity is driven by `uNight`.
+- **Rolling stock:**
+  - Procedural builders in the pipeline (`lib/rollingstock.js`) emit `trains.glb` with four models: CTA 5000-series, CTA 7000-series, Metra bi-level coach, Metra locomotive.
+  - Each has an accurate outline, 14.6 m CTA cars, and livery with the line-colour sign; 2–5k triangles per car, plus a box impostor for LOD.
+  - Rendering: one instanced mesh per model, so at most 8 calls with lights.
+- **Motion:** `app/src/transit/sim.js`. It is deterministic from wall-clock time and headways per line and time of day:
+  - arc-length motion with acceleration and braking;
+  - station dwell;
+  - each car's two bogies sampled on the path, so cars articulate round curves;
+  - direction per track.
+  Live CTA positions (Phase 5) snap onto the same path, and the simulator is the fallback.
+- **Night:** headlights, window glow, lit signs, and glow spill on the track.
+- **Controls:**
+  - A Transit dock button toggles trains, glow and the legend.
+  - The line legend lets each line be switched off.
+  - ⌘K offers "Go to <station>", "Show <line>" and "Follow a <line> train"; the follow camera exits on any key.
+  - Clicking a train or station opens a card with line, run, next stop and arrivals (arrivals are live in Phase 5).
+
+### B.4 Stadiums and sports life (D1–D15)
+- **Fixes:**
+  - No trees inside any venue hull (root-cause Soldier Field).
+  - Arena roofs: United Center stepped and domed, Wintrust vaulted. These are new crown primitives, `vault` and `stepdome`.
+  - Floodlit night views for Soldier Field and Rate Field, matching Wrigley.
+- **Fields:**
+  - Each venue gets a canvas-generated field texture in its local field frame, with sourced colours:
+    - Soldier Field: turf stripes, yard numbers, navy and orange end zones with "CHICAGO" / "BEARS" wordmarks, and a midfield mark.
+    - Wrigley: grass pattern, clay, chalk.
+    - Rate Field: black and silver accents.
+  - It replaces the flat paint layers, stays on one draw call per venue, and works at LOW.
+- **Game state:** `app/src/sports/gameState.js` is a pure function of (venue, time, schedule) returning `idle | pregame | live | postgame`, plus `winDay` (a Cubs win that Chicago date).
+  - The schedule and past results are fetched at build time from ESPN's public schedule JSON into `schedules.json`, with a simulated calendar as fallback.
+  - Live scores arrive in Phase 5 through the CHI API.
+- **Life:**
+  - **Crowds:** instanced camera-facing impostors on seat anchors emitted by the venue builder, shirts weighted by team colours, slight idle motion, density by state.
+  - **Players:** instanced capsule figures in sport formations, with a ball arc.
+  - **Scoreboards:** show the score as a texture.
+  - **Cubs win day:** the W flag flies over the Wrigley scoreboard and fans wave W flags.
+  - **Arena game nights:** lit fascia and a plaza crowd.
+  - **Cheers:** positional WebAudio synthesised from shaped noise (no audio assets), off by default behind a Sound button shared with the train rumble.
+  - Crowds and players are culled beyond 1.5 km and disabled at LOW.
+
+### B.5 Landmarks and bridges (E1–E10)
+- **Buckingham Fountain:**
+  - Pink marble tiers with scalloped basins, the correct 85 m pool, and the ~27 m tiered form.
+  - Four pairs of bronze seahorses (procedural lathe and tube sculpture, or Blender).
+  - A GPU-particle water show on the real schedule: hourly shows, May–October, ~8 am–11 pm, with coloured light in the evening.
+- **Cloud Gate:** the true omphalos shape (~20 × 13 × 10 m), with a low-resolution cube-camera environment refreshed every ~30 frames, so it mirrors the sky and skyline.
+- **Bridges** (`pipeline/lib/bridges.js` + `data/bridges.json`, named and sourced):
+  - Chicago-type trunnion bascule leaves (truss or girder, open grid deck).
+  - Tender houses; the four DuSable (Michigan Avenue) bridge houses; lanterns and navigation lights.
+  - An optional lift animation as an easter egg.
+- **P1 landmarks:** Navy Pier (entrance building, Grand Ballroom dome), Riverwalk, Art Institute (lions, Modern Wing), Crown Fountain (animated face screens), Lurie Garden, BP Bridge, the Picasso, the Flamingo, Cultural Center dome, Union Station, the Merchandise Mart river face, and the Lincoln Park Zoo and Conservatory.
+  - Each gets a `heroes.json` entry with sources, a ⌘K alias and a VISIT beacon anchor.
+  - The P2 landmarks move to Phase 3; the Museum of Science & Industry moves to Phase 6, since it is out of bounds.
+
+### B.6 True building colours and materials (F1–F11)
+- **Data:** `heroes.json` gains a sourced `look` block: `{ base, glass, mullion, spandrel, finish: granite|limestone|terracotta|metal|glass|concrete, crownLight? }`.
+- **How it renders, with no new materials:**
+  - A per-vertex `_STYLE` index (0 = none) selects a row in a small style palette DataTexture, which the shared façade shader reads.
+  - Draw calls do not change.
+- **Targets:** Willis black with bronze glass; Aon white granite; Trump silver glass; Wrigley Building white terra cotta, floodlit; Tribune limestone; and the rest of the 41 heroes per the backlog.
+  - Non-hero buildings may use the OSM `building:colour` and `building:material` tags, subject to evaluate-and-revert.
+
+### B.7 Camera (G1–G6)
+- **Clearance:** the pipeline bakes `heightfield.png` (max roof height per 8 m cell, 16-bit). Flights lift their path and end pose, and free flight clamps the camera to height + 25 m by sliding, not stopping. Follow-train and venue focus use the same clearance.
+- **Keys:** ⌘K and Ctrl+K close the palette from its input, and Ctrl+K never falls through to the browser.
+- **e2e:** tests wait for the camera to come to rest instead of a fixed 4 s.
+
+### B.8 Carried review items (H1–H11)
+The Phase 2.5 deferred minors are scheduled in milestone 1. The draw-call budget in B.1 is enforced by a perf check at the end of every milestone.
+
+### B.9 Phasing (supersedes §13 from here on)
+The vision pass runs as milestones V1–V8 (see the master plan):
+- **V1:** correctness, camera clearance and water
+- **V2:** colours and materials
+- **V3:** static transit
+- **V4:** trains
+- **V5:** stadiums
+- **V6:** landmarks and bridges
+- **V7:** controls integration and help
+- **V8:** performance, gallery and review
+
+Then the revised phases:
+- **Phase 3:** hero refinement plus the P2 landmarks.
+- **Phase 4:** guide lenses, with places/POIs (bars, restaurants, venues) and transit integration.
+- **Phase 5:** Alive, adding live CTA, live scores, weather and Scan.
+- **Phase 6:** further rings, including the Museum of Science & Industry.
+- **Phase 7:** traversal, including riding a train.

@@ -99,6 +99,55 @@ grid — so the HUD always knows which corner you are over.
 
 ---
 
+## How it came together
+
+A progressive gallery, oldest first. Images are never replaced — each phase adds its own shots, so you can watch the city grow from flat boxes to a living place.
+
+### Phase 1 · Foundation — *real footprints, real heights, flat colour*
+
+<table>
+<tr>
+<td width="33%"><img src="docs/screenshots/phase1-streeterville-dusk.png" alt="Phase 1 — Streeterville at dusk, flat-shaded" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/phase1-loop-day.png" alt="Phase 1 — the Loop by day" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/phase1-museum-day.png" alt="Phase 1 — Museum Campus" width="100%"/></td>
+</tr>
+<tr>
+<td><em>The first frame: City of Chicago footprints extruded to their heights, a physical sky, the lake.</em></td>
+<td><em>The Loop — every building present, none of them dressed yet.</em></td>
+<td><em>Museum Campus and the skyline from the lake.</em></td>
+</tr>
+</table>
+
+### Phase 2 · Beauty pass — *façades, light, seasons*
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/phase2-loop-day.png" alt="Phase 2 — the Loop by day with generated façades" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/phase2-streeterville-dusk.png" alt="Phase 2 — Streeterville at dusk" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Generated façade families, glass that reflects the sky, rooftops with water towers.</em></td>
+<td><em>The same dusk pose as Phase 1 — windows now light floor by floor.</em></td>
+</tr>
+</table>
+
+### Phase 2.5 · Expanded city — *Wrigleyville to 35th Street, a verified skyline*
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/phase25-wrigleyville.png" alt="Phase 2.5 — Wrigleyville and the North Side" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/phase25-centennial-wheel.png" alt="Phase 2.5 — the Centennial Wheel" width="100%"/></td>
+</tr>
+<tr>
+<td><em>From the Loop to the neighbourhoods: 105,971 buildings, Wrigley built as a real ballpark.</em></td>
+<td><em>Civic icons arrive — the Centennial Wheel with its LED rim, the Bean, Buckingham Fountain.</em></td>
+</tr>
+</table>
+
+### Next · Vision pass — *one lake, living transit, game nights*
+
+Planned in [the master plan](docs/superpowers/plans/2026-09-29-vision-master-plan.md): a single continuous lake and river, CTA lines in their true colours with a restrained neon glow and accurate trains running on them, stadiums with crowds and game nights (and the W flag when the Cubs win), detailed bridges and landmarks, and each tower in its real colours. Its images will be added here as each milestone lands.
+
 ## Quickstart
 
 ```bash
@@ -159,6 +208,7 @@ npm run e2e --prefix app          # hero-view screenshot baselines (Playwright)
 - [x] **1 · Foundation** — real footprints and heights, land, river, lake, sky, Atlas camera, HUD shell
 - [x] **2 · Beauty pass** — generated façades, lit windows, living sky, rooftops, parks & trees, the L, post-processing, minimap, intro flight
 - [x] **2.5 · Expanded city** — Wrigleyville → 35th St, verified top-50 skyline, 41 landmarks, stadiums, sacred buildings, civic icons, horizon fill, streaming, human-first controls
+- [ ] **Vision pass** — unified lake & river, CTA lines in true colours with glow + running trains, stadium game nights & crowds, detailed bridges & landmarks, true building colours, camera clearance
 - [ ] **3 · Heroes** — Blender refinement of the procedural landmarks (Aqua's waves, Marina City's petals, …)
 - [ ] **4 · Guide** — VISIT / LIVE / WORK lenses: places (bars, restaurants, venues), neighbourhoods, jobs, tours
 - [ ] **5 · Alive** — live L trains and weather via the CHI ATLAS API, Scan mode
