@@ -23,6 +23,11 @@ export const VIEW_NAMES = {
   willis: 'Willis Tower', wabash: 'Wabash & the Loop L', westloop: 'West Loop & Fulton Market',
   lincolnpark: 'Lincoln Park & the lakefront', wrigleyville: 'Wrigleyville', pilsen: 'Pilsen', soldierfield: 'Soldier Field',
   wellslake: 'Tower 18 — the Loop L junction',
+  bridges: 'River bridges', dusable: 'DuSable Bridge', southbranch: 'South Branch bridges', wells: 'Wells Street Bridge',
+  buckingham: 'Buckingham Fountain', cloudgate: 'Cloud Gate close-up', crownfountain: 'Crown Fountain', lurie: 'Lurie Garden',
+  bpbridge: 'BP Bridge', artinstitute: 'Art Institute lions', daleyplaza: 'The Picasso, Daley Plaza', federalplaza: 'The Flamingo, Federal Plaza',
+  culturalcenter: 'Cultural Center domes', unionstation: 'Union Station', martriver: 'Merchandise Mart from the river',
+  navypierhead: 'Navy Pier entrance', ballroom: 'Navy Pier Grand Ballroom', riverwalk: 'Chicago Riverwalk', zoo: 'Lincoln Park Zoo & Conservatory',
 }
 
 export function buildPlaces(manifest, bookmarks) {

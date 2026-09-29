@@ -21,6 +21,26 @@ export const BOOKMARKS = {
   soldierfield: { position: [1950, 280, 1450], target: [925, 20, 2191] },
   navypier: { position: [2700, 320, -500], target: [1074, 150, -874] },
   willis: { position: [-200, 380, 900], target: [-669, 260, 348] },
+  // ── V6 — landmarks and bridges (positions from OSM ways/buildings in pipeline/cache/world) ──
+  bridges: { position: [180, 60, -540], target: [-420, 4, -612] },         // main stem looking west: Wabash → LaSalle
+  dusable: { position: [385, 32, -680], target: [287, 5, -757] },          // DuSable Bridge, OSM centre (287, −757)
+  southbranch: { position: [-760, 80, -160], target: [-850, 4, 330] },     // Randolph → Jackson bascules
+  wells: { position: [-450, 35, -540], target: [-511, 6, -611] },          // Wells St double deck (L on top)
+  buckingham: { position: [800, 55, 600], target: [711, 8, 693] },         // manifest (711, 692)
+  cloudgate: { position: [398, 30, -46], target: [374, 5, -73] },           // manifest (374, −73)
+  crownfountain: { position: [420, 30, 60], target: [340, 7, 60] },        // towers (339, 34) and (340, 86)
+  lurie: { position: [575, 55, 150], target: [506, 1, 66] },
+  bpbridge: { position: [650, 45, 10], target: [640, 3, -105] },
+  artinstitute: { position: [262, 30, 300], target: [310, 4, 300] },       // Michigan Ave lions
+  daleyplaza: { position: [-140, 30, -150], target: [-186, 8, -202] },     // the Picasso
+  federalplaza: { position: [-120, 30, 250], target: [-167, 8, 303] },     // the Flamingo
+  culturalcenter: { position: [330, 90, -300], target: [237, 30, -205] },
+  unionstation: { position: [-930, 90, 300], target: [-1043, 20, 373] },
+  martriver: { position: [-625, 45, -560], target: [-625, 40, -705] },
+  navypierhead: { position: [1480, 50, -980], target: [1541, 14, -1078] }, // Family Pavilion / Headhouse
+  ballroom: { position: [2250, 70, -960], target: [2361, 20, -1090] },     // Aon Grand Ballroom
+  riverwalk: { position: [-250, 35, -650], target: [-450, 1, -592] },
+  zoo: { position: [-380, 110, -4150], target: [-560, 5, -4500] },         // Lion House (−456, −4365), Conservatory (−598, −4706)
   // Transit (V3): Tower 18 at Lake & Wells from street level, the Loop from 150 m and 1 km, Fullerton's 4-track corridor
   wellslake: { position: [-380, 32, -412], target: [-495, 7, -412] }, // over Lake St, looking west along the L into Tower 18
   transit150: { position: [215, 150, 660], target: [152, 8, 581] }, // the Loop's SE corner: Tower 12 at Van Buren & Wabash
