@@ -7,7 +7,8 @@
     "build:world": "node build/build-world.js",
     "test": "vitest run",
     "textures": "node textures/process.js",
-    "fetch:world": "node fetch/fetch-world.js"
+    "fetch:world": "node fetch/fetch-world.js",
+    "skyline": "node fetch/skyline.js"
   },
   "dependencies": {
     "@gltf-transform/core": "^4.5.1",

@@ -1,0 +1,456 @@
+{
+  "source": "https://en.wikipedia.org/wiki/List_of_tallest_buildings_in_Chicago",
+  "fetchedAt": "2026-09-29T02:36:33.537Z",
+  "buildings": [
+    {
+      "rank": 1,
+      "name": "Willis Tower",
+      "lat": 41.87888888888889,
+      "lon": -87.63583333333334,
+      "heightM": 442,
+      "floors": 110,
+      "year": 1974
+    },
+    {
+      "rank": 2,
+      "name": "Trump International Hotel and Tower",
+      "lat": 41.888888888888886,
+      "lon": -87.62638888888888,
+      "heightM": 423,
+      "floors": 98,
+      "year": 2009
+    },
+    {
+      "rank": 3,
+      "name": "St. Regis Chicago",
+      "lat": 41.88722222222222,
+      "lon": -87.61722222222221,
+      "heightM": 363,
+      "floors": 101,
+      "year": 2020
+    },
+    {
+      "rank": 4,
+      "name": "Aon Center",
+      "lat": 41.88527777777778,
+      "lon": -87.62138888888889,
+      "heightM": 346,
+      "floors": 83,
+      "year": 1973
+    },
+    {
+      "rank": 5,
+      "name": "875 North Michigan Avenue",
+      "lat": 41.89875,
+      "lon": -87.62305555555555,
+      "heightM": 344,
+      "floors": 100,
+      "year": 1969
+    },
+    {
+      "rank": 6,
+      "name": "Franklin Center",
+      "lat": 41.88041666666667,
+      "lon": -87.63472222222222,
+      "heightM": 307,
+      "floors": 61,
+      "year": 1989
+    },
+    {
+      "rank": 7,
+      "name": "Two Prudential Plaza",
+      "lat": 41.885555555555555,
+      "lon": -87.62277777777777,
+      "heightM": 303,
+      "floors": 64,
+      "year": 1990
+    },
+    {
+      "rank": 8,
+      "name": "One Chicago East Tower",
+      "lat": 41.8960713,
+      "lon": -87.628645,
+      "heightM": 296,
+      "floors": 78,
+      "year": 2022
+    },
+    {
+      "rank": 9,
+      "name": "311 South Wacker Drive",
+      "lat": 41.8775,
+      "lon": -87.63555555555556,
+      "heightM": 293,
+      "floors": 65,
+      "year": 1990
+    },
+    {
+      "rank": 10,
+      "name": "NEMA Chicago",
+      "lat": 41.86694444444444,
+      "lon": -87.62305555555555,
+      "heightM": 273,
+      "floors": 76,
+      "year": 2019
+    },
+    {
+      "rank": 11,
+      "name": "900 North Michigan",
+      "lat": 41.89972222222222,
+      "lon": -87.625,
+      "heightM": 266,
+      "floors": 66,
+      "year": 1989
+    },
+    {
+      "rank": 12,
+      "name": "Chase Tower",
+      "lat": 41.88152777777778,
+      "lon": -87.63,
+      "heightM": 264.8,
+      "floors": 60,
+      "year": 1969
+    },
+    {
+      "rank": 13,
+      "name": "Water Tower Place",
+      "lat": 41.89791666666667,
+      "lon": -87.6223611111111,
+      "heightM": 261.9,
+      "floors": 74,
+      "year": 1976
+    },
+    {
+      "rank": 14,
+      "name": "Aqua",
+      "lat": 41.88638888888889,
+      "lon": -87.61999999999999,
+      "heightM": 261.8,
+      "floors": 82,
+      "year": 2009
+    },
+    {
+      "rank": 15,
+      "name": "400 Lake Shore Drive North Tower",
+      "lat": 41.88986944444444,
+      "lon": -87.61488888888888,
+      "heightM": 259.1,
+      "floors": 72,
+      "year": 2027
+    },
+    {
+      "rank": 16,
+      "name": "Park Tower",
+      "lat": 41.897083333333335,
+      "lon": -87.62513888888888,
+      "heightM": 257,
+      "floors": 67,
+      "year": 2000
+    },
+    {
+      "rank": 17,
+      "name": "One Bennett Park",
+      "lat": 41.891666666666666,
+      "lon": -87.61566666666666,
+      "heightM": 255,
+      "floors": 69,
+      "year": 2018
+    },
+    {
+      "rank": 18,
+      "name": "Salesforce Tower Chicago",
+      "lat": 41.88761111111111,
+      "lon": -87.63769444444445,
+      "heightM": 255,
+      "floors": 60,
+      "year": 2023
+    },
+    {
+      "rank": 19,
+      "name": "The Legacy at Millennium Park",
+      "lat": 41.88138888888889,
+      "lon": -87.62555555555555,
+      "heightM": 251,
+      "floors": 73,
+      "year": 2010
+    },
+    {
+      "rank": 20,
+      "name": "110 North Wacker",
+      "lat": 41.88361111111111,
+      "lon": -87.6375,
+      "heightM": 248,
+      "floors": 51,
+      "year": 2020
+    },
+    {
+      "rank": 21,
+      "name": "1000M",
+      "lat": 41.86991666666667,
+      "lon": -87.62458333333333,
+      "heightM": 245,
+      "floors": 73,
+      "year": 2024
+    },
+    {
+      "rank": 22,
+      "name": "300 North LaSalle",
+      "lat": 41.888194444444444,
+      "lon": -87.63305555555554,
+      "heightM": 239,
+      "floors": 60,
+      "year": 2008
+    },
+    {
+      "rank": 23,
+      "name": "Three First National Plaza",
+      "lat": 41.882222222222225,
+      "lon": -87.63055555555555,
+      "heightM": 234,
+      "floors": 57,
+      "year": 1981
+    },
+    {
+      "rank": 24,
+      "name": "Grant Thornton Tower",
+      "lat": 41.88472222222222,
+      "lon": -87.63055555555555,
+      "heightM": 230,
+      "floors": 50,
+      "year": 1992
+    },
+    {
+      "rank": 25,
+      "name": "Blue Cross Blue Shield Tower",
+      "lat": 41.88472222222222,
+      "lon": -87.61999999999999,
+      "heightM": 227,
+      "floors": 54,
+      "year": 2010
+    },
+    {
+      "rank": 26,
+      "name": "River Point",
+      "lat": 41.88591666666667,
+      "lon": -87.6393888888889,
+      "heightM": 223,
+      "floors": 52,
+      "year": 2017
+    },
+    {
+      "rank": 27,
+      "name": "Olympia Centre",
+      "lat": 41.896388888888886,
+      "lon": -87.62333333333332,
+      "heightM": 223,
+      "floors": 63,
+      "year": 1986
+    },
+    {
+      "rank": 28,
+      "name": "BMO Tower",
+      "lat": 41.87722222222222,
+      "lon": -87.64,
+      "heightM": 222,
+      "floors": 51,
+      "year": 2021
+    },
+    {
+      "rank": 29,
+      "name": "One Museum Park",
+      "lat": 41.86708333333333,
+      "lon": -87.62138888888889,
+      "heightM": 221,
+      "floors": 62,
+      "year": 2009
+    },
+    {
+      "rank": 30,
+      "name": "150 North Riverside",
+      "lat": 41.88527777777778,
+      "lon": -87.63847222222223,
+      "heightM": 221,
+      "floors": 54,
+      "year": 2017
+    },
+    {
+      "rank": 31,
+      "name": "330 North Wabash",
+      "lat": 41.88861111111111,
+      "lon": -87.6275,
+      "heightM": 212,
+      "floors": 52,
+      "year": 1972
+    },
+    {
+      "rank": 32,
+      "name": "Waldorf Astoria Chicago",
+      "lat": 41.89972222222222,
+      "lon": -87.6275,
+      "heightM": 209,
+      "floors": 60,
+      "year": 2009
+    },
+    {
+      "rank": 33,
+      "name": "111 South Wacker Drive",
+      "lat": 41.88027777777778,
+      "lon": -87.63625,
+      "heightM": 208,
+      "floors": 51,
+      "year": 2005
+    },
+    {
+      "rank": 34,
+      "name": "181 West Madison Street",
+      "lat": 41.88152777777778,
+      "lon": -87.63333333333334,
+      "heightM": 207,
+      "floors": 50,
+      "year": 1990
+    },
+    {
+      "rank": 35,
+      "name": "71 South Wacker",
+      "lat": 41.880833333333335,
+      "lon": -87.63611111111112,
+      "heightM": 207,
+      "floors": 48,
+      "year": 2005
+    },
+    {
+      "rank": 36,
+      "name": "One Magnificent Mile",
+      "lat": 41.900555555555556,
+      "lon": -87.62472222222222,
+      "heightM": 205,
+      "floors": 57,
+      "year": 1983
+    },
+    {
+      "rank": 37,
+      "name": "340 on the Park",
+      "lat": 41.884861111111114,
+      "lon": -87.61888888888888,
+      "heightM": 205,
+      "floors": 64,
+      "year": 2007
+    },
+    {
+      "rank": 38,
+      "name": "77 West Wacker Drive",
+      "lat": 41.88652777777778,
+      "lon": -87.63055555555555,
+      "heightM": 204,
+      "floors": 49,
+      "year": 1992
+    },
+    {
+      "rank": 39,
+      "name": "Wolf Point East Tower",
+      "lat": 41.88780555555555,
+      "lon": -87.63677777777778,
+      "heightM": 204,
+      "floors": 60,
+      "year": 2020
+    },
+    {
+      "rank": 40,
+      "name": "One North Wacker",
+      "lat": 41.882222222222225,
+      "lon": -87.63611111111112,
+      "heightM": 199,
+      "floors": 50,
+      "year": 2001
+    },
+    {
+      "rank": 41,
+      "name": "Richard J. Daley Center",
+      "lat": 41.884027777777774,
+      "lon": -87.63027777777778,
+      "heightM": 198,
+      "floors": 32,
+      "year": 1965
+    },
+    {
+      "rank": 42,
+      "name": "55 East Erie Street",
+      "lat": 41.89388888888889,
+      "lon": -87.62583333333333,
+      "heightM": 197,
+      "floors": 56,
+      "year": 2004
+    },
+    {
+      "rank": 43,
+      "name": "Lake Point Tower",
+      "lat": 41.891666666666666,
+      "lon": -87.61222222222221,
+      "heightM": 197,
+      "floors": 70,
+      "year": 1968
+    },
+    {
+      "rank": 44,
+      "name": "River East Center",
+      "lat": 41.89138888888889,
+      "lon": -87.61819444444444,
+      "heightM": 196,
+      "floors": 58,
+      "year": 2001
+    },
+    {
+      "rank": 45,
+      "name": "Grand Plaza I",
+      "lat": 41.89194444444444,
+      "lon": -87.6286111111111,
+      "heightM": 195,
+      "floors": 57,
+      "year": 2003
+    },
+    {
+      "rank": 46,
+      "name": "155 North Wacker",
+      "lat": 41.88472222222222,
+      "lon": -87.63652777777779,
+      "heightM": 195,
+      "floors": 45,
+      "year": 2009
+    },
+    {
+      "rank": 47,
+      "name": "Leo Burnett Building",
+      "lat": 41.88638888888889,
+      "lon": -87.62916666666666,
+      "heightM": 194,
+      "floors": 50,
+      "year": 1989
+    },
+    {
+      "rank": 48,
+      "name": "The Heritage at Millennium Park",
+      "lat": 41.884166666666665,
+      "lon": -87.62555555555555,
+      "heightM": 192,
+      "floors": 57,
+      "year": 2005
+    },
+    {
+      "rank": 49,
+      "name": "OneEleven",
+      "lat": 41.88652777777778,
+      "lon": -87.63138888888888,
+      "heightM": 192,
+      "floors": 59,
+      "year": 2014
+    },
+    {
+      "rank": 50,
+      "name": "NBC Tower",
+      "lat": 41.89,
+      "lon": -87.6211111111111,
+      "heightM": 191,
+      "floors": 37,
+      "year": 1989
+    }
+  ]
+}
