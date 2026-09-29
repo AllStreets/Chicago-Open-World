@@ -68,3 +68,23 @@ export function applyHero(b, spec) {
   if (spec.wallStyle) b.seedOverride = STYLE.wall[spec.wallStyle]
   return { pieces, extraMeshes, venueMeshes, clear }
 }
+
+// OSM ids are unique per element type only: way 123 and relation 123 are different buildings.
+// A ref is 'w123' / 'r123' (typed) or a bare number / digit string (must then be unambiguous).
+export function parseOsmRef(ref) {
+  if (typeof ref === 'number') return { type: null, id: ref }
+  const m = /^([wr])?(\d+)$/.exec(String(ref))
+  if (!m) throw new Error(`bad OSM ref: ${ref}`)
+  return { type: m[1] ?? null, id: Number(m[2]) }
+}
+
+export function matchesOsm(b, ref) {
+  const { type, id } = parseOsmRef(ref)
+  return b.osmId === id && (!type || b.id?.[0] === type)
+}
+
+export function findByOsm(buildings, ref) {
+  const hits = buildings.filter((b) => matchesOsm(b, ref))
+  if (hits.length > 1) throw new Error(`ambiguous OSM id ${ref}: ${hits.map((b) => b.id).join(', ')} — write it as 'w…' or 'r…'`)
+  return hits[0] ?? null
+}

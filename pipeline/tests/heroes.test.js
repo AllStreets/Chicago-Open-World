@@ -46,3 +46,29 @@ describe('heroes', () => {
     expect(pieces[0].holes).toHaveLength(1)
   })
 })
+
+import { parseOsmRef, matchesOsm, findByOsm } from '../lib/heroes.js'
+
+describe('typed OSM refs (H3)', () => {
+  const way = { id: 'w16699535', osmId: 16699535 }, rel = { id: 'r16699535', osmId: 16699535 }, other = { id: 'w1', osmId: 1 }
+  it('a typed ref picks the right element when a way and a relation share an id', () => {
+    expect(findByOsm([way, rel, other], 'r16699535')).toBe(rel)
+    expect(findByOsm([way, rel, other], 'w16699535')).toBe(way)
+  })
+  it('a bare numeric id still works when it is unambiguous', () => {
+    expect(findByOsm([rel, other], 16699535)).toBe(rel)
+    expect(findByOsm([rel, other], '16699535')).toBe(rel)
+    expect(findByOsm([other], 16699535)).toBe(null)
+  })
+  it('a bare id that matches both a way and a relation is an error, not a silent pick', () => {
+    expect(() => findByOsm([way, rel], 16699535)).toThrow(/ambiguous OSM id 16699535/)
+  })
+  it('suppress lists and overrides accept typed refs', () => {
+    expect(matchesOsm(way, 'r16699535')).toBe(false)
+    expect(matchesOsm(rel, 'r16699535')).toBe(true)
+    expect(matchesOsm(rel, 16699535)).toBe(true)
+  })
+  it('rejects malformed refs', () => {
+    expect(() => parseOsmRef('x12')).toThrow(/bad OSM ref/)
+  })
+})

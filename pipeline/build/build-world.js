@@ -15,7 +15,7 @@ import { extrudeBuilding } from '../lib/extrude.js'
 import { tileKeyFor, tileBounds, TILE_SIZE } from '../lib/tiles.js'
 import { writeMeshGlb } from '../lib/glb.js'
 import { shapePieces } from '../lib/shapes.js'
-import { applyHero } from '../lib/heroes.js'
+import { applyHero, findByOsm, matchesOsm } from '../lib/heroes.js'
 import { VENUE_FACADES, STYLE, convexHull } from '../lib/venue.js'
 import { shapeSacred } from '../lib/sacred.js'
 import { horizonBoxes } from '../lib/horizon.js'
@@ -119,14 +119,14 @@ async function main() {
     buildings.push(b); heroFor.set(b, h)
   }
   for (const h of heroes.filter((x) => !x.match.synthetic)) {
-    let b = h.match.osmId ? buildings.find((x) => x.osmId === h.match.osmId) : null
+    let b = h.match.osmId ? findByOsm(buildings, h.match.osmId) : null
     if (!b && h.match.lat) { const p = project(h.match.lon, h.match.lat); b = bIdx.query(p, 200).find((x) => x.polygons.some((q) => pointInRing(p, q.outer))) }
     if (!b) throw new Error(`hero not found in OSM data: ${h.name} (${JSON.stringify(h.match)})`)
     heroFor.set(b, h)
   }
   // Venue heroes rebuild the whole site: drop superseded OSM shells and the synthesized non-landmark stadium shells
-  const suppressed = new Set(heroes.flatMap((h) => h.suppress || []))
-  const kept = buildings.filter((b) => !suppressed.has(b.osmId) && (b.source !== 'osm-stadium' || heroFor.has(b)))
+  const suppressed = heroes.flatMap((h) => h.suppress || [])
+  const kept = buildings.filter((b) => !suppressed.some((r) => b.osmId != null && matchesOsm(b, r)) && (b.source !== 'osm-stadium' || heroFor.has(b)))
   log(`venue shells dropped: ${buildings.length - kept.length}`)
   buildings.length = 0
   for (const b of kept) buildings.push(b)
@@ -210,7 +210,7 @@ async function main() {
   let sacredShaped = 0, sacredTinted = 0
   for (const b of buildings) {
     if (b.hero) continue
-    const r = shapeSacred(b, { front: nearestRoad(b.centroid), override: sacredOverrides[String(b.osmId)] })
+    const r = shapeSacred(b, { front: nearestRoad(b.centroid), override: sacredOverrides[b.id] ?? sacredOverrides[String(b.osmId)] })
     if (!r) continue
     b.facadeOverride = r.facade; b.seedOverride = r.seed; b.noParapet = true
     if (r.keepPieces) { sacredTinted++; continue }
