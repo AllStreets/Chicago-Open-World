@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generatedAt": "2026-09-29T00:56:32.371Z",
+  "generatedAt": "2026-09-29T00:59:39.539Z",
   "origin": {
     "lat": 41.88203,
     "lon": -87.62784
@@ -420,5 +420,6 @@
     "elevated": "ground/elevated.glb"
   },
   "trees": "trees.json",
-  "columns": "columns.json"
+  "columns": "columns.json",
+  "props": "props.json"
 }

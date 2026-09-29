@@ -12,6 +12,8 @@ import { extrudeBuilding } from '../lib/extrude.js'
 import { groupByTile, TILE_SIZE } from '../lib/tiles.js'
 import { writeMeshGlb } from '../lib/glb.js'
 import { shapePieces } from '../lib/shapes.js'
+import { parapetPiece, PARAPET_FACADE } from '../lib/roofs.js'
+import { roofProps } from '../lib/props.js'
 import { bufferPolyline } from '../lib/ribbon.js'
 import { roadHalfWidth, isElevatedRail, scatterInPolygon } from '../lib/ground.js'
 
@@ -72,6 +74,7 @@ async function main() {
   console.log(`osm parts: ${parts.length}, buildings with parts: ${buildings.filter((b) => b.parts).length}`)
 
   const tiles = []
+  const allProps = []
   for (const [key, list] of groupByTile(buildings)) {
     const pos = [], nor = [], uv = [], col = [], fac = [], hgt = [], idx = [], seed = []
     const meta = []
@@ -80,11 +83,16 @@ async function main() {
       const family = classifyFacade({ height: top, year: b.year ?? 0, area: b.area })
       const s = hashSeed(b.id)
       const pieces = shapePieces(b)
-      for (const piece of pieces) {
+      allProps.push(...roofProps(b, pieces))
+      const parapets = pieces.map(parapetPiece).filter(Boolean).map((p) => ({ ...p, parapet: true }))
+      for (const piece of [...pieces, ...parapets]) {
         const m = extrudeBuilding(piece)
         const n = m.positions.length / 3
-        pos.push(...m.positions); nor.push(...m.normals); uv.push(...m.uvs)
-        for (let v = 0; v < n; v++) { col.push(...FACADE_COLORS[family]); fac.push(family); hgt.push(top); idx.push(i); seed.push(s) }
+        const f = piece.parapet ? PARAPET_FACADE : family
+        for (const v of m.positions) pos.push(v)
+        for (const v of m.normals) nor.push(v)
+        for (const v of m.uvs) uv.push(v)
+        for (let v = 0; v < n; v++) { col.push(...FACADE_COLORS[family]); fac.push(f); hgt.push(top); idx.push(i); seed.push(s) }
       }
       meta.push({ id: b.id, name: b.name, address: b.address, stories: b.stories, year: b.year, height: Math.round(top * 10) / 10 })
     })
@@ -97,6 +105,8 @@ async function main() {
     tiles.push({ key, ring: 0, file: `tiles/${key}.glb`, meta: `tiles/${key}.json`, buildings: list.length, maxHeight: Math.max(...meta.map((m) => m.height)) })
   }
   console.log(`tiles: ${tiles.length}`)
+  writeFileSync(join(OUT, 'props.json'), JSON.stringify({ props: allProps }))
+  console.log(`roof props: ${allProps.length}`)
 
   // Ground: land = city boundary (simplified 2 m); river/harbour = OSM water.
   const city = load('city-boundary.json').data
@@ -179,7 +189,7 @@ async function main() {
     ],
     tiles,
     ground: { land: 'ground/land.glb', river: 'ground/river.glb', parks: 'ground/parks.glb', beaches: 'ground/beaches.glb', roads: 'ground/roads.glb', sidewalks: 'ground/sidewalks.glb', rail: 'ground/rail.glb', elevated: 'ground/elevated.glb' },
-    trees: 'trees.json', columns: 'columns.json',
+    trees: 'trees.json', columns: 'columns.json', props: 'props.json',
   }, null, 2))
   console.log('manifest written')
 }

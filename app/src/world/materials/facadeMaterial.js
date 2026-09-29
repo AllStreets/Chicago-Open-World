@@ -52,7 +52,8 @@ varying vec2 vMUv;
 float owHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 `
 const FRAG_MAP = /* glsl */ `
-int fi = int(vFacade + 0.5);
+bool isParapet = vFacade > 7.5;                          // index 8 = parapet coping
+int fi = isParapet ? 4 : int(vFacade + 0.5);
 vec4 T = uTile[fi];
 bool isRoof = vWNormal.y > 0.6;
 vec2 tuv = vMUv / T.xy;
@@ -60,9 +61,18 @@ vec2 gx = dFdx(tuv), gy = dFdy(tuv);
 vec3 st = vec3(fract(tuv.x), 1.0 - fract(tuv.y), float(fi));
 vec3 wallAlb = textureGrad(uAlbedo, st, gx, gy).rgb;
 float win = textureGrad(uWin, st, gx, gy).r;
-vec3 roofAlb = texture(uRoof, vWPos.xz / 12.0).rgb * 0.85;
-vec3 alb = isRoof ? roofAlb : wallAlb;
-win = isRoof ? 0.0 : win;
+vec3 gravel = texture(uRoof, vWPos.xz / 12.0).rgb;
+// per-building roof finish: gravel ballast, dark tar/EPDM, white TPO with seams, green roof
+float rk = fract(vSeed * 5.13);
+vec2 seam = abs(fract(vWPos.xz / vec2(3.0, 12.0)) - 0.5);
+float seams = smoothstep(0.47, 0.5, max(seam.x, seam.y));
+vec3 roofAlb = rk < 0.4 ? gravel * 0.85
+  : rk < 0.62 ? gravel * vec3(0.32, 0.33, 0.36)
+  : rk < 0.9 ? mix(vec3(0.84, 0.85, 0.83), vec3(0.62, 0.63, 0.62), seams) * (0.9 + 0.1 * gravel.r)
+  : mix(vec3(0.27, 0.42, 0.2), vec3(0.36, 0.5, 0.26), gravel.g);
+vec3 coping = vec3(0.58, 0.56, 0.52) * (0.9 + 0.2 * gravel.r);
+vec3 alb = isRoof ? roofAlb : (isParapet ? coping : wallAlb);
+win = (isRoof || isParapet) ? 0.0 : win;
 alb = mix(vec3(0.62, 0.6, 0.57), alb, uReady);
 win *= uReady;
 alb *= mix(0.55, 1.0, smoothstep(0.0, 14.0, vWPos.y));   // ground contact
@@ -81,7 +91,7 @@ const FRAG_METAL = /* glsl */ `
 metalnessFactor = mix(metalnessFactor, 0.9, win * 0.85);
 `
 const FRAG_EMISSIVE = /* glsl */ `
-if (!isRoof && uNight > 0.001) {
+if (!isRoof && !isParapet && uNight > 0.001) {
   vec2 cell = floor(tuv * T.zw);
   vec2 cf = fract(tuv * T.zw);
   // inset rectangle inside each cell: frames/mullions stay dark (matters for all-glass walls)
@@ -116,7 +126,7 @@ export function patchFacadeShader(shader) {
 export function createFacadeMaterial() {
   const m = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.86, metalness: 0.02 })
   m.onBeforeCompile = patchFacadeShader
-  m.customProgramCacheKey = () => 'facade-v3'
+  m.customProgramCacheKey = () => 'facade-v4'
   return m
 }
 
