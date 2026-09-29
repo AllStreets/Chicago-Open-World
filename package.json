@@ -9,6 +9,7 @@
     "dev": "npm run dev --prefix app",
     "build": "npm run build --prefix app",
     "test": "npm test --prefix pipeline && npm test --prefix app",
-    "textures": "npm run textures --prefix pipeline"
+    "textures": "npm run textures --prefix pipeline",
+    "fetch:world": "npm run fetch:world --prefix pipeline"
   }
 }

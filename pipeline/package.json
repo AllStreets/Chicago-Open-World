@@ -6,11 +6,16 @@
     "fetch": "node fetch/fetch-all.js",
     "build:world": "node build/build-world.js",
     "test": "vitest run",
-    "textures": "node textures/process.js"
+    "textures": "node textures/process.js",
+    "fetch:world": "node fetch/fetch-world.js"
   },
   "dependencies": {
     "@gltf-transform/core": "^4.5.1",
+    "@gltf-transform/extensions": "^4.5.1",
+    "@gltf-transform/functions": "^4.5.1",
     "earcut": "^3.2.4",
+    "meshoptimizer": "^1.3.0",
+    "polygon-clipping": "^0.15.7",
     "sharp": "^0.35.5"
   },
   "devDependencies": {

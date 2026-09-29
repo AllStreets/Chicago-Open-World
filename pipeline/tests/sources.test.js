@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { RING0_BBOX, footprintsUrl, cityBoundaryUrl, overpassQuery } from '../lib/sources.js'
+import { RING0_BBOX, WORLD_BBOX, chunkBBox, footprintsUrl, cityBoundaryUrl, overpassQuery } from '../lib/sources.js'
 
 describe('sources', () => {
   it('builds a paged Socrata within_box URL', () => {
@@ -26,5 +26,22 @@ describe('sources', () => {
     expect(overpassQuery('rail', RING0_BBOX)).toContain('railway')
     expect(overpassQuery('parks', RING0_BBOX)).toContain('leisure')
     expect(overpassQuery('roads', RING0_BBOX)).toContain('highway')
+  })
+})
+
+describe('world bbox + chunks', () => {
+  it('world covers Addison to 35th, Western to the lake', () => {
+    expect(WORLD_BBOX).toEqual({ s: 41.826, w: -87.695, n: 41.952, e: -87.595 })
+  })
+  it('chunks partition the bbox exactly', () => {
+    const c = chunkBBox(WORLD_BBOX, 4, 6)
+    expect(c).toHaveLength(24)
+    expect(Math.min(...c.map((b) => b.s))).toBeCloseTo(WORLD_BBOX.s)
+    expect(Math.max(...c.map((b) => b.n))).toBeCloseTo(WORLD_BBOX.n)
+    const area = c.reduce((a, b) => a + (b.n - b.s) * (b.e - b.w), 0)
+    expect(area).toBeCloseTo((WORLD_BBOX.n - WORLD_BBOX.s) * (WORLD_BBOX.e - WORLD_BBOX.w), 10)
+  })
+  it('allbuildings includes multipolygon relations', () => {
+    expect(overpassQuery('allbuildings', WORLD_BBOX)).toContain('relation["building"]')
   })
 })
