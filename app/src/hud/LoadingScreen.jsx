@@ -9,6 +9,7 @@ export default function LoadingScreen() {
     const id = setTimeout(() => setGone(true), 900)
     return () => clearTimeout(id)
   }, [ready, error])
+  useEffect(() => { window.__hudReady = gone }, [gone])
   if (gone) return null
   const pct = total ? Math.round((done / total) * 100) : 0
   return (

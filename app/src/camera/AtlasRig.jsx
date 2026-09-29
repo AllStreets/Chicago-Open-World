@@ -11,6 +11,7 @@ import { crossStreets } from '../lib/grid.js'
 import { keyIntent } from '../lib/controls.js'
 import { flyPose, flightDuration, flightLift, liftAboveRoofs } from '../lib/flight.js'
 import { clearanceAt } from '../lib/clearance.js'
+import { createRestTracker } from '../lib/rest.js'
 import { VIEW_ORDER, VIEW_NAMES } from '../lib/views.js'
 
 const GLIDE_MPS = 140
@@ -31,6 +32,7 @@ export default function AtlasRig() {
   const lastReadout = useRef(0)
   const flightRun = useRef(null)
   const introStart = useRef(null)
+  const camRest = useRef(createRestTracker({ frames: 20, eps: 1e-3 }))
   const { gl, camera } = useThree()
   const mode = useStore((s) => s.cameraMode)
   const introDone = useStore((s) => s.introDone)
@@ -150,13 +152,14 @@ export default function AtlasRig() {
     if (!c) return
     const now = state.clock.elapsedTime
     if (!useStore.getState().introDone) {
-      if (!useStore.getState().load.ready) { publishReadout(c, now); return } // hold the opening frame, but tell the streamer where we are
+      if (!useStore.getState().load.ready) { publishReadout(c, now); window.__camRest = false; return } // hold the opening frame, but tell the streamer where we are
       introStart.current ??= now
       const t = (now - introStart.current) / INTRO_SECONDS
       const p = introPose(t)
       c.setLookAt(...p.position, ...p.target, false)
       if (t >= 1) useStore.getState().finishIntro()
       publishReadout(c, now)
+      window.__camRest = false
       return
     }
     const f = flightRun.current
@@ -167,6 +170,7 @@ export default function AtlasRig() {
       c.setLookAt(...p.position, ...p.target, false)
       if (t >= 1) { flightRun.current = null; useStore.getState().clearFlight() }
       publishReadout(c, now)
+      window.__camRest = false
       return
     }
 
@@ -196,6 +200,8 @@ export default function AtlasRig() {
     if (cl.position[1] < floor) { cl.position[1] = floor; cl.clamped = true }
     if (cl.clamped) c.setLookAt(...cl.position, ...cl.target, false)
     publishReadout(c, now)
+    c.getTarget(tmpT); c.getPosition(tmpP)
+    window.__camRest = camRest.current.sample([tmpP.x, tmpP.y, tmpP.z, tmpT.x, tmpT.y, tmpT.z])
   })
 
   function publishReadout(c, t) {

@@ -66,6 +66,7 @@ export default function TileStreamer({ manifest }) {
   const live = new Set(draw.map(([id]) => id))
   for (const k of [...ready.current]) if (!live.has(k.slice(0, k.lastIndexOf(':')))) ready.current.delete(k)
   shown.current = draw
+  window.__tilesIdle = draw.every(([id, lod]) => ready.current.has(`${id}:${lod}`))
   return draw.map(([id, lod]) => {
     const t = tiles.get(id), b = blocks.get(id)
     const file = b ? b.file : lod === 'lod0' ? t.lod0 : t.lod1

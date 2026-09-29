@@ -8,6 +8,7 @@ import { useStore } from '../state/store.js'
 import { stepSun } from '../lib/sunTween.js'
 import { facadeUniforms } from './materials/facadeMaterial.js'
 import { applySkyGain } from './materials/skyGain.js'
+import { createRestTracker } from '../lib/rest.js'
 
 const SKY_GAIN = 0.42
 
@@ -18,6 +19,7 @@ export default function SkyRig({ target, sunRef, instant = false, shadowMap = 40
   const sky = useRef(), light = useRef(), hemi = useRef(), stars = useRef()
   useEffect(() => { if (sky.current) applySkyGain(sky.current.material, SKY_GAIN) }, [])
   const cur = useRef(target.direction.slice())
+  const skyRest = useRef(createRestTracker({ frames: 20, eps: 1e-5 }))
   if (!sunRef.current) sunRef.current = cur.current
   const envSun = useMemo(() => target.direction.map((v) => v * DIST), [target])
 
@@ -44,6 +46,7 @@ export default function SkyRig({ target, sunRef, instant = false, shadowMap = 40
     facadeUniforms.uNight.value = p.night
     if (stars.current) { stars.current.position.copy(camera.position); stars.current.visible = p.stars > 0.05 }
     if (sky.current) sky.current.visible = p.night < 0.98
+    window.__skyRest = skyRest.current.sample(cur.current)
   })
 
   return (
