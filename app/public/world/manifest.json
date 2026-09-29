@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-28T23:09:19.991Z",
+  "generatedAt": "2026-09-29T00:38:20.292Z",
   "origin": {
     "lat": 41.88203,
     "lon": -87.62784
@@ -46,7 +46,7 @@
       "file": "tiles/0_-4.glb",
       "meta": "tiles/0_-4.json",
       "buildings": 66,
-      "maxHeight": 450
+      "maxHeight": 457
     },
     {
       "key": "-3_-4",
@@ -254,7 +254,7 @@
       "file": "tiles/-2_0.glb",
       "meta": "tiles/-2_0.json",
       "buildings": 37,
-      "maxHeight": 450
+      "maxHeight": 527
     },
     {
       "key": "-3_0",

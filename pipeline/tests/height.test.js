@@ -19,7 +19,8 @@ describe('height', () => {
     expect(resolveHeight({ stories: '0' })).toBe(10)
     expect(resolveHeight({})).toBe(10)
   })
-  it('clamps to 450 m', () => {
-    expect(resolveHeight({ osmHeight: '9000' })).toBe(450)
+  it('clamps to 530 m (Willis antennas are 527 m)', () => {
+    expect(resolveHeight({ osmHeight: '527' })).toBe(527)
+    expect(resolveHeight({ osmHeight: '9000' })).toBe(530)
   })
 })

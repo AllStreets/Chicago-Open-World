@@ -8,6 +8,10 @@ export const BOOKMARKS = {
   river: { position: [950, 140, -760], target: [-700, 40, -560] },
   // Museum Campus looking back north at the skyline
   museum: { position: [900, 180, 2600], target: [0, 80, 0] },
+  // Hancock from the southeast, over Streeterville
+  hancock: { position: [900, 420, -1500], target: [395, 200, -1865] },
+  // Willis from the south over the river
+  willis: { position: [-200, 380, 900], target: [-669, 260, 348] },
 }
 
 export function bookmarkFromUrl(search) {

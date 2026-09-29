@@ -11,6 +11,7 @@ import { classifyFacade, FACADE_COLORS } from '../lib/classify.js'
 import { extrudeBuilding } from '../lib/extrude.js'
 import { groupByTile, TILE_SIZE } from '../lib/tiles.js'
 import { writeMeshGlb } from '../lib/glb.js'
+import { shapePieces } from '../lib/shapes.js'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const CACHE = join(ROOT, 'cache')
@@ -76,9 +77,7 @@ async function main() {
       const top = Math.max(b.height, ...(b.parts || []).map((p) => p.top))
       const family = classifyFacade({ height: top, year: b.year ?? 0, area: b.area })
       const s = hashSeed(b.id)
-      const pieces = []
-      if (b.height > 0) for (const p of b.polygons) pieces.push({ outer: p.outer, holes: p.holes, base: 0, top: b.height })
-      for (const p of b.parts || []) if (p.top > p.base) pieces.push(p)
+      const pieces = shapePieces(b)
       for (const piece of pieces) {
         const m = extrudeBuilding(piece)
         const n = m.positions.length / 3

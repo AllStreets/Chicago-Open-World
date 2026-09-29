@@ -52,3 +52,26 @@ describe('extrudeBuilding', () => {
     expect(Math.max(...vs)).toBe(20)
   })
 })
+
+describe('extrudeBuilding taper', () => {
+  const taper = { center: [5, -5], shaftTop: 100, topScale: 0.5 }
+  it('scales the top ring about the center', () => {
+    const m = extrudeBuilding({ outer: sq, top: 100, taper })
+    const top = []
+    for (let i = 0; i < m.positions.length; i += 3) if (m.positions[i + 1] === 100) top.push([m.positions[i], m.positions[i + 2]])
+    const xs = top.map((p) => p[0])
+    expect(Math.min(...xs)).toBeCloseTo(2.5); expect(Math.max(...xs)).toBeCloseTo(7.5)
+  })
+  it('tilted walls stay front-facing and lean inward (normal.y > 0)', () => {
+    for (const f of faces(extrudeBuilding({ outer: sq, top: 100, taper }))) {
+      expect(f.c[0] * f.n[0] + f.c[1] * f.n[1] + f.c[2] * f.n[2]).toBeGreaterThan(0)
+      if (f.n[1] !== 1) expect(f.n[1]).toBeGreaterThan(0)
+    }
+  })
+  it('a piece between base and top uses s(base) and s(top)', () => {
+    const m = extrudeBuilding({ outer: sq, base: 50, top: 100, taper })
+    const bottom = []
+    for (let i = 0; i < m.positions.length; i += 3) if (m.positions[i + 1] === 50) bottom.push(m.positions[i])
+    expect(Math.min(...bottom)).toBeCloseTo(5 - 5 * 0.75)
+  })
+})
