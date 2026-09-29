@@ -1,6 +1,6 @@
 {
  "version": 3,
- "generatedAt": "2026-09-29T03:07:46.198Z",
+ "generatedAt": "2026-09-29T03:53:12.576Z",
  "origin": {
   "lat": 41.88203,
   "lon": -87.62784
@@ -42,6 +42,13 @@
  },
  "landmarks": [
   {
+   "key": "wintrust",
+   "name": "Wintrust Arena",
+   "x": 538,
+   "z": 3150,
+   "top": 25
+  },
+  {
    "key": "nema",
    "name": "NEMA Chicago",
    "x": 395,
@@ -58,9 +65,9 @@
   {
    "key": "soldierfield",
    "name": "Soldier Field",
-   "x": 923,
-   "z": 2180,
-   "top": 30
+   "x": 854,
+   "z": 2194,
+   "top": 51
   },
   {
    "key": "unitedcenter",
@@ -238,11 +245,18 @@
    "top": 134
   },
   {
+   "key": "ratefield",
+   "name": "Rate Field",
+   "x": -486,
+   "z": 5793,
+   "top": 60
+  },
+  {
    "key": "wrigleyfield",
    "name": "Wrigley Field",
    "x": -2299,
    "z": -7349,
-   "top": 24
+   "top": 53
   }
  ],
  "tallest": [
@@ -2693,7 +2707,7 @@
    "lod0": "tiles/1_4.glb",
    "lod1": "tiles/1_4.lod1.glb",
    "meta": "tiles/1_4.json",
-   "buildings": 70,
+   "buildings": 69,
    "maxHeight": 91.2
   },
   {
@@ -4749,7 +4763,7 @@
    "lod1": "tiles/-1_11.lod1.glb",
    "meta": "tiles/-1_11.json",
    "buildings": 43,
-   "maxHeight": 41.8
+   "maxHeight": 60.2
   },
   {
    "key": "-2_9",
@@ -5828,8 +5842,8 @@
    "lod0": "tiles/-5_-10.glb",
    "lod1": "tiles/-5_-10.lod1.glb",
    "meta": "tiles/-5_-10.json",
-   "buildings": 377,
-   "maxHeight": 24
+   "buildings": 376,
+   "maxHeight": 22.8
   },
   {
    "key": "-4_-10",
@@ -6158,7 +6172,7 @@
    "lod0": "tiles/0_11.glb",
    "lod1": "tiles/0_11.lod1.glb",
    "meta": "tiles/0_11.json",
-   "buildings": 90,
+   "buildings": 89,
    "maxHeight": 79.8
   },
   {
@@ -6278,8 +6292,8 @@
    "lod0": "tiles/-11_-14.glb",
    "lod1": "tiles/-11_-14.lod1.glb",
    "meta": "tiles/-11_-14.json",
-   "buildings": 33,
-   "maxHeight": 25
+   "buildings": 31,
+   "maxHeight": 15.2
   },
   {
    "key": "-9_-16",
@@ -6383,8 +6397,8 @@
    "lod0": "tiles/-11_-15.glb",
    "lod1": "tiles/-11_-15.lod1.glb",
    "meta": "tiles/-11_-15.json",
-   "buildings": 227,
-   "maxHeight": 25
+   "buildings": 226,
+   "maxHeight": 19
   },
   {
    "key": "-12_-16",
@@ -6594,7 +6608,7 @@
    "lod1": "tiles/-5_-15.lod1.glb",
    "meta": "tiles/-5_-15.json",
    "buildings": 335,
-   "maxHeight": 30.4
+   "maxHeight": 53.2
   },
   {
    "key": "-4_-15",

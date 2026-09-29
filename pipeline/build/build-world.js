@@ -16,6 +16,7 @@ import { tileKeyFor, tileBounds, TILE_SIZE } from '../lib/tiles.js'
 import { writeMeshGlb } from '../lib/glb.js'
 import { shapePieces } from '../lib/shapes.js'
 import { applyHero } from '../lib/heroes.js'
+import { VENUE_FACADES, STYLE, convexHull } from '../lib/venue.js'
 import { parapetPiece, PARAPET_FACADE } from '../lib/roofs.js'
 import { roofProps } from '../lib/props.js'
 import { minimapSvg } from '../lib/minimap.js'
@@ -113,9 +114,17 @@ async function main() {
     if (!b) throw new Error(`hero not found in OSM data: ${h.name} (${JSON.stringify(h.match)})`)
     heroFor.set(b, h)
   }
+  // Venue heroes rebuild the whole site: drop superseded OSM shells and the synthesized non-landmark stadium shells
+  const suppressed = new Set(heroes.flatMap((h) => h.suppress || []))
+  const kept = buildings.filter((b) => !suppressed.has(b.osmId) && (b.source !== 'osm-stadium' || heroFor.has(b)))
+  log(`venue shells dropped: ${buildings.length - kept.length}`)
+  buildings.length = 0
+  for (const b of kept) buildings.push(b)
+  // Video boards mapped as buildings read as screens, not windowed boxes
+  for (const b of buildings) if (!heroFor.has(b) && /\b(screen|scoreboard)\b/i.test(b.name ?? '')) { b.facadeOverride = 'screen'; b.seedOverride = STYLE.screen.video }
   for (const b of buildings) {
     const h = heroFor.get(b)
-    if (h) { const r = applyHero(b, h); b.pieces = r.pieces; b.extraMeshes = r.extraMeshes; b.hero = h.key; b.crownTop = Math.max(0, ...r.extraMeshes.flatMap((m) => m.positions.filter((_, i) => i % 3 === 1)), ...(h.spireCounts ? r.pieces.map((q) => q.top) : [])) }
+    if (h) { const r = applyHero(b, h); b.pieces = r.pieces; b.extraMeshes = r.extraMeshes; b.venueMeshes = r.venueMeshes; b.venueTop = (r.venueMeshes || []).reduce((t, v) => { for (let k = 1; k < v.mesh.positions.length; k += 3) t = Math.max(t, v.mesh.positions[k]); return t }, 0); b.hero = h.key; b.crownTop = Math.max(0, ...r.extraMeshes.flatMap((m) => m.positions.filter((_, i) => i % 3 === 1)), ...(h.spireCounts ? r.pieces.map((q) => q.top) : [])) }
     else b.pieces = shapePieces(b)
   }
   log(`heroes applied: ${heroFor.size}`)
@@ -155,6 +164,9 @@ async function main() {
   const rail = uniq(chunks('rail')).filter((e) => e.geometry)
   const treeNodes = uniq(chunks('trees')).map((n) => project(n.lon, n.lat))
   for (const p of parks) if (['park', 'garden'].includes(p.tags.leisure)) treeNodes.push(...scatterInPolygon(p.outer, 22, p.outer.length))
+  // no park trees inside rebuilt venues (Soldier Field sits inside Burnham Park)
+  const venueHulls = buildings.filter((b) => b.venueMeshes?.length).map((b) => b.venueMeshes.find((v) => v.fieldRing) && convexHull(b.polygons.flatMap((p) => p.outer)))
+  for (let i = treeNodes.length - 1; i >= 0; i--) if (venueHulls.some((h) => pointInRing(treeNodes[i], h))) treeNodes.splice(i, 1)
   log(`parks ${parks.length}, water ${water.length}, roads ${roads.length}, rail ${rail.length}, trees ${treeNodes.length}`)
 
   // ── Per-tile assembly ──────────────────────────────────────────────────────
@@ -202,13 +214,14 @@ async function main() {
     const bounds = tileBounds(key)
     const L0 = bAcc(), L1 = bAcc(), meta = []
     t.b.forEach((b, i) => {
-      const top = Math.max(0, ...b.pieces.map((p) => p.top))
-      const family = b.facadeOverride ? FACADE_FAMILIES.indexOf(b.facadeOverride) : classifyFacade({ height: top, year: b.year ?? 0, area: b.area, type: b.tags?.building })
+      const top = Math.max(0, ...b.pieces.map((p) => p.top), b.venueTop ?? 0)
+      const family = b.facadeOverride ? (VENUE_FACADES[b.facadeOverride] ?? FACADE_FAMILIES.indexOf(b.facadeOverride)) : classifyFacade({ height: top, year: b.year ?? 0, area: b.area, type: b.tags?.building })
       const seed = b.seedOverride ?? hashSeed(b.id)
       const parapets = b.pieces.map(parapetPiece).filter(Boolean)
       for (const pc of b.pieces) appendBuilding(L0, extrudeBuilding(pc), family, seed, i)
       for (const pc of parapets) appendBuilding(L0, extrudeBuilding(pc), PARAPET_FACADE, seed, i)
       for (const m of b.extraMeshes || []) appendBuilding(L0, m, family, seed, i)
+      for (const v of b.venueMeshes || []) { appendBuilding(L0, v.mesh, v.facade, v.seed, i); appendBuilding(L1, v.mesh, v.facade, v.seed, i) }
       // LOD1: heroes and part-buildings keep their shape (they are the skyline); plain footprints simplify
       if (b.hero || b.parts) { for (const pc of b.pieces) appendBuilding(L1, extrudeBuilding(pc), family, seed, i); for (const m of b.extraMeshes || []) appendBuilding(L1, m, family, seed, i) }
       else if (b.area >= 80) for (const p of b.polygons) {
@@ -278,7 +291,7 @@ async function main() {
       { name: 'Wikipedia — List of tallest buildings in Chicago', id: 'skyline.json' },
     ],
     skyline: { missing: sky.missing, wrongHeight: sky.wrongHeight },
-    landmarks: buildings.filter((b) => b.hero).map((b) => ({ key: b.hero, name: heroes.find((h) => h.key === b.hero)?.name ?? b.name, x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(...b.pieces.map((p) => p.top), ...(b.extraMeshes || []).flatMap((m) => m.positions.filter((_, i) => i % 3 === 1)))) })),
+    landmarks: buildings.filter((b) => b.hero).map((b) => ({ key: b.hero, name: heroes.find((h) => h.key === b.hero)?.name ?? b.name, x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(b.venueTop ?? 0, ...b.pieces.map((p) => p.top), ...(b.extraMeshes || []).flatMap((m) => m.positions.filter((_, i) => i % 3 === 1)))) })),
     tallest: buildings.filter((b) => !b.hero && b.name && b.pieces.length && Math.max(...b.pieces.map((p) => p.top)) > 150).map((b) => ({ key: b.id, name: b.name, x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(...b.pieces.map((p) => p.top))) })),
     tiles, blocks: blockList, land: 'ground/land.glb', landMask: 'land.json', minimap: { file: 'minimap.png', bounds: mmBounds, size: 2048 },
   }, null, 1))

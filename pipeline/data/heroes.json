@@ -386,19 +386,107 @@
         "osmId": 205221993
       },
       "heightM": 30,
-      "facade": "precast-concrete",
-      "crowns": []
+      "facade": "arena",
+      "crowns": [],
+      "wallStyle": "arena"
     },
     {
       "key": "soldierfield",
       "name": "Soldier Field",
       "match": {
-        "osmId": 2305649
+        "osmId": 16699535
       },
-      "heightM": 30,
-      "facade": "precast-concrete",
+      "suppress": [
+        2305649
+      ],
       "crowns": [],
-      "stands": 34
+      "venue": {
+        "kind": "football",
+        "center": {
+          "lat": 41.86225,
+          "lon": -87.61664
+        },
+        "axisBearing": -4.2,
+        "outerInset": 12,
+        "rim": [
+          [
+            -180,
+            30
+          ],
+          [
+            -130,
+            31
+          ],
+          [
+            -105,
+            40
+          ],
+          [
+            -75,
+            40
+          ],
+          [
+            -50,
+            31
+          ],
+          [
+            0,
+            30
+          ],
+          [
+            50,
+            33
+          ],
+          [
+            72,
+            50
+          ],
+          [
+            108,
+            50
+          ],
+          [
+            130,
+            33
+          ],
+          [
+            180,
+            30
+          ]
+        ],
+        "seats": "navy",
+        "wall": "glass-steel",
+        "steel": "gray",
+        "endZone": "navy",
+        "logo": "orange",
+        "colonnade": {
+          "rows": 2,
+          "spacing": 5.8,
+          "r": 1.05,
+          "h": 17,
+          "lengthFrac": 0.5,
+          "from": 4,
+          "rowGap": 4.4,
+          "podium": 3,
+          "style": "limestone"
+        },
+        "boards": [
+          {
+            "angle": 0,
+            "w": 30,
+            "h": 10,
+            "style": "video",
+            "setback": 14
+          },
+          {
+            "angle": 180,
+            "w": 30,
+            "h": 10,
+            "style": "video",
+            "setback": 14
+          }
+        ]
+      }
     },
     {
       "key": "wrigleyfield",
@@ -407,9 +495,186 @@
         "lat": 41.9484,
         "lon": -87.6553
       },
-      "heightM": 24,
-      "stands": 38,
-      "facade": "precast-concrete",
+      "crowns": [],
+      "venue": {
+        "kind": "baseball",
+        "home": {
+          "lat": 41.94794,
+          "lon": -87.65585
+        },
+        "cfBearing": 45,
+        "walls": {
+          "lf": 108.2,
+          "lcf": 112.2,
+          "cf": 121.9,
+          "rcf": 112.2,
+          "rf": 107.6
+        },
+        "foul": 11,
+        "backstop": 18,
+        "rim": [
+          [
+            0,
+            13
+          ],
+          [
+            40,
+            13
+          ],
+          [
+            56,
+            26
+          ],
+          [
+            180,
+            26
+          ]
+        ],
+        "roofFrom": 58,
+        "roofRise": 6,
+        "seats": "green",
+        "wall": "brick-steel",
+        "steel": "green",
+        "ivy": true,
+        "lights": [
+          {
+            "angle": 75,
+            "h": 16
+          },
+          {
+            "angle": -75,
+            "h": 16
+          },
+          {
+            "angle": 115,
+            "h": 16
+          },
+          {
+            "angle": -115,
+            "h": 16
+          },
+          {
+            "angle": 160,
+            "h": 16
+          },
+          {
+            "angle": -160,
+            "h": 16
+          },
+          {
+            "angle": 38,
+            "h": 24
+          },
+          {
+            "angle": -38,
+            "h": 24
+          }
+        ],
+        "scoreboard": {
+          "w": 23,
+          "h": 8.5,
+          "style": "manual",
+          "setback": 7
+        },
+        "marquee": {
+          "w": 11,
+          "h": 3.4,
+          "base": 7
+        },
+        "roofDepth": 0.42
+      }
+    },
+    {
+      "key": "ratefield",
+      "name": "Rate Field",
+      "match": {
+        "lat": 41.8297,
+        "lon": -87.6338
+      },
+      "crowns": [],
+      "venue": {
+        "kind": "baseball",
+        "home": {
+          "lat": 41.83025,
+          "lon": -87.63426
+        },
+        "cfBearing": 135,
+        "walls": {
+          "lf": 100.6,
+          "lcf": 114.9,
+          "cf": 121.9,
+          "rcf": 113.4,
+          "rf": 102.1
+        },
+        "foul": 16,
+        "backstop": 19,
+        "rim": [
+          [
+            0,
+            15
+          ],
+          [
+            40,
+            15
+          ],
+          [
+            58,
+            34
+          ],
+          [
+            180,
+            34
+          ]
+        ],
+        "roofFrom": 60,
+        "roofRise": 7,
+        "seats": "green",
+        "wall": "concrete",
+        "steel": "navy",
+        "lights": [
+          {
+            "angle": 75,
+            "h": 14
+          },
+          {
+            "angle": -75,
+            "h": 14
+          },
+          {
+            "angle": 115,
+            "h": 14
+          },
+          {
+            "angle": -115,
+            "h": 14
+          },
+          {
+            "angle": 155,
+            "h": 14
+          },
+          {
+            "angle": -155,
+            "h": 14
+          }
+        ],
+        "scoreboard": {
+          "w": 32,
+          "h": 14,
+          "style": "video",
+          "setback": 10
+        },
+        "roofDepth": 0.3
+      }
+    },
+    {
+      "key": "wintrust",
+      "name": "Wintrust Arena",
+      "match": {
+        "osmId": 381265570
+      },
+      "heightM": 25,
+      "facade": "arena",
+      "wallStyle": "glass-steel",
       "crowns": []
     }
   ]

@@ -50,10 +50,79 @@ varying vec3 vWPos;
 varying vec3 vWNormal;
 varying vec2 vMUv;
 float owHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+// Venue surfaces (façade 9+): stadium seats, turf, clay, paint, steel, lamps, boards, walls, marquee, ivy.
+// The style selector rides in the seed (see pipeline/lib/venue.js STYLE).
+vec3 venueAlbedo(int vi, float s, vec2 uv, vec3 wp, vec3 n, vec3 grain, vec3 roofAlb) {
+  if (vi == 9) {
+    vec3 c = s < 0.25 ? vec3(0.10, 0.27, 0.17) : s < 0.5 ? vec3(0.10, 0.14, 0.30) : s < 0.75 ? vec3(0.48, 0.09, 0.09) : vec3(0.16, 0.30, 0.52);
+    float row = fract(wp.y / 0.42);
+    float riser = smoothstep(0.6, 0.7, row);
+    float aisle = step(fract(uv.x / 17.0), 0.06);
+    vec3 conc = vec3(0.56, 0.55, 0.53);
+    // rows fade to an even tone with distance so risers never shimmer
+    float fw = fwidth(wp.y / 0.42);
+    riser = mix(riser, 0.3, smoothstep(0.25, 0.6, fw));
+    vec3 a = mix(c * (0.85 + 0.3 * owHash(floor(vec2(uv.x / 0.55, wp.y / 0.42)))), c * 0.55, riser);
+    return mix(a, conc * 0.8, aisle * (1.0 - smoothstep(0.3, 0.8, fwidth(uv.x / 17.0) * 17.0)));
+  }
+  if (vi == 10) {
+    vec2 q = floor(uv / 9.0);
+    float band = s < 0.5 ? mod(q.x + q.y, 2.0) : mod(q.x, 2.0);
+    return mix(vec3(0.16, 0.38, 0.12), vec3(0.2, 0.45, 0.15), band) * (0.9 + 0.2 * grain.g);
+  }
+  if (vi == 11) return (s < 0.5 ? vec3(0.66, 0.42, 0.26) : vec3(0.50, 0.34, 0.24)) * (0.88 + 0.24 * grain.r);
+  if (vi == 12) return s < 0.25 ? vec3(0.95) : s < 0.5 ? vec3(0.09, 0.13, 0.30) : vec3(0.88, 0.36, 0.08);
+  if (vi == 13) return s < 0.25 ? vec3(0.11, 0.27, 0.18) : s < 0.5 ? vec3(0.52, 0.54, 0.57) : s < 0.75 ? vec3(0.9) : vec3(0.1, 0.13, 0.24);
+  if (vi == 14) return vec3(0.93, 0.93, 0.88);
+  if (vi == 15) {
+    if (s < 0.5) {   // hand-turned scoreboard: dark green with white number plates
+      vec2 c = fract(uv / vec2(1.5, 1.3));
+      float plate = step(0.18, c.x) * step(c.x, 0.82) * step(0.22, c.y) * step(c.y, 0.78) * step(0.5, owHash(floor(uv / vec2(1.5, 1.3))));
+      return mix(vec3(0.08, 0.24, 0.15), vec3(0.92), plate);
+    }
+    return vec3(0.04, 0.05, 0.06);
+  }
+  if (vi == 16) {
+    if (n.y > 0.6) return roofAlb;
+    float y = wp.y;
+    if (s < 0.125) {  // brick base, green steel above with open concourse bays
+      if (y < 9.0) return vec3(0.50, 0.23, 0.17) * (0.85 + 0.2 * step(0.1, fract(y / 0.3)) * step(0.05, fract((uv.x + step(0.5, fract(y / 0.6)) * 0.6) / 1.2)));
+      float bay = step(0.18, fract(uv.x / 7.0)) * step(0.3, fract(y / 5.0)) * step(fract(y / 5.0), 0.8);
+      return mix(vec3(0.12, 0.29, 0.19), vec3(0.03, 0.05, 0.04), bay);
+    }
+    if (s < 0.275) {  // limestone
+      float joint = step(fract(y / 1.1), 0.04) + step(fract(uv.x / 2.2), 0.02);
+      return vec3(0.80, 0.76, 0.66) * (0.93 + 0.1 * grain.r) * (1.0 - 0.18 * min(joint, 1.0));
+    }
+    if (s < 0.425) {  // glass and steel bands
+      float band = step(fract(y / 4.5), 0.28);
+      float mull = step(fract(uv.x / 2.0), 0.05);
+      return mix(mix(vec3(0.22, 0.29, 0.35), vec3(0.6, 0.62, 0.64), mull), vec3(0.64, 0.66, 0.68), band);
+    }
+    if (s < 0.575) {  // precast concrete with ramp openings
+      // long concourse slots between thin piers, like a ballpark's open ramps
+      float open = step(0.05, fract(uv.x / 12.0)) * step(0.5, fract(y / 6.5)) * step(fract(y / 6.5), 0.78);
+      return mix(vec3(0.6, 0.6, 0.58) * (0.92 + 0.12 * grain.r), vec3(0.1, 0.11, 0.13), open);
+    }
+    // arena: brick podium, cream band, dark glass ribbon
+    if (y < 11.0) return vec3(0.36, 0.15, 0.11) * (0.9 + 0.15 * grain.r);
+    if (y < 13.0) return vec3(0.62, 0.58, 0.52);
+    float mull = step(fract(uv.x / 2.4), 0.06);
+    return mix(vec3(0.16, 0.2, 0.24), vec3(0.55, 0.56, 0.58), mull);
+  }
+  if (vi == 17) return vec3(0.64, 0.07, 0.06);
+  if (vi == 18) {   // ivy on brick
+    float leaf = owHash(floor(vec2(uv.x, wp.y) * 3.0));
+    return mix(vec3(0.12, 0.30, 0.10), vec3(0.22, 0.42, 0.14), leaf) * (0.85 + 0.3 * grain.g);
+  }
+  return vec3(0.6);
+}
 `
 const FRAG_MAP = /* glsl */ `
-bool isParapet = vFacade > 7.5;                          // index 8 = parapet coping
-int fi = isParapet ? 4 : int(vFacade + 0.5);
+bool isVenue = vFacade > 8.5;                            // 9+ = stadium surfaces
+int vi = int(vFacade + 0.5);
+bool isParapet = vFacade > 7.5 && !isVenue;              // index 8 = parapet coping
+int fi = (isParapet || isVenue) ? 4 : vi;
 vec4 T = uTile[fi];
 bool isRoof = vWNormal.y > 0.6;
 vec2 tuv = vMUv / T.xy;
@@ -73,10 +142,13 @@ vec3 roofAlb = rk < 0.4 ? gravel * 0.85
 vec3 coping = vec3(0.58, 0.56, 0.52) * (0.9 + 0.2 * gravel.r);
 vec3 alb = isRoof ? roofAlb : (isParapet ? coping : wallAlb);
 win = (isRoof || isParapet) ? 0.0 : win;
+if (isVenue) { alb = venueAlbedo(vi, vSeed, vMUv, vWPos, vWNormal, gravel, roofAlb); win = 0.0; }
 alb = mix(vec3(0.62, 0.6, 0.57), alb, uReady);
 win *= uReady;
-alb *= mix(0.55, 1.0, smoothstep(0.0, 14.0, vWPos.y));   // ground contact
-alb *= 0.88 + 0.24 * vSeed;                              // per-building variation
+if (!isVenue) {
+  alb *= mix(0.55, 1.0, smoothstep(0.0, 14.0, vWPos.y)); // ground contact
+  alb *= 0.88 + 0.24 * vSeed;                            // per-building variation
+}
 if (fi == 3) {                                           // curtain glass: bronze-black, green, silver, blue
   float g = fract(vSeed * 3.7);
   vec3 tint = g < 0.28 ? vec3(0.30, 0.28, 0.27) : g < 0.5 ? vec3(0.62, 0.8, 0.74) : g < 0.78 ? vec3(0.86, 0.9, 0.98) : vec3(0.72, 0.8, 0.95);
@@ -91,7 +163,18 @@ const FRAG_METAL = /* glsl */ `
 metalnessFactor = mix(metalnessFactor, 0.9, win * 0.85);
 `
 const FRAG_EMISSIVE = /* glsl */ `
-if (!isRoof && !isParapet && uNight > 0.001) {
+if (isVenue && uNight > 0.001) {
+  if (vi == 14) totalEmissiveRadiance += vec3(1.0, 0.96, 0.88) * 3.2 * uNight * uLitBoost;
+  // under the floodlights: the field and stands glow as if lit for a night game
+  if (vi >= 10 && vi <= 12) totalEmissiveRadiance += diffuseColor.rgb * vec3(1.0, 0.98, 0.92) * 0.85 * uNight;
+  if (vi == 9 || vi == 18) totalEmissiveRadiance += diffuseColor.rgb * 0.35 * uNight;
+  if (vi == 15 && vSeed > 0.5) {
+    vec2 c = floor(vMUv / vec2(0.8, 0.6));
+    totalEmissiveRadiance += mix(vec3(0.2, 0.45, 1.0), vec3(1.0, 0.8, 0.4), owHash(c)) * (0.25 + 0.5 * owHash(c + 7.0)) * uNight * uLitBoost;
+  }
+  if (vi == 17) totalEmissiveRadiance += (vec3(1.0, 0.18, 0.12) * 0.5 + vec3(1.0, 0.95, 0.85) * step(0.55, owHash(floor(vMUv * vec2(3.0, 4.0)))) * 0.8) * uNight * uLitBoost;
+}
+if (!isRoof && !isParapet && !isVenue && uNight > 0.001) {
   vec2 cell = floor(tuv * T.zw);
   vec2 cf = fract(tuv * T.zw);
   // inset rectangle inside each cell: frames/mullions stay dark (matters for all-glass walls)
@@ -127,7 +210,7 @@ export function patchFacadeShader(shader) {
 export function createFacadeMaterial() {
   const m = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.86, metalness: 0.02 })
   m.onBeforeCompile = patchFacadeShader
-  m.customProgramCacheKey = () => 'facade-v5'
+  m.customProgramCacheKey = () => 'facade-v6'
   return m
 }
 

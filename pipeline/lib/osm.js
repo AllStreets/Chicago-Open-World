@@ -8,7 +8,7 @@ const MIN_AREA = 12
 const TYPE_DEFAULTS = {
   house: 8, detached: 8, semidetached_house: 8, terrace: 9, garage: 4, garages: 4, shed: 3, carport: 3,
   apartments: 12, residential: 10, commercial: 8, retail: 6, industrial: 10, warehouse: 10,
-  church: 16, school: 12, hospital: 20, stadium: 25, roof: 5,
+  church: 16, school: 12, hospital: 20, stadium: 8, grandstand: 6, roof: 5,
 }
 export const defaultHeightFor = (tags = {}) => TYPE_DEFAULTS[tags.building] ?? 9
 
