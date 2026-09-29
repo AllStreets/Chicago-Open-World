@@ -22,3 +22,13 @@ describe('blocks (H7)', () => {
     expect(blockLayers(B).water.extra.CALM).toHaveLength(3)
   })
 })
+
+describe('blocks carry the style index (V2)', () => {
+  it('_STYLE travels from tiles into the block, unshifted', () => {
+    const B = createBlock()
+    const t = { ...tri([0, 0, 0]), style: [7, 7, 7] }
+    addTileToBlock(B, '0_0', { buildings: t, ground, water: water(0, 1), count: 1 })
+    expect([...blockLayers(B).buildings.extra.STYLE]).toEqual([7, 7, 7])
+  })
+})
+

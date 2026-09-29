@@ -21,6 +21,7 @@ import { shapeSacred } from '../lib/sacred.js'
 import { horizonBoxes } from '../lib/horizon.js'
 import { venueZones, filterTrees, assertNoVenueTrees, outsideZones } from '../lib/trees.js'
 import { createBlock, addTileToBlock, blockLayers, blockSidecar } from '../lib/blocks.js'
+import { bAcc, appendBuilding, appendLayer, asLayer } from '../lib/layers.js'
 import { lakePolygons, landMinusWater, joinLines, lakeSide } from '../lib/lake.js'
 import { bakeShore, SHORE } from '../lib/shore.js'
 import { bakeHeightfield, meshPoints, boundsUnion, HEIGHTFIELD } from '../lib/heightfield.js'
@@ -61,13 +62,6 @@ function osmPolys(elements) {
 
 const acc = () => ({ positions: [], normals: [], uvs: [] })
 function append(dst, m) { for (const k of ['positions', 'normals', 'uvs']) for (const v of m[k]) dst[k].push(v) }
-function appendBuilding(dst, m, facade, seed, idx) {
-  append(dst, m)
-  const n = m.positions.length / 3
-  for (let v = 0; v < n; v++) { dst.fac.push(facade); dst.seed.push(seed); dst.bldg.push(idx) }
-}
-const bAcc = () => ({ ...acc(), fac: [], seed: [], bldg: [] })
-const asLayer = (b) => ({ positions: b.positions, normals: b.normals, uvs: b.uvs, extra: { FACADE: new Float32Array(b.fac), SEED: new Float32Array(b.seed), BLDG: new Float32Array(b.bldg) } })
 
 async function main() {
   // ── Buildings ──────────────────────────────────────────────────────────────

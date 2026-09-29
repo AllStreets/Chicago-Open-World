@@ -3,7 +3,7 @@
 // and blocks/<bk>.json maps a block _BLDG back to (tile key, tile-local index) for picking.
 export function createBlock() {
   return {
-    b: { positions: [], normals: [], uvs: [], fac: [], seed: [], bldg: [] },
+    b: { positions: [], normals: [], uvs: [], fac: [], seed: [], bldg: [], style: [] },
     g: { positions: [], normals: [], uvs: [], layer: [] },
     w: { positions: [], normals: [], uvs: [], calm: [] },
     tiles: [], count: 0,
@@ -20,6 +20,7 @@ export function addTileToBlock(B, key, { buildings, ground, water, count }) {
   for (const v of buildings.fac) B.b.fac.push(v)
   for (const v of buildings.seed) B.b.seed.push(v)
   for (const v of buildings.bldg) B.b.bldg.push(v + base)
+  for (const v of buildings.style ?? []) B.b.style.push(v)
   for (const v of ground.extra?.LAYER ?? []) B.g.layer.push(v)
   for (const v of water.extra?.CALM ?? []) B.w.calm.push(v)
   B.tiles.push({ key, base, count })
@@ -28,7 +29,7 @@ export function addTileToBlock(B, key, { buildings, ground, water, count }) {
 
 export function blockLayers(B) {
   return {
-    buildings: { positions: B.b.positions, normals: B.b.normals, uvs: B.b.uvs, extra: { FACADE: new Float32Array(B.b.fac), SEED: new Float32Array(B.b.seed), BLDG: new Float32Array(B.b.bldg) } },
+    buildings: { positions: B.b.positions, normals: B.b.normals, uvs: B.b.uvs, extra: { FACADE: new Float32Array(B.b.fac), SEED: new Float32Array(B.b.seed), BLDG: new Float32Array(B.b.bldg), STYLE: new Float32Array(B.b.style.length ? B.b.style : B.b.fac.map(() => 0)) } },
     ground: { positions: B.g.positions, normals: B.g.normals, uvs: B.g.uvs, extra: { LAYER: new Float32Array(B.g.layer) } },
     water: { positions: B.w.positions, normals: B.w.normals, uvs: B.w.uvs, extra: { CALM: new Float32Array(B.w.calm) } },
   }
