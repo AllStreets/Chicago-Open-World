@@ -1,5 +1,5 @@
 {
- "version": 5,
+ "version": 6,
  "origin": {
   "lat": 41.88203,
   "lon": -87.62784
@@ -37,6 +37,14 @@
   {
    "name": "Landmark colours and materials — sourced per look in heroes.json",
    "id": "heroes.json#look"
+  },
+  {
+   "name": "OpenStreetMap (ODbL) — CTA and Metra route relations, stations, platforms",
+   "id": "overpass-transit"
+  },
+  {
+   "name": "CTA GTFS route colours",
+   "id": "cta-gtfs"
   }
  ],
  "skyline": {
@@ -8056,21 +8064,6 @@
    "maxHeight": 0
   },
   {
-   "key": "-10_13",
-   "block": "-3_3",
-   "bounds": {
-    "minX": -5000,
-    "maxX": -4500,
-    "minZ": 6500,
-    "maxZ": 7000
-   },
-   "lod0": "tiles/-10_13.glb",
-   "lod1": "tiles/-10_13.lod1.glb",
-   "meta": "tiles/-10_13.json",
-   "buildings": 0,
-   "maxHeight": 0
-  },
-  {
    "key": "4_13",
    "block": "1_3",
    "bounds": {
@@ -8082,6 +8075,21 @@
    "lod0": "tiles/4_13.glb",
    "lod1": "tiles/4_13.lod1.glb",
    "meta": "tiles/4_13.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "5_13",
+   "block": "1_3",
+   "bounds": {
+    "minX": 2500,
+    "maxX": 3000,
+    "minZ": 6500,
+    "maxZ": 7000
+   },
+   "lod0": "tiles/5_13.glb",
+   "lod1": "tiles/5_13.lod1.glb",
+   "meta": "tiles/5_13.json",
    "buildings": 0,
    "maxHeight": 0
   },
@@ -8116,21 +8124,6 @@
    "maxHeight": 0
   },
   {
-   "key": "5_13",
-   "block": "1_3",
-   "bounds": {
-    "minX": 2500,
-    "maxX": 3000,
-    "minZ": 6500,
-    "maxZ": 7000
-   },
-   "lod0": "tiles/5_13.glb",
-   "lod1": "tiles/5_13.lod1.glb",
-   "meta": "tiles/5_13.json",
-   "buildings": 0,
-   "maxHeight": 0
-  },
-  {
    "key": "6_15",
    "block": "1_3",
    "bounds": {
@@ -8142,6 +8135,336 @@
    "lod0": "tiles/6_15.glb",
    "lod1": "tiles/6_15.lod1.glb",
    "meta": "tiles/6_15.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "4_14",
+   "block": "1_3",
+   "bounds": {
+    "minX": 2000,
+    "maxX": 2500,
+    "minZ": 7000,
+    "maxZ": 7500
+   },
+   "lod0": "tiles/4_14.glb",
+   "lod1": "tiles/4_14.lod1.glb",
+   "meta": "tiles/4_14.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "-13_-2",
+   "block": "-4_-1",
+   "bounds": {
+    "minX": -6500,
+    "maxX": -6000,
+    "minZ": -1000,
+    "maxZ": -500
+   },
+   "lod0": "tiles/-13_-2.glb",
+   "lod1": "tiles/-13_-2.lod1.glb",
+   "meta": "tiles/-13_-2.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "-13_6",
+   "block": "-4_1",
+   "bounds": {
+    "minX": -6500,
+    "maxX": -6000,
+    "minZ": 3000,
+    "maxZ": 3500
+   },
+   "lod0": "tiles/-13_6.glb",
+   "lod1": "tiles/-13_6.lod1.glb",
+   "meta": "tiles/-13_6.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "-14_6",
+   "block": "-4_1",
+   "bounds": {
+    "minX": -7000,
+    "maxX": -6500,
+    "minZ": 3000,
+    "maxZ": 3500
+   },
+   "lod0": "tiles/-14_6.glb",
+   "lod1": "tiles/-14_6.lod1.glb",
+   "meta": "tiles/-14_6.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "-15_6",
+   "block": "-4_1",
+   "bounds": {
+    "minX": -7500,
+    "maxX": -7000,
+    "minZ": 3000,
+    "maxZ": 3500
+   },
+   "lod0": "tiles/-15_6.glb",
+   "lod1": "tiles/-15_6.lod1.glb",
+   "meta": "tiles/-15_6.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "-16_6",
+   "block": "-4_1",
+   "bounds": {
+    "minX": -8000,
+    "maxX": -7500,
+    "minZ": 3000,
+    "maxZ": 3500
+   },
+   "lod0": "tiles/-16_6.glb",
+   "lod1": "tiles/-16_6.lod1.glb",
+   "meta": "tiles/-16_6.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "-17_6",
+   "block": "-5_1",
+   "bounds": {
+    "minX": -8500,
+    "maxX": -8000,
+    "minZ": 3000,
+    "maxZ": 3500
+   },
+   "lod0": "tiles/-17_6.glb",
+   "lod1": "tiles/-17_6.lod1.glb",
+   "meta": "tiles/-17_6.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "-10_13",
+   "block": "-3_3",
+   "bounds": {
+    "minX": -5000,
+    "maxX": -4500,
+    "minZ": 6500,
+    "maxZ": 7000
+   },
+   "lod0": "tiles/-10_13.glb",
+   "lod1": "tiles/-10_13.lod1.glb",
+   "meta": "tiles/-10_13.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "-14_1",
+   "block": "-4_0",
+   "bounds": {
+    "minX": -7000,
+    "maxX": -6500,
+    "minZ": 500,
+    "maxZ": 1000
+   },
+   "lod0": "tiles/-14_1.glb",
+   "lod1": "tiles/-14_1.lod1.glb",
+   "meta": "tiles/-14_1.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "-15_1",
+   "block": "-4_0",
+   "bounds": {
+    "minX": -7500,
+    "maxX": -7000,
+    "minZ": 500,
+    "maxZ": 1000
+   },
+   "lod0": "tiles/-15_1.glb",
+   "lod1": "tiles/-15_1.lod1.glb",
+   "meta": "tiles/-15_1.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "-16_1",
+   "block": "-4_0",
+   "bounds": {
+    "minX": -8000,
+    "maxX": -7500,
+    "minZ": 500,
+    "maxZ": 1000
+   },
+   "lod0": "tiles/-16_1.glb",
+   "lod1": "tiles/-16_1.lod1.glb",
+   "meta": "tiles/-16_1.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "-17_1",
+   "block": "-5_0",
+   "bounds": {
+    "minX": -8500,
+    "maxX": -8000,
+    "minZ": 500,
+    "maxZ": 1000
+   },
+   "lod0": "tiles/-17_1.glb",
+   "lod1": "tiles/-17_1.lod1.glb",
+   "meta": "tiles/-17_1.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "-18_1",
+   "block": "-5_0",
+   "bounds": {
+    "minX": -9000,
+    "maxX": -8500,
+    "minZ": 500,
+    "maxZ": 1000
+   },
+   "lod0": "tiles/-18_1.glb",
+   "lod1": "tiles/-18_1.lod1.glb",
+   "meta": "tiles/-18_1.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "-18_2",
+   "block": "-5_0",
+   "bounds": {
+    "minX": -9000,
+    "maxX": -8500,
+    "minZ": 1000,
+    "maxZ": 1500
+   },
+   "lod0": "tiles/-18_2.glb",
+   "lod1": "tiles/-18_2.lod1.glb",
+   "meta": "tiles/-18_2.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "-19_2",
+   "block": "-5_0",
+   "bounds": {
+    "minX": -9500,
+    "maxX": -9000,
+    "minZ": 1000,
+    "maxZ": 1500
+   },
+   "lod0": "tiles/-19_2.glb",
+   "lod1": "tiles/-19_2.lod1.glb",
+   "meta": "tiles/-19_2.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "-20_2",
+   "block": "-5_0",
+   "bounds": {
+    "minX": -10000,
+    "maxX": -9500,
+    "minZ": 1000,
+    "maxZ": 1500
+   },
+   "lod0": "tiles/-20_2.glb",
+   "lod1": "tiles/-20_2.lod1.glb",
+   "meta": "tiles/-20_2.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "-21_2",
+   "block": "-6_0",
+   "bounds": {
+    "minX": -10500,
+    "maxX": -10000,
+    "minZ": 1000,
+    "maxZ": 1500
+   },
+   "lod0": "tiles/-21_2.glb",
+   "lod1": "tiles/-21_2.lod1.glb",
+   "meta": "tiles/-21_2.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "-22_2",
+   "block": "-6_0",
+   "bounds": {
+    "minX": -11000,
+    "maxX": -10500,
+    "minZ": 1000,
+    "maxZ": 1500
+   },
+   "lod0": "tiles/-22_2.glb",
+   "lod1": "tiles/-22_2.lod1.glb",
+   "meta": "tiles/-22_2.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "-13_-10",
+   "block": "-4_-3",
+   "bounds": {
+    "minX": -6500,
+    "maxX": -6000,
+    "minZ": -5000,
+    "maxZ": -4500
+   },
+   "lod0": "tiles/-13_-10.glb",
+   "lod1": "tiles/-13_-10.lod1.glb",
+   "meta": "tiles/-13_-10.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "0_13",
+   "block": "0_3",
+   "bounds": {
+    "minX": 0,
+    "maxX": 500,
+    "minZ": 6500,
+    "maxZ": 7000
+   },
+   "lod0": "tiles/0_13.glb",
+   "lod1": "tiles/0_13.lod1.glb",
+   "meta": "tiles/0_13.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "-8_-18",
+   "block": "-2_-5",
+   "bounds": {
+    "minX": -4000,
+    "maxX": -3500,
+    "minZ": -9000,
+    "maxZ": -8500
+   },
+   "lod0": "tiles/-8_-18.glb",
+   "lod1": "tiles/-8_-18.lod1.glb",
+   "meta": "tiles/-8_-18.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "-8_-19",
+   "block": "-2_-5",
+   "bounds": {
+    "minX": -4000,
+    "maxX": -3500,
+    "minZ": -9500,
+    "maxZ": -9000
+   },
+   "lod0": "tiles/-8_-19.glb",
+   "lod1": "tiles/-8_-19.lod1.glb",
+   "meta": "tiles/-8_-19.json",
    "buildings": 0,
    "maxHeight": 0
   },
@@ -9090,6 +9413,61 @@
    }
   },
   {
+   "key": "-4_1",
+   "file": "blocks/-4_1.glb",
+   "meta": "blocks/-4_1.json",
+   "bounds": {
+    "minX": -8000,
+    "maxX": -6000,
+    "minZ": 2000,
+    "maxZ": 4000
+   }
+  },
+  {
+   "key": "-5_1",
+   "file": "blocks/-5_1.glb",
+   "meta": "blocks/-5_1.json",
+   "bounds": {
+    "minX": -10000,
+    "maxX": -8000,
+    "minZ": 2000,
+    "maxZ": 4000
+   }
+  },
+  {
+   "key": "-5_0",
+   "file": "blocks/-5_0.glb",
+   "meta": "blocks/-5_0.json",
+   "bounds": {
+    "minX": -10000,
+    "maxX": -8000,
+    "minZ": 0,
+    "maxZ": 2000
+   }
+  },
+  {
+   "key": "-6_0",
+   "file": "blocks/-6_0.glb",
+   "meta": "blocks/-6_0.json",
+   "bounds": {
+    "minX": -12000,
+    "maxX": -10000,
+    "minZ": 0,
+    "maxZ": 2000
+   }
+  },
+  {
+   "key": "-4_-3",
+   "file": "blocks/-4_-3.glb",
+   "meta": "blocks/-4_-3.json",
+   "bounds": {
+    "minX": -8000,
+    "maxX": -6000,
+    "minZ": -6000,
+    "maxZ": -4000
+   }
+  },
+  {
    "key": "1_4",
    "file": "blocks/1_4.glb",
    "meta": "blocks/1_4.json",
@@ -9665,6 +10043,7 @@
  "land": "ground/land.glb",
  "lake": "ground/lake.glb",
  "landMask": "land.json",
+ "transit": "transit.json",
  "styles": "styles.json",
  "stylePalette": "style-palette.png",
  "shore": {
@@ -9678,10 +10057,10 @@
  },
  "heightfield": {
   "file": "heightfield.png",
-  "minX": -10000,
+  "minX": -12000,
   "minZ": -12000,
   "cell": 8,
-  "width": 2000,
+  "width": 2250,
   "height": 2750,
   "scale": 0.1
  },

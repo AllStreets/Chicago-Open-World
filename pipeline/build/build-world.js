@@ -1,5 +1,5 @@
 // pipeline/build/build-world.js — world build v3: 110 km², OSM-primary, validated skyline, streamed tiles.
-import { readFileSync, writeFileSync, rmSync, mkdirSync, readdirSync, existsSync } from 'node:fs'
+import { readFileSync, writeFileSync, rmSync, mkdirSync, readdirSync, existsSync, statSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import earcut from 'earcut'
@@ -33,11 +33,14 @@ import { parapetPiece, PARAPET_FACADE } from '../lib/roofs.js'
 import { roofProps } from '../lib/props.js'
 import { minimapSvg } from '../lib/minimap.js'
 import { bufferPolyline } from '../lib/ribbon.js'
-import { roadHalfWidth, isElevatedRail, scatterInPolygon, GROUND_Y, flatMesh } from '../lib/ground.js'
+import { roadHalfWidth, scatterInPolygon, GROUND_Y, flatMesh } from '../lib/ground.js'
+import { buildTransit, loadTransitCache } from './build-transit.js'
+import { loadCatalog } from '../lib/transit/lines.js'
+import { assertTransit } from '../lib/transit/validate.js'
 import { waterLayer, keepWater, breakwaterBuildings, CALM } from '../lib/water.js'
 import { WORLD_BBOX, RING0_BBOX } from '../lib/sources.js'
 import { validateSkyline, assertSkyline } from '../lib/skyline.js'
-import { clipPolysToTile, splitLineByTiles, splitLineWithContext, writeTileGlb, mergeGroundLayers, blockKeyFor, BLOCK_TILES } from '../lib/tilepack.js'
+import { clipPolysToTile, splitLineByTiles, splitLineWithContext, writeTileGlb, mergeGroundLayers, blockKeyFor, BLOCK_TILES, concatLayers } from '../lib/tilepack.js'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const CACHE = join(ROOT, 'cache', 'world')
@@ -184,6 +187,7 @@ async function main() {
   for (const p of keptTrees) treeNodes.push(p)
   log(`parks ${parks.length}, water ${water.length}, roads ${roads.length}, rail ${rail.length}, trees ${treeNodes.length}`)
 
+
   // ── Churches, cathedrals, mosques, synagogues, temples ─────────────────────
   const roadPts = []
   for (const e of roads) {
@@ -218,6 +222,10 @@ async function main() {
   assignHeroStyles(buildings, heroes, styles)
   const osmLooks = applyOsmLooks(buildings, styles, loadJson(join(ROOT, 'data', 'osm-looks.json')))
   log(`OSM-tagged looks: ${osmLooks.styled} buildings, ${osmLooks.skipped} over the palette cap`)
+  // ── Transit (V3): CTA + Metra tracks, stations and glow ────────────────────
+  const transit = buildTransit({ ...loadTransitCache(CACHE), catalog: loadCatalog(), styles })
+  assertTransit(transit.validation)
+  log(`transit: lines ${transit.json.lines.length} · routes ${transit.json.routes.length} · stations ${transit.json.stations.length} · tiles ${transit.tiles.size}`)
    
   log(`styles: ${styles.size - 1} rows`)
 
@@ -225,7 +233,7 @@ async function main() {
   rmSync(join(OUT, 'tiles'), { recursive: true, force: true })
   mkdirSync(join(OUT, 'tiles'), { recursive: true })
   const T = new Map()
-  const tile = (k) => { if (!T.has(k)) T.set(k, { b: [], roads: acc(), walks: acc(), roadsLod1: acc(), rail: acc(), elevated: acc(), trees: [], props: [], columns: [] }); return T.get(k) }
+  const tile = (k) => { if (!T.has(k)) T.set(k, { b: [], roads: acc(), walks: acc(), roadsLod1: acc(), rail: acc(), trees: [], props: [] }); return T.get(k) }
   for (const b of buildings) tile(tileKeyFor(b.centroid)).b.push(b)
   // tiles that hold only water or park (the middle of Monroe Harbor) must exist too, or the lake shows a hole
   const [wx0, wz0] = project(WORLD_BBOX.w, WORLD_BBOX.n), [wx1, wz1] = project(WORLD_BBOX.e, WORLD_BBOX.s)
@@ -242,19 +250,14 @@ async function main() {
     }
   }
   for (const e of rail) {
+    if (transit.wayIds.has(e.id)) continue // CTA and Metra tracks are drawn by the transit layers
     const t = e.tags || {}, pts = e.geometry.map((p) => project(p.lon, p.lat))
-    const elevated = isElevatedRail(t), grade = !(t.tunnel && t.tunnel !== 'no') && parseInt(t.layer ?? '0', 10) >= 0
-    if (!elevated && !grade) continue
+    if ((t.tunnel && t.tunnel !== 'no') || parseInt(t.layer ?? '0', 10) < 0) continue
     for (const [k, pieces] of splitLineWithContext(pts)) for (const { line: l, before, after } of pieces) {
-      if (elevated) {
-        append(tile(k).elevated, bufferPolyline(l, 3.6, 7.6))
-        for (let i = 1; i < l.length; i++) {
-          const seg = Math.hypot(l[i][0] - l[i - 1][0], l[i][1] - l[i - 1][1]), rot = Math.atan2(l[i][0] - l[i - 1][0], l[i][1] - l[i - 1][1])
-          for (let d = 9; d < seg; d += 18) { const f = d / seg; tile(k).columns.push([+(l[i - 1][0] + (l[i][0] - l[i - 1][0]) * f).toFixed(1), +(l[i - 1][1] + (l[i][1] - l[i - 1][1]) * f).toFixed(1), +rot.toFixed(3)]) }
-        }
-      } else append(tile(k).rail, bufferPolyline(l, t.railway === 'rail' ? 2.4 : 1.8, GROUND_Y.rail, { before, after }))
+      append(tile(k).rail, bufferPolyline(l, t.railway === 'rail' ? 2.4 : 1.8, GROUND_Y.rail, { before, after }))
     }
   }
+  for (const k of transit.tiles.keys()) tile(k) // a tile that holds only track still gets written
   for (const [x, z] of treeNodes) {
     const t = tile(tileKeyFor([x, z]))
     if (t.trees.length >= TREE_CAP) continue
@@ -268,6 +271,7 @@ async function main() {
 
   const tiles = []
   const blocks = new Map()
+  const blockGlow = new Map()
   let n = 0
   for (const [key, t] of T) {
     const bounds = tileBounds(key)
@@ -292,17 +296,19 @@ async function main() {
     const beachesM = flatMesh(clipPolysToTile(polysFor('beaches', bounds), bounds), GROUND_Y.beaches)
     const pitchesM = flatMesh(clipPolysToTile(polysFor('pitches', bounds), bounds), GROUND_Y.pitches)
     const waterM = waterLayer(clipPolysToTile(polysFor('water', bounds), bounds), GROUND_Y.water)
-    const hasContent = L0.positions.length || t.roads.positions.length || parksM.positions.length || waterM.positions.length
+    const hasContent = L0.positions.length || t.roads.positions.length || parksM.positions.length || waterM.positions.length || transit.tiles.has(key)
     if (!hasContent) continue
     const ground0 = mergeGroundLayers({ roads: t.roads, sidewalks: t.walks, parks: parksM, pitches: pitchesM, beaches: beachesM, rail: t.rail })
     const ground1 = mergeGroundLayers({ roads: t.roadsLod1, parks: parksM, pitches: pitchesM, beaches: beachesM })
-    await writeTileGlb(join(OUT, 'tiles', `${key}.glb`), { buildings: asLayer(L0), ground: ground0, water: waterM, elevated: t.elevated })
-    await writeTileGlb(join(OUT, 'tiles', `${key}.lod1.glb`), { buildings: asLayer(L1), ground: ground1, water: waterM })
+    const tr = transit.tiles.get(key) ?? {}
+    await writeTileGlb(join(OUT, 'tiles', `${key}.glb`), { buildings: asLayer(L0), ground: ground0, water: waterM, transit: tr.transit, ties: tr.ties, stations: tr.stations, glow: tr.glow })
+    await writeTileGlb(join(OUT, 'tiles', `${key}.lod1.glb`), { buildings: asLayer(L1), ground: ground1, water: waterM, glow: tr.glowLod })
     // accumulate the tile's far-detail content into its 2 km block
     const bk = blockKeyFor(key)
     if (!blocks.has(bk)) blocks.set(bk, createBlock())
+    if (tr.glowLod?.positions.length) { if (!blockGlow.has(bk)) blockGlow.set(bk, []); blockGlow.get(bk).push(tr.glowLod) }
     addTileToBlock(blocks.get(bk), key, { buildings: L1, ground: ground1, water: waterM, count: meta.length })
-    writeFileSync(join(OUT, 'tiles', `${key}.json`), JSON.stringify({ buildings: meta, trees: t.trees, props: t.props, columns: t.columns }))
+    writeFileSync(join(OUT, 'tiles', `${key}.json`), JSON.stringify({ buildings: meta, trees: t.trees, props: t.props }))
     tiles.push({ key, block: bk, bounds, lod0: `tiles/${key}.glb`, lod1: `tiles/${key}.lod1.glb`, meta: `tiles/${key}.json`, buildings: t.b.length, maxHeight: Math.max(0, ...meta.map((m) => m.height)) })
     if (++n % 50 === 0) log(`tiles written: ${n}`)
   }
@@ -313,7 +319,8 @@ async function main() {
   const blockList = []
   for (const [bk, B] of blocks) {
     const [bx, bz] = bk.split('_').map(Number), size = TILE_SIZE * BLOCK_TILES
-    await writeTileGlb(join(OUT, 'blocks', `${bk}.glb`), blockLayers(B))
+    const gl = blockGlow.get(bk)
+    await writeTileGlb(join(OUT, 'blocks', `${bk}.glb`), { ...blockLayers(B), glow: gl?.length ? concatLayers(gl) : undefined })
     writeFileSync(join(OUT, 'blocks', `${bk}.json`), JSON.stringify(blockSidecar(B)))
     blockList.push({ key: bk, file: `blocks/${bk}.glb`, meta: `blocks/${bk}.json`, bounds: { minX: bx * size, maxX: (bx + 1) * size, minZ: bz * size, maxZ: (bz + 1) * size } })
   }
@@ -390,6 +397,7 @@ async function main() {
   log(`style palette written: ${styles.size} rows`)
 
   const [r0x, r0z] = project(RING0_BBOX.w, RING0_BBOX.n), [r1x, r1z] = project(RING0_BBOX.e, RING0_BBOX.s)
+  writeFileSync(join(OUT, 'transit.json'), JSON.stringify(transit.json))
   writeFileSync(join(OUT, 'manifest.json'), JSON.stringify({
     version: MANIFEST_VERSION, ...manifestStamp(), origin: ORIGIN, tileSize: TILE_SIZE, bbox: WORLD_BBOX,
     core: { minX: r0x, maxX: r1x, minZ: r0z, maxZ: r1z },
@@ -399,15 +407,21 @@ async function main() {
       { name: 'City of Chicago Boundary', id: 'qqq8-j68g' },
       { name: 'Wikipedia — List of tallest buildings in Chicago', id: 'skyline.json' },
       { name: 'Landmark colours and materials — sourced per look in heroes.json', id: 'heroes.json#look' },
+      { name: 'OpenStreetMap (ODbL) — CTA and Metra route relations, stations, platforms', id: 'overpass-transit' },
+      { name: 'CTA GTFS route colours', id: 'cta-gtfs' },
     ],
     skyline: { missing: sky.missing, wrongHeight: sky.wrongHeight },
     landmarks: buildings.filter((b) => b.hero).map((b) => ({ key: b.hero, name: heroes.find((h) => h.key === b.hero)?.name ?? b.name, aliases: heroes.find((h) => h.key === b.hero)?.aliases ?? [], x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(b.venueTop ?? 0, ...b.pieces.map((p) => p.top), ...(b.extraMeshes || []).flatMap((m) => m.positions.filter((_, i) => i % 3 === 1)))) })),
     tallest: buildings.filter((b) => !b.hero && b.name && b.pieces.length && Math.max(...b.pieces.map((p) => p.top)) > 150).map((b) => ({ key: b.id, name: b.name, x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(...b.pieces.map((p) => p.top))) })),
-    tiles, blocks: blockList, land: 'ground/land.glb', lake: 'ground/lake.glb', landMask: 'land.json', styles: 'styles.json', stylePalette: 'style-palette.png',
+    tiles, blocks: blockList, land: 'ground/land.glb', lake: 'ground/lake.glb', landMask: 'land.json', transit: 'transit.json', styles: 'styles.json', stylePalette: 'style-palette.png',
     shore: { file: 'water/shore.png', ...shore.grid, maxDist: SHORE.maxDist },
     heightfield: { file: 'heightfield.png', ...hf.grid, scale: HEIGHTFIELD.scale }, minimap: { file: 'minimap.png', bounds: mmBounds, size: 2048 },
   }, null, 1))
   log('manifest written')
+  const dirBytes = (d) => readdirSync(d, { withFileTypes: true }).reduce((sum, e) => sum + (e.isDirectory() ? dirBytes(join(d, e.name)) : statSync(join(d, e.name)).size), 0)
+  const worldBytes = dirBytes(OUT)
+  log(`public/world: ${(worldBytes / 1e6).toFixed(1)} MB`)
+  if (worldBytes > 200e6) throw new Error(`public/world is ${(worldBytes / 1e6).toFixed(1)} MB — over the 200 MB budget (B.1.6)`)
 }
 
 await main()
