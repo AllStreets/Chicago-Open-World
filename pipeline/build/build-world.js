@@ -19,6 +19,7 @@ import { applyHero } from '../lib/heroes.js'
 import { VENUE_FACADES, STYLE, convexHull } from '../lib/venue.js'
 import { shapeSacred } from '../lib/sacred.js'
 import { horizonBoxes } from '../lib/horizon.js'
+import { MANIFEST_VERSION, manifestStamp, sortCacheFiles } from '../lib/manifest.js'
 import { parapetPiece, PARAPET_FACADE } from '../lib/roofs.js'
 import { roofProps } from '../lib/props.js'
 import { minimapSvg } from '../lib/minimap.js'
@@ -32,7 +33,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const CACHE = join(ROOT, 'cache', 'world')
 const OUT = join(ROOT, '..', 'app', 'public', 'world')
 const loadJson = (p) => JSON.parse(readFileSync(p, 'utf8'))
-const chunks = (kind) => readdirSync(CACHE).filter((f) => f.startsWith(`osm-${kind}-`)).flatMap((f) => loadJson(join(CACHE, f)).data.elements)
+const chunks = (kind) => sortCacheFiles(readdirSync(CACHE), `osm-${kind}-`).flatMap((f) => loadJson(join(CACHE, f)).data.elements)
 const uniq = (els) => [...new Map(els.map((e) => [`${e.type}${e.id}`, e])).values()]
 const log = (...a) => console.log(new Date().toISOString().slice(11, 19), ...a)
 const SKIP_TYPES = new Set(['roof', 'no', 'ruins', 'collapsed', 'bridge'])
@@ -91,7 +92,7 @@ async function main() {
       polygons: [{ outer: s.outer, holes: s.holes }], area, centroid: c, bbox: s.bbox, height: 24, heightSource: 'default', parts: null })
   }
   log(`osm buildings: ${buildings.length}`)
-  const cityRows = readdirSync(CACHE).filter((f) => f.startsWith('footprints-')).flatMap((f) => loadJson(join(CACHE, f)).data)
+  const cityRows = sortCacheFiles(readdirSync(CACHE), 'footprints-').flatMap((f) => loadJson(join(CACHE, f)).data)
   const city = cityRows.map(normalizeFootprint).filter(Boolean).map((c) => ({ id: c.id, centroid: c.centroid, stories: c.stories, year: c.year, address: c.address }))
   enrichFromCity(buildings, city)
   log(`city rows: ${cityRows.length}, enriched: ${buildings.filter((b) => b.cityId).length}`)
@@ -355,7 +356,7 @@ async function main() {
 
   const [r0x, r0z] = project(RING0_BBOX.w, RING0_BBOX.n), [r1x, r1z] = project(RING0_BBOX.e, RING0_BBOX.s)
   writeFileSync(join(OUT, 'manifest.json'), JSON.stringify({
-    version: 3, generatedAt: new Date().toISOString(), origin: ORIGIN, tileSize: TILE_SIZE, bbox: WORLD_BBOX,
+    version: MANIFEST_VERSION, ...manifestStamp(), origin: ORIGIN, tileSize: TILE_SIZE, bbox: WORLD_BBOX,
     core: { minX: r0x, maxX: r1x, minZ: r0z, maxZ: r1z },
     sources: [
       { name: 'OpenStreetMap (ODbL) — buildings, parts, water, parks, roads, rail, trees', id: 'overpass' },
