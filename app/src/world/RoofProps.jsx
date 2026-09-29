@@ -1,5 +1,5 @@
 // app/src/world/RoofProps.jsx — instanced water towers, HVAC units and mechanical penthouses.
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 
@@ -30,11 +30,7 @@ function Kind({ type, items }) {
   return <instancedMesh ref={ref} args={[GEOS[type], MATS[type], items.length]} castShadow receiveShadow />
 }
 
-export default function RoofProps({ file, onLoaded }) {
-  const [props, setProps] = useState(null)
-  useEffect(() => {
-    fetch(`/world/${file}`).then((r) => r.json()).then((j) => setProps(j.props)).catch(() => setProps([])).finally(onLoaded)
-  }, [file, onLoaded])
+export default function RoofProps({ props }) {
   if (!props?.length) return null
   return [0, 1, 2].map((t) => {
     const items = props.filter((p) => p[0] === t)

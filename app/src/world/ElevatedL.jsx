@@ -1,5 +1,5 @@
 // app/src/world/ElevatedL.jsx — the Loop L's steel bents under the elevated deck.
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 
@@ -8,12 +8,8 @@ const bentGeo = mergeGeometries([post(-2.75), post(2.75), new THREE.BoxGeometry(
 const steel = new THREE.MeshStandardMaterial({ color: '#2f3a33', roughness: 0.7, metalness: 0.3 })
 const UP = new THREE.Vector3(0, 1, 0)
 
-export default function ElevatedL({ file, onLoaded }) {
-  const [cols, setCols] = useState(null)
+export default function ElevatedL({ columns: cols }) {
   const ref = useRef()
-  useEffect(() => {
-    fetch(`/world/${file}`).then((r) => r.json()).then((j) => setCols(j.columns)).catch(() => setCols([])).finally(onLoaded)
-  }, [file, onLoaded])
   useEffect(() => {
     if (!cols?.length || !ref.current) return
     const m = new THREE.Matrix4(), q = new THREE.Quaternion(), one = new THREE.Vector3(1, 1, 1), p = new THREE.Vector3()

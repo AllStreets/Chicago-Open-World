@@ -18,6 +18,7 @@ export const useStore = create((set) => ({
   setCameraMode: (cameraMode) => set({ cameraMode }),
   setReadout: (readout) => set({ readout }),
   setLoadTotal: (total) => set((s) => ({ load: { ...s.load, total, ready: total === 0 } })),
+  addLoadTotal: (n) => set((s) => ({ load: { ...s.load, total: s.load.total + n, ready: s.load.keys.length >= s.load.total + n } })),
   markLoaded: (key) => set((s) => {
     if (s.load.keys.includes(key)) return {}
     const keys = [...s.load.keys, key]

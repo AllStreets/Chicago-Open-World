@@ -1,5 +1,5 @@
 // app/src/world/Trees.jsx — instanced seasonal trees (canopy + trunk).
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import { treePalette, chicagoMonth } from '../lib/seasons.js'
 
@@ -10,13 +10,9 @@ const canopyMat = new THREE.MeshStandardMaterial({ roughness: 0.9, flatShading: 
 const trunkMat = new THREE.MeshStandardMaterial({ color: '#4a3b2f', roughness: 1 })
 const UP = new THREE.Vector3(0, 1, 0)
 
-export default function Trees({ file, onLoaded }) {
-  const [trees, setTrees] = useState(null)
+export default function Trees({ trees }) {
   const canopy = useRef(), trunk = useRef()
   const pal = useMemo(() => treePalette(chicagoMonth()), [])
-  useEffect(() => {
-    fetch(`/world/${file}`).then((r) => r.json()).then((j) => setTrees(j.trees)).catch(() => setTrees([])).finally(onLoaded)
-  }, [file, onLoaded])
   useEffect(() => {
     if (!trees?.length || !canopy.current) return
     const m = new THREE.Matrix4(), q = new THREE.Quaternion(), s = new THREE.Vector3(), p = new THREE.Vector3(), c = new THREE.Color()
