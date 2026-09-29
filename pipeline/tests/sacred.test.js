@@ -107,3 +107,17 @@ describe('tagged heights and materials', () => {
     expect([SACRED_STYLE.walls.limestone, SACRED_STYLE.walls.graystone]).toContain(s.seed)
   })
 })
+
+describe('storefront congregations (H5)', () => {
+  const shop = rect(-10, -6, 10, 6)
+  const tags = { building: 'yes', amenity: 'place_of_worship', religion: 'christian', name: 'Iglesia Pentecostal Monte Sion' }
+  it('a building=yes place of worship keeps its plain extrusion', () => {
+    expect(sacredKind(tags)).toBe(null)
+    expect(shapeSacred(bldg(shop, tags), { front: [20, 0] })).toBe(null)
+  })
+  it('an explicit sacred.json override still shapes a building=yes church', () => {
+    const r = shapeSacred(bldg(rect(-20, -8, 20, 8), { ...tags, name: 'Saint Mary of the Angels' }), { front: [40, 0], override: { crown: 'dome' } })
+    expect(r).not.toBe(null)
+    expect(r.facade).toBe('sacred')
+  })
+})

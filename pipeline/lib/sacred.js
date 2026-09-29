@@ -12,13 +12,14 @@ export const SACRED_STYLE = {
   walls: { limestone: 0.1, brick: 0.35, graystone: 0.6, yellowbrick: 0.85 },
   roofing: { slate: 0.1, copper: 0.35, gold: 0.6, terracotta: 0.85 },
 }
-const SACRED_TYPES = new Set(['church', 'cathedral', 'chapel', 'mosque', 'synagogue', 'temple', 'shrine', 'yes'])
 const MAX_SHAPED_HEIGHT = 45
 
-export function sacredKind(tags = {}) {
+// Only buildings typed as a house of worship are reshaped. A building=yes storefront that hosts a
+// congregation stays a storefront (Phase 2.5 ruling), unless data/sacred.json names it explicitly.
+export function sacredKind(tags = {}, { override = null } = {}) {
   const t = tags.building, rel = (tags.religion || '').toLowerCase(), den = (tags.denomination || '').toLowerCase(), name = tags.name || ''
   const typed = ['church', 'cathedral', 'chapel', 'mosque', 'synagogue', 'temple', 'shrine'].includes(t)
-  if (!typed && !(tags.amenity === 'place_of_worship' && SACRED_TYPES.has(t))) return null
+  if (!typed && !override) return null
   if (t === 'mosque' || rel === 'muslim' || rel === 'islam' || /masjid|mosque/i.test(name)) return 'mosque'
   if (t === 'synagogue' || rel === 'jewish') return 'synagogue'
   if (t === 'temple' || ['buddhist', 'hindu', 'sikh', 'jain'].includes(rel)) return 'temple'
@@ -101,7 +102,7 @@ const clamp = (x, a, b) => Math.min(b, Math.max(a, x))
 
 // ctx.front: a point on the nearest street; the tower goes on that end.
 export function shapeSacred(b, ctx = {}) {
-  const kind = sacredKind(b.tags)
+  const kind = sacredKind(b.tags, { override: ctx.override })
   if (!kind) return null
   // an office tower that hosts a congregation (Chicago Temple) keeps its skyscraper; a church's tall tag is its steeple
   const churchTyped = ['church', 'cathedral', 'chapel', 'mosque', 'synagogue', 'temple'].includes(b.tags.building)
