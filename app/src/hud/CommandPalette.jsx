@@ -1,14 +1,15 @@
 // app/src/hud/CommandPalette.jsx — ⌘K: search every place and command, then fly there.
 import './CommandPalette.css'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { RiSearchLine, RiBuilding2Line, RiMapPin2Line, RiCameraLensLine, RiSunLine, RiCommandLine } from 'react-icons/ri'
+import { RiSearchLine, RiBuilding2Line, RiMapPin2Line, RiCameraLensLine, RiSunLine, RiCommandLine, RiTrainLine } from 'react-icons/ri'
+import { transitPlaces } from '../transit/palette.js'
 import { useStore } from '../state/store.js'
 import { buildPlaces, searchPlaces } from '../lib/places.js'
 import { BOOKMARKS } from '../lib/bookmarks.js'
 
-const ICON = { landmark: RiBuilding2Line, neighborhood: RiMapPin2Line, view: RiCameraLensLine, command: RiCommandLine, time: RiSunLine }
-const SECTION = { landmark: 'Landmarks', neighborhood: 'Neighborhoods', view: 'Views', command: 'Commands' }
-const ORDER = ['landmark', 'neighborhood', 'view', 'command']
+const ICON = { landmark: RiBuilding2Line, neighborhood: RiMapPin2Line, view: RiCameraLensLine, command: RiCommandLine, time: RiSunLine, transit: RiTrainLine }
+const SECTION = { landmark: 'Landmarks', neighborhood: 'Neighborhoods', view: 'Views', command: 'Commands', transit: 'Transit' }
+const ORDER = ['landmark', 'transit', 'neighborhood', 'view', 'command']
 
 // ⌘K on Mac, Ctrl+K on Windows/Linux; code covers non-Latin keyboard layouts.
 export const isPaletteKey = (e) => (e.metaKey || e.ctrlKey) && (e.key?.toLowerCase() === 'k' || e.code === 'KeyK')
@@ -48,9 +49,10 @@ export default function CommandPalette() {
   }, [])
   useEffect(() => { if (open) { setQ(''); setCursor(0); setTimeout(() => inputRef.current?.focus(), 0) } }, [open])
 
-  const all = useMemo(() => [...buildPlaces(manifest, BOOKMARKS), ...commands()], [manifest])
+  const transit = useStore((s) => s.transit)
+  const all = useMemo(() => [...buildPlaces(manifest, BOOKMARKS), ...transitPlaces(useStore.getState()).map((p) => ({ ...p, kind: 'transit' })), ...commands()], [manifest, transit, open])
   const results = useMemo(() => {
-    const found = q.trim() ? searchPlaces(q, all) : [...searchPlaces('', all.filter((p) => p.kind !== 'command')), ...all.filter((p) => p.kind === 'command').slice(0, 5)]
+    const found = q.trim() ? searchPlaces(q, all) : [...searchPlaces('', all.filter((p) => p.kind !== 'command' && !(p.kind === 'transit' && p.id.startsWith('st:')))), ...all.filter((p) => p.kind === 'command').slice(0, 5)]
     const grouped = ORDER.flatMap((k) => found.filter((r) => r.kind === k))
     return q.trim() ? found.slice(0, 40) : grouped.slice(0, 40)
   }, [q, all])
