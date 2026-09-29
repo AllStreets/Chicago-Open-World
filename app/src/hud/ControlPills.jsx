@@ -28,7 +28,6 @@ export default function ControlPills() {
       if (['INPUT', 'TEXTAREA'].includes(e.target?.tagName)) return
       const n = { Digit1: 0, Digit2: 1, Digit3: 2, Digit4: 3, Digit5: 4 }[e.code]
       if (n !== undefined) setTime(TIMES[n])
-      if (e.code === 'KeyQ') setQuality(cycleQuality(useStore.getState().quality))
       if (e.code === 'KeyO') setMode(useStore.getState().cameraMode === 'ORBIT' ? 'FLY' : 'ORBIT')
     }
     window.addEventListener('keydown', onKey)
@@ -40,11 +39,6 @@ export default function ControlPills() {
       <div className="pill-row">
         {MODES.map((m) => (
           <button key={m} type="button" className={`hud-pill ${mode === m ? 'active' : ''}`} onClick={() => setMode(m)}>{m}</button>
-        ))}
-      </div>
-      <div className="pill-row small">
-        {QUALITIES.map((q) => (
-          <button key={q} type="button" className={`hud-pill ${quality === q ? 'active' : ''}`} onClick={() => setQuality(q)}>{q}</button>
         ))}
       </div>
       <div className="pill-row small">

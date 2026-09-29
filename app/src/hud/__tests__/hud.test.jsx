@@ -36,9 +36,9 @@ describe('Hud', () => {
     rerender(<Hud />)
     expect(screen.getByText(/WORLD DATA UNAVAILABLE/)).toBeInTheDocument()
   })
-  it('Q cycles quality', () => {
+  it('quality lives on the control dock (Q now turns the camera)', () => {
     render(<Hud />)
-    fireEvent.keyDown(window, { code: 'KeyQ' })
+    fireEvent.click(screen.getByRole('button', { name: /quality/i }))
     expect(useStore.getState().quality).toBe('ULTRA')
   })
 })

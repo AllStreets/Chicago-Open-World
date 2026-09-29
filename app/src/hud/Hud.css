@@ -38,3 +38,12 @@
   .hud-hints { display: none; }
   .hud-wordmark { min-width: 0; }
 }
+
+.flight-chip { position: absolute; top: 132px; left: 50%; transform: translateX(-50%); animation: hud-rise 0.3s ease both; }
+.help { width: min(720px, calc(100vw - 32px)); padding: 22px 24px 18px; gap: 16px; max-height: 80vh; overflow: auto; }
+.help-head { display: flex; flex-direction: column; gap: 6px; }
+.help-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px 28px; }
+.help-grid h3 { margin-bottom: 8px; }
+.help-grid p { font-size: 13px; color: var(--text-muted); margin: 6px 0; display: flex; gap: 10px; align-items: baseline; }
+.help-grid .hud-kbd { flex-shrink: 0; min-width: 72px; justify-content: center; }
+.help-ok { align-self: flex-end; }
