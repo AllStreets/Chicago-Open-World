@@ -9,7 +9,8 @@
     "textures": "node textures/process.js",
     "fetch:world": "node fetch/fetch-world.js",
     "skyline": "node fetch/skyline.js",
-    "build:trains": "node build/build-trains.js"
+    "build:trains": "node build/build-trains.js",
+    "schedules": "node fetch/fetch-schedules.js"
   },
   "dependencies": {
     "@gltf-transform/core": "^4.5.1",
