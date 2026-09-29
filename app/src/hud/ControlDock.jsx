@@ -1,6 +1,7 @@
 // app/src/hud/ControlDock.jsx — on-screen buttons for everything the keyboard does.
 import './ControlDock.css'
-import { RiAddLine, RiSubtractLine, RiArrowGoBackLine, RiArrowGoForwardLine, RiArrowUpSLine, RiArrowDownSLine, RiHome5Line, RiQuestionLine, RiArrowLeftSLine, RiArrowRightSLine, RiSearchLine, RiTrainLine } from 'react-icons/ri'
+import { RiAddLine, RiSubtractLine, RiArrowGoBackLine, RiArrowGoForwardLine, RiArrowUpSLine, RiArrowDownSLine, RiHome5Line, RiQuestionLine, RiArrowLeftSLine, RiArrowRightSLine, RiSearchLine, RiTrainLine, RiVolumeUpLine, RiVolumeMuteLine } from 'react-icons/ri'
+import { useSoundStore } from '../audio/soundStore.js'
 import { useStore } from '../state/store.js'
 import { cycleQuality } from '../lib/quality.js'
 import { VIEW_ORDER, VIEW_NAMES } from '../lib/views.js'
@@ -21,6 +22,7 @@ export default function ControlDock() {
   const view = VIEW_ORDER[viewIndex] ?? VIEW_ORDER[0]
   const transit = useStore((s) => s.transit)
   const transitOn = useStore((s) => s.transitOn)
+  const soundOn = useSoundStore((s) => s.soundOn)
   return (
     <div className="hud-panel dock" role="toolbar" aria-label="Camera controls">
       <Btn label="Search places (⌘K)" onClick={() => useStore.getState().setPaletteOpen(true)} wide><RiSearchLine /><span>Search</span><span className="hud-kbd">⌘K</span></Btn>
@@ -46,6 +48,9 @@ export default function ControlDock() {
           <Btn label={transit ? `Transit lines: ${transitOn ? 'on' : 'off'} (T)` : 'Transit lines: data unavailable'} pressed={transit ? transitOn : undefined}
             disabled={!transit} onClick={() => useStore.getState().toggleTransit()} wide>
             <RiTrainLine /><span>Transit</span><span className="hud-kbd">T</span>
+          </Btn>
+          <Btn label={`Sound: ${soundOn ? 'on' : 'off'}`} pressed={soundOn} onClick={() => useSoundStore.getState().toggleSound()}>
+            {soundOn ? <RiVolumeUpLine /> : <RiVolumeMuteLine />}
           </Btn>
         </div>
   

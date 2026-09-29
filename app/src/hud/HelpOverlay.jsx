@@ -7,7 +7,13 @@ const GROUPS = [
   ['Look around', [['Drag', 'with the mouse to turn and tilt'], ['Shift + arrows', 'or Q / E — turn and tilt'], ['N', 'face north'], ['O', 'slowly orbit where you are']]],
   ['Search and fly', [['⌘K', 'or / — find any landmark, neighborhood or view'], ['Double-click', 'anywhere to fly there'], ['[ ]', 'previous / next view'], ['H', 'back home'], ['Minimap', 'click to fly']]],
   ['Time and quality', [['1 – 5', 'live Chicago time, dawn, day, dusk, night'], ['Quality', 'button on the right if things feel slow · Low also turns off water reflections']]],
-  ['Transit', [['T', 'or the Transit button — CTA and Metra lines, their glow and the legend'], ['Legend', 'click a line to hide or show it; All / None']]],
+  ['Transit', [
+    ['T', 'or the Transit button — CTA and Metra lines, their glow, the trains and the legend'],
+    ['Legend', 'click a line to hide or show it; All / None'],
+    ['Click a train', 'or a station — its card; “Follow this train” rides along, any key stops'],
+    ['⌘K', '“Follow a Red Line train”, “Go to Clark/Lake”, “Show Blue Line”'],
+    ['Sound', 'button — the rumble of passing trains, off until you turn it on'],
+  ]],
 ]
 
 export default function HelpOverlay() {

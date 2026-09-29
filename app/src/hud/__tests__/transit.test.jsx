@@ -54,7 +54,7 @@ describe('transit HUD', () => {
     fireEvent.keyDown(screen.getByRole('combobox'), { key: 'Enter' })
     expect(useStore.getState().transitOn).toBe(false)
     act(() => useStore.getState().setHelpOpen(true))
-    expect(screen.getByText(/CTA and Metra lines, their glow and the legend/)).toBeInTheDocument()
+    expect(screen.getByText(/CTA and Metra lines, their glow/)).toBeInTheDocument()
     expect(document.querySelector('.hud-hints').textContent).toMatch(/T\s*transit/)
   })
 })

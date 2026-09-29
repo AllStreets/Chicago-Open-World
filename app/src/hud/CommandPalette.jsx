@@ -3,6 +3,7 @@ import './CommandPalette.css'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { RiSearchLine, RiBuilding2Line, RiMapPin2Line, RiCameraLensLine, RiSunLine, RiCommandLine, RiTrainLine } from 'react-icons/ri'
 import { transitPlaces } from '../transit/palette.js'
+import { useSoundStore } from '../audio/soundStore.js'
 import { useStore } from '../state/store.js'
 import { buildPlaces, searchPlaces } from '../lib/places.js'
 import { BOOKMARKS } from '../lib/bookmarks.js'
@@ -26,6 +27,7 @@ function commands() {
     { id: 'c:home', kind: 'command', name: 'Home view', sub: 'H', run: () => s.camCommand('home') },
     { id: 'c:north', kind: 'command', name: 'Face north', sub: 'N', run: () => s.camCommand('north') },
     { id: 'tr:toggle', kind: 'command', name: 'Transit lines on / off', sub: 'T', run: () => s.toggleTransit() },
+    { id: 'snd:toggle', kind: 'command', name: 'Sound on / off', sub: 'Train rumble · off by default', run: () => useSoundStore.getState().toggleSound() },
     { id: 'c:help', kind: 'command', name: 'Show controls & help', sub: '?', run: () => s.setHelpOpen(true) },
   ]
 }
