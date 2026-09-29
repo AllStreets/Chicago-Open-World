@@ -34,3 +34,30 @@ describe('CTA rolling stock (C6)', () => {
     expect(range(models.cta7000, KIND.stainless, 0, upper)[1]).toBeLessThan(7.1)
   })
 })
+
+describe('Metra rolling stock (C7)', () => {
+  it('four models, each 2–5k triangles and finite', () => {
+    expect(Object.keys(models)).toEqual(['cta5000', 'cta7000', 'metraCoach', 'metraLoco'])
+    for (const m of Object.values(models)) {
+      expect(triCount(m)).toBeGreaterThanOrEqual(2000); expect(triCount(m)).toBeLessThanOrEqual(5000)
+      expect(m.positions.every(Number.isFinite)).toBe(true)
+    }
+  })
+  it('gallery coach: 25.91 m × 3.20 m × 4.83 m, two window rows, Metra livery', () => {
+    const m = models.metraCoach, s = S.metraCoach
+    const [x0, x1] = range(m, KIND.stainless, 0), [z0, z1] = range(m, KIND.stainless, 2)
+    expect(x1 - x0).toBeCloseTo(s.length, 2); expect(z1 - z0).toBeCloseTo(s.width, 2)
+    expect(Math.max(...m.positions.filter((_, i) => i % 3 === 1))).toBeCloseTo(s.height, 2)
+    const glassY = new Set(verts(m).filter((v) => v.k === KIND.glass && Math.abs(v.p[2]) > 1.5).map((v) => Math.round(v.p[1])))
+    expect([...glassY].some((y) => y <= 2)).toBe(true); expect([...glassY].some((y) => y >= 3)).toBe(true) // lower level + gallery
+    expect(m.kind).toContain(KIND.livery); expect(m.kind).toContain(KIND.headlight)
+  })
+  it('MP36: 20.98 m long, 4.70 m tall, cab + nose at +X, livery body', () => {
+    const m = models.metraLoco, s = S.metraLoco
+    const [, x1] = range(m, KIND.livery, 0)
+    expect(x1).toBeLessThanOrEqual(s.length / 2 + 1e-6); expect(x1).toBeGreaterThan(s.length / 2 - 0.5)
+    expect(Math.max(...m.positions.filter((_, i) => i % 3 === 1))).toBeCloseTo(s.height, 2)
+    expect(Math.min(...m.positions.filter((_, i) => i % 3 === 1))).toBeCloseTo(0, 6)
+    for (const kind of [KIND.glass, KIND.headlight, KIND.tail, KIND.sign]) expect(m.kind).toContain(kind)
+  })
+})

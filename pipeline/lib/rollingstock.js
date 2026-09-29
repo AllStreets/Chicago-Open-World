@@ -101,7 +101,68 @@ function ctaCar(S, { rake, paneLen }) {
 export const cta5000 = (S) => ctaCar(S, { rake: 0, paneLen: 1.5 })
 export const cta7000 = (S) => ctaCar(S, { rake: 0.35, paneLen: 1.9 })
 
+function coachEnd(m, x, dir, top) {
+  endRect(m, x + dir * 0.004, dir, -0.45, 0.45, 1.05, 2.95, C.door, KIND.door)                // end door
+  endRect(m, x + dir * 0.006, dir, -0.3, 0.3, 2.0, 2.7, C.glass, KIND.glass)
+  for (const z of [-1.0, 1.0]) endRect(m, x + dir * 0.005, dir, z - 0.35, z + 0.35, 2.0, 2.75, C.glass, KIND.glass)
+  for (const z of [-0.9, 0.9]) box(m, [x + dir * 0.03, 3.3, z], X, Y, Z, [0.03, 0.1, 0.14], C.head, KIND.headlight) // lit only when leading
+  for (const z of [-1.3, 1.3]) box(m, [x + dir * 0.03, 1.3, z], X, Y, Z, [0.03, 0.08, 0.08], C.tail, KIND.tail)
+  box(m, [x + dir * 0.08, 1.05, 0], X, Y, Z, [0.08, 0.08, 1.3], C.dark, KIND.dark)
+  box(m, [x + dir * 0.03, top - 0.35, 0], X, Y, Z, [0.03, 0.12, 0.6], C.sign, KIND.sign)     // destination sign
+  coupler(m, x, dir)
+}
+
+export function metraCoach(S) {
+  const m = createMesh(), L = S.length, hw = S.width / 2, x0 = -L / 2, x1 = L / 2, top = S.height - 0.25
+  const prof = [[hw, 0.95], [hw, top - 0.55], [hw - 0.15, top - 0.2], [hw - 0.6, top], [-(hw - 0.6), top], [-(hw - 0.15), top - 0.2], [-hw, top - 0.55], [-hw, 0.95]]
+  extrudeX(m, prof, x0, x1, C.stainless, KIND.stainless)
+  for (const s of [-1, 1]) {
+    sideRect(m, s, x0 + 0.3, x1 - 0.3, 1.25, 1.42, hw + 0.002, C.metraBlue, KIND.livery) // Metra blue belt
+    sideRect(m, s, x0 + 0.3, x1 - 0.3, 1.45, 1.5, hw + 0.002, C.metraRed, KIND.livery)   // red pinstripe
+    for (const [a, b] of [[x0 + 1.2, -1.1], [1.1, x1 - 1.2]]) {
+      panes(m, s, a, b, 1.6, 2.35, hw)   // lower level
+      panes(m, s, a, b, 3.05, 3.75, hw)  // the gallery
+    }
+    doorPair(m, s, 0, S.doorWidth, 1.0, 2.9, hw)
+  }
+  coachEnd(m, x1, 1, top); coachEnd(m, x0, -1, top)
+  for (const sx of [-1, 1]) truck(m, (sx * S.truckCentres) / 2, S)
+  for (let i = 0; i < 8; i++) box(m, [-7 + i * 2, 0.7, i % 2 ? 0.5 : -0.5], X, Y, Z, [0.7, 0.22, 0.5], C.dark, KIND.dark)
+  for (const x of [-8, 0, 8]) box(m, [x, top + 0.125, 0], X, Y, Z, [1.2, 0.125, 0.8], C.roof, KIND.roof) // roof HVAC to 4.83 m
+  return m
+}
+
+export function metraLoco(S) {
+  const m = createMesh(), L = S.length, hw = S.width / 2, x0 = -L / 2, x1 = L / 2, cabX = x1 - 4.2
+  box(m, [0, 1.62, 0], X, Y, Z, [L / 2 - 0.4, 0.12, hw], C.dark, KIND.dark)                                    // frame and walkway
+  extrudeX(m, [[1.15, 1.74], [1.15, 4.2], [0.95, 4.4], [-0.95, 4.4], [-1.15, 4.2], [-1.15, 1.74]], x0 + 0.6, cabX, C.locoBody, KIND.livery) // long hood
+  box(m, [cabX + 1.4, 3.22, 0], X, Y, Z, [1.4, 1.48, hw - 0.05], C.locoBody, KIND.livery)                        // cab, to 4.70 m
+  box(m, [x1 - 0.75, 2.55, 0], X, Y, Z, [0.75, 0.81, 1.1], C.locoBody, KIND.livery)                              // short nose
+  for (const s of [-1, 1]) {
+    sideRect(m, s, x0 + 0.6, cabX, 2.2, 2.6, 1.152, C.metraBlue, KIND.livery)
+    sideRect(m, s, x0 + 0.6, cabX, 2.62, 2.68, 1.152, C.metraRed, KIND.livery)
+    sideRect(m, s, cabX, cabX + 2.8, 2.2, 2.6, hw - 0.048, C.metraBlue, KIND.livery)
+    panes(m, s, cabX + 0.3, cabX + 2.5, 3.3, 4.1, hw - 0.05, 1.1)                                              // cab side windows
+    for (const [a, b] of [[x0 + 0.8, -3.5], [-3.3, cabX - 0.2]]) box(m, [(a + b) / 2, 2.35, s * (hw - 0.06)], X, Y, Z, [(b - a) / 2, 0.02, 0.02], C.dark, KIND.dark) // handrails
+    for (const x of [x0 + 0.8, x1 - 0.8]) box(m, [x, 1.2, s * (hw - 0.25)], X, Y, Z, [0.3, 0.3, 0.2], C.dark, KIND.dark) // steps
+  }
+  for (const [za, zb] of [[-1.1, -0.15], [0.15, 1.1]]) endRect(m, cabX + 2.8 + 0.004, 1, za, zb, 3.45, 4.25, C.glass, KIND.glass) // windshield
+  for (const z of [-0.3, 0.3]) cylinder(m, [x1 + 0.02, 3.2, z], 'x', 0.1, 0.03, 16, C.head, KIND.headlight)      // headlights
+  for (const z of [-1.2, 1.2]) cylinder(m, [x1 + 0.02, 1.95, z], 'x', 0.08, 0.03, 16, C.head, KIND.headlight)    // ditch lights
+  for (const z of [-0.7, 0.7]) box(m, [cabX + 2.83, 4.45, z], X, Y, Z, [0.03, 0.12, 0.35], C.sign, KIND.sign)     // number boards
+  for (const [x, dir] of [[x1, 1], [x0, -1]]) {
+    for (const z of [-1.35, 1.35]) box(m, [x + dir * 0.03, 1.5, z], X, Y, Z, [0.03, 0.07, 0.07], C.tail, KIND.tail)
+    box(m, [x - dir * 0.2, 0.9, 0], X, Y, Z, [0.2, 0.3, hw - 0.1], C.dark, KIND.dark)                            // pilot
+    coupler(m, x, dir)
+  }
+  for (let i = 0; i < 3; i++) cylinder(m, [x0 + 2 + i * 2.2, 4.45, 0], 'y', 0.6, 0.05, 16, C.dark, KIND.dark)    // radiator fans
+  box(m, [-2, 4.55, 0], X, Y, Z, [0.4, 0.15, 0.25], C.dark, KIND.dark)                                          // exhaust stack
+  box(m, [0, 1.05, 0], X, Y, Z, [4.5, 0.4, 1.2], C.dark, KIND.dark)                                             // fuel tank
+  for (const sx of [-1, 1]) truck(m, (sx * S.truckCentres) / 2, S)
+  return m
+}
+
 export function buildRollingStock(catalog) {
   const S = catalog.rollingStock
-  return { cta5000: cta5000(S.cta5000), cta7000: cta7000(S.cta7000) }
+  return { cta5000: cta5000(S.cta5000), cta7000: cta7000(S.cta7000), metraCoach: metraCoach(S.metraCoach), metraLoco: metraLoco(S.metraLoco) }
 }
