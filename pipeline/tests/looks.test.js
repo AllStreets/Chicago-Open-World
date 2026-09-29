@@ -1,0 +1,44 @@
+// pipeline/tests/looks.test.js
+import { describe, it, expect } from 'vitest'
+import { FINISHES, FINISH_PRESETS, CROWN_KINDS, isHex, hexToRgb, validateLook } from '../lib/looks.js'
+
+const ok = { material: 'black anodized aluminium, bronze glass', finish: 'metal', base: '#1c1b1a', glass: '#4a3a2c', mullion: '#121212', spandrel: '#1c1b1a', source: 'https://en.wikipedia.org/wiki/Willis_Tower' }
+
+describe('looks', () => {
+  it('six finishes (spec B.6), each with a shader preset', () => {
+    expect(FINISHES).toEqual(['glass', 'metal', 'granite', 'limestone', 'terracotta', 'concrete'])
+    for (const f of FINISHES) expect(FINISH_PRESETS[f]).toEqual({ roughness: expect.any(Number), metalness: expect.any(Number) })
+    expect(CROWN_KINDS).toEqual(['none', 'flood', 'lantern'])
+  })
+  it('hex helpers', () => {
+    expect(isHex('#1c1B1a')).toBe(true); expect(isHex('#fff')).toBe(false); expect(isHex(null)).toBe(false)
+    expect(hexToRgb('#ff8000')).toEqual([255, 128, 0])
+  })
+  it('accepts a complete sourced look', () => {
+    expect(validateLook(ok, 'willis')).toEqual([])
+    expect(validateLook({ ...ok, source: ['https://a.example/x', 'https://b.example/y'] }, 'w')).toEqual([])
+  })
+  it('rejects a missing source, a non-https source, a bad finish and bad colours', () => {
+    expect(validateLook({ ...ok, source: undefined }, 'w').join()).toMatch(/source/)
+    expect(validateLook({ ...ok, source: 'http://x.example' }, 'w').join()).toMatch(/source/)
+    expect(validateLook({ ...ok, finish: 'marble' }, 'w').join()).toMatch(/finish/)
+    expect(validateLook({ ...ok, glass: 'bronze' }, 'w').join()).toMatch(/glass/)
+    expect(validateLook(undefined, 'w')).toEqual(['w: no look block'])
+  })
+  it('a top colour needs a band above topFromM', () => {
+    expect(validateLook({ ...ok, top: '#e8e8e6', topFromM: 442, topM: 443 }, 'w')).toEqual([])
+    expect(validateLook({ ...ok, top: '#e8e8e6', topFromM: 442, topM: 442 }, 'w').join()).toMatch(/topM/)
+  })
+  it('crown light must be sourced, bounded and of a known kind', () => {
+    const c = { kind: 'lantern', color: '#fff6e8', fromM: 261, toM: 293, intensity: 1.6, source: 'https://en.wikipedia.org/wiki/311_South_Wacker_Drive' }
+    expect(validateLook({ ...ok, crownLight: c }, 'w')).toEqual([])
+    expect(validateLook({ ...ok, crownLight: { ...c, kind: 'beacon' } }, 'w').join()).toMatch(/kind/)
+    expect(validateLook({ ...ok, crownLight: { ...c, toM: 200 } }, 'w').join()).toMatch(/fromM/)
+    expect(validateLook({ ...ok, crownLight: { ...c, intensity: 9 } }, 'w').join()).toMatch(/intensity/)
+    expect(validateLook({ ...ok, crownLight: { ...c, source: undefined } }, 'w').join()).toMatch(/crownLight.source/)
+  })
+  it('a look switched off by evaluate-and-revert must say why', () => {
+    expect(validateLook({ ...ok, render: false }, 'w').join()).toMatch(/note/)
+    expect(validateLook({ ...ok, render: false, note: 'reverted: reads grey at dusk' }, 'w')).toEqual([])
+  })
+})
