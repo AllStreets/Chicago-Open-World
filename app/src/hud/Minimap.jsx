@@ -4,9 +4,8 @@ import { useStore } from '../state/store.js'
 import { worldToMap, mapToWorld, compassOffset } from '../lib/minimapMath.js'
 
 const VIEW = 196          // on-screen px
-const ZOOM = 2.2          // map px per on-screen px at 1024 image size
 const STRIP = 360         // strip px per 360°
-const SIZE = 1024
+const VIEW_M = 2000       // metres visible across the minimap
 const LABELS = ['N', 'E', 'S', 'W']
 
 export default function Minimap({ manifest }) {
@@ -14,6 +13,8 @@ export default function Minimap({ manifest }) {
   const requestFlyTo = useStore((s) => s.requestFlyTo)
   const mm = manifest?.minimap
   if (!mm) return null
+  const SIZE = mm.size ?? 1024
+  const ZOOM = ((VIEW_M / (mm.bounds.maxX - mm.bounds.minX)) * SIZE) / VIEW
   const [px, py] = worldToMap([r.x ?? 0, r.z ?? 0], mm.bounds, SIZE)
   const onClick = (e) => {
     const rect = e.currentTarget.getBoundingClientRect()
@@ -36,7 +37,7 @@ export default function Minimap({ manifest }) {
       </div>
       <div className="mm-view" onClick={onClick}>
         <img className="mm-map" src={`/world/${mm.file}`} alt="" draggable={false}
-          style={{ transform: `translate(${VIEW / 2}px, ${VIEW / 2}px) rotate(${-r.heading}deg) scale(${1 / ZOOM}) translate(${-px}px, ${-py}px)` }} />
+          style={{ width: SIZE, height: SIZE, transform: `translate(${VIEW / 2}px, ${VIEW / 2}px) rotate(${-r.heading}deg) scale(${1 / ZOOM}) translate(${-px}px, ${-py}px)` }} />
         <i className="mm-player" />
       </div>
     </div>

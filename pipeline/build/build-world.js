@@ -245,7 +245,7 @@ async function main() {
       { name: 'Wikipedia — List of tallest buildings in Chicago', id: 'skyline.json' },
     ],
     skyline: { missing: sky.missing, wrongHeight: sky.wrongHeight },
-    tiles, land: 'ground/land.glb', landMask: 'land.json', minimap: { file: 'minimap.png', bounds: mmBounds },
+    tiles, land: 'ground/land.glb', landMask: 'land.json', minimap: { file: 'minimap.png', bounds: mmBounds, size: 2048 },
   }, null, 1))
   log('manifest written')
 }

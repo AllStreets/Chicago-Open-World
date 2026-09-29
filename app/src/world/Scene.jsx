@@ -2,14 +2,13 @@
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { useThree } from '@react-three/fiber'
 import { useStore } from '../state/store.js'
-import { loadManifest, groundFiles } from '../lib/manifest.js'
+import { loadManifest } from '../lib/manifest.js'
 import SafeLoad from './SafeLoad.jsx'
 import { sunForPreset } from '../lib/sun.js'
-import City from './City.jsx'
-import Trees from './Trees.jsx'
-import ElevatedL from './ElevatedL.jsx'
-import RoofProps from './RoofProps.jsx'
-import Ground from './Ground.jsx'
+import TileStreamer from './TileStreamer.jsx'
+import Land from './Land.jsx'
+import { loadFacadeTextures } from './materials/facadeMaterial.js'
+import { makeIsWater } from '../lib/landMask.js'
 import Lake from './Lake.jsx'
 import SkyRig from './SkyRig.jsx'
 import AtlasRig from '../camera/AtlasRig.jsx'
@@ -22,13 +21,9 @@ export default function Scene() {
   const preset = useStore((s) => s.timePreset)
   const ready = useStore((s) => s.load.ready)
   const quality = useStore((s) => s.quality)
-  const failed = useStore((s) => s.load.error !== null)
   const [now, setNow] = useState(() => new Date())
   const sun = useMemo(() => sunForPreset(preset, now), [preset, now])
   const sunRef = useRef(null)
-  const markTrees = useMemo(() => () => useStore.getState().markLoaded('trees'), [])
-  const markColumns = useMemo(() => () => useStore.getState().markLoaded('columns'), [])
-  const markProps = useMemo(() => () => useStore.getState().markLoaded('props'), [])
   const reducedMotion = useMemo(() => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false, [])
 
   useEffect(() => {
@@ -43,11 +38,12 @@ export default function Scene() {
     if (['LIVE', 'DAWN', 'DAY', 'DUSK', 'NIGHT'].includes(t)) setTimePreset(t)
     loadManifest().then((r) => {
       if (!r.ok) { setLoadError(r.error); return }
-      const g = r.manifest.ground
-      setLoadTotal(r.manifest.tiles.length + Object.keys(g).length + (r.manifest.trees ? 1 : 0) + (r.manifest.columns ? 1 : 0) + (r.manifest.props ? 1 : 0) + 1) // + façade textures
+      setLoadTotal(2) // land + façade textures; TileStreamer adds the first tile set
       setManifest(r.manifest)
       useStore.getState().setManifest(r.manifest)
+      if (r.manifest.landMask) fetch(`/world/${r.manifest.landMask}`).then((x) => x.json()).then((j) => useStore.getState().setIsWater(makeIsWater(j.rings))).catch(() => {})
     })
+    loadFacadeTextures().catch(() => {}).finally(() => useStore.getState().markLoaded('facades'))
   }, [])
 
   useEffect(() => { if (ready) window.__worldReady = true }, [ready])
@@ -58,11 +54,8 @@ export default function Scene() {
     <>
       <SkyRig target={sun} sunRef={sunRef} instant={reducedMotion} shadowMap={QUALITY[quality].shadowMap} fog={QUALITY[quality].fog} />
       <SafeLoad><Suspense fallback={null}><Lake sunRef={sunRef} /></Suspense></SafeLoad>
-      {(manifest || failed) && <Ground ground={groundFiles(manifest)} />}
-      {manifest && <City tiles={manifest.tiles} />}
-      {manifest?.trees && <Trees file={manifest.trees} onLoaded={markTrees} />}
-      {manifest?.columns && <ElevatedL file={manifest.columns} onLoaded={markColumns} />}
-      {manifest?.props && <RoofProps file={manifest.props} onLoaded={markProps} />}
+      {manifest && <SafeLoad onError={() => useStore.getState().markLoaded('land')}><Suspense fallback={null}><Land file={manifest.land} /></Suspense></SafeLoad>}
+      {manifest && <TileStreamer manifest={manifest} />}
       <AtlasRig />
       <PostFX />
       <PerfWatch />

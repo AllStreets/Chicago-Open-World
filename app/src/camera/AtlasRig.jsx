@@ -115,7 +115,7 @@ export default function AtlasRig() {
     if (t - lastReadout.current <= 0.2) return
     lastReadout.current = t
     c.getTarget(tmpT); c.getPosition(tmpP)
-    setReadout({ streets: crossStreets(tmpT.x, tmpT.z), altitude: Math.round(tmpP.y), heading: headingDeg(c.azimuthAngle), x: tmpT.x, z: tmpT.z })
+    setReadout({ streets: crossStreets(tmpT.x, tmpT.z, useStore.getState().isWater ?? undefined), altitude: Math.round(tmpP.y), heading: headingDeg(c.azimuthAngle), x: tmpT.x, z: tmpT.z })
   }
 
   return (

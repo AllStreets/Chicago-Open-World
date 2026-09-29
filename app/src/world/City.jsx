@@ -21,7 +21,6 @@ function Tile({ file }) {
 }
 
 export default function City({ tiles }) {
-  useEffect(() => { loadFacadeTextures().catch(() => {}).finally(() => useStore.getState().markLoaded('facades')) }, [])
   const fail = (file) => (err) => { console.warn(`tile failed: ${file}`, err); useStore.getState().markLoaded(file) }
   return tiles.map((t) => (
     <SafeLoad key={t.key} onError={fail(t.file)}>

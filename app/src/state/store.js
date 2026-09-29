@@ -6,6 +6,8 @@ export const useStore = create((set) => ({
   quality: 'HIGH',
   introDone: false,
   manifest: null,
+  isWater: null,
+  setIsWater: (isWater) => set({ isWater }),
   setManifest: (manifest) => set({ manifest }),
   flyTo: null,
   requestFlyTo: (x, z) => set({ flyTo: { x, z, id: Date.now() } }),
