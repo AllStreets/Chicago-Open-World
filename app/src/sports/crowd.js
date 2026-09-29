@@ -34,3 +34,5 @@ export function homeTeamFor(venue, st) {
 export function celebration(venueKey, st) {
   return venueKey === 'wrigleyfield' && st?.winDay ? { wave: 1, fans: 160, minDensity: 0.15 } : { wave: 0, fans: 0, minDensity: 0 }
 }
+
+export const plazaCount = (venue, st) => shownCount(venue.plazaCount ?? 0, plazaDensity(st?.state ?? 'idle'))

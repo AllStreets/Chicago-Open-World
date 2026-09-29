@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { shirtColors, crowdDensity, plazaDensity, lifeVisible, shownCount, flagMask, homeTeamFor, celebration } from '../crowd.js'
+import { plazaCount } from '../crowd.js'
 
 describe('crowd', () => {
   it('shirts are weighted to the home team, deterministic', () => {
@@ -38,5 +39,16 @@ describe('crowd', () => {
     expect(celebration('wrigleyfield', { winDay: true })).toEqual({ wave: 1, fans: 160, minDensity: 0.15 })
     expect(celebration('wrigleyfield', { winDay: false, lossDay: true })).toEqual({ wave: 0, fans: 0, minDensity: 0 })
     expect(celebration('ratefield', { winDay: true })).toEqual({ wave: 0, fans: 0, minDensity: 0 })
+  })
+})
+
+describe('arena plaza', () => {
+  const uc = { key: 'unitedcenter', teams: ['bulls', 'blackhawks'], plazaCount: 1000 }
+  it('fills before and after a game, empties during it and when idle', () => {
+    expect(plazaCount(uc, { state: 'pregame' })).toBe(800)
+    expect(plazaCount(uc, { state: 'live' })).toBe(80)
+    expect(plazaCount(uc, { state: 'postgame' })).toBe(900)
+    expect(plazaCount(uc, { state: 'idle' })).toBe(0)
+    expect(plazaCount(uc, undefined)).toBe(0)
   })
 })
