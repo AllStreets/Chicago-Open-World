@@ -347,8 +347,10 @@
           "color": "#fff6e8",
           "fromM": 261,
           "toM": 293,
-          "intensity": 1.6,
-          "source": "https://en.wikipedia.org/wiki/311_South_Wacker_Drive"
+          "intensity": 0.8,
+          "source": "https://en.wikipedia.org/wiki/311_South_Wacker_Drive",
+          "render": false,
+          "note": "reverted V2 F9: the band lights the whole upper shaft as a flat white block (the model has no separate crown drum), even at half intensity; revisit with the Phase 3 crown"
         },
         "source": "https://en.wikipedia.org/wiki/311_South_Wacker_Drive"
       },
