@@ -11,6 +11,7 @@ import FlightChip from './FlightChip.jsx'
 import { useEffect, useState } from 'react'
 import { useStore } from '../state/store.js'
 import { hudScale, hudCompact } from '../lib/hudScale.js'
+import TransitLegend from './TransitLegend.jsx'
 
 export default function Hud() {
   const manifest = useStore((s) => s.manifest)
@@ -30,6 +31,7 @@ export default function Hud() {
       <HintBar />
       <Minimap manifest={manifest} />
       <ControlDock />
+      <TransitLegend />
       <FlightChip />
       <CommandPalette />
       <HelpOverlay />

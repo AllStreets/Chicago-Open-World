@@ -1,13 +1,17 @@
 // app/src/hud/ControlDock.jsx — on-screen buttons for everything the keyboard does.
 import './ControlDock.css'
-import { RiAddLine, RiSubtractLine, RiArrowGoBackLine, RiArrowGoForwardLine, RiArrowUpSLine, RiArrowDownSLine, RiHome5Line, RiQuestionLine, RiArrowLeftSLine, RiArrowRightSLine, RiSearchLine } from 'react-icons/ri'
+import { RiAddLine, RiSubtractLine, RiArrowGoBackLine, RiArrowGoForwardLine, RiArrowUpSLine, RiArrowDownSLine, RiHome5Line, RiQuestionLine, RiArrowLeftSLine, RiArrowRightSLine, RiSearchLine, RiTrainLine } from 'react-icons/ri'
 import { useStore } from '../state/store.js'
 import { cycleQuality } from '../lib/quality.js'
 import { VIEW_ORDER, VIEW_NAMES } from '../lib/views.js'
 
-function Btn({ label, onClick, children, wide }) {
-  return <button type="button" className={`dock-btn${wide ? ' wide' : ''}`} aria-label={label} title={label} onClick={onClick}>{children}</button>
-}
+  function Btn({ label, onClick, children, wide, pressed, disabled }) {
+    return (
+      <button type="button" className={`dock-btn${wide ? ' wide' : ''}${pressed ? ' active' : ''}`} aria-label={label} title={label}
+        aria-pressed={pressed} aria-disabled={disabled || undefined} onClick={disabled ? undefined : onClick}>{children}</button>
+    )
+  }
+  
 
 export default function ControlDock() {
   const heading = useStore((s) => s.readout.heading)
@@ -15,6 +19,8 @@ export default function ControlDock() {
   const viewIndex = useStore((s) => s.viewIndex)
   const cam = useStore((s) => s.camCommand)
   const view = VIEW_ORDER[viewIndex] ?? VIEW_ORDER[0]
+  const transit = useStore((s) => s.transit)
+  const transitOn = useStore((s) => s.transitOn)
   return (
     <div className="hud-panel dock" role="toolbar" aria-label="Camera controls">
       <Btn label="Search places (⌘K)" onClick={() => useStore.getState().setPaletteOpen(true)} wide><RiSearchLine /><span>Search</span><span className="hud-kbd">⌘K</span></Btn>
@@ -36,6 +42,13 @@ export default function ControlDock() {
         <span className="dock-view" title={VIEW_NAMES[view]}>{VIEW_NAMES[view]}</span>
         <Btn label="Next view (])" onClick={() => cam('view', 1)}><RiArrowRightSLine /></Btn>
       </div>
+        <div className="dock-row">
+          <Btn label={transit ? `Transit lines: ${transitOn ? 'on' : 'off'} (T)` : 'Transit lines: data unavailable'} pressed={transit ? transitOn : undefined}
+            disabled={!transit} onClick={() => useStore.getState().toggleTransit()} wide>
+            <RiTrainLine /><span>Transit</span><span className="hud-kbd">T</span>
+          </Btn>
+        </div>
+  
       <div className="dock-row">
         <Btn label="Home view (H)" onClick={() => cam('home')}><RiHome5Line /></Btn>
         <Btn label={`Quality: ${quality} (click to change)`} onClick={() => useStore.getState().setQuality(cycleQuality(quality))} wide><span className="dock-q">{quality}</span></Btn>

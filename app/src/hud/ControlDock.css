@@ -13,3 +13,6 @@
 .dock-compass i { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 7px solid var(--red); margin-bottom: 1px; }
 .dock-view { flex: 3; align-self: center; text-align: center; font-size: 10px; letter-spacing: 0.06em; color: var(--accent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .dock-q { font-family: var(--font-mono); color: var(--accent); }
+
+.dock-btn.active { color: var(--accent); border-color: rgba(var(--accent-rgb), 0.45); background: rgba(var(--accent-rgb), 0.08); }
+.dock-btn[aria-disabled="true"] { opacity: 0.4; cursor: default; }

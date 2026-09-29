@@ -1,4 +1,4 @@
-const HINTS = [['↑↓←→', 'move'], ['Shift+arrows', 'turn'], ['R / F', 'up / down'], ['Double-click', 'fly there'], ['⌘K', 'search'], ['[ ]', 'views'], ['?', 'help']]
+const HINTS = [['↑↓←→', 'move'], ['Shift+arrows', 'turn'], ['R / F', 'up / down'], ['Double-click', 'fly there'], ['⌘K', 'search'], ['[ ]', 'views'], ['T', 'transit'], ['?', 'help']]
 
 export default function HintBar() {
   return (

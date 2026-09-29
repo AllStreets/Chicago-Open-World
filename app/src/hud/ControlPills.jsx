@@ -29,6 +29,7 @@ export default function ControlPills() {
       const n = { Digit1: 0, Digit2: 1, Digit3: 2, Digit4: 3, Digit5: 4 }[e.code]
       if (n !== undefined) setTime(TIMES[n])
       if (e.code === 'KeyO') setMode(useStore.getState().cameraMode === 'ORBIT' ? 'FLY' : 'ORBIT')
+      if (e.code === 'KeyT' && useStore.getState().transit) useStore.getState().toggleTransit()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
