@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import * as THREE from 'three'
 import { patchFacadeShader, facadeUniforms } from '../facadeMaterial.js'
+import { setFieldFrames, setVenueLights } from '../facadeMaterial.js'
 
 const std = () => ({
   vertexShader: THREE.ShaderLib.standard.vertexShader,
@@ -62,7 +63,7 @@ describe('patchFacadeShader', () => {
   })
   it('program cache key changes with the new shader', async () => {
     const { createFacadeMaterial } = await import('../facadeMaterial.js')
-    expect(createFacadeMaterial().customProgramCacheKey()).toBe('facade-v8')
+    expect(createFacadeMaterial().customProgramCacheKey()).toBe('facade-v9')
   })
   it('crown night light: flood reflects off the wall, lantern glows, both only at night inside the band', () => {
     const f = patchFacadeShader(std()).fragmentShader
@@ -80,5 +81,37 @@ describe('field surfaces (façade 24)', () => {
     const f = patchFacadeShader(std()).fragmentShader
     expect(f).toContain('vi == 24')
     expect(f).toMatch(/\(vi >= 10 && vi <= 12\) \|\| vi == 24/)
+  })
+})
+
+
+describe('venue uniforms (V5)', () => {
+  it('samples the painted field layer and gates venue light by position', () => {
+    const s = patchFacadeShader(std())
+    expect(s.fragmentShader).toContain('uniform sampler2DArray uFieldTex;')
+    expect(s.fragmentShader).toContain('float venueLevel(vec2 p)')
+    expect(s.fragmentShader).toContain('textureGrad(uFieldTex')
+    for (const u of ['uFieldTex', 'uFieldFrame', 'uVenueLight']) expect(s.uniforms[u]).toBe(facadeUniforms[u])
+  })
+  it('setFieldFrames packs (u0, v1, 1/width, 1/height) per slot and clears the rest', () => {
+    setFieldFrames([{ slot: 1, frame: { u0: -24, u1: 132, v0: -96, v1: 96 } }])
+    const v = facadeUniforms.uFieldFrame.value
+    expect([v[1].x, v[1].y, v[1].z, v[1].w]).toEqual([-24, 96, 1 / 156, 1 / 192])
+    expect(v[0].z).toBe(0)
+    setFieldFrames([])
+    expect(v[1].z).toBe(0)
+  })
+  it('setVenueLights registers (x, z, radius, level) per slot and clears the rest', () => {
+    setVenueLights([{ slot: 3, center: [-3842, 147], radius: 130, level: 0.5 }])
+    const v = facadeUniforms.uVenueLight.value
+    expect([v[3].x, v[3].y, v[3].z, v[3].w]).toEqual([-3842, 147, 130, 0.5])
+    setVenueLights([])
+    expect(v[3].z).toBe(0)
+  })
+  it('keeps derivatives out of branches (the uv gradient is taken before the venue branch)', () => {
+    const f = patchFacadeShader(std()).fragmentShader
+    const body = f.slice(f.indexOf('void main()'))
+    expect(body.indexOf('vec4 uvGrad = vec4(dFdx(vMUv), dFdy(vMUv));')).toBeGreaterThan(0)
+    expect(body.indexOf('vec4 uvGrad')).toBeLessThan(body.indexOf('if (isVenue)'))
   })
 })

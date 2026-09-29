@@ -7,6 +7,14 @@ import { worldUrl } from '../../lib/manifest.js'
 const greyArray = () => { const t = new THREE.DataArrayTexture(new Uint8Array(4 * 8).fill(150), 1, 1, 8); t.needsUpdate = true; return t }
 const greyTex = () => { const t = new THREE.DataTexture(new Uint8Array([150, 150, 150, 255]), 1, 1); t.needsUpdate = true; return t }
 
+const FIELD_LAYERS = 8
+const turfArray = () => {
+  const d = new Uint8Array(4 * FIELD_LAYERS)
+  for (let i = 0; i < FIELD_LAYERS; i++) d.set([74, 132, 52, 255], i * 4)
+  const t = new THREE.DataArrayTexture(d, 1, 1, FIELD_LAYERS); t.colorSpace = THREE.SRGBColorSpace; t.needsUpdate = true; return t
+}
+const vec4s = () => Array.from({ length: FIELD_LAYERS }, () => new THREE.Vector4(0, 0, 0, 0))
+
 export const facadeUniforms = {
   uAlbedo: { value: greyArray() },
   uWin: { value: greyArray() },
@@ -17,6 +25,21 @@ export const facadeUniforms = {
   uReady: { value: 0 },
   uStylePal: { value: createStyleTexture([{ key: 'none' }]) },
   uStyleRows: { value: 1 },
+  uFieldTex: { value: turfArray() },
+  uFieldFrame: { value: vec4s() },
+  uVenueLight: { value: vec4s() },
+}
+
+// Painted fields (V5): layer `slot` of uFieldTex covers the frame u0…u1 × v0…v1 (metres).
+export function setFieldFrames(entries) {
+  for (const v of facadeUniforms.uFieldFrame.value) v.set(0, 0, 0, 0)
+  for (const { slot, frame: f } of entries) facadeUniforms.uFieldFrame.value[slot].set(f.u0, f.v1, 1 / (f.u1 - f.u0), 1 / (f.v1 - f.v0))
+}
+// Per-venue light level (game state): inside radius of a registered venue the floodlights, field glow and
+// fascia use `level`; elsewhere venue surfaces keep their legacy always-lit look.
+export function setVenueLights(entries) {
+  for (const v of facadeUniforms.uVenueLight.value) v.set(0, 0, 0, 0)
+  for (const e of entries) facadeUniforms.uVenueLight.value[e.slot].set(e.center[0], e.center[1], e.radius, e.level)
 }
 
 const need = (src, marker) => {
@@ -60,6 +83,14 @@ varying float vSeed;
 varying vec3 vWPos;
 varying vec3 vWNormal;
 varying vec2 vMUv;
+uniform sampler2DArray uFieldTex;
+uniform vec4 uFieldFrame[8];
+uniform vec4 uVenueLight[8];
+// −1 outside every registered venue (legacy look), else that venue's light level 0…1 (set by the sports clock).
+float venueLevel(vec2 p) {
+  for (int i = 0; i < 8; i++) { vec4 v = uVenueLight[i]; if (v.z > 0.0 && distance(p, v.xy) < v.z) return v.w; }
+  return -1.0;
+}
 float owHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 // Pointed lancet windows in 4.2 m bays, a tall lower tier and a clerestory above (sacred walls).
 float lancet(vec2 uv, float y) {
@@ -72,7 +103,7 @@ float lancet(vec2 uv, float y) {
 // Venue surfaces (façade 9+): stadium seats, turf, clay, paint, steel, lamps, boards, walls, marquee, ivy.
 // The style selector rides in the seed (see pipeline/lib/venue.js STYLE).
 // fwRow / fwAisle: screen-space footprints, taken by the caller in uniform control flow.
-vec3 venueAlbedo(int vi, float s, vec2 uv, vec3 wp, vec3 n, vec3 grain, vec3 roofAlb, float fwRow, float fwAisle) {
+vec3 venueAlbedo(int vi, float s, vec2 uv, vec3 wp, vec3 n, vec3 grain, vec3 roofAlb, float fwRow, float fwAisle, vec4 uvGrad) {
   if (vi == 9) {
     vec3 c = s < 0.25 ? vec3(0.10, 0.27, 0.17) : s < 0.5 ? vec3(0.10, 0.14, 0.30) : s < 0.75 ? vec3(0.48, 0.09, 0.09) : vec3(0.16, 0.30, 0.52);
     float row = fract(wp.y / 0.42);
@@ -84,7 +115,14 @@ vec3 venueAlbedo(int vi, float s, vec2 uv, vec3 wp, vec3 n, vec3 grain, vec3 roo
     vec3 a = mix(c * (0.85 + 0.3 * owHash(floor(vec2(uv.x / 0.55, wp.y / 0.42)))), c * 0.55, riser);
     return mix(a, conc * 0.8, aisle * (1.0 - smoothstep(0.3, 0.8, fwAisle)));
   }
-  if (vi == 24) return mix(vec3(0.16, 0.38, 0.12), vec3(0.2, 0.45, 0.15), 0.5) * (0.9 + 0.2 * grain.g); // painted field (Task 11 samples the texture)
+  if (vi == 24) {   // painted field: layer "slot" of the canvas-painted texture array, in field-frame metres
+    int slot = clamp(int(s * 8.0), 0, 7);
+    vec4 fr = uFieldFrame[slot];
+    if (fr.z <= 0.0) return mix(vec3(0.16, 0.38, 0.12), vec3(0.2, 0.45, 0.15), 0.5) * (0.9 + 0.2 * grain.g);
+    vec2 sc = vec2(fr.z, -fr.w);
+    vec2 st = clamp(vec2((uv.x - fr.x) * fr.z, (fr.y - uv.y) * fr.w), 0.0, 1.0);
+    return textureGrad(uFieldTex, vec3(st, float(slot)), uvGrad.xy * sc, uvGrad.zw * sc).rgb * (0.94 + 0.12 * grain.g);
+  }
   if (vi == 10) {
     vec2 q = floor(uv / 9.0);
     float band = s < 0.5 ? mod(q.x + q.y, 2.0) : mod(q.x, 2.0);
@@ -181,6 +219,7 @@ vec3 coping = vec3(0.58, 0.56, 0.52) * (0.9 + 0.2 * gravel.r);
 vec3 alb = isRoof ? roofAlb : (isParapet ? coping : wallAlb);
 win = (isRoof || isParapet) ? 0.0 : win;
 float fwRow = fwidth(vWPos.y / 0.42), fwAisle = fwidth(vMUv.x / 17.0) * 17.0;   // before any branch
+vec4 uvGrad = vec4(dFdx(vMUv), dFdy(vMUv));
 int si = int(vStyle + 0.5);
 si = float(si) < uStyleRows ? si : 0;                   // stale tiles vs palette: unstyled, never garbage
 bool styled = si > 0;
@@ -190,7 +229,7 @@ if (styled) {                                            // palette reads only w
   S0 = styleTexel(si, 0); S1 = styleTexel(si, 1); S2 = styleTexel(si, 2); S3 = styleTexel(si, 3); S4 = styleTexel(si, 4);
   S6a = styleTexel(si, 6).a;
 }
-if (isVenue) { alb = venueAlbedo(vi, vSeed, vMUv, vWPos, vWNormal, gravel, roofAlb, fwRow, fwAisle); win = 0.0; }
+if (isVenue) { alb = venueAlbedo(vi, vSeed, vMUv, vWPos, vWNormal, gravel, roofAlb, fwRow, fwAisle, uvGrad); win = 0.0; }
 alb = mix(vec3(0.62, 0.6, 0.57), alb, uReady);
 win *= uReady;
 if (!isVenue && !styled) {
@@ -237,11 +276,27 @@ if (styled && uNight > 0.001) {                          // crown and façade ni
   if (C6.b > 0.5 && C6.b < 1.5) totalEmissiveRadiance += diffuseColor.rgb * C5.rgb * C5.a * (0.35 + 0.65 * smoothstep(C6.r, C6.g, vWPos.y)) * band * uNight;
   else if (C6.b > 1.5) totalEmissiveRadiance += C5.rgb * C5.a * band * uNight * uLitBoost;
 }
+float lv = venueLevel(vWPos.xz);
+float lvL = lv < 0.0 ? 1.0 : lv;   // legacy venue light, until the sports clock registers the venue
+float lvA = max(lv, 0.0);          // architectural light: registered venues only
 if (isVenue && uNight > 0.001) {
-  if (vi == 14) totalEmissiveRadiance += vec3(1.0, 0.96, 0.88) * 3.2 * uNight * uLitBoost;
+  if (vi == 14) totalEmissiveRadiance += vec3(1.0, 0.96, 0.88) * 3.2 * uNight * uLitBoost * lvL;
   // under the floodlights: the field and stands glow as if lit for a night game
-  if ((vi >= 10 && vi <= 12) || vi == 24) totalEmissiveRadiance += diffuseColor.rgb * vec3(1.0, 0.98, 0.92) * 0.85 * uNight;
-  if (vi == 9 || vi == 18) totalEmissiveRadiance += diffuseColor.rgb * 0.35 * uNight;
+  if ((vi >= 10 && vi <= 12) || vi == 24) totalEmissiveRadiance += diffuseColor.rgb * vec3(1.0, 0.98, 0.92) * 0.85 * uNight * lvL;
+  if (vi == 9 || vi == 18) totalEmissiveRadiance += diffuseColor.rgb * 0.35 * uNight * (0.3 + 0.7 * lvL);
+  if (vi == 16 && vWNormal.y < 0.6 && lvA > 0.0) {
+    float y = vWPos.y;
+    if (vSeed >= 0.575) {            // arena fascia (D14): uplit brick podium, cream band, glowing glass ribbon
+      float mull = step(fract(vMUv.x / 2.4), 0.06);
+      vec3 glow = y < 11.0 ? diffuseColor.rgb * vec3(1.0, 0.82, 0.6) * 1.1 : y < 13.0 ? diffuseColor.rgb * 0.6 : vec3(1.0, 0.86, 0.62) * 0.55 * (1.0 - mull);
+      totalEmissiveRadiance += glow * lvA * uNight * uLitBoost;
+    } else if (vSeed >= 0.275 && vSeed < 0.425) {   // glass and steel: lit concourse glass (Wintrust, Soldier Field risers)
+      float band = step(fract(y / 4.5), 0.28), mull = step(fract(vMUv.x / 2.0), 0.05);
+      totalEmissiveRadiance += vec3(1.0, 0.9, 0.72) * 0.45 * (1.0 - band) * (1.0 - mull) * lvA * uNight * uLitBoost;
+    } else if (vSeed >= 0.125 && vSeed < 0.275) {   // limestone colonnade uplight (D4), strongest at the base
+      totalEmissiveRadiance += diffuseColor.rgb * vec3(1.0, 0.9, 0.74) * 0.7 * (1.0 - 0.6 * smoothstep(0.0, 22.0, y)) * lvA * uNight;
+    }
+  }
   if (vi == 15 && vSeed > 0.5) {
     vec2 c = floor(vMUv / vec2(0.8, 0.6));
     totalEmissiveRadiance += mix(vec3(0.2, 0.45, 1.0), vec3(1.0, 0.8, 0.4), owHash(c)) * (0.25 + 0.5 * owHash(c + 7.0)) * uNight * uLitBoost;
@@ -297,7 +352,7 @@ export function patchFacadeShader(shader) {
 export function createFacadeMaterial() {
   const m = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.86, metalness: 0.02 })
   m.onBeforeCompile = patchFacadeShader
-  m.customProgramCacheKey = () => 'facade-v8'
+  m.customProgramCacheKey = () => 'facade-v9'
   return m
 }
 
