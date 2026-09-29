@@ -16,10 +16,10 @@ describe('transit HUD', () => {
   it('the Transit dock button turns lines, glow and legend off and on', () => {
     render(<Hud />)
     expect(screen.getByRole('group', { name: 'Transit lines' })).toBeInTheDocument()
-    fireEvent.click(screen.getByRole('button', { name: 'Transit lines: on (T)' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Transit (T)' }))
     expect(useStore.getState().transitOn).toBe(false)
     expect(screen.queryByRole('group', { name: 'Transit lines' })).toBeNull()
-    expect(screen.getByRole('button', { name: 'Transit lines: off (T)' })).toHaveAttribute('aria-pressed', 'false')
+    expect(screen.getByRole('button', { name: 'Transit (T)' })).toHaveAttribute('aria-pressed', 'false')
   })
   it('each line has its own switch; All / None', () => {
     render(<Hud />)
@@ -41,7 +41,7 @@ describe('transit HUD', () => {
   it('without transit data the button is disabled and nothing breaks', () => {
     useStore.setState({ transit: null })
     render(<Hud />)
-    const b = screen.getByRole('button', { name: 'Transit lines: data unavailable' })
+    const b = screen.getByRole('button', { name: 'Transit (T)' })
     expect(b).toHaveAttribute('aria-disabled', 'true')
     fireEvent.click(b); fireEvent.keyDown(window, { code: 'KeyT' })
     expect(useStore.getState().transitOn).toBe(true)

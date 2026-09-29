@@ -54,3 +54,20 @@ describe('responsive HUD', () => {
     expect(root).toHaveAttribute('data-compact', 'true')
   })
 })
+
+import { FEATURE_CONTROLS } from '../featureControls.js'
+describe('dock feature row (G3)', () => {
+  beforeEach(() => useStore.setState({ ...useStore.getInitialState(), transit: { lines: [], routes: [], stations: [] } }))
+  it('has exactly one button per feature anywhere in the HUD, pressed state tracks the feature', () => {
+    render(<Hud />)
+    for (const c of FEATURE_CONTROLS) {
+      const btns = screen.getAllByRole('button', { name: new RegExp(`^${c.label} \\(${c.keyLabel}\\)$`) })
+      expect(btns, c.id).toHaveLength(1)
+      const was = c.isOn()
+      expect(btns[0]).toHaveAttribute('aria-pressed', String(was))
+      fireEvent.click(btns[0])
+      expect(c.isOn(), c.id).toBe(!was)
+      expect(screen.getByRole('button', { name: new RegExp(`^${c.label} \\(`) })).toHaveAttribute('aria-pressed', String(!was))
+    }
+  })
+})

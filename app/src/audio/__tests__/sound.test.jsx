@@ -32,9 +32,9 @@ describe('sound', () => {
   })
   it('the dock has a Sound button, off until pressed', () => {
     render(<ControlDock />)
-    const b = screen.getByRole('button', { name: 'Sound: off' })
+    const b = screen.getByRole('button', { name: 'Sound (M)' })
     expect(b).toHaveAttribute('aria-pressed', 'false')
     fireEvent.click(b)
-    expect(screen.getByRole('button', { name: 'Sound: on' })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: 'Sound (M)' })).toHaveAttribute('aria-pressed', 'true')
   })
 })
