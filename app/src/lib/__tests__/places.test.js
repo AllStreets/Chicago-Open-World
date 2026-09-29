@@ -27,3 +27,11 @@ describe('places', () => {
     expect(searchPlaces('sears', places)[0].name).toBe('Willis Tower')
   })
 })
+
+describe('searchPlaces with feature entries', () => {
+  it('an empty query lists transit and game entries too', async () => {
+    const { searchPlaces } = await import('../places.js')
+    const P = [{ id: 'a', kind: 'view', name: 'V' }, { id: 'b', kind: 'transit', name: 'Clark/Lake' }, { id: 'c', kind: 'game', name: 'Game' }]
+    expect(searchPlaces('', P).map((p) => p.id)).toEqual(['a', 'b', 'c'])
+  })
+})
