@@ -53,7 +53,7 @@ export default function Scene() {
 
   return (
     <>
-      <SkyRig target={sun} sunRef={sunRef} instant={reducedMotion} shadowMap={QUALITY[quality].shadowMap} />
+      <SkyRig target={sun} sunRef={sunRef} instant={reducedMotion} shadowMap={QUALITY[quality].shadowMap} fog={QUALITY[quality].fog} />
       <SafeLoad><Suspense fallback={null}><Lake sunRef={sunRef} /></Suspense></SafeLoad>
       {(manifest || failed) && <Ground ground={groundFiles(manifest)} />}
       {manifest && <City tiles={manifest.tiles} />}

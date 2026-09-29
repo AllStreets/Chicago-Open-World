@@ -12,12 +12,18 @@ function tex(g, name) {
   t.anisotropy = 8
   return t
 }
+function riverNormals() {
+  const t = loader.load('/textures/waternormals.jpg')
+  t.wrapS = t.wrapT = THREE.RepeatWrapping
+  t.repeat.set(1 / 40, 1 / 40)
+  return t
+}
 const mat = (o) => new THREE.MeshStandardMaterial({ roughness: 0.95, metalness: 0, ...o })
 
 export function groundMaterials(g) {
   return {
     land: mat({ map: tex(g, 'concrete'), color: '#86827a' }),
-    river: mat({ color: '#1f4652', roughness: 0.08, metalness: 0.9, polygonOffset: true, polygonOffsetFactor: -2 }),
+    river: mat({ color: '#1f4652', roughness: 0.08, metalness: 0.9, normalMap: riverNormals(), normalScale: new THREE.Vector2(0.35, 0.35), polygonOffset: true, polygonOffsetFactor: -2 }),
     parks: mat({ map: tex(g, 'grass'), color: '#d6e8c4', polygonOffset: true, polygonOffsetFactor: -3 }),
     beaches: mat({ map: tex(g, 'sand'), color: '#fff7e6', polygonOffset: true, polygonOffsetFactor: -3 }),
     sidewalks: mat({ map: tex(g, 'sidewalk'), color: '#bebbb4', polygonOffset: true, polygonOffsetFactor: -4 }),

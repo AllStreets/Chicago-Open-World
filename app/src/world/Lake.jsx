@@ -15,7 +15,7 @@ export default function Lake({ sunRef }) {
   const config = useMemo(() => ({
     textureWidth: 1024, textureHeight: 1024, waterNormals: normals,
     sunDirection: new THREE.Vector3(0, 1, 0), sunColor: 0xffffff,
-    waterColor: 0x0b2733, distortionScale: 2.2, fog: true,
+    waterColor: 0x0b2733, distortionScale: 1.6, alpha: 0.96, fog: true,
   }), [normals])
   useFrame((_, dt) => {
     const w = ref.current, s = sunRef.current
@@ -26,6 +26,8 @@ export default function Lake({ sunRef }) {
     const p = paletteFor((Math.asin(Math.max(-1, Math.min(1, s[1]))) * 180) / Math.PI)
     u.waterColor.value.copy(p.water)
     u.sunColor.value.copy(p.sunColor)
+    u.distortionScale.value = p.night > 0.5 ? 0.8 : 1.6 // calm night water → long light streaks
+    u.size.value = 2.5
   })
   return <water ref={ref} args={[geom, config]} rotation-x={-Math.PI / 2} position={[0, -0.6, 0]} />
 }

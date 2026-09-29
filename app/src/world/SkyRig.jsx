@@ -1,17 +1,21 @@
 // app/src/world/SkyRig.jsx — the living sky: tweened sun, palette-driven light, stars, sky reflections.
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { Sky, Stars, Environment } from '@react-three/drei'
 import * as THREE from 'three'
 import { paletteFor } from '../lib/skyPalette.js'
 import { stepSun } from '../lib/sunTween.js'
 import { facadeUniforms } from './materials/facadeMaterial.js'
+import { applySkyGain } from './materials/skyGain.js'
+
+const SKY_GAIN = 0.42
 
 const DIST = 5000
 
-export default function SkyRig({ target, sunRef, instant = false, shadowMap = 4096 }) {
+export default function SkyRig({ target, sunRef, instant = false, shadowMap = 4096, fog = [2600, 17000] }) {
   const { scene } = useThree()
   const sky = useRef(), light = useRef(), hemi = useRef(), stars = useRef()
+  useEffect(() => { if (sky.current) applySkyGain(sky.current.material, SKY_GAIN) }, [])
   const cur = useRef(target.direction.slice())
   if (!sunRef.current) sunRef.current = cur.current
   const envSun = useMemo(() => target.direction.map((v) => v * DIST), [target])
@@ -39,9 +43,9 @@ export default function SkyRig({ target, sunRef, instant = false, shadowMap = 40
 
   return (
     <>
-      <Sky ref={sky} sunPosition={envSun} turbidity={5.5} rayleigh={1.4} mieCoefficient={0.005} mieDirectionalG={0.86} distance={45000} />
+      <Sky ref={sky} sunPosition={envSun} turbidity={3.2} rayleigh={1.2} mieCoefficient={0.003} mieDirectionalG={0.82} distance={45000} />
       <Stars ref={stars} radius={20000} depth={2000} count={6000} factor={120} saturation={0} fade speed={0.3} />
-      <fog attach="fog" args={['#b4c6d6', 1800, 14000]} />
+      <fog attach="fog" args={['#b4c6d6', fog[0], fog[1]]} />
       <color attach="background" args={['#04070e']} />
       <hemisphereLight ref={hemi} args={['#cfe1f5', '#5e5850', 1]} />
       <directionalLight
@@ -59,7 +63,7 @@ export default function SkyRig({ target, sunRef, instant = false, shadowMap = 40
       />
       {/* Sky-lit reflections for glass + river; re-captured when the preset target changes */}
       <Environment key={envSun.join(',')} frames={1} resolution={128} background={false}>
-        <Sky sunPosition={envSun} turbidity={5.5} rayleigh={1.4} mieCoefficient={0.005} mieDirectionalG={0.86} />
+        <Sky ref={(o) => o && applySkyGain(o.material, SKY_GAIN)} sunPosition={envSun} turbidity={3.2} rayleigh={1.2} mieCoefficient={0.003} mieDirectionalG={0.82} />
         <mesh scale={100}>
           <sphereGeometry args={[1, 16, 8]} />
           <meshBasicMaterial color={envNight.fog} side={THREE.BackSide} transparent opacity={envNight.night * 0.95} />

@@ -26,7 +26,11 @@ export default function Ground({ ground }) {
     fetch('/textures/ground/ground.json').then((r) => (r.ok ? r.json() : {})).catch(() => ({})).then(setG)
   }, [])
   const mats = useMemo(() => (g ? groundMaterials(g) : null), [g])
-  useFrame(() => { if (mats) mats.roads.emissiveIntensity = facadeUniforms.uNight.value * 0.18 })
+  useFrame((_, dt) => {
+    if (!mats) return
+    mats.roads.emissiveIntensity = facadeUniforms.uNight.value * 0.18
+    if (mats.river.normalMap) mats.river.normalMap.offset.x += dt * 0.004 // slow current, west → east
+  })
   if (!mats) return null
   const fail = (file) => (err) => { console.warn(`ground failed: ${file}`, err); useStore.getState().markLoaded(file) }
   return LAYERS.filter((k) => ground[k]).map((k) => (
