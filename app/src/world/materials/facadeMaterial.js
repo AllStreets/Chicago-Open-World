@@ -183,8 +183,12 @@ float fwRow = fwidth(vWPos.y / 0.42), fwAisle = fwidth(vMUv.x / 17.0) * 17.0;   
 int si = int(vStyle + 0.5);
 si = float(si) < uStyleRows ? si : 0;                   // stale tiles vs palette: unstyled, never garbage
 bool styled = si > 0;
-vec4 S0 = styleTexel(si, 0), S1 = styleTexel(si, 1), S2 = styleTexel(si, 2), S3 = styleTexel(si, 3), S4 = styleTexel(si, 4);
-float S6a = styleTexel(si, 6).a;
+vec4 S0 = vec4(0.0), S1 = vec4(0.0), S2 = vec4(0.0), S3 = vec4(0.0), S4 = vec4(0.0);
+float S6a = 0.0;
+if (styled) {                                            // palette reads only where a look applies (texelFetch needs no derivatives)
+  S0 = styleTexel(si, 0); S1 = styleTexel(si, 1); S2 = styleTexel(si, 2); S3 = styleTexel(si, 3); S4 = styleTexel(si, 4);
+  S6a = styleTexel(si, 6).a;
+}
 if (isVenue) { alb = venueAlbedo(vi, vSeed, vMUv, vWPos, vWNormal, gravel, roofAlb, fwRow, fwAisle); win = 0.0; }
 alb = mix(vec3(0.62, 0.6, 0.57), alb, uReady);
 win *= uReady;
