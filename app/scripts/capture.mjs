@@ -18,6 +18,10 @@ export const POSES = {
   'soldierfield-bowl': { position: [930, 95, 2335], target: [930, 0, 2197] },
   'willis-base': { position: [-674, 120, 560], target: [-674, 80, 366] },
   'lincoln-lagoon': { position: [-200, 160, -4000], target: [-470, 0, -4273] },
+  // V2 building-colour evaluation poses
+  wrigley: { position: [430, 170, -640], target: [300, 70, -900] },
+  aon: { position: [1050, 260, 150], target: [522, 180, -361] },
+  s311: { position: [-150, 360, 1060], target: [-657, 250, 507] },
 }
 
 const args = process.argv.slice(2)
