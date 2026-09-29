@@ -1,4 +1,4 @@
-.dock { position: absolute; right: 16px; bottom: 228px; width: 196px; padding: 8px; display: flex; flex-direction: column; gap: 6px; animation: hud-rise 0.6s 0.15s ease both; }
+.dock { position: absolute; right: 16px; bottom: 248px; width: 196px; padding: 8px; display: flex; flex-direction: column; gap: 6px; animation: hud-rise 0.6s 0.15s ease both; }
 .dock-row { display: flex; gap: 6px; }
 .dock-btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 32px; border-radius: var(--r-sm);
   border: 1px solid var(--border); background: rgba(9, 14, 26, 0.55); color: var(--text-muted); font-family: var(--font-ui); font-size: 11px;

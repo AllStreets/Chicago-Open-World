@@ -44,7 +44,7 @@
 .help-grid p { font-size: 13px; color: var(--text-muted); margin: 6px 0; display: flex; gap: 10px; align-items: baseline; }
 .help-grid .hud-kbd { flex-shrink: 0; min-width: 72px; justify-content: center; }
 .help-ok { align-self: flex-end; }
-.cmdk.help { max-height: 88vh; overflow: auto; }
+.cmdk.help { max-height: calc(100vh - 17vh - 24px); overflow: auto; } /* below the overlay top pad, never off the bottom edge */
 .help-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (max-width: 560px) { .help-grid { grid-template-columns: 1fr; } }
 
@@ -81,3 +81,8 @@
 .tc-speed { font-family: var(--font-mono) !important; }
 .wm-chips { margin-top: 6px; }
 .toast { position: absolute; top: 168px; left: 50%; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 8px; animation: hud-rise 0.3s ease both; }
+/* V7: one left column for the side panels; scrolls when full, lets clicks through between cards */
+.hud-root > .hud-left-stack { position: absolute; top: 148px; left: 16px; bottom: 64px; width: 300px; display: flex; flex-direction: column; gap: 10px;
+  overflow-y: auto; pointer-events: none; scrollbar-width: thin; }
+.hud-left-stack > * { pointer-events: auto; position: static !important; inset: auto !important; transform: none !important; width: 100% !important; max-width: 100%; max-height: none !important; flex-shrink: 0; }
+.hud-root[data-compact="true"] .hud-left-stack { top: 196px; bottom: 16px; } /* the wordmark wraps taller when compact */

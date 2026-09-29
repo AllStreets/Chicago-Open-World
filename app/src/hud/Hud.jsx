@@ -34,17 +34,20 @@ export default function Hud() {
     <div className="hud-root" style={{ zoom: scale }} data-compact={hudCompact(size[0], size[1])}>
       <div className="hud-vignette" />
       <WordmarkBlock />
+      {/* one scrollable column for every side panel (V7): cards first, then the games list and the line legend */}
+      <div className="hud-left-stack">
+        <TransitCard />
+        <VenueCard />
+        <GamesPanel />
+        <TransitLegend />
+      </div>
       <ControlPills />
       <HintBar layoutW={size[0] / scale} />
       <Minimap manifest={manifest} />
       <ControlDock />
-      <TransitLegend />
       <FlightChip />
-      <GamesPanel />
-      <VenueCard />
       <FollowChip />
       <Toast />
-      <TransitCard />
       <CommandPalette />
       <HelpOverlay />
       <LoadingScreen />

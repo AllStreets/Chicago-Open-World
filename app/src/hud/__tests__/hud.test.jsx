@@ -71,3 +71,20 @@ describe('dock feature row (G3)', () => {
     }
   })
 })
+
+describe('left stack (V7 Task 6)', () => {
+  it('side panels live in one left stack under the wordmark', async () => {
+    const { useSports } = await import('../../sports/sportsStore.js')
+    useStore.setState({ ...useStore.getInitialState(), transit: { lines: [{ id: 'red', name: 'Red Line', colour: '#c60c30', operator: 'cta' }], routes: [], stations: [] }, transitOn: true, gamesOpen: true })
+    useSports.setState({ venues: [{ key: 'wrigleyfield', name: 'Wrigley Field', kind: 'baseball', teams: ['cubs'], center: [0, 0] }], states: {} })
+    const { container } = render(<Hud />)
+    const stack = container.querySelector('.hud-left-stack')
+    expect(stack).not.toBeNull()
+    let seen = 0
+    for (const sel of ['.transit-legend', '.games', '.venue-card', '.transit-card']) {
+      const el = container.querySelector(sel)
+      if (el) { seen++; expect(stack.contains(el), sel).toBe(true) }
+    }
+    expect(seen).toBeGreaterThanOrEqual(2)
+  })
+})
