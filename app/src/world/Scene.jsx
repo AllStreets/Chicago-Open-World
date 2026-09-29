@@ -1,5 +1,5 @@
 // app/src/world/Scene.jsx — the whole 3D world.
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { useThree } from '@react-three/fiber'
 import { useStore } from '../state/store.js'
 import { loadManifest, worldUrl } from '../lib/manifest.js'
@@ -19,6 +19,7 @@ import PerfWatch from './PerfWatch.jsx'
 import { QUALITY } from '../lib/quality.js'
 import { loadHeightfield, clearanceAt } from '../lib/clearance.js'
 import TransitLayer from '../transit/TransitLayer.jsx'
+import Trains from '../transit/Trains.jsx'
 
 export default function Scene() {
   const [manifest, setManifest] = useState(null)
@@ -68,6 +69,8 @@ export default function Scene() {
       {manifest && <Land file={manifest.land} version={manifest.version} />}
       {manifest && <TileStreamer manifest={manifest} />}
       <TransitLayer />
+        {manifest?.trains && <SafeLoad><Suspense fallback={null}><Trains file={manifest.trains} version={manifest.version} /></Suspense></SafeLoad>}
+  
       <AtlasRig />
       <PostFX />
       <PerfWatch />
