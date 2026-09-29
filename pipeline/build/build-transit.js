@@ -16,6 +16,8 @@ import { createGlow, glowPiece, toGlowLayer } from '../lib/transit/glow.js'
 import { stationFeatures, platformWays, linkStops, stationSite, platformsFor, stationMesh, PLATFORM } from '../lib/transit/stations.js'
 import { transitStats, validateTransit } from '../lib/transit/validate.js'
 import { validateLook } from '../lib/looks.js'
+import { servicesFor } from '../lib/transit/services.js'
+import { WORLD_BBOX } from '../lib/sources.js'
 
 export const RESAMPLE_M = 12
 export const PORTAL_DEPTH_Y = -6 // subway track above this is an open ramp and gets trench walls
@@ -38,7 +40,12 @@ function* byTile(pts3) { // splitLineByTiles keys on [x, z]; carry y along as th
   for (const [k, lines] of splitLineByTiles(pts3.map(([x, y, z]) => [x, z, y]))) for (const l of lines) yield [k, l.map(([x, z, y]) => [x, y, z])]
 }
 
-export function buildTransit({ routeEls, stationEls, catalog, styles = null }) {
+export function worldBounds() {
+  const [minX, minZ] = project(WORLD_BBOX.w, WORLD_BBOX.n), [maxX, maxZ] = project(WORLD_BBOX.e, WORLD_BBOX.s)
+  return { minX, maxX, minZ, maxZ }
+}
+
+export function buildTransit({ routeEls, stationEls, catalog, styles = null, bounds = worldBounds() }) {
   const order = lineOrder(catalog), lineById = new Map(catalog.lines.map((l) => [l.id, l]))
   const colourOf = (id) => hexToLinear(lineById.get(id).colour)
   const ways = new Map(), nodes = new Map(), rels = []
@@ -124,13 +131,17 @@ export function buildTransit({ routeEls, stationEls, catalog, styles = null }) {
   const present = order.filter((id) => routes.some((r) => r.line === id))
   const json = {
     version: 1,
-    lines: present.map((id) => { const { expect, refs, names, ...rest } = lineById.get(id); return { ...rest, index: order.indexOf(id) } }),
+    lines: present.map((id) => { const { expect, refs, names, ...rest } = lineById.get(id); return { ...rest, index: order.indexOf(id), service: catalog.lineService?.[id] ?? null } }),
     routes: routes.map((r) => ({ id: r.id, line: r.line, relation: r.relation, name: r.name, from: r.from, to: r.to,
       path: r.pts3.map(([x, y, z]) => [r1(x), r2(y), r1(z)]), stops: r.stops.map((s) => ({ station: s.station ?? null, name: s.name, s: s.s })) })),
     stations: stationOut,
     junctions: (catalog.junctions ?? []).map(({ name, lat, lon }) => { const [x, z] = project(lon, lat); return { name, x: r1(x), z: r1(z) } }),
     stats,
   }
+    json.servicePeriods = catalog.servicePeriods ?? null
+    json.rollingStock = catalog.rollingStock ?? null
+    json.services = servicesFor(json.routes, bounds)
+  
   const layers = new Map([...tiles].map(([k, t]) => [k, { transit: toLayer(t.transit), ties: toLayer(t.ties), stations: toLayer(t.stations), glow: toGlowLayer(t.glow), glowLod: toGlowLayer(t.glowLod) }]))
   return { json, tiles: layers, wayIds: new Set(pieces.keys()), stats, validation }
 }

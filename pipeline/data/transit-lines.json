@@ -4,7 +4,9 @@
     "metraColour": "Metra brand blue, single colour per spec Addendum B.3 / backlog default 3 \u2014 https://metra.com/",
     "loopJunctions": "Chicago-L.org, The Loop \u2014 junctions and interlocking towers \u2014 https://www.chicago-l.org/operations/lines/loop.html",
     "routes": "OpenStreetMap route relations (ODbL) via Overpass \u2014 https://www.openstreetmap.org/copyright",
-    "stockSources": "Car dimensions per model: see each rollingStock entry's source \u2014 https://en.wikipedia.org/wiki/Chicago_%22L%22#Rolling_stock"
+    "stockSources": "Car dimensions per model: see each rollingStock entry's source \u2014 https://en.wikipedia.org/wiki/Chicago_%22L%22#Rolling_stock",
+    "ctaService": "Typical CTA headways, consists and car series by line (rounded; not a timetable) \u2014 https://www.transitchicago.com/schedules/ ; https://en.wikipedia.org/wiki/Chicago_%22L%22#Rolling_stock",
+    "metraService": "Typical Metra peak/off-peak frequencies and push-pull consists (rounded; not a timetable) \u2014 https://metra.com/schedules"
   },
   "lines": [
     {
@@ -516,6 +518,401 @@
       "wheel": 1.016,
       "doorWidth": 0.6,
       "source": "https://en.wikipedia.org/wiki/MPI_MPXpress"
+    }
+  },
+  "servicePeriods": {
+    "weekday": [
+      [
+        "night",
+        0,
+        5
+      ],
+      [
+        "peak",
+        5,
+        9.5
+      ],
+      [
+        "midday",
+        9.5,
+        15.5
+      ],
+      [
+        "peak",
+        15.5,
+        18.5
+      ],
+      [
+        "evening",
+        18.5,
+        24
+      ]
+    ],
+    "weekend": [
+      [
+        "night",
+        0,
+        6
+      ],
+      [
+        "weekend",
+        6,
+        24
+      ]
+    ]
+  },
+  "lineService": {
+    "red": {
+      "stock": "cta5000",
+      "cars": {
+        "peak": 8,
+        "offpeak": 8
+      },
+      "headwayMin": {
+        "peak": 5,
+        "midday": 7,
+        "evening": 10,
+        "night": 15,
+        "weekend": 8
+      },
+      "dwellS": 25,
+      "vmaxKmh": 88,
+      "accel": 1.34,
+      "brake": 1.34,
+      "runBase": 800,
+      "source": "ctaService"
+    },
+    "blue": {
+      "stock": "cta7000",
+      "cars": {
+        "peak": 8,
+        "offpeak": 8
+      },
+      "headwayMin": {
+        "peak": 6,
+        "midday": 8,
+        "evening": 10,
+        "night": 15,
+        "weekend": 9
+      },
+      "dwellS": 25,
+      "vmaxKmh": 88,
+      "accel": 1.34,
+      "brake": 1.34,
+      "runBase": 100,
+      "source": "ctaService"
+    },
+    "brown": {
+      "stock": "cta7000",
+      "cars": {
+        "peak": 8,
+        "offpeak": 6
+      },
+      "headwayMin": {
+        "peak": 5,
+        "midday": 8,
+        "evening": 10,
+        "weekend": 10
+      },
+      "dwellS": 25,
+      "vmaxKmh": 88,
+      "accel": 1.34,
+      "brake": 1.34,
+      "runBase": 400,
+      "source": "ctaService"
+    },
+    "green": {
+      "stock": "cta5000",
+      "cars": {
+        "peak": 6,
+        "offpeak": 4
+      },
+      "headwayMin": {
+        "peak": 8,
+        "midday": 10,
+        "evening": 12,
+        "weekend": 12
+      },
+      "dwellS": 25,
+      "vmaxKmh": 88,
+      "accel": 1.34,
+      "brake": 1.34,
+      "runBase": 0,
+      "source": "ctaService"
+    },
+    "orange": {
+      "stock": "cta5000",
+      "cars": {
+        "peak": 8,
+        "offpeak": 6
+      },
+      "headwayMin": {
+        "peak": 7,
+        "midday": 9,
+        "evening": 12,
+        "weekend": 12
+      },
+      "dwellS": 25,
+      "vmaxKmh": 88,
+      "accel": 1.34,
+      "brake": 1.34,
+      "runBase": 700,
+      "source": "ctaService"
+    },
+    "pink": {
+      "stock": "cta5000",
+      "cars": {
+        "peak": 6,
+        "offpeak": 4
+      },
+      "headwayMin": {
+        "peak": 8,
+        "midday": 10,
+        "evening": 12,
+        "weekend": 12
+      },
+      "dwellS": 25,
+      "vmaxKmh": 88,
+      "accel": 1.34,
+      "brake": 1.34,
+      "runBase": 300,
+      "source": "ctaService"
+    },
+    "purple": {
+      "stock": "cta5000",
+      "cars": {
+        "peak": 8,
+        "offpeak": 8
+      },
+      "headwayMin": {
+        "peak": 8
+      },
+      "dwellS": 25,
+      "vmaxKmh": 88,
+      "accel": 1.34,
+      "brake": 1.34,
+      "runBase": 500,
+      "source": "ctaService"
+    },
+    "yellow": {
+      "stock": "cta5000",
+      "cars": {
+        "peak": 2,
+        "offpeak": 2
+      },
+      "headwayMin": {
+        "peak": 10,
+        "midday": 15,
+        "evening": 15,
+        "weekend": 15
+      },
+      "dwellS": 25,
+      "vmaxKmh": 88,
+      "accel": 1.34,
+      "brake": 1.34,
+      "runBase": 500,
+      "source": "ctaService"
+    },
+    "up-n": {
+      "stock": "metra",
+      "cars": {
+        "peak": 7,
+        "offpeak": 5
+      },
+      "headwayMin": {
+        "peak": 20,
+        "midday": 60,
+        "evening": 60,
+        "weekend": 60
+      },
+      "dwellS": 45,
+      "vmaxKmh": 97,
+      "accel": 0.45,
+      "brake": 0.7,
+      "runBase": 300,
+      "source": "metraService"
+    },
+    "up-nw": {
+      "stock": "metra",
+      "cars": {
+        "peak": 7,
+        "offpeak": 5
+      },
+      "headwayMin": {
+        "peak": 20,
+        "midday": 60,
+        "evening": 60,
+        "weekend": 60
+      },
+      "dwellS": 45,
+      "vmaxKmh": 97,
+      "accel": 0.45,
+      "brake": 0.7,
+      "runBase": 600,
+      "source": "metraService"
+    },
+    "up-w": {
+      "stock": "metra",
+      "cars": {
+        "peak": 7,
+        "offpeak": 5
+      },
+      "headwayMin": {
+        "peak": 20,
+        "midday": 60,
+        "evening": 60,
+        "weekend": 60
+      },
+      "dwellS": 45,
+      "vmaxKmh": 97,
+      "accel": 0.45,
+      "brake": 0.7,
+      "runBase": 50,
+      "source": "metraService"
+    },
+    "md-n": {
+      "stock": "metra",
+      "cars": {
+        "peak": 7,
+        "offpeak": 5
+      },
+      "headwayMin": {
+        "peak": 20,
+        "midday": 60,
+        "evening": 90,
+        "weekend": 120
+      },
+      "dwellS": 45,
+      "vmaxKmh": 97,
+      "accel": 0.45,
+      "brake": 0.7,
+      "runBase": 2100,
+      "source": "metraService"
+    },
+    "md-w": {
+      "stock": "metra",
+      "cars": {
+        "peak": 7,
+        "offpeak": 5
+      },
+      "headwayMin": {
+        "peak": 20,
+        "midday": 60,
+        "evening": 90,
+        "weekend": 120
+      },
+      "dwellS": 45,
+      "vmaxKmh": 97,
+      "accel": 0.45,
+      "brake": 0.7,
+      "runBase": 2200,
+      "source": "metraService"
+    },
+    "ncs": {
+      "stock": "metra",
+      "cars": {
+        "peak": 7,
+        "offpeak": 5
+      },
+      "headwayMin": {
+        "peak": 60
+      },
+      "dwellS": 45,
+      "vmaxKmh": 97,
+      "accel": 0.45,
+      "brake": 0.7,
+      "runBase": 100,
+      "source": "metraService"
+    },
+    "bnsf": {
+      "stock": "metra",
+      "cars": {
+        "peak": 7,
+        "offpeak": 5
+      },
+      "headwayMin": {
+        "peak": 15,
+        "midday": 60,
+        "evening": 60,
+        "weekend": 60
+      },
+      "dwellS": 45,
+      "vmaxKmh": 97,
+      "accel": 0.45,
+      "brake": 0.7,
+      "runBase": 1200,
+      "source": "metraService"
+    },
+    "hc": {
+      "stock": "metra",
+      "cars": {
+        "peak": 7,
+        "offpeak": 5
+      },
+      "headwayMin": {
+        "peak": 60
+      },
+      "dwellS": 45,
+      "vmaxKmh": 97,
+      "accel": 0.45,
+      "brake": 0.7,
+      "runBase": 900,
+      "source": "metraService"
+    },
+    "sws": {
+      "stock": "metra",
+      "cars": {
+        "peak": 7,
+        "offpeak": 5
+      },
+      "headwayMin": {
+        "peak": 30,
+        "midday": 120
+      },
+      "dwellS": 45,
+      "vmaxKmh": 97,
+      "accel": 0.45,
+      "brake": 0.7,
+      "runBase": 800,
+      "source": "metraService"
+    },
+    "ri": {
+      "stock": "metra",
+      "cars": {
+        "peak": 7,
+        "offpeak": 5
+      },
+      "headwayMin": {
+        "peak": 20,
+        "midday": 60,
+        "evening": 60,
+        "weekend": 120
+      },
+      "dwellS": 45,
+      "vmaxKmh": 97,
+      "accel": 0.45,
+      "brake": 0.7,
+      "runBase": 400,
+      "source": "metraService"
+    },
+    "me": {
+      "stock": "metra",
+      "cars": {
+        "peak": 7,
+        "offpeak": 5
+      },
+      "headwayMin": {
+        "peak": 15,
+        "midday": 30,
+        "evening": 60,
+        "weekend": 60
+      },
+      "dwellS": 45,
+      "vmaxKmh": 97,
+      "accel": 0.45,
+      "brake": 0.7,
+      "runBase": 700,
+      "source": "metraService"
     }
   }
 }

@@ -35,6 +35,7 @@ import { minimapSvg } from '../lib/minimap.js'
 import { bufferPolyline } from '../lib/ribbon.js'
 import { roadHalfWidth, scatterInPolygon, GROUND_Y, flatMesh } from '../lib/ground.js'
 import { buildTransit, loadTransitCache } from './build-transit.js'
+import { writeTrainsGlb } from './build-trains.js'
 import { loadCatalog } from '../lib/transit/lines.js'
 import { assertTransit } from '../lib/transit/validate.js'
 import { waterLayer, keepWater, breakwaterBuildings, CALM } from '../lib/water.js'
@@ -398,6 +399,7 @@ async function main() {
 
   const [r0x, r0z] = project(RING0_BBOX.w, RING0_BBOX.n), [r1x, r1z] = project(RING0_BBOX.e, RING0_BBOX.s)
   writeFileSync(join(OUT, 'transit.json'), JSON.stringify(transit.json))
+  await writeTrainsGlb(join(OUT, 'trains.glb'), loadCatalog())
   writeFileSync(join(OUT, 'manifest.json'), JSON.stringify({
     version: MANIFEST_VERSION, ...manifestStamp(), origin: ORIGIN, tileSize: TILE_SIZE, bbox: WORLD_BBOX,
     core: { minX: r0x, maxX: r1x, minZ: r0z, maxZ: r1z },
@@ -413,7 +415,7 @@ async function main() {
     skyline: { missing: sky.missing, wrongHeight: sky.wrongHeight },
     landmarks: buildings.filter((b) => b.hero).map((b) => ({ key: b.hero, name: heroes.find((h) => h.key === b.hero)?.name ?? b.name, aliases: heroes.find((h) => h.key === b.hero)?.aliases ?? [], x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(b.venueTop ?? 0, ...b.pieces.map((p) => p.top), ...(b.extraMeshes || []).flatMap((m) => m.positions.filter((_, i) => i % 3 === 1)))) })),
     tallest: buildings.filter((b) => !b.hero && b.name && b.pieces.length && Math.max(...b.pieces.map((p) => p.top)) > 150).map((b) => ({ key: b.id, name: b.name, x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(...b.pieces.map((p) => p.top))) })),
-    tiles, blocks: blockList, land: 'ground/land.glb', lake: 'ground/lake.glb', landMask: 'land.json', transit: 'transit.json', styles: 'styles.json', stylePalette: 'style-palette.png',
+    tiles, blocks: blockList, land: 'ground/land.glb', lake: 'ground/lake.glb', landMask: 'land.json', transit: 'transit.json', trains: 'trains.glb', styles: 'styles.json', stylePalette: 'style-palette.png',
     shore: { file: 'water/shore.png', ...shore.grid, maxDist: SHORE.maxDist },
     heightfield: { file: 'heightfield.png', ...hf.grid, scale: HEIGHTFIELD.scale }, minimap: { file: 'minimap.png', bounds: mmBounds, size: 2048 },
   }, null, 1))

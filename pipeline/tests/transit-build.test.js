@@ -72,4 +72,10 @@ describe('buildTransit', () => {
     const runs = gradeRuns({ pts3: [[0, 7, 0], [1, 7, 0], [2, 3, 0], [3, 0, 0]], grades: ['elevated', 'elevated', 'subway'] })
     expect(runs.map((r) => [r.grade, r.pts3.length])).toEqual([['elevated', 3], ['subway', 2]])
   })
+  it('V4: lines carry their sourced service; services, periods and rolling stock ride along', () => {
+    expect(out.json.lines[0].service).toMatchObject({ stock: 'cta5000', cars: { peak: 8, offpeak: 8 }, headwayMin: { peak: 5, midday: 7, evening: 10, night: 15, weekend: 8 } })
+    expect(out.json.servicePeriods.weekday[1]).toEqual(['peak', 5, 9.5])
+    expect(out.json.rollingStock.cta5000.length).toBe(14.63)
+    expect(out.json.services).toEqual([{ id: 'svc-red-10-0', line: 'red', routes: ['red-10-0'], inbound: false }])
+  })
 })

@@ -35,4 +35,12 @@ describe.skipIf(!has)('built world — transit (V3)', () => {
     expect(json('tiles/-1_-1.json').columns).toBeUndefined()
     expect(await nodeNames('tiles/-1_-1.lod1.glb')).toContain('glow')
   })
+  it('V4: trains.glb, services and service data are built', async () => {
+    expect(json('manifest.json').trains).toBe('trains.glb')
+    expect((await nodeNames('trains.glb')).sort()).toEqual(['cta5000', 'cta7000', 'metraCoach', 'metraLoco'])
+    const t = json('transit.json'), ids = new Set(t.routes.map((r) => r.id))
+    expect(t.services.length).toBeGreaterThan(10)
+    for (const sv of t.services) for (const r of sv.routes) expect(ids.has(r)).toBe(true)
+    expect(t.lines.find((l) => l.id === 'red').service.headwayMin.peak).toBe(5)
+  })
 })

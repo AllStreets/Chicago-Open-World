@@ -10044,6 +10044,7 @@
  "lake": "ground/lake.glb",
  "landMask": "land.json",
  "transit": "transit.json",
+ "trains": "trains.glb",
  "styles": "styles.json",
  "stylePalette": "style-palette.png",
  "shore": {
