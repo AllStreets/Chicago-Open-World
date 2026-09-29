@@ -4,7 +4,7 @@ import { useFrame } from '@react-three/fiber'
 import { CameraControls } from '@react-three/drei'
 import * as THREE from 'three'
 import { useStore } from '../state/store.js'
-import { clampCamera, glideVector, headingDeg, MAX_DIST } from '../lib/cameraMath.js'
+import { clampCamera, glideVector, headingDeg, MAX_DIST, WORLD_BOUNDS } from '../lib/cameraMath.js'
 import { bookmarkFromUrl } from '../lib/bookmarks.js'
 import { introPose, INTRO_SECONDS } from '../lib/introPath.js'
 import { crossStreets } from '../lib/grid.js'
@@ -103,7 +103,7 @@ export default function AtlasRig() {
     if (mode === 'ORBIT') c.rotate(ORBIT_RAD_PER_S * dt, 0, false)
 
     c.getTarget(tmpT); c.getPosition(tmpP)
-    const cl = clampCamera(tmpP.toArray(), tmpT.toArray())
+    const cl = clampCamera(tmpP.toArray(), tmpT.toArray(), WORLD_BOUNDS)
     if (cl.clamped) {
       c.setLookAt(...cl.position, ...cl.target, false)
     }

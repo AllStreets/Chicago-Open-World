@@ -62,4 +62,20 @@ describe('headingDeg', () => {
     expect(headingDeg(40 * Math.PI + Math.PI / 2)).toBe(270)
     expect(headingDeg(-40 * Math.PI - Math.PI / 2)).toBe(90)
   })
+
+describe('world bounds clamp', () => {
+  const B = { minX: -5000, maxX: 4000, minZ: -8000, maxZ: 6000 }
+  it('clamps the target into the world rect and keeps the camera offset', () => {
+    const { target, position, clamped } = clampCamera([9000, 300, 100], [8000, 0, 0], B)
+    expect(target[0]).toBe(4000); expect(position[0]).toBe(5000); expect(clamped).toBe(true)
+  })
+  it('allows 6 km camera distance, caps beyond', () => {
+    expect(MAX_DIST).toBe(6000)
+    const { position, target } = clampCamera([0, 9000, 0], [0, 0, 0], B)
+    expect(Math.hypot(position[0] - target[0], position[1] - target[1], position[2] - target[2])).toBeCloseTo(6000)
+  })
+  it('a pose inside the world is untouched', () => {
+    expect(clampCamera([100, 400, -7000], [0, 0, -7500], B).clamped).toBe(false)
+  })
+})
 })

@@ -4,6 +4,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { Sky, Stars } from '@react-three/drei'
 import SkyEnvironment from './SkyEnvironment.jsx'
 import { paletteFor } from '../lib/skyPalette.js'
+import { useStore } from '../state/store.js'
 import { stepSun } from '../lib/sunTween.js'
 import { facadeUniforms } from './materials/facadeMaterial.js'
 import { applySkyGain } from './materials/skyGain.js'
@@ -28,7 +29,12 @@ export default function SkyRig({ target, sunRef, instant = false, shadowMap = 40
     const p = paletteFor(elev)
     sky.current?.material.uniforms.sunPosition.value.set(x * DIST, y * DIST, z * DIST)
     if (light.current) {
-      light.current.position.set(x * DIST, Math.max(y, 0.02) * DIST, z * DIST)
+      // shadows cover the area around the camera target (snapped to 50 m so they don't swim)
+      const r = useStore.getState().readout
+      const fx = Math.round((r.x ?? 0) / 50) * 50, fz = Math.round((r.z ?? 0) / 50) * 50
+      light.current.target.position.set(fx, 0, fz)
+      light.current.target.updateMatrixWorld()
+      light.current.position.set(fx + x * DIST, Math.max(y, 0.02) * DIST, fz + z * DIST)
       light.current.color.copy(p.sunColor)
       light.current.intensity = p.sunIntensity * p.exposure
     }

@@ -24,3 +24,15 @@ describe('grid', () => {
     expect(crossStreets(-50000, 50000)).toMatch(/&/)
   })
 })
+
+describe('wider world streets', () => {
+  it('Western & Addison, Halsted & 35th, Ashland & Cermak', () => {
+    expect(crossStreets(-2400 * M_PER_NUMBER, -3600 * M_PER_NUMBER)).toBe('WESTERN & ADDISON')
+    expect(crossStreets(-800 * M_PER_NUMBER, 3500 * M_PER_NUMBER)).toBe('HALSTED & 35TH')
+    expect(crossStreets(-1600 * M_PER_NUMBER, 2200 * M_PER_NUMBER)).toBe('ASHLAND & CERMAK')
+  })
+  it('water check wins when provided', () => {
+    expect(crossStreets(0, 0, () => true)).toBe('LAKE MICHIGAN')
+    expect(crossStreets(0, 0, () => false)).toBe('STATE & MADISON')
+  })
+})

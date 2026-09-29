@@ -13,7 +13,7 @@ describe('minimap math', () => {
   })
   it('clamps far clicks to the camera radius and never returns NaN', () => {
     const [x, z] = mapToWorld([1e9, 1e9], { minX: -9e6, minZ: -9e6, maxX: 9e6, maxZ: 9e6 }, 1000)
-    expect(Math.hypot(x, z)).toBeLessThanOrEqual(3000 + 1e-6)
+    expect(Math.hypot(x, z)).toBeLessThanOrEqual(6000 + 1e-6) // MAX_DIST grew with the world
     expect(mapToWorld([NaN, 5], B, 1000).every(Number.isFinite)).toBe(true)
   })
   it('compass offset wraps', () => {

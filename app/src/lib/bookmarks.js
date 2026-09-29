@@ -13,6 +13,13 @@ export const BOOKMARKS = {
   // Willis from the south over the river
   // The Loop L at Wabash & Lake, low over the tracks
   wabash: { position: [150, 55, -80], target: [140, 6, -440] },
+  // Wider world (Phase 2.5)
+  wrigleyville: { position: [-1650, 280, -6850], target: [-2279, 12, -7372] },
+  lincolnpark: { position: [900, 420, -3800], target: [-511, 20, -4351] },
+  westloop: { position: [-900, 280, -250], target: [-2030, 20, -508] },
+  pilsen: { position: [-1850, 240, 1950], target: [-2669, 10, 2702] },
+  soldierfield: { position: [1950, 280, 1450], target: [925, 20, 2191] },
+  navypier: { position: [2700, 320, -500], target: [1074, 150, -874] },
   willis: { position: [-200, 380, 900], target: [-669, 260, 348] },
 }
 

@@ -1,12 +1,21 @@
 // app/src/lib/cameraMath.js — pure camera limits + keyboard glide.
 export const MIN_ALT = 30
-export const MAX_DIST = 3000
+export const MAX_DIST = 6000
+// World rectangle for the camera target: the expanded city (Addison → 35th, Western → lake) minus a margin.
+export const WORLD_BOUNDS = { minX: -5375, maxX: 2526, minZ: -7572, maxZ: 6023 }
 
-export function clampCamera(position, target) {
+export function clampCamera(position, target, bounds) {
   let [tx, ty, tz] = target
   ty = Math.max(0, ty)
-  const tr = Math.hypot(tx, tz)
-  if (tr > MAX_DIST) { tx *= MAX_DIST / tr; tz *= MAX_DIST / tr }
+  let tr = 0, outside = false
+  if (bounds) {
+    const cx = Math.min(bounds.maxX, Math.max(bounds.minX, tx)), cz = Math.min(bounds.maxZ, Math.max(bounds.minZ, tz))
+    outside = cx !== tx || cz !== tz
+    tx = cx; tz = cz
+  } else {
+    tr = Math.hypot(tx, tz)
+    if (tr > MAX_DIST) { tx *= MAX_DIST / tr; tz *= MAX_DIST / tr }
+  }
   let [px, py, pz] = position
   // move the camera with the target if the target was pulled in
   px += tx - target[0]; pz += tz - target[2]
@@ -17,7 +26,7 @@ export function clampCamera(position, target) {
   const lifted = py < MIN_ALT
   py = Math.max(MIN_ALT, py)
   // `clamped` comes from the limit checks, not from comparing floats (round-trip noise).
-  const clamped = target[1] < 0 || tr > MAX_DIST || d > MAX_DIST || lifted
+  const clamped = target[1] < 0 || tr > MAX_DIST || outside || d > MAX_DIST || lifted
   return { position: [px, py, pz], target: [tx, ty, tz], clamped }
 }
 
