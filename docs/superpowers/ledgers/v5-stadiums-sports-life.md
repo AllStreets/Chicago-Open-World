@@ -15,6 +15,7 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Task 12: Ruling: found a pre-V5 bug — Burnham Park's ground polygon (polygon offset −1) overdrew Soldier Field's field at oblique angles (black at night, unpainted by day). Fixed in the pipeline: `cutZones` subtracts venue hulls from park polygons (6111 → 6107) — test trees 'cutZones' RED→GREEN — cost: none.
 - Task 13: Ruling: plan's fieldMarks draws a navy keyline behind the midfield C (true to the Bears logo) but its test counted all navy polys as end zones; test now filters end zones by extent — cost: none.
 - Task 14: Ruling: plan's crowd vertex shader used right = (−toCam.z, 0, toCam.x), which back-faces every billboard (nothing drew); corrected to (toCam.z, 0, −toCam.x) — cost: none.
+- Task 18: Ruling: the Michael Jordan statue is not modelled — it stands inside the United Center atrium since 2017, not on the plaza — cost: none.
 
 ## Evaluate and revert (one line per visual step: Keep | Revert — item — shots — reason)
 
@@ -30,6 +31,7 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Keep — D9 — wrigley-bowl, soldier-bowl ×2, soldier-top-soccer — batter at the plate at Wrigley; Bears navy vs visitors white at the line of scrimmage; figures on the grass. Tuned once: players take a floodlight emissive share at night (were unlit) — playersLight test RED→GREEN.
 - Keep — D13 — wrigley-board-win, soldier-bowl, rate-aerial-game — Wrigley's green board reads WRIGLEY FIELD / VIS 3 / CHC 5 / FINAL from the plate; Rate's video board lit at night; no z-fighting.
 - Keep — D11 — wrigley-board-win/-loss, wrigley-field-win — white flag with blue W over the board after a win, blue with white L after a loss; fans on the field and W flags waving in the stands on the win day.
+- Keep — D14 — uc-plaza, uc-aerial-game, wintrust-aerial-game night — standing fans in Bulls red ring the United Center under its lit fascia; a smaller crowd rings Wintrust.
 
 ## Perf (pose — calls — triangles — fps — quality — sports)
 
@@ -52,3 +54,4 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Task 15: complete (app 320/320)
 - Task 16: complete (app 325/325)
 - Task 17: complete (app 327/327)
+- Task 18: complete (app 328/328)
