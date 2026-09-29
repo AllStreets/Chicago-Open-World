@@ -16,8 +16,10 @@ import { useEffect, useState } from 'react'
 import { useStore } from '../state/store.js'
 import { hudScale, hudCompact } from '../lib/hudScale.js'
 import TransitLegend from './TransitLegend.jsx'
+import { useFeatureKeys } from './useFeatureKeys.js'
 
 export default function Hud() {
+  useFeatureKeys()
   const manifest = useStore((s) => s.manifest)
   const [size, setSize] = useState(() => [window.innerWidth, window.innerHeight])
   useEffect(() => {
