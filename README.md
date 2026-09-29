@@ -4,7 +4,7 @@
 
 **THE CITY, AT FULL SCALE**
 
-<img alt="phase" src="https://img.shields.io/badge/phase-vision_V3_transit-45d8ff?style=for-the-badge&labelColor=030509"/>
+<img alt="phase" src="https://img.shields.io/badge/phase-vision_V4_trains-45d8ff?style=for-the-badge&labelColor=030509"/>
 <img alt="buildings" src="https://img.shields.io/badge/real_buildings-105,971-ff3b53?style=for-the-badge&labelColor=030509"/>
 <img alt="landmarks" src="https://img.shields.io/badge/landmarks-41-45d8ff?style=for-the-badge&labelColor=030509"/>
 <img alt="skyline" src="https://img.shields.io/badge/top_50_skyline-verified-ff3b53?style=for-the-badge&labelColor=030509"/>
@@ -189,6 +189,21 @@ A progressive gallery, oldest first. Images are never replaced — each phase ad
 </tr>
 </table>
 
+### Vision pass · V4 trains — *the L and Metra running on time*
+
+<table>
+<tr>
+<td width="33%"><img src="docs/screenshots/v4-trains-loop-night.png" alt="V4 — riding a Brown Line train round the Loop at night" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/v4-trains-chase-dusk.png" alt="V4 — riding behind a Red Line train at dusk" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/v4-trains-metra-day.png" alt="V4 — a Metra MP36 leading a push-pull train of gallery cars" width="100%"/></td>
+</tr>
+<tr>
+<td><em>5000- and 7000-series cars on real headways — accelerating, braking, dwelling at stations, held to 30 mph round the Loop.</em></td>
+<td><em>Follow any train from ⌘K or its card; the camera stays above the roofs and lets go on any key.</em></td>
+<td><em>Metra gallery cars and an MP36 in push-pull; everything is simulated from the clock until the live CTA feed arrives.</em></td>
+</tr>
+</table>
+
 ### Next · Vision pass — *one lake, living transit, game nights*
 
 Planned in [the master plan](docs/superpowers/plans/2026-09-29-vision-master-plan.md): a single continuous lake and river, CTA lines in their true colours with a restrained neon glow and accurate trains running on them, stadiums with crowds and game nights (and the W flag when the Cubs win), detailed bridges and landmarks, and each tower in its real colours. Its images will be added here as each milestone lands.
@@ -224,6 +239,9 @@ Everything is reachable with the keyboard, the mouse and the on-screen dock — 
 | `H` · `N` · `O` | home · face north · slow orbit |
 | `1`–`5` | LIVE · DAWN · DAY · DUSK · NIGHT |
 | `T` · Transit button | CTA and Metra lines on/off; the legend switches single lines |
+| Click a train / station | its card — run, next stop, arrivals; "Follow this train" rides along (any key stops) |
+| `⌘K` "Follow a … train" · "Go to …" · "Show … Line" | transit from the search |
+| Sound button | train rumble, off until you turn it on |
 | `?` · `Esc` | help card · close / stop a flight |
 | Control dock & minimap | the same moves as buttons; click the minimap to fly |
 
@@ -254,7 +272,7 @@ npm run e2e --prefix app          # hero-view screenshot baselines (Playwright)
 - [x] **1 · Foundation** — real footprints and heights, land, river, lake, sky, Atlas camera, HUD shell
 - [x] **2 · Beauty pass** — generated façades, lit windows, living sky, rooftops, parks & trees, the L, post-processing, minimap, intro flight
 - [x] **2.5 · Expanded city** — Wrigleyville → 35th St, verified top-50 skyline, 41 landmarks, stadiums, sacred buildings, civic icons, horizon fill, streaming, human-first controls
-- [ ] **Vision pass** — ✅ V1 unified lake & river, camera clearance · ✅ V2 true building colours · ✅ V3 CTA lines · V4 trains · V5 stadium game nights · V6 bridges & landmarks · V7–V8 controls, perf, gallery
+- [ ] **Vision pass** — ✅ V1 unified lake & river, camera clearance · ✅ V2 true building colours · ✅ V3 CTA lines · ✅ V4 trains · V5 stadium game nights · V6 bridges & landmarks · V7–V8 controls, perf, gallery
 - [ ] **3 · Heroes** — Blender refinement of the procedural landmarks (Aqua's waves, Marina City's petals, …)
 - [ ] **4 · Guide** — VISIT / LIVE / WORK lenses: places (bars, restaurants, venues), neighbourhoods, jobs, tours
 - [ ] **5 · Alive** — live L trains and weather via the CHI ATLAS API, Scan mode
