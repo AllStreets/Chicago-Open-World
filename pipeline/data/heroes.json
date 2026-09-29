@@ -101,7 +101,7 @@
       "key": "aon",
       "name": "Aon Center",
       "look": {
-        "material": "white Mount Airy granite (1992\u201394 recladding of the Carrara marble), narrow vertical windows",
+        "material": "white Mount Airy granite (1992–94 recladding of the Carrara marble), narrow vertical windows",
         "finish": "granite",
         "base": "#e6e4de",
         "glass": "#3b4046",
@@ -843,7 +843,21 @@
       },
       "heightM": 30,
       "facade": "arena",
-      "crowns": [],
+      "crowns": [
+        {
+          "type": "stepdome",
+          "base": 30,
+          "steps": [
+            {
+              "inset": 7,
+              "rise": 2.5
+            }
+          ],
+          "domeRise": 6.5,
+          "step": 5,
+          "source": "Footprint 165 × 124 m and 8 levels from OSM way 205221993; stepped perimeter roof and low central dome (crown ≈ 39 m) estimated from aerial imagery — logged in the V5 ledger"
+        }
+      ],
       "wallStyle": "arena",
       "aliases": [
         "Bulls",
@@ -1200,7 +1214,19 @@
       "heightM": 25,
       "facade": "arena",
       "wallStyle": "glass-steel",
-      "crowns": [],
+      "crowns": [
+        {
+          "type": "vault",
+          "base": 25,
+          "rise": 5.5,
+          "axis": [
+            0,
+            -1
+          ],
+          "step": 4,
+          "source": "Footprint 95 × 127 m from OSM way 381265570; curved roof spanning east–west with its ridge north–south (crown ≈ 30.5 m) estimated from aerial imagery — logged in the V5 ledger"
+        }
+      ],
       "aliases": [
         "DePaul arena",
         "Sky"
@@ -1331,7 +1357,7 @@
       "key": "chicagotheatre",
       "name": "Chicago Theatre",
       "look": {
-        "material": "glazed off-white ('old ivory') terra cotta, triumphal-arch fa\u00e7ade",
+        "material": "glazed off-white ('old ivory') terra cotta, triumphal-arch façade",
         "finish": "terracotta",
         "base": "#e8dcc4",
         "glass": "#3a3f44",
@@ -1466,7 +1492,7 @@
       "key": "historicwatertower",
       "name": "Chicago Water Tower",
       "look": {
-        "material": "yellow Joliet\u2013Lemont limestone, castellated Gothic Revival",
+        "material": "yellow Joliet–Lemont limestone, castellated Gothic Revival",
         "finish": "limestone",
         "base": "#d8c38f",
         "glass": "#3a3f44",
@@ -1507,7 +1533,7 @@
         "mullion": "#151618",
         "spandrel": "#1f2124",
         "render": false,
-        "note": "the venue glass-steel wall already reads correctly; a pattern-unaware black recolour would darken the glass \u2014 refine in Phase 3",
+        "note": "the venue glass-steel wall already reads correctly; a pattern-unaware black recolour would darken the glass — refine in Phase 3",
         "source": [
           "https://docomomo-us.org/register/s-r-crown-hall",
           "https://en.wikipedia.org/wiki/S._R._Crown_Hall"

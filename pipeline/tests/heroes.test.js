@@ -45,6 +45,22 @@ describe('heroes', () => {
     expect(pieces[0]).toMatchObject({ base: 0, top: 28 })
     expect(pieces[0].holes).toHaveLength(1)
   })
+  it('vault and stepdome crowns default to the footprint ring', () => {
+    const { extraMeshes } = applyHero(bldg(), { crowns: [{ type: 'vault', base: 100, rise: 5, axis: [0, -1] }] })
+    const y = extraMeshes[0].positions.filter((_, i) => i % 3 === 1)
+    expect(Math.max(...y)).toBeCloseTo(105, 5)
+    expect(Math.min(...y)).toBeCloseTo(100, 5)
+    const s = applyHero(bldg(), { crowns: [{ type: 'stepdome', base: 100, steps: [{ inset: 2, rise: 1 }], domeRise: 3 }] })
+    expect(Math.max(...s.extraMeshes[0].positions.filter((_, i) => i % 3 === 1))).toBeGreaterThan(103.8)
+  })
+  it('the arena heroes carry sourced vault / stepdome roofs', async () => {
+    const { readFileSync } = await import('node:fs')
+    const H = JSON.parse(readFileSync(new URL('../data/heroes.json', import.meta.url), 'utf8')).heroes
+    const uc = H.find((h) => h.key === 'unitedcenter'), wt = H.find((h) => h.key === 'wintrust')
+    expect(uc.crowns[0]).toMatchObject({ type: 'stepdome', base: 30 })
+    expect(wt.crowns[0]).toMatchObject({ type: 'vault', base: 25 })
+    for (const c of [uc.crowns[0], wt.crowns[0]]) expect(c.source).toMatch(/\w/)
+  })
 })
 
 import { parseOsmRef, matchesOsm, findByOsm } from '../lib/heroes.js'

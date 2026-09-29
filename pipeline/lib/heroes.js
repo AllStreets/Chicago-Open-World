@@ -1,6 +1,6 @@
 // pipeline/lib/heroes.js — hand-shaped landmark specs (data/heroes.json) → extrusion pieces + crown meshes.
 import { shapePieces } from './shapes.js'
-import { spire, antenna, pyramid, drum, sloped } from './crowns.js'
+import { spire, antenna, pyramid, drum, sloped, vault, stepdome } from './crowns.js'
 import { signedArea } from './geom.js'
 import { insetRing } from './roofs.js'
 import { buildVenue, convexHull, STYLE } from './venue.js'
@@ -12,7 +12,7 @@ const TINT_G = { dark: 0.14, green: 0.39, silver: 0.64, blue: 0.89 }
 export const seedForTint = (tint) => TINT_G[tint] / 3.7
 
 const scaleRing = (ring, [cx, cz], s, [ox, oz] = [0, 0]) => ring.map(([x, z]) => [cx + (x - cx) * s + ox, cz + (z - cz) * s + oz])
-const CROWNS = { spire, antenna, pyramid, drum, sloped }
+const CROWNS = { spire, antenna, pyramid, drum, sloped, vault, stepdome }
 const bearing = (deg) => [Math.sin((deg * Math.PI) / 180), -Math.cos((deg * Math.PI) / 180)]
 const local = (p) => (p && p.lat != null ? project(p.lon, p.lat) : p)
 
@@ -60,7 +60,7 @@ export function applyHero(b, spec) {
   const extraMeshes = (spec.crowns || []).map((c) => {
     const at = [cx + (c.at?.[0] ?? 0), cz + (c.at?.[1] ?? 0)]
     const ring = c.scale ? scaleRing(main.outer, [cx, cz], c.scale, c.offset) : undefined
-    return CROWNS[c.type]({ ...c, at, ring: c.ring ?? ring })
+    return CROWNS[c.type]({ ...c, at, ring: c.ring ?? ring ?? main.outer })
   })
 
   if (spec.facade) b.facadeOverride = spec.facade
