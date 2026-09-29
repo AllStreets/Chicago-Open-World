@@ -12,6 +12,7 @@ import { toPoolGeometry } from './pools.js'
 import { getSim, publishTrains } from './simStore.js'
 import { MODELS, LOD_M, SHADOW_CASTERS, layoutCars } from './layout.js'
 import { createTrainMaterial, createLightsMaterial } from './trainMaterial.js'
+import { refreshPickBounds } from './pick.js'
 
 const CAP = { cta5000: 800, cta7000: 400, metraCoach: 300, metraLoco: 60, impostor: 1600, lights: 200, hits: 1600 }
 const ATTRS = ['position', 'normal', 'color', '_kind']
@@ -44,6 +45,7 @@ export default function Trains({ file, version }) {
     const hitMat = new THREE.MeshBasicMaterial()
     hitMat.visible = false // raycast target only: never drawn
     out.hits = instanced(new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0), hitMat, CAP.hits)
+    out.hits.userData.trainHits = true // station boxes defer to trains (StationHits)
     return out
   }, [scene])
   useEffect(() => {
@@ -70,6 +72,7 @@ export default function Trains({ file, version }) {
       if (a.aLine) { a.aLine.needsUpdate = true; a.aLead.needsUpdate = true }
     }
     hits.current = L.hits
+    refreshPickBounds(meshes.hits)
     const lights = L.lights.slice(0, CAP.lights), la = meshes.lights.geometry.attributes
     lights.forEach((l, i) => {
       meshes.lights.setMatrixAt(i, m4.compose(p.set(l.pos[0], l.pos[1], l.pos[2]), q.setFromEuler(eu.set(0, l.yaw, 0)), sc.set(l.size, l.size, l.size)))

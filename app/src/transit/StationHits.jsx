@@ -5,6 +5,9 @@ import { useStore } from '../state/store.js'
 
 const UP = new THREE.Vector3(0, 1, 0)
 
+// A station box encloses any train at its platform: when the ray also hits a train, the train's card wins.
+export const stationClickWins = (intersections) => !intersections.some((i) => i.object?.userData?.trainHits)
+
 export default function StationHits() {
   const stations = useStore((s) => s.transit?.stations)
   const mesh = useMemo(() => {
@@ -23,7 +26,7 @@ export default function StationHits() {
   }, [stations])
   if (!stations?.length) return null
   const onClick = (e) => {
-    if (e.delta > 4) return
+    if (e.delta > 4 || !stationClickWins(e.intersections ?? [])) return
     e.stopPropagation()
     const st = stations[e.instanceId]
     if (st) useStore.getState().select({ type: 'station', id: st.id })

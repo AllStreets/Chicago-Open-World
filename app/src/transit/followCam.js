@@ -39,12 +39,19 @@ export function followPose(head, dir, view = 'chase', clearance = clearanceAt, l
   return { position: c.position, target: t }
 }
 
-export function followStep(follow, trains, clearance = clearanceAt) {
-  const t = trains.find((x) => x.id === follow.trainId)
+// `lookup` resolves a train missing from the last published frame (it may not have been drawn yet) before giving up.
+export function followStep(follow, trains, clearance = clearanceAt, lookup = null) {
+  const t = trains.find((x) => x.id === follow.trainId) ?? lookup?.(follow.trainId) ?? null
   if (!t) return { ended: 'left' }
   const len = (t.cars ?? []).reduce((a, c) => a + (c?.length ?? 0), 0)
   return { pose: followPose(t.head.p, t.head.dir, follow.view, clearance, len), train: t }
 }
 
 const MODIFIERS = new Set(['Shift', 'Meta', 'Control', 'Alt', 'CapsLock'])
-export const shouldExitFollow = (e) => !MODIFIERS.has(e.key)
+// Tab, and Enter/Space on a focused button, are someone using the HUD by keyboard — not taking the camera back.
+const HUD_KEYS = new Set(['Enter', ' ', 'Spacebar'])
+export const shouldExitFollow = (e) => {
+  if (MODIFIERS.has(e.key) || e.key === 'Tab') return false
+  const tag = e.target?.tagName
+  return !(HUD_KEYS.has(e.key) && (tag === 'BUTTON' || tag === 'A' || e.target?.getAttribute?.('role') === 'button'))
+}

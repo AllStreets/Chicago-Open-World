@@ -14,7 +14,7 @@ import { clearanceAt } from '../lib/clearance.js'
 import { createRestTracker } from '../lib/rest.js'
 import { VIEW_ORDER, VIEW_NAMES } from '../lib/views.js'
 import { followStep, shouldExitFollow } from '../transit/followCam.js'
-import { getTrains } from '../transit/simStore.js'
+import { getTrains, getSim } from '../transit/simStore.js'
 
 const GLIDE_MPS = 140
 const BOOST = 3
@@ -168,8 +168,9 @@ export default function AtlasRig() {
     }
     const fw = useStore.getState().follow
     if (fw) {
-      const r = followStep(fw, getTrains())
-      if (r.ended) useStore.getState().stopFollow(r.ended)
+      const st = useStore.getState()
+      const r = st.transitOn ? followStep(fw, getTrains(), undefined, (id) => getSim()?.trainById(id, Date.now())) : { ended: null }
+      if (r.ended !== undefined) st.stopFollow(r.ended) // transit switched off: stop quietly
       else { c.setLookAt(...r.pose.position, ...r.pose.target, true); publishReadout(c, now); window.__camRest = false; return } // smoothed by camera-controls
     }
     const f = flightRun.current
