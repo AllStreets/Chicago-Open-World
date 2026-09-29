@@ -87,3 +87,15 @@ export function ringCentroid(ring) {
   }
   return [cx / (3 * a), cz / (3 * a)]
 }
+
+// Distance from p to the nearest edge of ring (inside or outside).
+export function distToRing(p, ring) {
+  let best = Infinity
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], b = ring[(i + 1) % ring.length]
+    const ex = b[0] - a[0], ez = b[1] - a[1], l2 = ex * ex + ez * ez || 1
+    const t = Math.max(0, Math.min(1, ((p[0] - a[0]) * ex + (p[1] - a[1]) * ez) / l2))
+    best = Math.min(best, Math.hypot(p[0] - (a[0] + ex * t), p[1] - (a[1] + ez * t)))
+  }
+  return best
+}

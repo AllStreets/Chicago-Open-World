@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { signedArea, ensureCCW, ensureCW, simplifyRing, pointInRing, ringBBox, ringCentroid, openRing } from '../lib/geom.js'
+import { signedArea, ensureCCW, ensureCW, simplifyRing, pointInRing, ringBBox, ringCentroid, openRing, distToRing } from '../lib/geom.js'
 
 // A 10x10 square, CCW on the map: east then north (north = -z)
 const sqCCW = [[0, 0], [10, 0], [10, -10], [0, -10]]
@@ -32,5 +32,14 @@ describe('geom', () => {
     expect(ringBBox(sqCCW)).toEqual({ minX: 0, minZ: -10, maxX: 10, maxZ: 0 })
     const [cx, cz] = ringCentroid(sqCCW)
     expect(cx).toBeCloseTo(5); expect(cz).toBeCloseTo(-5)
+  })
+})
+
+describe('distToRing', () => {
+  const sq = [[0, 0], [10, 0], [10, -10], [0, -10]]
+  it('is the distance to the nearest edge, inside or out', () => {
+    expect(distToRing([5, -5], sq)).toBeCloseTo(5)
+    expect(distToRing([1, -5], sq)).toBeCloseTo(1)
+    expect(distToRing([13, 4], sq)).toBeCloseTo(5)
   })
 })
