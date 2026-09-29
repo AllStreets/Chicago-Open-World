@@ -1,0 +1,82 @@
+[
+  {
+    "family": "loop-limestone",
+    "index": 0,
+    "albedo": "facades/loop-limestone.jpg",
+    "win": "facades/loop-limestone-win.png",
+    "tileW": 14.27,
+    "tileH": 15.2,
+    "bays": 4,
+    "floors": 4
+  },
+  {
+    "family": "art-deco",
+    "index": 1,
+    "albedo": "facades/art-deco.jpg",
+    "win": "facades/art-deco-win.png",
+    "tileW": 15.74,
+    "tileH": 15.2,
+    "bays": 3,
+    "floors": 4
+  },
+  {
+    "family": "prewar-brick",
+    "index": 2,
+    "albedo": "facades/prewar-brick.jpg",
+    "win": "facades/prewar-brick-win.png",
+    "tileW": 11.4,
+    "tileH": 11.4,
+    "bays": 3,
+    "floors": 3
+  },
+  {
+    "family": "curtain-glass",
+    "index": 3,
+    "albedo": "facades/curtain-glass.jpg",
+    "win": "facades/curtain-glass-win.png",
+    "tileW": 39.71,
+    "tileH": 22.8,
+    "bays": 16,
+    "floors": 6
+  },
+  {
+    "family": "precast-concrete",
+    "index": 4,
+    "albedo": "facades/precast-concrete.jpg",
+    "win": "facades/precast-concrete-win.png",
+    "tileW": 19.12,
+    "tileH": 15.2,
+    "bays": 5,
+    "floors": 4
+  },
+  {
+    "family": "river-north-loft",
+    "index": 5,
+    "albedo": "facades/river-north-loft.jpg",
+    "win": "facades/river-north-loft-win.png",
+    "tileW": 11.35,
+    "tileH": 11.4,
+    "bays": 3,
+    "floors": 3
+  },
+  {
+    "family": "three-flat-brick",
+    "index": 6,
+    "albedo": "facades/three-flat-brick.jpg",
+    "win": "facades/three-flat-brick-win.png",
+    "tileW": 5.21,
+    "tileH": 7.2,
+    "bays": 2,
+    "floors": 2
+  },
+  {
+    "family": "industrial",
+    "index": 7,
+    "albedo": "facades/industrial.jpg",
+    "win": "facades/industrial-win.png",
+    "tileW": 7.71,
+    "tileH": 5.5,
+    "bays": 2,
+    "floors": 1
+  }
+]

@@ -1,0 +1,148 @@
+{
+  "facades": {
+    "loop-limestone": {
+      "raw": "loop-limestone.webp",
+      "crop": [
+        192,
+        172,
+        646,
+        688
+      ],
+      "bays": 4,
+      "floors": 4,
+      "lo": 70,
+      "hi": 125,
+      "allGlass": false
+    },
+    "art-deco": {
+      "raw": "art-deco.webp",
+      "crop": [
+        282,
+        300,
+        729,
+        704
+      ],
+      "bays": 3,
+      "floors": 4,
+      "lo": 70,
+      "hi": 125,
+      "allGlass": false
+    },
+    "prewar-brick": {
+      "raw": "prewar-brick.webp",
+      "crop": [
+        280,
+        70,
+        702,
+        702
+      ],
+      "bays": 3,
+      "floors": 3,
+      "lo": 4,
+      "hi": 20,
+      "allGlass": false,
+      "mask": "chroma"
+    },
+    "curtain-glass": {
+      "raw": "curtain-glass.webp",
+      "crop": [
+        0,
+        20,
+        1024,
+        588
+      ],
+      "bays": 16,
+      "floors": 6,
+      "lo": 0,
+      "hi": 1,
+      "allGlass": true
+    },
+    "precast-concrete": {
+      "raw": "precast-concrete.webp",
+      "crop": [
+        192,
+        208,
+        815,
+        648
+      ],
+      "bays": 5,
+      "floors": 4,
+      "lo": 70,
+      "hi": 115,
+      "allGlass": false
+    },
+    "river-north-loft": {
+      "raw": "river-north-loft.webp",
+      "crop": [
+        280,
+        300,
+        684,
+        687
+      ],
+      "bays": 3,
+      "floors": 3,
+      "lo": 4,
+      "hi": 22,
+      "allGlass": false,
+      "mask": "chroma"
+    },
+    "three-flat-brick": {
+      "raw": "three-flat-brick.webp",
+      "crop": [
+        372,
+        130,
+        608,
+        840
+      ],
+      "bays": 2,
+      "floors": 2,
+      "lo": 8,
+      "hi": 28,
+      "allGlass": false,
+      "floorM": 3.6,
+      "mask": "chroma"
+    },
+    "industrial": {
+      "raw": "industrial.webp",
+      "crop": [
+        352,
+        88,
+        652,
+        465
+      ],
+      "bays": 2,
+      "floors": 1,
+      "lo": 2,
+      "hi": 14,
+      "allGlass": false,
+      "floorM": 5.5,
+      "mask": "chroma"
+    }
+  },
+  "ground": {
+    "grass": {
+      "procedural": "grass",
+      "sizeM": 16
+    },
+    "asphalt": {
+      "procedural": "asphalt",
+      "sizeM": 12
+    },
+    "sidewalk": {
+      "procedural": "sidewalk",
+      "sizeM": 6
+    },
+    "concrete": {
+      "procedural": "concrete",
+      "sizeM": 20
+    },
+    "gravel": {
+      "procedural": "gravel",
+      "sizeM": 12
+    },
+    "sand": {
+      "procedural": "sand",
+      "sizeM": 10
+    }
+  }
+}

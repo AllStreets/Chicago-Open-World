@@ -1,0 +1,26 @@
+{
+  "grass": {
+    "file": "ground/grass.jpg",
+    "sizeM": 16
+  },
+  "asphalt": {
+    "file": "ground/asphalt.jpg",
+    "sizeM": 12
+  },
+  "sidewalk": {
+    "file": "ground/sidewalk.jpg",
+    "sizeM": 6
+  },
+  "concrete": {
+    "file": "ground/concrete.jpg",
+    "sizeM": 20
+  },
+  "gravel": {
+    "file": "ground/gravel.jpg",
+    "sizeM": 12
+  },
+  "sand": {
+    "file": "ground/sand.jpg",
+    "sizeM": 10
+  }
+}
