@@ -3,7 +3,7 @@ import { shapePieces } from './shapes.js'
 import { spire, antenna, pyramid, drum, sloped, vault, stepdome } from './crowns.js'
 import { signedArea } from './geom.js'
 import { insetRing } from './roofs.js'
-import { buildVenue, convexHull, STYLE } from './venue.js'
+import { buildVenue, convexHull, STYLE, VENUE_FACADES } from './venue.js'
 import { buildLandmark } from './landmarks.js'
 import { project } from '../../shared/project.js'
 
@@ -60,7 +60,10 @@ export function applyHero(b, spec) {
   const extraMeshes = (spec.crowns || []).map((c) => {
     const at = [cx + (c.at?.[0] ?? 0), cz + (c.at?.[1] ?? 0)]
     const ring = c.scale ? scaleRing(main.outer, [cx, cz], c.scale, c.offset) : undefined
-    return CROWNS[c.type]({ ...c, at, ring: c.ring ?? ring ?? main.outer })
+    const m = CROWNS[c.type]({ ...c, at, ring: c.ring ?? ring ?? main.outer })
+    // a crown with its own surface (an arena's membrane roof) is not drawn in the wall's façade
+    if (c.surface) { m.facade = VENUE_FACADES[c.surface.facade]; m.seed = STYLE[c.surface.facade][c.surface.style] }
+    return m
   })
 
   if (spec.facade) b.facadeOverride = spec.facade

@@ -12,12 +12,17 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Task 8: Ruling: schedules fetched after the Task 7 build, so manifest.schedules was set to 'schedules.json' by hand — exactly what the next build writes (the file now exists) — cost: none.
 - Task 11: Ruling: plan test expected level 0.2 after setVenueLights(level 0.5) — stale from the idle-light 0.2→0.5 override; test expects 0.5 — cost: none.
 - Task 11: Ruling: cache key 'facade-v9' (V2 already used v8, so v8 would not invalidate compiled programs); plan's GLSL comment used backticks inside the JS template literal — replaced with quotes — cost: none.
+- Task 12: Ruling: found a pre-V5 bug — Burnham Park's ground polygon (polygon offset −1) overdrew Soldier Field's field at oblique angles (black at night, unpainted by day). Fixed in the pipeline: `cutZones` subtracts venue hulls from park polygons (6111 → 6107) — test trees 'cutZones' RED→GREEN — cost: none.
 
 ## Evaluate and revert (one line per visual step: Keep | Revert — item — shots — reason)
 
 - Keep — D4 — soldier-aerial ×3 — west rim lamp row blazes at night (east row faces away from this camera, as it should); invisible by day.
 - Keep — D5 — rate-aerial ×3 — 20 m towers + roof rows read as a lit ballpark at night; slim navy banks by day. rate-from-loop 'distinct lit bowl' re-checked after Task 12 (needs venue light level).
 - Tune — D2 — uc-aerial, wintrust-aerial day — shapes right (stepped dome, E–W vault) but crowns drew in the wall façade (UC brown brick streaks); added crown `surface` (white steel) — re-shoot after rebuild.
+- Keep — D2 — uc-aerial, wintrust-aerial ×3 — after tuning: crown `surface` (UC light-grey steel, Wintrust white), gridded curved tops with analytic normals (earcut had ignored the Steiner points → 164 m slivers that shaded in streaks), smooth elliptic dome (distance dome creased like a hip roof). UC reads as a grey domed roof on the brick drum; Wintrust as a white vault.
+- Keep — D4/D6 — soldier-aerial vs -game night — field glows (dim idle 0.5, full on game nights), west rim row blazes.
+- Keep — D5 — rate-from-loop night — Rate Field is now a visible floodlight cluster on the south horizon (was a single dot).
+- Keep — D14 — uc-aerial / wintrust-aerial -game night — UC fascia glows warm (brighter on game nights); Wintrust concourse glass bands light on game nights. Not garish; no coefficient change.
 
 ## Perf (pose — calls — triangles — fps — quality — sports)
 
@@ -34,3 +39,4 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Task 8: complete (teams+schedules 10/10; ESPN 17/17 ok, 594 games, 296 at our venues)
 - Task 11: complete (materials 39/39)
 - Task 12: code complete (app 291/291); evaluation after rebuild
+- Task 12: complete — evaluated D2/D4/D5/D6/D14 keep (app 291/291, pipeline 356/356)

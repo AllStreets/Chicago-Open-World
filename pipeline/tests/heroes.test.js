@@ -61,6 +61,11 @@ describe('heroes', () => {
     expect(wt.crowns[0]).toMatchObject({ type: 'vault', base: 25 })
     for (const c of [uc.crowns[0], wt.crowns[0]]) expect(c.source).toMatch(/\w/)
   })
+  it('a crown can carry its own surface (arena roofs are membranes, not the brick wall)', () => {
+    const { extraMeshes } = applyHero(bldg(), { crowns: [{ type: 'vault', base: 100, rise: 5, axis: [0, -1], surface: { facade: 'steel', style: 'white' } }] })
+    expect(extraMeshes[0]).toMatchObject({ facade: 13, seed: 0.6 })
+    expect(applyHero(bldg(), { crowns: [{ type: 'vault', base: 100, rise: 5 }] }).extraMeshes[0].facade).toBeUndefined()
+  })
 })
 
 import { parseOsmRef, matchesOsm, findByOsm } from '../lib/heroes.js'

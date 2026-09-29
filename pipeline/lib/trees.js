@@ -1,8 +1,9 @@
 // pipeline/lib/trees.js — where a tree may stand: never inside a footprint (courtyards are open ground),
 // never inside a venue, never in a landmark's clearing. Decisions are made on the rounded coordinates the
 // sidecars store, so the check and the file can never disagree.
-import { pointInRing } from './geom.js'
+import { pointInRing, ringBBox } from './geom.js'
 import { convexHull } from './venue.js'
+import polygonClipping from 'polygon-clipping'
 
 // Arenas and plazas without a field mesh that must still stay clear.
 export const TREE_FREE_HEROES = new Set(['unitedcenter', 'wintrust', 'buckingham'])
@@ -46,3 +47,19 @@ export function assertNoVenueTrees(tileTrees, zones) {
 // because the venue builder paints the real field.
 export const outsideZones = (polys, zones) =>
   polys.filter((p) => !zones.some((z) => pointInRing([(p.bbox.minX + p.bbox.maxX) / 2, (p.bbox.minZ + p.bbox.maxZ) / 2], z)))
+
+// Ground polygons (parks) with the venue hulls cut out: the ground's polygon offset would otherwise draw the park
+// over a stadium field at oblique angles (V5: Soldier Field sits inside Burnham Park).
+export function cutZones(polys, zones) {
+  const out = []
+  for (const p of polys) {
+    const pb = p.bbox ?? ringBBox(p.outer)
+    const hit = zones.filter((z) => { const b = ringBBox(z); return b.maxX > pb.minX && b.minX < pb.maxX && b.maxZ > pb.minZ && b.minZ < pb.maxZ })
+    if (!hit.length) { out.push(p); continue }
+    for (const [outer, ...holes] of polygonClipping.difference([p.outer, ...p.holes], ...hit.map((z) => [z]))) {
+      const o = outer.slice(0, -1), h = holes.map((r) => r.slice(0, -1))
+      out.push({ ...p, outer: o, holes: h, bbox: ringBBox(o) })
+    }
+  }
+  return out
+}

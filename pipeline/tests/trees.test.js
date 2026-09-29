@@ -47,3 +47,20 @@ describe('mapped pitches inside venues (the venue paints its own field)', () => 
     expect(outsideZones([inVenue, park], [zone])).toEqual([park])
   })
 })
+
+describe('cutZones (V5: parks never under a venue field)', () => {
+  it('subtracts venue hulls from ground polygons, keeping the rest of the park and its tags', async () => {
+    const { cutZones } = await import('../lib/trees.js')
+    const park = { outer: [[0, 0], [100, 0], [100, -100], [0, -100]], holes: [], tags: { leisure: 'park' } }
+    const zone = [[40, -40], [60, -40], [60, -60], [40, -60]]
+    const out = cutZones([park], [zone])
+    expect(out).toHaveLength(1)
+    expect(out[0].tags).toEqual({ leisure: 'park' })
+    expect(out[0].holes).toHaveLength(1)
+    const area = (r) => Math.abs(r.reduce((s, [x, z], i) => { const [x2, z2] = r[(i + 1) % r.length]; return s + x * z2 - x2 * z }, 0) / 2)
+    expect(area(out[0].outer) - area(out[0].holes[0])).toBeCloseTo(10000 - 400, 3)
+    expect(out[0].bbox).toMatchObject({ minX: 0, maxX: 100 })
+    const far = { ...park, outer: [[500, 0], [600, 0], [600, -100], [500, -100]] }
+    expect(cutZones([far], [zone])[0]).toBe(far) // untouched polygons pass through as-is
+  })
+})

@@ -20,7 +20,7 @@ import { VENUE_FACADES, STYLE, convexHull } from '../lib/venue.js'
 import { venueRecord, encodeAnchors, plazaAnchors } from '../lib/sportsSites.js'
 import { shapeSacred } from '../lib/sacred.js'
 import { horizonBoxes } from '../lib/horizon.js'
-import { venueZones, filterTrees, assertNoVenueTrees, outsideZones } from '../lib/trees.js'
+import { venueZones, filterTrees, assertNoVenueTrees, outsideZones, cutZones } from '../lib/trees.js'
 import { createBlock, addTileToBlock, blockLayers, blockSidecar } from '../lib/blocks.js'
 import { bAcc, appendBuilding, appendLayer, asLayer } from '../lib/layers.js'
 import { createStyleRegistry, assignHeroStyles, meshStyle, writeStylePalettePng } from '../lib/styles.js'
@@ -181,6 +181,11 @@ async function main() {
   log(`pitches inside venues dropped: ${pitches.length - pitchesKept.length}`)
   pitches.length = 0
   for (const p of pitchesKept) pitches.push(p)
+  // parks never run under a venue: the ground's polygon offset would draw the grass over the field at oblique angles
+  const parksCut = cutZones(parks, zones.map((z) => z.ring))
+  log(`parks cut around venues: ${parks.length} → ${parksCut.length} polygons`)
+  parks.length = 0
+  for (const p of parksCut) parks.push(p)
   const footIdx = buildGridIndex(buildings.filter((b) => b.area > 30), 200, (b) => b.centroid)
   const clearings = buildings.flatMap((b) => b.clearPolys ?? [])
   const { kept: keptTrees, removed } = filterTrees(treeNodes, { zones: zones.map((z) => z.ring), clearings, nearBuildings: (p) => footIdx.query(p, 400) })
@@ -314,10 +319,11 @@ async function main() {
       const st = meshStyle(b)
       for (const pc of b.pieces) appendBuilding(L0, extrudeBuilding(pc), family, seed, i, st)
       for (const pc of parapets) appendBuilding(L0, extrudeBuilding(pc), PARAPET_FACADE, seed, i, st)
-      for (const m of b.extraMeshes || []) appendBuilding(L0, m, family, seed, i, st)
+      const crownStyle = (m) => (m.facade != null ? meshStyle(b, 'crown') : st) // own-surface crowns skip the wall recolour
+      for (const m of b.extraMeshes || []) appendBuilding(L0, m, m.facade ?? family, m.seed ?? seed, i, crownStyle(m))
       for (const v of b.venueMeshes || []) { appendBuilding(L0, v.mesh, v.facade, v.seed, i, meshStyle(b, v.part)); appendBuilding(L1, v.mesh, v.facade, v.seed, i, meshStyle(b, v.part)) }
       // LOD1: heroes and part-buildings keep their shape (they are the skyline); plain footprints simplify
-      if (keepsShapeAtDistance(b)) { for (const pc of b.pieces) appendBuilding(L1, extrudeBuilding(pc), family, seed, i, st); for (const m of b.extraMeshes || []) appendBuilding(L1, m, family, seed, i, st) }
+      if (keepsShapeAtDistance(b)) { for (const pc of b.pieces) appendBuilding(L1, extrudeBuilding(pc), family, seed, i, st); for (const m of b.extraMeshes || []) appendBuilding(L1, m, m.facade ?? family, m.seed ?? seed, i, crownStyle(m)) }
       else if (b.area >= 80) for (const pc of lod1Pieces(b)) appendBuilding(L1, extrudeBuilding(pc), family, seed, i, st)
       if (top > 15) for (const pr of roofProps(b, b.pieces)) t.props.push(pr)
       meta.push({ id: b.id, name: b.name, address: b.address, stories: b.stories, year: b.year, height: Math.round(top * 10) / 10, hero: b.hero ?? null })

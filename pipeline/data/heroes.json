@@ -855,7 +855,12 @@
           ],
           "domeRise": 6.5,
           "step": 5,
-          "source": "Footprint 165 × 124 m and 8 levels from OSM way 205221993; stepped perimeter roof and low central dome (crown ≈ 39 m) estimated from aerial imagery — logged in the V5 ledger"
+          "source": "Footprint 165 × 124 m and 8 levels from OSM way 205221993; stepped perimeter roof and low central dome (crown ≈ 39 m) estimated from aerial imagery — logged in the V5 ledger",
+          "surface": {
+            "facade": "steel",
+            "style": "gray"
+          },
+          "surfaceSource": "Aerial imagery: UC roof is a light grey-white membrane; Wintrust a silver standing-seam metal roof (look.material)"
         }
       ],
       "wallStyle": "arena",
@@ -1300,7 +1305,12 @@
             -1
           ],
           "step": 4,
-          "source": "Footprint 95 × 127 m from OSM way 381265570; curved roof spanning east–west with its ridge north–south (crown ≈ 30.5 m) estimated from aerial imagery — logged in the V5 ledger"
+          "source": "Footprint 95 × 127 m from OSM way 381265570; curved roof spanning east–west with its ridge north–south (crown ≈ 30.5 m) estimated from aerial imagery — logged in the V5 ledger",
+          "surface": {
+            "facade": "steel",
+            "style": "white"
+          },
+          "surfaceSource": "Aerial imagery: UC roof is a light grey-white membrane; Wintrust a silver standing-seam metal roof (look.material)"
         }
       ],
       "aliases": [

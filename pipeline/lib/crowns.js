@@ -1,6 +1,7 @@
 // pipeline/lib/crowns.js — landmark crown primitives (spires, antennas, pyramids, drums, sloped "diamond" tops).
 // Each returns a raw non-indexed mesh { positions, normals, uvs } in world metres.
 import earcut from 'earcut'
+import polygonClipping from 'polygon-clipping'
 import { ringCentroid, ringBBox, pointInRing, distToRing } from './geom.js'
 import { insetRing } from './roofs.js'
 
@@ -83,24 +84,38 @@ function densify(ring, step) {
   }
   return out
 }
-// Interior grid aligned on the centroid, so a ridge or dome crown through the centroid gets vertices.
-function interior(ring, step) {
-  const bb = ringBBox(ring), [cx, cz] = ringCentroid(ring), pts = []
-  const x0 = cx - Math.floor((cx - bb.minX) / step) * step, z0 = cz - Math.floor((cz - bb.minZ) / step) * step
-  for (let x = x0; x < bb.maxX; x += step)
-    for (let z = z0; z < bb.maxZ; z += step)
-      if (pointInRing([x, z], ring) && distToRing([x, z], ring) > step * 0.35) pts.push([x, z])
-  return pts
-}
-// Curved top over `ring`, lifted by h(p): the edge densified every `step` m plus interior Steiner points
-// (earcut treats a one-vertex hole as a Steiner point). Returns the densified edge.
+// Curved top over `ring`, lifted by h(p): a grid of `step`-metre cells aligned on the centroid, each clipped to the
+// ring and triangulated locally, so no triangle is longer than a cell (long slivers shade in streaks). Returns the
+// ring's edge densified every `step` m (for the skirt walls).
 function liftedTop(out, ring, h, step) {
-  const edge = densify(ring, step), flat = edge.flat(), holes = []
-  for (const p of interior(ring, step)) { holes.push(flat.length / 2); flat.push(p[0], p[1]) }
-  const t = earcut(flat, holes.length ? holes : undefined, 2)
-  const [cx, cz] = ringCentroid(ring)
-  const P = (k) => [flat[k * 2], h([flat[k * 2], flat[k * 2 + 1]]), flat[k * 2 + 1]]
-  for (let i = 0; i < t.length; i += 3) tri(out, P(t[i]), P(t[i + 1]), P(t[i + 2]), [cx, -1e5, cz], (q) => [q[0], q[2]])
+  const edge = densify(ring, step), bb = ringBBox(ring), [cx, cz] = ringCentroid(ring)
+  const closed = [[...ring, ring[0]]]
+  const x0 = cx - Math.ceil((cx - bb.minX) / step) * step, z0 = cz - Math.ceil((cz - bb.minZ) / step) * step
+  const from = out.positions.length
+  for (let x = x0; x < bb.maxX; x += step) {
+    for (let z = z0; z < bb.maxZ; z += step) {
+      const cell = [[[x, z], [x + step, z], [x + step, z + step], [x, z + step], [x, z]]]
+      for (const poly of polygonClipping.intersection(cell, closed)) {
+        const flat = [], holes = []
+        poly.forEach((r, k) => { if (k) holes.push(flat.length / 2); for (const q of r.slice(0, -1)) flat.push(q[0], q[1]) })
+        const t = earcut(flat, holes.length ? holes : undefined, 2)
+        const P = (k) => [flat[k * 2], h([flat[k * 2], flat[k * 2 + 1]]), flat[k * 2 + 1]]
+        for (let i = 0; i < t.length; i += 3) tri(out, P(t[i]), P(t[i + 1]), P(t[i + 2]), [cx, -1e5, cz], (q) => [q[0], q[2]])
+      }
+    }
+  }
+  // smooth shading: each vertex takes the surface normal of h (central differences), so the grid doesn't facet
+  // (one-sided at the edge, where a central difference would straddle the eave and halve the slope)
+  const e = 0.05, inside = (q) => pointInRing(q, ring) && distToRing(q, ring) > 1e-6
+  const d = (p, v) => {
+    const a = [p[0] + v[0], p[1] + v[1]], b = [p[0] - v[0], p[1] - v[1]], ia = inside(a), ib = inside(b)
+    return ia === ib ? (h(a) - h(b)) / (2 * e) : ia ? (h(a) - h(p)) / e : (h(p) - h(b)) / e
+  }
+  for (let i = from; i < out.positions.length; i += 3) {
+    const p0 = [out.positions[i], out.positions[i + 2]], p = [p0[0] + (cx - p0[0]) * 1e-3, p0[1] + (cz - p0[1]) * 1e-3] // off the edge lines
+    const nx = -d(p, [e, 0]), nz = -d(p, [0, e]), l = Math.hypot(nx, 1, nz)
+    out.normals[i] = nx / l; out.normals[i + 1] = 1 / l; out.normals[i + 2] = nz / l
+  }
   return edge
 }
 // Walls from `base` up to h(p) around a densified edge (skipped where the roof meets the eave).
@@ -135,7 +150,7 @@ export function vault({ ring, base, rise, axis = [0, -1], step = 4 }) {
   return out
 }
 
-// Stepped dome (United Center): ledge + vertical step per entry in `steps`, then a dome over the last ring.
+// Stepped dome (United Center): ledge + vertical step per entry in `steps`, then a smooth dome over the last ring.
 export function stepdome({ ring, base, steps = [], domeRise, step = 4 }) {
   const out = mesh()
   let r = ring, y = base
@@ -146,8 +161,9 @@ export function stepdome({ ring, base, steps = [], domeRise, step = 4 }) {
     skirt(out, densify(inner, step), y, () => top)
     r = inner; y = top
   }
-  const D = Math.max(1e-6, ...interior(r, step).map((p) => distToRing(p, r)))
-  const h = (p) => y + domeRise * (1 - (1 - Math.min(1, distToRing(p, r) / D)) ** 2)
+  // an elliptic paraboloid over the inner ring's box: smooth everywhere (a distance-to-edge dome creases like a hip roof)
+  const bb = ringBBox(r), cx = (bb.minX + bb.maxX) / 2, cz = (bb.minZ + bb.maxZ) / 2, hx = (bb.maxX - bb.minX) / 2 || 1, hz = (bb.maxZ - bb.minZ) / 2 || 1
+  const h = (p) => y + domeRise * Math.max(0, 1 - ((p[0] - cx) / hx) ** 2 - ((p[1] - cz) / hz) ** 2)
   liftedTop(out, r, h, step)
   return out
 }

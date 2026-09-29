@@ -70,3 +70,38 @@ describe('arena roofs', () => {
     expect(frontFacing(m)).toBe(true)
   })
 })
+
+describe('arena roofs shade smoothly', () => {
+  it('curved tops carry the surface normal of the height function, not faceted triangle normals', () => {
+    const m = vault({ ring: rectR(0, 0, 96, -128), base: 25, rise: 5.5, axis: [0, -1] })
+    for (let i = 0; i < m.positions.length; i += 3) {
+      if (m.normals[i + 1] < 0.5) continue // gable walls
+      const x = m.positions[i], expectNx = (2 * 5.5 * (x - 48)) / (48 * 48)       // −∂h/∂x for h = base + rise·(1 − (s/half)²)
+      const l = Math.hypot(expectNx, 1)
+      expect(m.normals[i]).toBeCloseTo(expectNx / l, 3)
+      expect(m.normals[i + 2]).toBeCloseTo(0, 3)
+    }
+  })
+})
+describe('stepdome dome is smooth', () => {
+  it('no creases: the dome height is an elliptic paraboloid over the inner ring (neighbouring normals agree)', () => {
+    const m = stepdome({ ring: rectR(0, 0, 164, -124), base: 30, steps: [{ inset: 7, rise: 2.5 }], domeRise: 6.5 })
+    const pts = []
+    for (let i = 0; i < m.positions.length; i += 3) if (m.positions[i + 1] > 32.6) pts.push([m.positions[i], m.positions[i + 1], m.positions[i + 2]])
+    const cx = 82, cz = -62, hx = 75, hz = 55
+    for (const [x, y, z] of pts) expect(y).toBeCloseTo(32.5 + 6.5 * Math.max(0, 1 - ((x - cx) / hx) ** 2 - ((z - cz) / hz) ** 2), 3)
+  })
+})
+describe('curved tops are gridded', () => {
+  it('no sliver triangles: every curved-top triangle fits in one grid cell', () => {
+    const ring = rectR(0, 0, 164, -124)
+    for (const m of [vault({ ring, base: 25, rise: 5.5, axis: [0, -1], step: 4 }), stepdome({ ring, base: 30, steps: [{ inset: 7, rise: 2.5 }], domeRise: 6.5, step: 5 })]) {
+      for (let i = 0; i < m.positions.length; i += 9) {
+        if (m.normals[i + 1] < 0.5 || m.positions[i + 1] <= 32.5 + 1e-6 && m.positions[i + 1] >= 30 - 1e-6 && m.positions[i + 1] <= 30 + 1e-6) continue // flat ledge annulus
+        const p = m.positions.slice(i, i + 9)
+        const L = Math.max(Math.hypot(p[0] - p[3], p[2] - p[5]), Math.hypot(p[3] - p[6], p[5] - p[8]), Math.hypot(p[0] - p[6], p[2] - p[8]))
+        expect(L).toBeLessThan(5 * Math.SQRT2 + 1e-6)
+      }
+    }
+  })
+})
