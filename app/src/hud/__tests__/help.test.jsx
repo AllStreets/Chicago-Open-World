@@ -34,3 +34,14 @@ describe('help: games', () => {
     expect(screen.getByRole('dialog', { name: 'Controls' })).toHaveTextContent(/Games/)
   })
 })
+
+import { FEATURE_CONTROLS } from '../featureControls.js'
+describe('help: City life from the registry', () => {
+  it('help lists every city-life control with its key and button', () => {
+    useStore.getState().setHelpOpen(true)
+    render(<HelpOverlay />)
+    expect(screen.getByText(/City life/i)).toBeInTheDocument()
+    for (const c of FEATURE_CONTROLS) expect(screen.getByText(new RegExp(`${c.label} button`))).toBeInTheDocument()
+    expect(screen.getByText(/Follow a train/i)).toBeInTheDocument()
+  })
+})

@@ -35,7 +35,7 @@ export default function Hud() {
       <div className="hud-vignette" />
       <WordmarkBlock />
       <ControlPills />
-      <HintBar />
+      <HintBar layoutW={size[0] / scale} />
       <Minimap manifest={manifest} />
       <ControlDock />
       <TransitLegend />

@@ -16,7 +16,7 @@
 .pill-row { display: flex; gap: 6px; }
 .pill-row.small .hud-pill { font-size: 10px; padding: 4px 11px; }
 
-.hud-hints { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+.hud-hints { overflow: hidden; position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
   display: flex; align-items: center; gap: 16px; padding: 7px 16px; border-radius: 999px;
   border: 1px solid var(--border); background: var(--panel);
   -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);

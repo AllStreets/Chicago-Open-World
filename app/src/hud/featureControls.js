@@ -18,7 +18,7 @@ const previewOn = (start) => start != null && Date.now() - start < FOUNTAIN_SCHE
 
 export const FEATURE_CONTROLS = [
   { id: 'transit', label: 'Transit', key: 'KeyT', keyLabel: 'T', icon: RiTrainLine, hint: 'transit',
-    help: 'show or hide the L and Metra lines, their glow and the trains', ...storeFlag('transitOn', 'setTransitOn'),
+    help: 'show or hide the CTA and Metra lines, their glow and the trains', ...storeFlag('transitOn', 'setTransitOn'),
     available: () => Boolean(useStore.getState().transit), useAvailable: () => useStore((s) => Boolean(s.transit)) },
   { id: 'games', label: 'Games', key: 'KeyG', keyLabel: 'G', icon: RiTrophyLine, hint: 'games',
     help: "today's games — scores, and a flight to the ballpark", ...storeFlag('gamesOpen', 'setGamesOpen'), ...always },
