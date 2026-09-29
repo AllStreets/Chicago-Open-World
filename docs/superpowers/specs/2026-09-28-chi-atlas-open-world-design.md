@@ -278,3 +278,34 @@ Each phase gets its own implementation plan.
 Street-level walking, interiors, real routing isochrones (GTFS/OSRM), user accounts,
 Ring 2+ (full city), mobile-first layout (desktop-first; mobile gets LOW quality +
 simplified HUD), editing CHI's codebase beyond the CORS origin entry.
+
+---
+
+## Addendum A — Phase 2.5: Expanded city & accurate skyline (approved 2026-09-28)
+
+Inserted between Phase 2 and Phase 3 at the user's request. **All later phase plans must be revised against this addendum.**
+
+### A.1 Findings that drive it
+- City of Chicago Building Footprints (`syp8-uezg`) were last edited **2015-08-06** — every tower completed since (St. Regis 2020, 400 Lake Shore North 2026 (#15, 259 m), NEMA, One Chicago, Salesforce, 110 N Wacker, 1000M, BMO Tower, One Bennett Park…) is absent.
+- OpenStreetMap is current (St. Regis with tier parts, 400 Lake Shore North at 267 m).
+
+### A.2 Scope
+- **World bounds (lat/lon):** S **41.826** (35th St — Chinatown, Pilsen, Bridgeport, Bronzeville, Guaranteed Rate Field), N **41.952** (Addison — Wrigleyville, Lakeview, Lincoln Park), W **−87.695** (Western Ave — West Loop/Fulton Market, United Center, West Town, Ukrainian Village, Wicker Park, Bucktown), E **−87.595** (lakefront incl. Navy Pier). ≈ 110 km²; ~107k buildings.
+- The Phase 1 "Ring 0" core keeps its name for the hi-detail downtown; the expanded area replaces "Ring 1" (§A.2 supersedes §1 scope row).
+
+### A.3 Data
+- **OSM is the primary building source** (ways + multipolygon relations tagged `building`, plus `building:part`). City footprints **enrich** OSM buildings (stories, year built, address) by spatial join; City-only buildings (no OSM match) are dropped.
+- Height order: OSM `height` → OSM `building:levels` × 3.8 → City stories × 3.8 → type default (`house` 8, `garage` 4, `apartments` 12, `commercial` 8, `industrial|warehouse` 10, `church` 16, else 9).
+- **`pipeline/data/skyline.json`**: the 50 tallest completed buildings (name, lat, lon, height m, floors, year) parsed from the current Wikipedia "List of tallest buildings in Chicago" wikitext; the build **validates** every entry inside the bounds is present with top height within ±8 % and fails otherwise.
+
+### A.4 Recognizable landmarks (procedural hero specs)
+`pipeline/data/heroes.json` — 25 towers + 3 stadiums, each keyed by OSM id (or coordinate) with: height/roof override, façade family + glass tint, and crown primitives: **spire, antenna, pyramid, drum, sloped (diamond), taper**, plus optional tier (setback) list. List: Willis, Trump, St. Regis, Aon, 875 N Michigan, Franklin Center, Two Prudential, One Chicago East, 311 S Wacker, NEMA, 900 N Michigan, Chase Tower, Water Tower Place, Aqua, 400 Lake Shore North, Salesforce, 110 N Wacker, 1000M, Marina City (×2), Lake Point Tower, Wrigley Building, Tribune Tower, Merchandise Mart, Chicago Board of Trade, 150 N Michigan; stadiums Wrigley Field, Soldier Field, United Center.
+Phase 3 (Blender) now **refines** these (sculptural detail) instead of creating them.
+
+### A.5 Streaming & budgets (pulled forward from Phase 6)
+- 500 m tiles, each ONE `.glb` holding named meshes per layer (`buildings`, `parapets`, `roads`, `sidewalks`, `parks`, `beaches`, `rail`, `elevated`, `water`) — polygons clipped to the tile — plus `lod1` (simplified buildings, roads, parks, water). Trees, roof props and L columns are stored per tile in the tile sidecar JSON.
+- meshopt compression (EXT_meshopt_compression, quantized positions); custom attributes preserved.
+- App streams tiles by distance from the camera target: LOD0 ≤ 1.6 km, LOD1 ≤ 7 km, hysteresis 15 %; unloads (disposes) LOD0 beyond 2.2 km.
+- Shadow camera follows the camera target (snapped to 50 m).
+- Budgets: first load < 60 MB; total `public/world` < 200 MB; HIGH ≤ 300 draw calls & ≤ 4 M triangles/frame incl. shadow pass on M-series; 60 fps target.
+- Camera: target clamped to the world bounds rectangle; max camera–target distance 6 km.
