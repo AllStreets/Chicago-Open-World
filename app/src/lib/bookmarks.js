@@ -21,6 +21,11 @@ export const BOOKMARKS = {
   soldierfield: { position: [1950, 280, 1450], target: [925, 20, 2191] },
   navypier: { position: [2700, 320, -500], target: [1074, 150, -874] },
   willis: { position: [-200, 380, 900], target: [-669, 260, 348] },
+  // Transit (V3): Tower 18 at Lake & Wells from street level, the Loop from 150 m and 1 km, Fullerton's 4-track corridor
+  wellslake: { position: [-420, 30, -335], target: [-495, 7, -412] },
+  transit150: { position: [40, 150, 330], target: [-175, 8, 86] },
+  transit1000: { position: [900, 1000, 1400], target: [-175, 0, 86] },
+  northside: { position: [-1700, 400, -4270], target: [-2080, 8, -4773] },
 }
 
 export function bookmarkFromUrl(search) {

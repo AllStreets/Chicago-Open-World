@@ -22,6 +22,7 @@ export const VIEW_NAMES = {
   museum: 'Museum Campus postcard', navypier: 'Navy Pier & 400 Lake Shore', hancock: 'The Hancock',
   willis: 'Willis Tower', wabash: 'Wabash & the Loop L', westloop: 'West Loop & Fulton Market',
   lincolnpark: 'Lincoln Park & the lakefront', wrigleyville: 'Wrigleyville', pilsen: 'Pilsen', soldierfield: 'Soldier Field',
+  wellslake: 'Tower 18 — the Loop L junction',
 }
 
 export function buildPlaces(manifest, bookmarks) {
