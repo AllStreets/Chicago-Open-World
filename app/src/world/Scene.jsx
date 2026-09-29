@@ -7,7 +7,7 @@ import SafeLoad from './SafeLoad.jsx'
 import { sunForPreset } from '../lib/sun.js'
 import TileStreamer from './TileStreamer.jsx'
 import Land from './Land.jsx'
-import { loadFacadeTextures } from './materials/facadeMaterial.js'
+import { loadFacadeTextures, loadStylePalette } from './materials/facadeMaterial.js'
 import { loadGroundTextures } from './materials/groundShader.js'
 import { makeIsWater } from '../lib/landMask.js'
 import Lake from './Lake.jsx'
@@ -44,6 +44,7 @@ export default function Scene() {
       setLoadTotal(3) // land + façade textures + 'tiles-planned'; TileStreamer adds the near tiles
       setManifest(r.manifest)
       useStore.getState().setManifest(r.manifest)
+      loadStylePalette(r.manifest)
       if (r.manifest.heightfield) loadHeightfield(worldUrl(r.manifest.heightfield.file, r.manifest.version), r.manifest.heightfield)
       if (r.manifest.landMask) fetch(`/world/${r.manifest.landMask}`).then((x) => x.json()).then((j) => useStore.getState().setIsWater(makeIsWater(j.rings))).catch(() => {})
     })

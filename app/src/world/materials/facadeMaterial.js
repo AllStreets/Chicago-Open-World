@@ -1,6 +1,8 @@
 // app/src/world/materials/facadeMaterial.js — one shader for every building.
 import * as THREE from 'three'
 import { loadLayerArray } from './textureArray.js'
+import { createStyleTexture } from './stylePalette.js'
+import { worldUrl } from '../../lib/manifest.js'
 
 const greyArray = () => { const t = new THREE.DataArrayTexture(new Uint8Array(4 * 8).fill(150), 1, 1, 8); t.needsUpdate = true; return t }
 const greyTex = () => { const t = new THREE.DataTexture(new Uint8Array([150, 150, 150, 255]), 1, 1); t.needsUpdate = true; return t }
@@ -13,6 +15,8 @@ export const facadeUniforms = {
   uNight: { value: 0 },
   uLitBoost: { value: 1 },
   uReady: { value: 0 },
+  uStylePal: { value: createStyleTexture([{ key: 'none' }]) },
+  uStyleRows: { value: 1 },
 }
 
 const need = (src, marker) => {
@@ -276,4 +280,20 @@ export async function loadFacadeTextures() {
   facadeUniforms.uWin.value = win
   list.forEach((f) => facadeUniforms.uTile.value[f.index].set(f.tileW, f.tileH, f.bays, f.floors))
   facadeUniforms.uReady.value = 1
+}
+
+// Sourced building colours (V2): absent or unreachable styles.json leaves the one-row default — the city renders as before.
+export async function loadStylePalette(manifest) {
+  if (!manifest?.styles) return false
+  try {
+    const r = await fetch(worldUrl(manifest.styles, manifest.version))
+    if (!r.ok) { console.warn(`styles.json HTTP ${r.status} — default colours`); return false }
+    const j = await r.json()
+    facadeUniforms.uStylePal.value = createStyleTexture(j.styles)
+    facadeUniforms.uStyleRows.value = j.styles.length
+    return true
+  } catch (e) {
+    console.warn('styles.json unavailable — default colours', e)
+    return false
+  }
 }
