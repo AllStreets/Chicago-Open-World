@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { facadeUniforms } from './materials/facadeMaterial.js'
 import BridgeLeaves from '../bridges/BridgeLeaves.jsx'
+import BridgeLights from '../bridges/BridgeLights.jsx'
 
 const getJson = (file) => (file ? fetch(`/world/${file}`).then((r) => (r.ok ? r.json() : null)).catch(() => null) : Promise.resolve(null))
 
@@ -14,6 +15,7 @@ export default function Landmarks({ manifest }) {
   return (
     <>
       {bridges && <BridgeLeaves sidecar={bridges} />}
+      {bridges && <BridgeLights sidecar={bridges} />}
       {/* Tasks 9, 12, 14, 15, 16 add: BridgeLights, FountainShow, CloudGate, PlazaPeople, and the Crown face driver (they use `runtime`) */}
       {runtime && null}
     </>
