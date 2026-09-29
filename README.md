@@ -121,7 +121,7 @@ Everything is reachable with the keyboard, the mouse and the on-screen dock — 
 |---|---|
 | `⌘K` / `Ctrl+K` / `/` | search any landmark, neighbourhood or view — Enter flies you there |
 | `↑` `↓` `←` `→` or `W` `A` `S` `D` | glide over the city (`Shift` for faster) |
-| `Shift` + arrows or `Q` / `E` | turn and tilt |
+| `Shift` + arrows | turn and tilt (`Q` / `E` turn too) |
 | `R` / `F` or `Page Up` / `Page Down` | rise and descend |
 | Scroll or `+` / `−` | zoom toward the cursor |
 | Drag | turn and tilt |
