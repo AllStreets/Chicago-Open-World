@@ -60,7 +60,8 @@ float lancet(vec2 uv, float y) {
 }
 // Venue surfaces (façade 9+): stadium seats, turf, clay, paint, steel, lamps, boards, walls, marquee, ivy.
 // The style selector rides in the seed (see pipeline/lib/venue.js STYLE).
-vec3 venueAlbedo(int vi, float s, vec2 uv, vec3 wp, vec3 n, vec3 grain, vec3 roofAlb) {
+// fwRow / fwAisle: screen-space footprints, taken by the caller in uniform control flow.
+vec3 venueAlbedo(int vi, float s, vec2 uv, vec3 wp, vec3 n, vec3 grain, vec3 roofAlb, float fwRow, float fwAisle) {
   if (vi == 9) {
     vec3 c = s < 0.25 ? vec3(0.10, 0.27, 0.17) : s < 0.5 ? vec3(0.10, 0.14, 0.30) : s < 0.75 ? vec3(0.48, 0.09, 0.09) : vec3(0.16, 0.30, 0.52);
     float row = fract(wp.y / 0.42);
@@ -68,10 +69,9 @@ vec3 venueAlbedo(int vi, float s, vec2 uv, vec3 wp, vec3 n, vec3 grain, vec3 roo
     float aisle = step(fract(uv.x / 17.0), 0.06);
     vec3 conc = vec3(0.56, 0.55, 0.53);
     // rows fade to an even tone with distance so risers never shimmer
-    float fw = fwidth(wp.y / 0.42);
-    riser = mix(riser, 0.3, smoothstep(0.25, 0.6, fw));
+    riser = mix(riser, 0.3, smoothstep(0.25, 0.6, fwRow));
     vec3 a = mix(c * (0.85 + 0.3 * owHash(floor(vec2(uv.x / 0.55, wp.y / 0.42)))), c * 0.55, riser);
-    return mix(a, conc * 0.8, aisle * (1.0 - smoothstep(0.3, 0.8, fwidth(uv.x / 17.0) * 17.0)));
+    return mix(a, conc * 0.8, aisle * (1.0 - smoothstep(0.3, 0.8, fwAisle)));
   }
   if (vi == 10) {
     vec2 q = floor(uv / 9.0);
@@ -168,7 +168,8 @@ vec3 roofAlb = rk < 0.4 ? gravel * 0.85
 vec3 coping = vec3(0.58, 0.56, 0.52) * (0.9 + 0.2 * gravel.r);
 vec3 alb = isRoof ? roofAlb : (isParapet ? coping : wallAlb);
 win = (isRoof || isParapet) ? 0.0 : win;
-if (isVenue) { alb = venueAlbedo(vi, vSeed, vMUv, vWPos, vWNormal, gravel, roofAlb); win = 0.0; }
+float fwRow = fwidth(vWPos.y / 0.42), fwAisle = fwidth(vMUv.x / 17.0) * 17.0;   // before any branch
+if (isVenue) { alb = venueAlbedo(vi, vSeed, vMUv, vWPos, vWNormal, gravel, roofAlb, fwRow, fwAisle); win = 0.0; }
 alb = mix(vec3(0.62, 0.6, 0.57), alb, uReady);
 win *= uReady;
 if (!isVenue) {
@@ -253,7 +254,7 @@ export function patchFacadeShader(shader) {
 export function createFacadeMaterial() {
   const m = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.86, metalness: 0.02 })
   m.onBeforeCompile = patchFacadeShader
-  m.customProgramCacheKey = () => 'facade-v6'
+  m.customProgramCacheKey = () => 'facade-v7'
   return m
 }
 

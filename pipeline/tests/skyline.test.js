@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { parseTallestWikitext, validateSkyline } from '../lib/skyline.js'
+import { assertSkyline } from '../lib/skyline.js'
 const WT = `==Tallest buildings==
 {| class="wikitable"
 |-
@@ -63,5 +64,13 @@ describe('skyline', () => {
     expect(r.matches[0]).toMatchObject({ name: 'W', via: 'contains' })
     b[0].pieces = [{ outer: box, top: 400 }]; b[0].crownTop = 442
     expect(validateSkyline(b, sky, { s: 41.8, w: -87.7, n: 41.95, e: -87.59 }).wrongHeight).toEqual([])
+  })
+})
+
+describe('assertSkyline', () => {
+  it('passes a clean validation and fails loudly on any missing or wrong-height entry', () => {
+    expect(() => assertSkyline({ missing: [], wrongHeight: [] })).not.toThrow()
+    expect(() => assertSkyline({ missing: ['Willis Tower'], wrongHeight: [] })).toThrow(/Willis Tower/)
+    expect(() => assertSkyline({ missing: [], wrongHeight: [{ name: 'Aon Center', expected: 346, got: 300 }] })).toThrow(/Aon Center.*346.*300/)
   })
 })

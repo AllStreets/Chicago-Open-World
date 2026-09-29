@@ -39,13 +39,32 @@ export function planWorld(target, manifest, current) {
   return plan
 }
 
-// Gradual load-in: loaded tiles always render; new ones start loading `limit` at a time, nearest first.
+// Gradual load-in: loaded content always renders; new files load `limit` at a time, nearest first.
 // entries: [id, lod, distance][]; ready: Set of `${id}:${lod}` that have finished loading.
+// A tile changing detail keeps drawing at the level it already has until its turn comes.
 export function admitTiles(entries, ready, limit) {
-  const loadedIds = new Set([...ready].map((k) => k.slice(0, k.lastIndexOf(':'))))
+  const readyLod = new Map()
+  for (const k of ready) { const i = k.lastIndexOf(':'); readyLod.set(k.slice(0, i), k.slice(i + 1)) }
   const out = [], waiting = []
-  for (const e of entries) (loadedIds.has(e[0]) ? out : waiting).push(e)
+  for (const e of entries) (ready.has(`${e[0]}:${e[1]}`) ? out : waiting).push(e)
   waiting.sort((a, b) => a[2] - b[2])
-  const admitted = [...out, ...waiting.slice(0, limit)]
-  return admitted.sort((a, b) => a[2] - b[2])
+  waiting.forEach((e, i) => {
+    if (i < limit) out.push(e)
+    else if (readyLod.has(e[0])) out.push([e[0], readyLod.get(e[0]), e[2]])
+  })
+  return out.sort((a, b) => a[2] - b[2])
+}
+
+const overlaps = (a, b) => a.minX < b.maxX && a.maxX > b.minX && a.minZ < b.maxZ && a.maxZ > b.minZ
+
+// Content leaving the plan stays on screen until everything replacing its ground has loaded — a block
+// giving way to tiles, or tiles giving way to a block, never leaves a hole in between.
+export function retainOutgoing(prev, plan, ready, boundsOf) {
+  const planned = new Set(plan.map((e) => e[0]))
+  return prev.filter(([id, lod]) => {
+    if (planned.has(id) || !ready.has(`${id}:${lod}`)) return false
+    const b = boundsOf(id)
+    const cover = plan.filter(([pid]) => overlaps(b, boundsOf(pid)))
+    return cover.length > 0 && cover.some(([pid, plod]) => !ready.has(`${pid}:${plod}`))
+  })
 }

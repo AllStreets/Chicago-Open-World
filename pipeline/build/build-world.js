@@ -7,7 +7,7 @@ import sharp from 'sharp'
 import { project, ORIGIN } from '../../shared/project.js'
 import { openRing, ringCentroid, ringBBox, simplifyRing, signedArea, pointInRing } from '../lib/geom.js'
 import { assembleRings } from '../lib/multipolygon.js'
-import { normalizeFootprint, applyBuildingParts, hashSeed } from '../lib/buildings.js'
+import { normalizeFootprint, applyBuildingParts, hashSeed, keepsShapeAtDistance } from '../lib/buildings.js'
 import { osmToBuilding } from '../lib/osm.js'
 import { enrichFromCity, buildGridIndex } from '../lib/enrich.js'
 import { classifyFacade, FACADE_FAMILIES } from '../lib/classify.js'
@@ -23,9 +23,9 @@ import { parapetPiece, PARAPET_FACADE } from '../lib/roofs.js'
 import { roofProps } from '../lib/props.js'
 import { minimapSvg } from '../lib/minimap.js'
 import { bufferPolyline } from '../lib/ribbon.js'
-import { roadHalfWidth, isElevatedRail, scatterInPolygon } from '../lib/ground.js'
+import { roadHalfWidth, isElevatedRail, scatterInPolygon, GROUND_Y } from '../lib/ground.js'
 import { WORLD_BBOX, RING0_BBOX } from '../lib/sources.js'
-import { validateSkyline } from '../lib/skyline.js'
+import { validateSkyline, assertSkyline } from '../lib/skyline.js'
 import { clipPolysToTile, splitLineByTiles, writeTileGlb, mergeGroundLayers, blockKeyFor, BLOCK_TILES } from '../lib/tilepack.js'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
@@ -160,9 +160,7 @@ async function main() {
   log(`skyline: missing ${sky.missing.length}, wrong height ${sky.wrongHeight.length}`)
   for (const m of sky.missing) console.log(`   missing: ${m}`)
   for (const w of sky.wrongHeight) console.log(`   height: ${w.name} expected ${w.expected} got ${w.got}`)
-  const heroNames = new Set(heroes.map((h) => h.skylineName).filter(Boolean))
-  const missingHeroes = sky.missing.filter((n) => heroNames.has(n))
-  if (missingHeroes.length) throw new Error(`landmarks missing from the build: ${missingHeroes.join(', ')}`)
+  assertSkyline(sky)
 
   // ── Ground sources ─────────────────────────────────────────────────────────
   const greens = osmPolys(uniq(chunks('parks')))
@@ -230,8 +228,8 @@ async function main() {
   for (const e of roads) {
     const pts = e.geometry.map((p) => project(p.lon, p.lat)), hw = roadHalfWidth(e.tags)
     for (const [k, lines] of splitLineByTiles(pts)) for (const l of lines) {
-      const t = tile(k); append(t.roads, bufferPolyline(l, hw, 0.12)); append(t.roadsLod1, bufferPolyline(l, hw, 0.12))
-      if (!['motorway', 'motorway_link', 'service'].includes(e.tags.highway)) append(t.walks, bufferPolyline(l, hw + 3, 0.1))
+      const t = tile(k); append(t.roads, bufferPolyline(l, hw, GROUND_Y.roads)); append(t.roadsLod1, bufferPolyline(l, hw, GROUND_Y.roads))
+      if (!['motorway', 'motorway_link', 'service'].includes(e.tags.highway)) append(t.walks, bufferPolyline(l, hw + 3, GROUND_Y.sidewalks))
     }
   }
   for (const e of rail) {
@@ -245,7 +243,7 @@ async function main() {
           const seg = Math.hypot(l[i][0] - l[i - 1][0], l[i][1] - l[i - 1][1]), rot = Math.atan2(l[i][0] - l[i - 1][0], l[i][1] - l[i - 1][1])
           for (let d = 9; d < seg; d += 18) { const f = d / seg; tile(k).columns.push([+(l[i - 1][0] + (l[i][0] - l[i - 1][0]) * f).toFixed(1), +(l[i - 1][1] + (l[i][1] - l[i - 1][1]) * f).toFixed(1), +rot.toFixed(3)]) }
         }
-      } else append(tile(k).rail, bufferPolyline(l, t.railway === 'rail' ? 2.4 : 1.8, 0.09))
+      } else append(tile(k).rail, bufferPolyline(l, t.railway === 'rail' ? 2.4 : 1.8, GROUND_Y.rail))
     }
   }
   for (const [x, z] of treeNodes) {
@@ -275,7 +273,7 @@ async function main() {
       for (const m of b.extraMeshes || []) appendBuilding(L0, m, family, seed, i)
       for (const v of b.venueMeshes || []) { appendBuilding(L0, v.mesh, v.facade, v.seed, i); appendBuilding(L1, v.mesh, v.facade, v.seed, i) }
       // LOD1: heroes and part-buildings keep their shape (they are the skyline); plain footprints simplify
-      if (b.hero || b.parts || b.sacred) { for (const pc of b.pieces) appendBuilding(L1, extrudeBuilding(pc), family, seed, i); for (const m of b.extraMeshes || []) appendBuilding(L1, m, family, seed, i) }
+      if (keepsShapeAtDistance(b)) { for (const pc of b.pieces) appendBuilding(L1, extrudeBuilding(pc), family, seed, i); for (const m of b.extraMeshes || []) appendBuilding(L1, m, family, seed, i) }
       else if (b.area >= 80) for (const p of b.polygons) {
         const outer = simplifyRing(p.outer, 2)
         if (outer.length >= 3) appendBuilding(L1, extrudeBuilding({ outer, holes: [], base: 0, top: b.height }), family, seed, i)
@@ -283,10 +281,10 @@ async function main() {
       if (top > 15) for (const pr of roofProps(b, b.pieces)) t.props.push(pr)
       meta.push({ id: b.id, name: b.name, address: b.address, stories: b.stories, year: b.year, height: Math.round(top * 10) / 10, hero: b.hero ?? null })
     })
-    const parksM = flatMesh(clipPolysToTile(polysFor('parks', bounds), bounds), 0.08)
-    const beachesM = flatMesh(clipPolysToTile(polysFor('beaches', bounds), bounds), 0.07)
-    const pitchesM = flatMesh(clipPolysToTile(polysFor('pitches', bounds), bounds), 0.09)
-    const waterM = flatMesh(clipPolysToTile(polysFor('water', bounds), bounds), 0.15)
+    const parksM = flatMesh(clipPolysToTile(polysFor('parks', bounds), bounds), GROUND_Y.parks)
+    const beachesM = flatMesh(clipPolysToTile(polysFor('beaches', bounds), bounds), GROUND_Y.beaches)
+    const pitchesM = flatMesh(clipPolysToTile(polysFor('pitches', bounds), bounds), GROUND_Y.pitches)
+    const waterM = flatMesh(clipPolysToTile(polysFor('water', bounds), bounds), GROUND_Y.water)
     const hasContent = L0.positions.length || t.roads.positions.length || parksM.positions.length || waterM.positions.length
     if (!hasContent) continue
     const ground0 = mergeGroundLayers({ roads: t.roads, sidewalks: t.walks, parks: parksM, pitches: pitchesM, beaches: beachesM, rail: t.rail })

@@ -2,6 +2,9 @@
 import { pointInRing, ringBBox } from './geom.js'
 import { hashSeed } from './buildings.js'
 
+// Ground surface heights (m). Water sits below every street layer so bridges cross it.
+export const GROUND_Y = { water: 0.04, beaches: 0.07, parks: 0.08, pitches: 0.09, rail: 0.09, sidewalks: 0.1, roads: 0.12 }
+
 export const ROAD_WIDTHS = {
   motorway: 22, trunk: 18, primary: 16, secondary: 14, tertiary: 12, unclassified: 10,
   residential: 9, service: 5, motorway_link: 8, trunk_link: 8, primary_link: 8, secondary_link: 8,

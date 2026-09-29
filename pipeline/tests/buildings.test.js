@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { normalizeFootprint, attachOsmHeights, applyBuildingParts, hashSeed } from '../lib/buildings.js'
+import { keepsShapeAtDistance } from '../lib/buildings.js'
 import { unproject } from '../../shared/project.js'
 
 // Build a Socrata-like MultiPolygon from world-metre rings.
@@ -79,5 +80,15 @@ describe('hashSeed', () => {
     expect(hashSeed('358897')).toBe(hashSeed('358897'))
     expect(hashSeed('a')).not.toBe(hashSeed('b'))
     expect(hashSeed('x')).toBeGreaterThanOrEqual(0); expect(hashSeed('x')).toBeLessThan(1)
+  })
+})
+
+describe('distance detail', () => {
+  it('landmarks, part-built towers, shaped churches and skyline-corrected towers keep their pieces at LOD1', () => {
+    expect(keepsShapeAtDistance({ hero: 'willis' })).toBe(true)
+    expect(keepsShapeAtDistance({ parts: [{}] })).toBe(true)
+    expect(keepsShapeAtDistance({ sacred: true })).toBe(true)
+    expect(keepsShapeAtDistance({ skylineFixed: true })).toBe(true)
+    expect(keepsShapeAtDistance({})).toBe(false)
   })
 })

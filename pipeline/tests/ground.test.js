@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { roadHalfWidth, isElevatedRail, scatterInPolygon } from '../lib/ground.js'
+import { roadHalfWidth, isElevatedRail, scatterInPolygon, GROUND_Y } from '../lib/ground.js'
 import { pointInRing } from '../lib/geom.js'
 
 describe('ground rules', () => {
@@ -22,5 +22,9 @@ describe('ground rules', () => {
     expect(a).toEqual(b)
     expect(a.length).toBeGreaterThan(20)
     expect(a.every((p) => pointInRing(p, ring))).toBe(true)
+  })
+  it('water lies below every street layer so bridges show', () => {
+    for (const k of ['roads', 'sidewalks', 'rail', 'parks', 'pitches', 'beaches']) expect(GROUND_Y.water).toBeLessThan(GROUND_Y[k])
+    expect(GROUND_Y.water).toBeGreaterThan(0)
   })
 })

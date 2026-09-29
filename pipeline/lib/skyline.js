@@ -55,3 +55,12 @@ export function validateSkyline(buildings, skyline, bbox) {
   }
   return { missing, wrongHeight, matches }
 }
+
+// The build refuses to ship a skyline that disagrees with the curated list (spec A: every entry, ±8 %).
+export function assertSkyline(sky) {
+  const problems = [
+    ...sky.missing.map((n) => `missing: ${n}`),
+    ...sky.wrongHeight.map((w) => `height: ${w.name} expected ${w.expected} got ${w.got}`),
+  ]
+  if (problems.length) throw new Error(`skyline validation failed —\n  ${problems.join('\n  ')}`)
+}

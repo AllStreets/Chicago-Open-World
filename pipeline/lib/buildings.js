@@ -87,3 +87,7 @@ export function applyBuildingParts(buildings, osmParts) {
     b.height = covered / b.area >= 0.8 ? 0 : Math.min(b.height, ...parts.map((p) => p.top))
   }
 }
+
+// Buildings whose silhouette matters from afar keep their full pieces in LOD1 tiles and 2 km blocks;
+// the rest are simplified to one extruded footprint at b.height.
+export const keepsShapeAtDistance = (b) => Boolean(b.hero || b.parts?.length || b.sacred || b.skylineFixed)
