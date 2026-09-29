@@ -3,7 +3,7 @@
 import { mkdirSync, writeFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { WORLD_BBOX, USER_AGENT, chunkBBox, footprintsUrl, cityBoundaryUrl, overpassQuery } from '../lib/sources.js'
+import { WORLD_BBOX, USER_AGENT, chunkBBox, footprintsUrl, cityBoundaryUrl, overpassQuery, FETCH_KINDS } from '../lib/sources.js'
 
 const CACHE = join(dirname(fileURLToPath(import.meta.url)), '..', 'cache', 'world')
 mkdirSync(CACHE, { recursive: true })
@@ -24,10 +24,9 @@ async function getJson(url, init = {}) {
   throw new Error(`failed: ${String(url).slice(0, 100)}`)
 }
 
-const KINDS = { allbuildings: [6, 8], parts: [2, 3], water: [2, 3], parks: [2, 3], roads: [3, 4], trees: [2, 3], rail: [2, 3], stadiums: [1, 1], shore: [2, 3], coast: [1, 2] }
 const ENDPOINTS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter']
 
-for (const [kind, [nx, ny]] of Object.entries(KINDS)) {
+for (const [kind, [nx, ny]] of Object.entries(FETCH_KINDS)) {
   const chunks = chunkBBox(WORLD_BBOX, nx, ny)
   for (const [i, bb] of chunks.entries()) {
     const name = `osm-${kind}-${i}.json`

@@ -38,9 +38,19 @@ const FILTERS = {
   coast: ['rel["natural"="water"]["name"="Lake Michigan"];way(r)'],
 }
 
+// Transit (V3): route relations with their member tracks + stop nodes; stations and platforms.
+const QUERIES = {
+  routes: (bb) => `[out:json][timeout:180];relation["type"="route"]["route"~"^(subway|light_rail|train)$"]${bb}->.r;.r out body;way(r.r)${bb};out geom;node(r.r)${bb};out;`,
+  stations: (bb) => `[out:json][timeout:180];(node["railway"="station"]${bb};way["railway"="station"]${bb};node["public_transport"="station"]${bb};way["railway"="platform"]${bb};way["public_transport"="platform"]["train"="yes"]${bb};way["public_transport"="platform"]["subway"="yes"]${bb};);out geom;`,
+}
+
 export function overpassQuery(kind, { s, w, n, e }) {
+  const bb = `(${s},${w},${n},${e})`
+  if (QUERIES[kind]) return QUERIES[kind](bb)
   const f = FILTERS[kind]
   if (!f) throw new Error(`unknown overpass kind: ${kind}`)
-  const bb = `(${s},${w},${n},${e})`
   return `[out:json][timeout:180];(${f.map((x) => x + bb + ';').join('')});${kind === 'trees' ? 'out;' : 'out geom;'}`
 }
+
+// chunk grid per kind for the world fetch (nx × ny sub-boxes)
+export const FETCH_KINDS = { allbuildings: [6, 8], parts: [2, 3], water: [2, 3], parks: [2, 3], roads: [3, 4], trees: [2, 3], rail: [2, 3], stadiums: [1, 1], shore: [2, 3], coast: [1, 2], routes: [1, 1], stations: [1, 1] }

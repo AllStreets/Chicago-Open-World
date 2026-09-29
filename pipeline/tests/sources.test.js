@@ -64,3 +64,26 @@ describe('coast kind', () => {
   })
 })
 
+
+import { FETCH_KINDS } from '../lib/sources.js'
+
+describe('transit fetch kinds (V3)', () => {
+  const bb = '(41.826,-87.695,41.952,-87.595)'
+  it('routes: relations with their member tracks and stop nodes inside the world', () => {
+    const q = overpassQuery('routes', WORLD_BBOX)
+    expect(q).toContain(`relation["type"="route"]["route"~"^(subway|light_rail|train)$"]${bb}->.r;`)
+    expect(q).toContain('.r out body;')
+    expect(q).toContain(`way(r.r)${bb};out geom;`)
+    expect(q).toContain(`node(r.r)${bb};out;`)
+  })
+  it('stations: station nodes/ways and train/subway platforms, with geometry', () => {
+    const q = overpassQuery('stations', WORLD_BBOX)
+    for (const f of ['node["railway"="station"]', 'way["railway"="station"]', 'node["public_transport"="station"]', 'way["railway"="platform"]', 'way["public_transport"="platform"]["train"="yes"]', 'way["public_transport"="platform"]["subway"="yes"]']) expect(q).toContain(f + bb)
+    expect(q.endsWith('out geom;')).toBe(true)
+  })
+  it('the world fetch downloads both in one chunk each, next to the existing kinds', () => {
+    expect(FETCH_KINDS.routes).toEqual([1, 1])
+    expect(FETCH_KINDS.stations).toEqual([1, 1])
+    expect(FETCH_KINDS.allbuildings).toEqual([6, 8])
+  })
+})
