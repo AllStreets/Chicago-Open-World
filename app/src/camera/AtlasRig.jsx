@@ -9,7 +9,8 @@ import { BOOKMARKS, bookmarkFromUrl } from '../lib/bookmarks.js'
 import { introPose, INTRO_SECONDS } from '../lib/introPath.js'
 import { crossStreets } from '../lib/grid.js'
 import { keyIntent } from '../lib/controls.js'
-import { flyPose, flightDuration } from '../lib/flight.js'
+import { flyPose, flightDuration, flightLift, liftAboveRoofs } from '../lib/flight.js'
+import { clearanceAt } from '../lib/clearance.js'
 import { VIEW_ORDER, VIEW_NAMES } from '../lib/views.js'
 
 const GLIDE_MPS = 140
@@ -139,7 +140,8 @@ export default function AtlasRig() {
   useEffect(() => {
     if (!flight || !ref.current) { flightRun.current = null; return }
     const from = pose(ref.current)
-    flightRun.current = { from, to: flight.to, t0: null, dur: flightDuration(from, flight.to) }
+    const to = liftAboveRoofs(flight.to, clearanceAt)
+    flightRun.current = { from, to, t0: null, dur: flightDuration(from, to), lift: flightLift(from, to, clearanceAt) }
     if (useStore.getState().cameraMode === 'ORBIT') useStore.getState().setCameraMode('FLY')
   }, [flight])
 
@@ -161,7 +163,7 @@ export default function AtlasRig() {
     if (f) {
       f.t0 ??= now
       const t = (now - f.t0) / f.dur
-      const p = flyPose(f.from, f.to, t)
+      const p = liftAboveRoofs(flyPose(f.from, f.to, t, f.lift), clearanceAt)
       c.setLookAt(...p.position, ...p.target, false)
       if (t >= 1) { flightRun.current = null; useStore.getState().clearFlight() }
       publishReadout(c, now)
