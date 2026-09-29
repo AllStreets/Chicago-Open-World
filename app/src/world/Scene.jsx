@@ -20,6 +20,7 @@ import { QUALITY } from '../lib/quality.js'
 import { loadHeightfield, clearanceAt } from '../lib/clearance.js'
 import TransitLayer from '../transit/TransitLayer.jsx'
 import Trains from '../transit/Trains.jsx'
+import StationHits from '../transit/StationHits.jsx'
 import { followNearest } from '../transit/actions.js'
 
 export default function Scene() {
@@ -77,6 +78,7 @@ export default function Scene() {
       {manifest && <Land file={manifest.land} version={manifest.version} />}
       {manifest && <TileStreamer manifest={manifest} />}
       <TransitLayer />
+      <StationHits />
         {manifest?.trains && <SafeLoad><Suspense fallback={null}><Trains file={manifest.trains} version={manifest.version} /></Suspense></SafeLoad>}
   
       <AtlasRig />

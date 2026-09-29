@@ -30,3 +30,15 @@ describe('run profile', () => {
     expect(curveLimit(straight, 500)).toBe(Infinity)
   })
 })
+
+describe('zone speed limits', () => {
+  it('a slow zone caps speed inside it and nowhere else', async () => {
+    const { LOOP_ZONE, zoneLimit } = await import('../profile.js')
+    expect(zoneLimit([0, 7, 0])).toBeCloseTo(LOOP_ZONE.kmh / 3.6, 6)   // on the Loop
+    expect(zoneLimit([0, 7, -3000])).toBe(Infinity)                     // out on the North Side
+    const slow = (p) => (p[0] > 300 && p[0] < 700 ? 8 : Infinity)
+    const q = buildProfile(straight, [], { ...spec, limitAt: slow })
+    expect(speedAt(q, tauAtS(q, 500))).toBeLessThanOrEqual(8.01)
+    expect(speedAt(q, tauAtS(q, 900))).toBeGreaterThan(15)
+  })
+})

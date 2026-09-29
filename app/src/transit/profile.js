@@ -5,6 +5,9 @@ import { pointAt } from './path.js'
 export const A_LAT = 0.9       // m/s² lateral comfort: the Loop's 27 m curves come out near 10 mph
 export const STEP_M = 5
 export const CURVE_SPAN_M = 10
+// The Union Loop (Lake / Wabash / Van Buren / Wells, and the subways beneath it) is a slow zone: ~30 mph at most.
+export const LOOP_ZONE = { x: [-530, 170], z: [-440, 600], kmh: 48 }
+export const zoneLimit = (p, z = LOOP_ZONE) => (p[0] > z.x[0] && p[0] < z.x[1] && p[2] > z.z[0] && p[2] < z.z[1] ? z.kmh / 3.6 : Infinity)
 
 export function curveLimit(path, s) {
   const a = pointAt(path, s - CURVE_SPAN_M).p, b = pointAt(path, s).p, c = pointAt(path, s + CURVE_SPAN_M).p
@@ -14,10 +17,10 @@ export function curveLimit(path, s) {
   return Math.sqrt(A_LAT * ((ab * bc * ca) / (2 * area2)))
 }
 
-export function buildProfile(path, stopS, { vmax, accel, brake, dwellS }) {
+export function buildProfile(path, stopS, { vmax, accel, brake, dwellS, limitAt = null }) {
   const n = Math.max(2, Math.ceil(path.length / STEP_M) + 1), ds = path.length / (n - 1)
   const stops = new Set(stopS.map((s) => Math.min(n - 1, Math.max(0, Math.round(s / ds)))))
-  const lim = Array.from({ length: n }, (_, i) => (stops.has(i) ? 0 : Math.min(vmax, curveLimit(path, i * ds))))
+  const lim = Array.from({ length: n }, (_, i) => (stops.has(i) ? 0 : Math.min(vmax, curveLimit(path, i * ds), limitAt ? limitAt(pointAt(path, i * ds).p) : Infinity)))
   const v = lim.slice()
   for (let i = 1; i < n; i++) v[i] = Math.min(lim[i], Math.sqrt(v[i - 1] ** 2 + 2 * accel * ds))
   for (let i = n - 2; i >= 0; i--) v[i] = Math.min(v[i], Math.sqrt(v[i + 1] ** 2 + 2 * brake * ds))

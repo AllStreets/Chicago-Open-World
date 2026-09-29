@@ -9,6 +9,7 @@ import CommandPalette from './CommandPalette.jsx'
 import HelpOverlay from './HelpOverlay.jsx'
 import FlightChip from './FlightChip.jsx'
 import FollowChip from './FollowChip.jsx'
+import TransitCard from './TransitCard.jsx'
 import { useEffect, useState } from 'react'
 import { useStore } from '../state/store.js'
 import { hudScale, hudCompact } from '../lib/hudScale.js'
@@ -35,6 +36,7 @@ export default function Hud() {
       <TransitLegend />
       <FlightChip />
       <FollowChip />
+      <TransitCard />
       <CommandPalette />
       <HelpOverlay />
       <LoadingScreen />

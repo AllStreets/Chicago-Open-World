@@ -2,7 +2,7 @@
 // period → a precomputed speed/time profile per service → the head's arc length → bogie-sampled car poses.
 import { chicagoClock, periodOf } from './clock.js'
 import { makePath, pointAt } from './path.js'
-import { buildProfile, sAt, tauAtS } from './profile.js'
+import { buildProfile, sAt, tauAtS, zoneLimit } from './profile.js'
 import { consistFor, carPoses } from './consist.js'
 
 export function hash01(str) {
@@ -45,7 +45,7 @@ export function createSim(transit) {
     }
     if (pts.length < 2) continue
     const path = makePath(pts)
-    const profile = buildProfile(path, stops.map((s) => s.s), { vmax: spec.vmaxKmh / 3.6, accel: spec.accel, brake: spec.brake, dwellS: spec.dwellS })
+    const profile = buildProfile(path, stops.map((s) => s.s), { vmax: spec.vmaxKmh / 3.6, accel: spec.accel, brake: spec.brake, dwellS: spec.dwellS, limitAt: zoneLimit })
     const last = routes.get(sv.routes.at(-1))
     services.push({ id: sv.id, line: sv.line, inbound: !!sv.inbound, spec, path, stops, profile, phase: hash01(sv.id), to: last?.to || stops.at(-1)?.name || line.name })
   }
