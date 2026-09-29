@@ -4,6 +4,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import FieldTextures from './FieldTextures.jsx'
 import Crowd from './Crowd.jsx'
+import Players, { Ball } from './Players.jsx'
+import { uniformColors } from './formations.js'
 import { useSports } from './sportsStore.js'
 import { useStore } from '../state/store.js'
 import { lightLevel } from './venueStates.js'
@@ -40,6 +42,12 @@ function VenueLife({ venue }) {
   return (
     <group ref={group}>
       {quality !== 'LOW' && venue.seats && <SeatCrowd venue={venue} st={st} />}
+      {quality !== 'LOW' && venue.frame && st?.state === 'live' && st.game && (
+        <>
+          <Players frame={venue.frame} sport={st.game.sport} colors={uniformColors(st.game.sport, homeTeamFor(venue, st))} />
+          <Ball frame={venue.frame} sport={st.game.sport} />
+        </>
+      )}
     </group>
   )
 }
