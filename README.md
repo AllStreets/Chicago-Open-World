@@ -4,7 +4,7 @@
 
 **THE CITY, AT FULL SCALE**
 
-<img alt="phase" src="https://img.shields.io/badge/phase-2.5_expanded_city-45d8ff?style=for-the-badge&labelColor=030509"/>
+<img alt="phase" src="https://img.shields.io/badge/phase-vision_V1_one_lake-45d8ff?style=for-the-badge&labelColor=030509"/>
 <img alt="buildings" src="https://img.shields.io/badge/real_buildings-105,971-ff3b53?style=for-the-badge&labelColor=030509"/>
 <img alt="landmarks" src="https://img.shields.io/badge/landmarks-41-45d8ff?style=for-the-badge&labelColor=030509"/>
 <img alt="skyline" src="https://img.shields.io/badge/top_50_skyline-verified-ff3b53?style=for-the-badge&labelColor=030509"/>
@@ -144,6 +144,21 @@ A progressive gallery, oldest first. Images are never replaced — each phase ad
 </tr>
 </table>
 
+### Vision pass V1 · One lake — *unified water, camera clearance, clean venues*
+
+<table>
+<tr>
+<td width="33%"><img src="docs/screenshots/v1-harbor-dusk.png" alt="V1 — Monroe Harbor at dusk, harbour and lake one water body" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/v1-lake-horizon-day.png" alt="V1 — the lake runs to the horizon" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/v1-river-night.png" alt="V1 — the river at night, windows reflected" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Monroe Harbor at dusk — harbour, breakwater and lake are now one body of water sharing the skyline's reflection.</em></td>
+<td><em>No edge of the lake: 120 × 160 km of water fading into a horizon that tracks the time of day.</em></td>
+<td><em>The river canyon at night — lit windows streak across the water.</em></td>
+</tr>
+</table>
+
 ### Next · Vision pass — *one lake, living transit, game nights*
 
 Planned in [the master plan](docs/superpowers/plans/2026-09-29-vision-master-plan.md): a single continuous lake and river, CTA lines in their true colours with a restrained neon glow and accurate trains running on them, stadiums with crowds and game nights (and the W flag when the Cubs win), detailed bridges and landmarks, and each tower in its real colours. Its images will be added here as each milestone lands.
@@ -208,7 +223,7 @@ npm run e2e --prefix app          # hero-view screenshot baselines (Playwright)
 - [x] **1 · Foundation** — real footprints and heights, land, river, lake, sky, Atlas camera, HUD shell
 - [x] **2 · Beauty pass** — generated façades, lit windows, living sky, rooftops, parks & trees, the L, post-processing, minimap, intro flight
 - [x] **2.5 · Expanded city** — Wrigleyville → 35th St, verified top-50 skyline, 41 landmarks, stadiums, sacred buildings, civic icons, horizon fill, streaming, human-first controls
-- [ ] **Vision pass** — unified lake & river, CTA lines in true colours with glow + running trains, stadium game nights & crowds, detailed bridges & landmarks, true building colours, camera clearance
+- [ ] **Vision pass** — ✅ V1 unified lake & river, camera clearance · V2 true building colours · V3–V4 CTA lines & trains · V5 stadium game nights · V6 bridges & landmarks · V7–V8 controls, perf, gallery
 - [ ] **3 · Heroes** — Blender refinement of the procedural landmarks (Aqua's waves, Marina City's petals, …)
 - [ ] **4 · Guide** — VISIT / LIVE / WORK lenses: places (bars, restaurants, venues), neighbourhoods, jobs, tours
 - [ ] **5 · Alive** — live L trains and weather via the CHI ATLAS API, Scan mode
