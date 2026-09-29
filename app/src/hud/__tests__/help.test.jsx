@@ -25,3 +25,12 @@ describe('help + flight chip', () => {
     expect(screen.getByText(/water reflections/i)).toBeInTheDocument()
   })
 })
+
+describe('help: games', () => {
+  it('explains the Games button and ⌘K "tonight"', () => {
+    useStore.setState({ helpOpen: true })
+    render(<HelpOverlay />)
+    expect(screen.getByRole('dialog', { name: 'Controls' })).toHaveTextContent(/tonight/)
+    expect(screen.getByRole('dialog', { name: 'Controls' })).toHaveTextContent(/Games/)
+  })
+})

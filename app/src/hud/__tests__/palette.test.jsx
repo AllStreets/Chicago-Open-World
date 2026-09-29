@@ -57,4 +57,16 @@ describe('CommandPalette', () => {
     fireEvent.change(input, { target: { value: 'k' } })
     expect(useStore.getState().paletteOpen).toBe(true)
   })
+  it('"tonight" finds tonight’s game; Enter flies there and opens the venue card', async () => {
+    const { useSports } = await import('../../sports/sportsStore.js')
+    const W = { key: 'wrigleyfield', name: 'Wrigley Field', kind: 'baseball', teams: ['cubs'], center: [-2292, -7339], frame: { origin: [-2325, -7319], axis: [0.70711, -0.70711] } }
+    useSports.setState({ venues: [W], states: { wrigleyfield: { state: 'live', game: { id: 'x', sport: 'baseball', start: '2026-06-05T18:20:00Z', home: { abbr: 'CHC' }, away: { abbr: 'NYM' } } } } })
+    render(<CommandPalette />)
+    fireEvent.keyDown(window, { key: 'k', metaKey: true })
+    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'tonight' } })
+    expect(screen.getAllByRole('option')[0]).toHaveTextContent("Go to tonight's game")
+    fireEvent.keyDown(screen.getByRole('combobox'), { key: 'Enter' })
+    expect(useStore.getState().flight.label).toBe('Wrigley Field')
+    expect(useSports.getState().cardVenue).toBe('wrigleyfield')
+  })
 })

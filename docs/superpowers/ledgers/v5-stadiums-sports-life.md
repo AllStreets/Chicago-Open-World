@@ -18,6 +18,7 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Task 18: Ruling: the Michael Jordan statue is not modelled — it stands inside the United Center atrium since 2017, not on the plaza — cost: none.
 - Task 19: Ruling: plan's cheers engine created its own AudioContext (2 on the page); now takes V4's shared getAudioContext and never closes it on dispose — cheers test 'share the one sound context' RED→GREEN — cost: none.
 - Task 19: Ruling: the 'check it by ear' step can't be done in this session; replaced with an automated AudioContext/gain probe — cost if wrong: the murmur/swell timbre is unreviewed.
+- Task 20: Ruling: the provenance chip reads 'ESPN' (build-time schedule) or 'SIMULATED', not 'LIVE' — a red LIVE chip beside a game days away read as 'in progress'; LIVE stays for a live game only. Tests updated first (tonight 'labels', sports card) — cost: wording differs from the spec's 'LIVE / SIMULATED chip'.
 
 ## Evaluate and revert (one line per visual step: Keep | Revert — item — shots — reason)
 
@@ -35,6 +36,7 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Keep — D11 — wrigley-board-win/-loss, wrigley-field-win — white flag with blue W over the board after a win, blue with white L after a loss; fans on the field and W flags waving in the stands on the win day.
 - Keep — D14 — uc-plaza, uc-aerial-game, wintrust-aerial-game night — standing fans in Bulls red ring the United Center under its lit fascia; a smaller crowd rings Wintrust.
 - Keep — D10 — automated, not by ear (no audio output in this session): Sound off → 0 AudioContexts at a live Wrigley game; Sound on → exactly 1 (shared with the train rumble); voice level driven by murmurLevel/swellNow, zero beyond CHEER.maxDistance. Needs a human listen for timbre.
+- Keep — D12 — after-hud/games-panel.png, venue-card.png — walked with no URL params: Games button → five venues with states; row → flies there + card; Esc closes; ⌘K 'tonight' → first option 'Go to tonight's game'; help lists Games. Tuned: card moved top-left (was over the transit legend); hint bar shortened (overflowed under the minimap at 1440 px).
 
 ## Perf (pose — calls — triangles — fps — quality — sports)
 
@@ -59,3 +61,4 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Task 17: complete (app 327/327)
 - Task 18: complete (app 328/328)
 - Task 19: complete (app 337/337)
+- Task 20: complete (app 346/346)

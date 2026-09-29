@@ -50,7 +50,7 @@ function score(q, name) {
 export function searchPlaces(query, places) {
   const q = query.trim().toLowerCase()
   if (!q) return [...places.filter((p) => p.kind === 'view'), ...places.filter((p) => p.kind === 'landmark').slice(0, 8), ...places.filter((p) => p.kind === 'neighborhood').slice(0, 6)]
-  const bonus = { landmark: 2, view: 1, neighborhood: 0, command: 1, transit: 1 } // on a tie, a landmark beats the area named after it
+  const bonus = { landmark: 2, view: 1, neighborhood: 0, command: 1, transit: 1, game: 2 } // on a tie, a landmark beats the area named after it
   // nicknames count almost as much as the official name ("the Bean", "Sears Tower")
   const best = (p) => Math.max(score(q, p.name), ...(p.aliases ?? []).map((a) => score(q, a) - 1))
   return places.map((p) => { const s = best(p); return { p, s: s > 0 ? s + (bonus[p.kind] ?? 0) : 0 } }).filter((r) => r.s > 0).sort((a, b) => b.s - a.s).map((r) => r.p)

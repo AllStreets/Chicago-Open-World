@@ -1,0 +1,15 @@
+.games { position: absolute; right: 224px; bottom: 228px; width: 300px; max-height: 60vh; overflow: auto; padding: 10px; animation: hud-rise 0.3s ease both; }
+.games-head, .vc-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.games-head .dock-btn, .vc-head .dock-btn { flex: 0 0 32px; margin-left: auto; }
+.games ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.games-row { width: 100%; display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; text-align: left; padding: 8px; border-radius: var(--r-sm); border: 1px solid var(--border); background: transparent; color: var(--text); cursor: pointer; }
+.games-row:hover { border-color: var(--border-strong); background: rgba(var(--accent-rgb), 0.08); }
+.games-sub { grid-column: 1 / -1; color: var(--text-dim, #9aa); font-family: var(--font-mono); font-size: 11px; }
+.chip { font-family: var(--font-mono); font-size: 10px; padding: 2px 6px; border-radius: 999px; border: 1px solid var(--border); }
+.chip-live { color: #ff5d5d; border-color: #ff5d5d; }
+.chip-simulated { color: #ffb347; border-color: #ffb347; }
+.venue-card { position: absolute; left: 16px; top: 164px; width: 280px; padding: 12px; animation: hud-rise 0.3s ease both; }
+.vc-score { display: flex; flex-direction: column; gap: 4px; font-family: var(--font-mono); font-size: 20px; }
+.vc-row { display: flex; justify-content: space-between; }
+.vc-status, .vc-next, .vc-foot { margin: 6px 0 0; font-size: 12px; }
+.vc-foot { color: var(--text-dim, #9aa); font-size: 11px; }

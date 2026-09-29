@@ -6,6 +6,7 @@ const GROUPS = [
   ['Move around', [['↑ ↓ ← →', 'or W A S D — glide over the city'], ['Shift', '+ W A S D to go faster'], ['R / F', 'or Page Up / Down — rise and descend'], ['Scroll', 'or + / − — zoom in and out']]],
   ['Look around', [['Drag', 'with the mouse to turn and tilt'], ['Shift + arrows', 'or Q / E — turn and tilt'], ['N', 'face north'], ['O', 'slowly orbit where you are']]],
   ['Search and fly', [['⌘K', 'or / — find any landmark, neighborhood or view'], ['Double-click', 'anywhere to fly there'], ['[ ]', 'previous / next view'], ['H', 'back home'], ['Minimap', 'click to fly']]],
+  ['Games', [['Games', "button on the right — tonight's game, live state, scores and the next game"], ['⌘K', 'type “tonight” to fly to tonight’s game'], ['Sound', 'button — hear the crowd near a live game (off until you turn it on)']]],
   ['Time and quality', [['1 – 5', 'live Chicago time, dawn, day, dusk, night'], ['Quality', 'button on the right if things feel slow · Low also turns off water reflections']]],
   ['Transit', [
     ['T', 'or the Transit button — CTA and Metra lines, their glow, the trains and the legend'],

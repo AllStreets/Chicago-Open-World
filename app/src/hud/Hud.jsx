@@ -8,6 +8,8 @@ import ControlDock from './ControlDock.jsx'
 import CommandPalette from './CommandPalette.jsx'
 import HelpOverlay from './HelpOverlay.jsx'
 import FlightChip from './FlightChip.jsx'
+import GamesPanel from './GamesPanel.jsx'
+import VenueCard from './VenueCard.jsx'
 import FollowChip from './FollowChip.jsx'
 import TransitCard from './TransitCard.jsx'
 import { useEffect, useState } from 'react'
@@ -35,6 +37,8 @@ export default function Hud() {
       <ControlDock />
       <TransitLegend />
       <FlightChip />
+      <GamesPanel />
+      <VenueCard />
       <FollowChip />
       <TransitCard />
       <CommandPalette />

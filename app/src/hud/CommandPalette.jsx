@@ -1,16 +1,18 @@
 // app/src/hud/CommandPalette.jsx — ⌘K: search every place and command, then fly there.
 import './CommandPalette.css'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { RiSearchLine, RiBuilding2Line, RiMapPin2Line, RiCameraLensLine, RiSunLine, RiCommandLine, RiTrainLine } from 'react-icons/ri'
+import { RiSearchLine, RiBuilding2Line, RiMapPin2Line, RiCameraLensLine, RiSunLine, RiCommandLine, RiTrainLine, RiTrophyLine } from 'react-icons/ri'
+import { useSports } from '../sports/sportsStore.js'
+import { gamePlaces } from '../sports/palette.js'
 import { transitPlaces } from '../transit/palette.js'
 import { useSoundStore } from '../audio/soundStore.js'
 import { useStore } from '../state/store.js'
 import { buildPlaces, searchPlaces } from '../lib/places.js'
 import { BOOKMARKS } from '../lib/bookmarks.js'
 
-const ICON = { landmark: RiBuilding2Line, neighborhood: RiMapPin2Line, view: RiCameraLensLine, command: RiCommandLine, time: RiSunLine, transit: RiTrainLine }
-const SECTION = { landmark: 'Landmarks', neighborhood: 'Neighborhoods', view: 'Views', command: 'Commands', transit: 'Transit' }
-const ORDER = ['landmark', 'transit', 'neighborhood', 'view', 'command']
+const ICON = { landmark: RiBuilding2Line, neighborhood: RiMapPin2Line, view: RiCameraLensLine, command: RiCommandLine, time: RiSunLine, transit: RiTrainLine, game: RiTrophyLine }
+const SECTION = { landmark: 'Landmarks', neighborhood: 'Neighborhoods', view: 'Views', command: 'Commands', transit: 'Transit', game: 'Games' }
+const ORDER = ['game', 'landmark', 'transit', 'neighborhood', 'view', 'command']
 
 // ⌘K on Mac, Ctrl+K on Windows/Linux; code covers non-Latin keyboard layouts.
 export const isPaletteKey = (e) => (e.metaKey || e.ctrlKey) && (e.key?.toLowerCase() === 'k' || e.code === 'KeyK')
@@ -52,9 +54,11 @@ export default function CommandPalette() {
   useEffect(() => { if (open) { setQ(''); setCursor(0); setTimeout(() => inputRef.current?.focus(), 0) } }, [open])
 
   const transit = useStore((s) => s.transit)
-  const all = useMemo(() => [...buildPlaces(manifest, BOOKMARKS), ...transitPlaces(useStore.getState()).map((p) => ({ ...p, kind: 'transit' })), ...commands()], [manifest, transit, open])
+  const venues = useSports((s) => s.venues)
+  const sportStates = useSports((s) => s.states)
+  const all = useMemo(() => [...gamePlaces({ venues, states: sportStates, nowMs: Date.now() }), ...buildPlaces(manifest, BOOKMARKS), ...transitPlaces(useStore.getState()).map((p) => ({ ...p, kind: 'transit' })), ...commands()], [manifest, transit, open, venues, sportStates])
   const results = useMemo(() => {
-    const found = q.trim() ? searchPlaces(q, all) : [...searchPlaces('', all.filter((p) => p.kind !== 'command' && !(p.kind === 'transit' && p.id.startsWith('st:')))), ...all.filter((p) => p.kind === 'command').slice(0, 5)]
+    const found = q.trim() ? searchPlaces(q, all) : [...all.filter((p) => p.id === 'g:tonight'), ...searchPlaces('', all.filter((p) => p.kind !== 'command' && p.kind !== 'game' && !(p.kind === 'transit' && p.id.startsWith('st:')))), ...all.filter((p) => p.kind === 'command').slice(0, 5)]
     const grouped = ORDER.flatMap((k) => found.filter((r) => r.kind === k))
     return q.trim() ? found.slice(0, 40) : grouped.slice(0, 40)
   }, [q, all])
