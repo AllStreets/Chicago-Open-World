@@ -19,6 +19,8 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Task 19: Ruling: plan's cheers engine created its own AudioContext (2 on the page); now takes V4's shared getAudioContext and never closes it on dispose — cheers test 'share the one sound context' RED→GREEN — cost: none.
 - Task 19: Ruling: the 'check it by ear' step can't be done in this session; replaced with an automated AudioContext/gain probe — cost if wrong: the murmur/swell timbre is unreviewed.
 - Task 20: Ruling: the provenance chip reads 'ESPN' (build-time schedule) or 'SIMULATED', not 'LIVE' — a red LIVE chip beside a game days away read as 'in progress'; LIVE stays for a live game only. Tests updated first (tonight 'labels', sports card) — cost: wording differs from the spec's 'LIVE / SIMULATED chip'.
+- Task 21: Ruling: no hero-view baselines regenerated — 10/10 ×3 pass with ?sports=idle (the plan expected wrigleyville/museum diffs; they fall within snapshot tolerance) — cost: none.
+- Task 21: Ruling: gallery Soldier Field image taken from after-players/soldier-bowl-night (crowd + painted field + players) instead of the plan's after-state shot, which predates fields and crowds — cost: none.
 
 ## Evaluate and revert (one line per visual step: Keep | Revert — item — shots — reason)
 
@@ -39,6 +41,24 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Keep — D12 — after-hud/games-panel.png, venue-card.png — walked with no URL params: Games button → five venues with states; row → flies there + card; Esc closes; ⌘K 'tonight' → first option 'Go to tonight's game'; help lists Games. Tuned: card moved top-left (was over the transit legend); hint bar shortened (overflowed under the minimap at 1440 px).
 
 ## Perf (pose — calls — triangles — fps — quality — sports)
+
+- PERF streeterville HIGH idle: 492 calls, 2653204 tris, 52.8 fps
+- PERF streeterville HIGH live: 492 calls, 2653204 tris, 51.9 fps
+- PERF loop HIGH idle: 394 calls, 1786779 tris, 54.6 fps
+- PERF loop HIGH live: 394 calls, 1786779 tris, 52.6 fps
+- PERF wabash HIGH idle: 271 calls, 1733297 tris, 55.5 fps
+- PERF wabash HIGH live: 271 calls, 1733297 tris, 54.3 fps
+- PERF wrigley-bowl HIGH idle: 249 calls, 1954273 tris, 53.4 fps
+- PERF wrigley-bowl HIGH live: 251 calls, 2091517 tris, 57.4 fps
+- PERF wrigley-bowl LOW idle: 128 calls, 799437 tris, 57.9 fps
+- PERF wrigley-bowl LOW live: 128 calls, 799437 tris, 57.7 fps
+- PERF soldier-bowl HIGH idle: 146 calls, 540077 tris, 57.4 fps
+- PERF soldier-bowl HIGH live: 149 calls, 788477 tris, 57.4 fps
+- PERF soldier-bowl LOW idle: 60 calls, 131985 tris, 58.5 fps
+- PERF soldier-bowl LOW live: 60 calls, 131985 tris, 58.7 fps
+- PERF rate-aerial HIGH idle: 153 calls, 565962 tris, 58.6 fps
+- PERF loop HIGH live: 394 calls, 1786779 tris, 53.8 fps
+- PERF loop HIGH idle: 394 calls, 1786779 tris, 53.3 fps
 
 ## Progress
 - Task 1: complete (bookmarks 7/7; harness smoke 3 passed, soldier-aerial centred)
@@ -62,3 +82,5 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Task 18: complete (app 328/328)
 - Task 19: complete (app 337/337)
 - Task 20: complete (app 346/346)
+- Task 21: complete — perf 3/3 (≤ 492 calls wide; live +2–3 per bowl, +0 at LOW), pipeline 356/356, app 346/346, TZ=Asia/Tokyo sports+audio 80/80, schedules 594 games, world 186.2 MB, e2e 10/10 ×3.
+- V5 done: D2–D15 kept (D2 tuned, D9 tuned, D12 tuned); pre-V5 Soldier Field park overdraw fixed.
