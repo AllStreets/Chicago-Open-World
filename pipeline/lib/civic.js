@@ -3,7 +3,9 @@ import { project } from '../../shared/project.js'
 import { convexHull } from './venue.js'
 import { orientedBox, lathe, DOME } from './sacred.js'
 import { drum, pyramid } from './crowns.js'
-import { add2, sub2, mul2, dot2, norm2, left, bearing, at3, norm3, mesh, quad, merge, tube, slab, barrel, place, catmullRom, ringAround } from './meshkit.js'
+import { add2, sub2, mul2, dot2, len2, norm2, left, bearing, at3, norm3, mesh, tri, quad, merge, tube, slab, barrel, place, catmullRom, ringAround } from './meshkit.js'
+import earcut from 'earcut'
+import { pointInRing } from './geom.js'
 import { LANDMARK_FACADES as F } from './facadeIds.js'
 
 const local = (p) => project(p.lon, p.lat)
@@ -159,9 +161,80 @@ function unionStation(b, spec) {
 function martRiverFace(b, spec) {
   const f = bearing(spec.facingBearing ?? 180), { c, face, side, o0, o1 } = faceOf(b, f), top = spec.pierTop ?? 78, every = spec.pierEvery ?? 6.1
   const piers = mesh(), towers = mesh(), n = Math.max(1, Math.floor((o1 - o0) / every))
-  for (let i = 0; i <= n; i++) slab(piers, add2(add2(c, mul2(f, face + 0.45)), mul2(side, o0 + ((o1 - o0) * i) / n)), f, 0.9, 1.1, 0, top)
-  for (const o of [o0 + 4, o1 - 4]) slab(towers, add2(add2(c, mul2(f, face - 4)), mul2(side, o)), f, 8, 8, top, top + 9)
+  // a pier stops at the roof directly behind it (the Mart steps back; OSM parts carry the heights)
+  // (no pieces known: the spec's pierTop; pieces known but none behind this spot — the outline curves away: no pier)
+  const roofAt = (p) => { if (!b.pieces?.length) return top; const q = add2(p, mul2(f, -2)), pc = b.pieces.filter((x) => pointInRing(q, x.outer)); return pc.length ? Math.max(...pc.map((x) => x.top)) : 0 }
+  for (let i = 0; i <= n; i++) { const at = add2(add2(c, mul2(f, face + 0.45)), mul2(side, o0 + ((o1 - o0) * i) / n)), h = Math.min(top, roofAt(at)); if (h > 3) slab(piers, at, f, 0.9, 1.1, 0, h) }
+  for (const o of [o0 + 4, o1 - 4]) { const at = add2(add2(c, mul2(f, face - 4)), mul2(side, o)), t = Math.min(top, roofAt(at)); if (t > 3) slab(towers, at, f, 8, 8, t, t + 9) }
   return { meshes: [P(piers, F.stone, 'mart-limestone', 'pier'), P(towers, F.stone, 'mart-limestone', 'corner-tower')] }
 }
 
-export const CIVIC = { crownFountain, lurie, bpBridge, artInstitute, picasso, flamingo, culturalCenter, unionStation, martRiverFace }
+// ── Navy Pier (1916) ─ https://en.wikipedia.org/wiki/Navy_Pier — the Headhouse's twin towers at the entrance,
+// and the Aon Grand Ballroom's 100 ft (30.5 m) dome at the east end.
+function headhouse(b, spec) {
+  const f = bearing(spec.facingBearing ?? 270), { c, face, side, o0, o1 } = faceOf(b, f), H = spec.towerH ?? 30, out = []
+  for (const o of [o0 + 4, o1 - 4]) {
+    const at = add2(add2(c, mul2(f, face - 3.5)), mul2(side, o))
+    out.push(P(slab(mesh(), at, f, 7, 7, 0, H), F.stone, 'navy-pier-brick', 'tower'))
+    out.push(P(pyramid({ ring: rectRing(at, f, 7.8, 7.8), base: H, top: H + 6 }), F.roofing, null, 'tower-roof', 0.85))   // terracotta tile
+  }
+  out.push(P(slab(mesh(), add2(add2(c, mul2(f, face + 0.5)), mul2(side, (o0 + o1) / 2)), f, 1, Math.max(4, o1 - o0 - 16), 6, 14), F.stone, 'navy-pier-brick', 'gateway'))
+  return { meshes: out, runtime: { plazas: [{ key: 'navypier', c: add2(c, mul2(f, face + 25)), r: 22, avoid: [] }] } }
+}
+function ballroom(b, spec) {
+  const { c } = obOf(b), top = b.height, r = spec.domeR ?? 15.2
+  return { meshes: [
+    P(drum({ at: c, base: top - 0.5, top: top + 3, r: r * 1.04, sides: 32 }), F.stone, 'navy-pier-brick', 'drum'),
+    P(lathe(c, top + 3, r, DOME, 32), F.stone, 'ballroom-dome', 'dome'),
+    P(drum({ at: c, base: top + 3 + r * 0.97, top: top + 3 + r + 2.5, r: r * 0.12, sides: 12 }), F.stone, 'ballroom-dome', 'lantern'),
+  ] }
+}
+
+// ── Chicago Riverwalk ─ https://en.wikipedia.org/wiki/Chicago_Riverwalk — granite walk along the south bank with
+// its "rooms"; the River Theater's seating steps. (The flat world cannot show its drop below Wacker Drive.)
+function riverwalk(b, spec) {
+  const ring = b.polygons[0].outer, y = spec.y ?? 0.16, meshes = [], flat = ring.flat(), t = earcut(flat, undefined, 2), pave = mesh()
+  for (let i = 0; i < t.length; i += 3) {
+    const v = [t[i], t[i + 1], t[i + 2]]
+    tri(pave, ...v.map((k) => [flat[2 * k], y, flat[2 * k + 1]]), [0, 1, 0], ...v.map((k) => [flat[2 * k], flat[2 * k + 1]]))
+  }
+  meshes.push(P(pave, F.stone, 'riverwalk-granite', 'paving'))
+  const rail = mesh(), facing = (spec.riverFacing ?? [[0, -1]]).map(norm2)
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], c2 = ring[(i + 1) % ring.length], e = sub2(c2, a), L = len2(e)
+    if (L < 1) continue
+    let n = norm2(left(e))
+    if (pointInRing(add2(mul2(add2(a, c2), 0.5), mul2(n, 0.5)), ring)) n = mul2(n, -1)   // point out of the walk
+    if (!facing.some((d) => dot2(n, d) > 0.7)) continue
+    const k = Math.max(1, Math.round(L / 3))
+    for (let j = 0; j <= k; j++) { const p = add2(a, mul2(e, j / k)); tube(rail, at3(p, y), at3(p, y + 1.1), 0.05, 4) }
+    tube(rail, at3(a, y + 1.1), at3(c2, y + 1.1), 0.05, 4)
+  }
+  meshes.push(P(rail, F.steel, 'lamp-post-black', 'railing'))
+  if (spec.theater) {
+    const at = local(spec.theater.at), f = bearing(spec.theater.bearing ?? 180), steps = mesh()
+    for (let k = 0; k < (spec.theater.steps ?? 5); k++) slab(steps, add2(at, mul2(f, k * 1.2)), f, 1.2, spec.theater.w ?? 30, y, y + 0.45 * (k + 1))
+    meshes.push(P(steps, F.stone, 'riverwalk-granite', 'river-theater'))
+  }
+  return { replace: true, pieces: [], meshes }
+}
+
+// ── Lincoln Park Zoo ─ https://en.wikipedia.org/wiki/Lincoln_Park_Zoo — the Kovler Lion House (1912), brick under a
+// hipped tile roof. Lincoln Park Conservatory (1895) ─ https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory —
+// the glass Palm House dome (50 ft) and its vaulted wings.
+function lionHouse(b, spec) {
+  const { c, u, L, W } = obOf(b)
+  return { meshes: [P(pyramid({ ring: rectRing(c, u, L + 1.2, W + 1.2), base: b.height, top: b.height + (spec.roofRise ?? 5) }), F.roofing, null, 'roof', 0.85)] }
+}
+function glasshouse(b, spec) {
+  const { c, u, L, W } = obOf(b), r = spec.domeR ?? 9, glass = (m, part) => P(m, F.wall, 'conservatory-glass', part, 0.35)
+  const meshes = [glass(drum({ at: c, base: 0, top: 6, r, sides: 24 }), 'palm-house'), glass(lathe(c, 6, r, DOME, 24), 'palm-dome')]
+  const wingL = Math.max(6, (L - 2 * r) / 2), wingW = Math.min(W, 14)
+  for (const s of [-1, 1]) {
+    const at = add2(c, mul2(u, s * (r + wingL / 2)))
+    meshes.push(glass(slab(mesh(), at, u, wingL, wingW, 0, 4), 'wing'), glass(barrel(at, u, wingL, wingW, 4, 5), 'wing-vault'))
+  }
+  return { replace: true, pieces: [], meshes }
+}
+
+export const CIVIC = { crownFountain, lurie, bpBridge, artInstitute, picasso, flamingo, culturalCenter, unionStation, martRiverFace, headhouse, ballroom, riverwalk, lionHouse, glasshouse }

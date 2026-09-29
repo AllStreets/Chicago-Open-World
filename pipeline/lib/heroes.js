@@ -51,7 +51,7 @@ export function applyHero(b, spec) {
 
   let venueMeshes, clear, detached, runtime
   if (spec.landmark) {
-    const r = buildLandmark({ ...b, height: spec.heightM ?? b.height }, spec.landmark)
+    const r = buildLandmark({ ...b, height: spec.heightM ?? b.height, pieces }, spec.landmark)
     if (r.replace) pieces = r.pieces ?? []
     venueMeshes = r.meshes
     clear = r.clear

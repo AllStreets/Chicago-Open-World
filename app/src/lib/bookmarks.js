@@ -31,15 +31,15 @@ export const BOOKMARKS = {
   crownfountain: { position: [420, 30, 60], target: [340, 7, 60] },        // towers (339, 34) and (340, 86)
   lurie: { position: [575, 55, 150], target: [506, 1, 66] },
   bpbridge: { position: [650, 45, 10], target: [640, 3, -105] },
-  artinstitute: { position: [262, 30, 300], target: [310, 4, 300] },       // Michigan Ave lions
+  artinstitute: { position: [282, 32, 370], target: [308, 5, 300] },       // Michigan Ave lions
   daleyplaza: { position: [-140, 30, -150], target: [-186, 8, -202] },     // the Picasso
-  federalplaza: { position: [-120, 30, 250], target: [-167, 8, 303] },     // the Flamingo
+  federalplaza: { position: [-230, 45, 380], target: [-167, 8, 303] },     // the Flamingo
   culturalcenter: { position: [330, 90, -300], target: [237, 30, -205] },
   unionstation: { position: [-930, 90, 300], target: [-1043, 20, 373] },
   martriver: { position: [-625, 45, -560], target: [-625, 40, -705] },
   navypierhead: { position: [1480, 50, -980], target: [1541, 14, -1078] }, // Family Pavilion / Headhouse
   ballroom: { position: [2250, 70, -960], target: [2361, 20, -1090] },     // Aon Grand Ballroom
-  riverwalk: { position: [-250, 35, -650], target: [-450, 1, -592] },
+  riverwalk: { position: [-120, 32, -560], target: [80, 1, -606] },
   zoo: { position: [-380, 110, -4150], target: [-560, 5, -4500] },         // Lion House (−456, −4365), Conservatory (−598, −4706)
   // Transit (V3): Tower 18 at Lake & Wells from street level, the Loop from 150 m and 1 km, Fullerton's 4-track corridor
   wellslake: { position: [-380, 32, -412], target: [-495, 7, -412] }, // over Lake St, looking west along the L into Tower 18

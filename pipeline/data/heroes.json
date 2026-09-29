@@ -1963,6 +1963,157 @@
         "https://en.wikipedia.org/wiki/Chicago_Union_Station",
         "OpenStreetMap way 203442440"
       ]
+    },
+    {
+      "key": "navypier",
+      "name": "Navy Pier",
+      "match": {
+        "osmId": 752899916
+      },
+      "heightM": 18,
+      "crowns": [],
+      "landmark": {
+        "type": "headhouse",
+        "facingBearing": 270,
+        "towerH": 30
+      },
+      "aliases": [
+        "Navy Pier entrance",
+        "Headhouse",
+        "Family Pavilion"
+      ],
+      "beacon": {
+        "lat": 41.89174,
+        "lon": -87.60953,
+        "y": 44
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Navy_Pier",
+        "OpenStreetMap way 752899916"
+      ]
+    },
+    {
+      "key": "grandballroom",
+      "name": "Aon Grand Ballroom",
+      "match": {
+        "osmId": 151989533
+      },
+      "heightM": 14,
+      "crowns": [],
+      "landmark": {
+        "type": "ballroom",
+        "domeR": 15.2
+      },
+      "aliases": [
+        "Grand Ballroom",
+        "Navy Pier ballroom",
+        "Navy Pier dome"
+      ],
+      "beacon": {
+        "lat": 41.8918,
+        "lon": -87.6006,
+        "y": 42
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Navy_Pier",
+        "OpenStreetMap way 151989533"
+      ]
+    },
+    {
+      "key": "riverwalk",
+      "name": "Chicago Riverwalk",
+      "match": {
+        "parkOsmId": 504093803
+      },
+      "crowns": [],
+      "landmark": {
+        "type": "riverwalk",
+        "riverFacing": [
+          [
+            0,
+            -1
+          ],
+          [
+            -1,
+            0
+          ]
+        ],
+        "theater": {
+          "at": {
+            "lat": 41.88712,
+            "lon": -87.63182
+          },
+          "bearing": 180,
+          "w": 30,
+          "steps": 5
+        }
+      },
+      "aliases": [
+        "Riverwalk",
+        "River Theater"
+      ],
+      "beacon": {
+        "lat": 41.88712,
+        "lon": -87.63182,
+        "y": 10
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Chicago_Riverwalk",
+        "OpenStreetMap way 504093803"
+      ]
+    },
+    {
+      "key": "lincolnparkzoo",
+      "name": "Lincoln Park Zoo",
+      "match": {
+        "osmId": 210686223
+      },
+      "heightM": 11,
+      "facade": "prewar-brick",
+      "crowns": [],
+      "landmark": {
+        "type": "lionHouse",
+        "roofRise": 5
+      },
+      "aliases": [
+        "zoo",
+        "Kovler Lion House",
+        "Lion House"
+      ],
+      "beacon": {
+        "lat": 41.9211,
+        "lon": -87.6333,
+        "y": 24
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+        "OpenStreetMap way 210686223"
+      ]
+    },
+    {
+      "key": "conservatory",
+      "name": "Lincoln Park Conservatory",
+      "match": {
+        "osmId": 23986733
+      },
+      "crowns": [],
+      "landmark": {
+        "type": "glasshouse",
+        "domeR": 9
+      },
+      "aliases": [
+        "Conservatory",
+        "palm house"
+      ],
+      "beacon": {
+        "lat": 41.9243,
+        "lon": -87.6357,
+        "y": 24
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory",
+        "OpenStreetMap way 23986733"
+      ]
     }
   ]
 }

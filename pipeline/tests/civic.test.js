@@ -100,4 +100,48 @@ describe('Cultural Center, Union Station, Merchandise Mart', () => {
     expect(piers.every((q) => q[2] >= 19.9)).toBe(true)
     expect(Math.max(...piers.map((q) => q[1]))).toBeCloseTo(78)
   })
+  it('Mart: a pier never rises above the roof directly behind it', () => {
+    const b = { ...box(-100, -20, 100, 20, 104), pieces: [
+      { outer: [[-100, -20], [0, -20], [0, 20], [-100, 20]], holes: [], base: 0, top: 60 },   // lower west block on the river
+      { outer: [[0, -20], [100, -20], [100, 20], [0, 20]], holes: [], base: 0, top: 90 },
+    ] }
+    const piers = pts(buildLandmark(b, { type: 'martRiverFace', facingBearing: 180, pierEvery: 6.1, pierTop: 78 }).meshes.filter((m) => m.part === 'pier'))
+    expect(Math.max(...piers.filter((q) => q[0] < -2).map((q) => q[1]))).toBeCloseTo(60)
+    expect(Math.max(...piers.filter((q) => q[0] > 2).map((q) => q[1]))).toBeCloseTo(78)
+    const curved = { ...b, pieces: [b.pieces[0]] }                                          // nothing behind the east half
+    const p2 = pts(buildLandmark(curved, { type: 'martRiverFace', facingBearing: 180, pierEvery: 6.1, pierTop: 78 }).meshes.filter((m) => m.part === 'pier'))
+    expect(p2.every((q) => q[0] < 2)).toBe(true)
+  })
+})
+
+describe('Navy Pier, the Riverwalk, the Zoo and Conservatory', () => {
+  it('Navy Pier Headhouse: twin brick towers with tiled roofs flank the west entrance', () => {
+    const r = buildLandmark(box(1500, -1110, 1600, -1045, 18), { type: 'headhouse', facingBearing: 270, towerH: 30 })
+    const towers = r.meshes.filter((m) => m.part === 'tower')
+    expect(towers).toHaveLength(2); expect(towers[0].style).toBe('navy-pier-brick')
+    expect(ymax(r.meshes.filter((m) => m.part === 'tower-roof'))).toBeCloseTo(36)
+    expect(Math.max(...pts(towers).map((q) => q[0]))).toBeLessThan(1512)   // at the west end
+  })
+  it('Grand Ballroom: the 100 ft (30.5 m) dome with a lantern', () => {
+    const r = buildLandmark(box(2329, -1120, 2393, -1060, 14), { type: 'ballroom', domeR: 15.2 })
+    const dome = pts(r.meshes.filter((m) => m.part === 'dome'))
+    expect(Math.max(...dome.map((q) => q[1]))).toBeCloseTo(14 + 3 + 15.2, 0)
+    expect(r.meshes.some((m) => m.part === 'lantern')).toBe(true)
+  })
+  it('Riverwalk: granite paving, railings only along the river, the River Theater steps', () => {
+    const b = { id: 'p', polygons: [{ outer: [[0, 0], [100, 0], [100, 20], [0, 20]], holes: [] }], centroid: [50, 10], height: 0 }
+    const r = buildLandmark(b, { type: 'riverwalk', riverFacing: [[0, -1]], theater: { at: ll([40, 8]), bearing: 180, w: 20, steps: 5 } })
+    const rail = pts(r.meshes.filter((m) => m.part === 'railing'))
+    expect(rail.length).toBeGreaterThan(0)
+    expect(rail.every((q) => Math.abs(q[2]) < 0.2)).toBe(true)          // only the north (river) edge
+    expect(ymax(r.meshes.filter((m) => m.part === 'river-theater'))).toBeCloseTo(0.16 + 0.45 * 5)
+  })
+  it('Lion House: a hipped tile roof; Conservatory: the 50 ft glass palm house and vaulted wings', () => {
+    const lh = buildLandmark(box(-489, -4377, -423, -4352, 11), { type: 'lionHouse', roofRise: 5 })
+    expect(ymax(lh.meshes)).toBeCloseTo(16)
+    const gh = buildLandmark(box(-643, -4770, -553, -4642, 10), { type: 'glasshouse', domeR: 9 })
+    expect(gh.replace).toBe(true)
+    expect(ymax(gh.meshes.filter((m) => m.part === 'palm-dome'))).toBeCloseTo(15)
+    expect(gh.meshes.filter((m) => m.part === 'wing-vault')).toHaveLength(2)
+  })
 })

@@ -59,11 +59,11 @@ const TREE_CAP = 3000
 function osmPolys(elements) {
   const out = []
   for (const el of elements) {
-    if (el.type === 'way' && el.geometry) out.push({ outer: openRing(el.geometry.map((p) => project(p.lon, p.lat))), holes: [], tags: el.tags || {} })
+    if (el.type === 'way' && el.geometry) out.push({ id: el.id, outer: openRing(el.geometry.map((p) => project(p.lon, p.lat))), holes: [], tags: el.tags || {} })
     else if (el.type === 'relation' && el.members) {
       const ways = (role) => el.members.filter((m) => m.role === role && m.geometry).map((m) => m.geometry.map((p) => project(p.lon, p.lat)))
       const inners = assembleRings(ways('inner'))
-      for (const o of assembleRings(ways('outer'))) out.push({ outer: o, holes: inners.filter((h) => pointInRing(h[0], o)), tags: el.tags || {} })
+      for (const o of assembleRings(ways('outer'))) out.push({ id: el.id, outer: o, holes: inners.filter((h) => pointInRing(h[0], o)), tags: el.tags || {} })
     }
   }
   return out.filter((p) => p.outer.length >= 3).map((p) => ({ ...p, bbox: ringBBox(p.outer) }))
@@ -101,6 +101,7 @@ async function main() {
   for (const [b, ps] of partsByB) applyBuildingParts([b], ps)
   log(`parts: ${parts.length}, buildings with parts: ${partsByB.size}`)
 
+  const greens = osmPolys(uniq(chunks('parks')))
   // ── Heroes + pieces ────────────────────────────────────────────────────────
   const heroes = existsSync(join(ROOT, 'data', 'heroes.json')) ? loadJson(join(ROOT, 'data', 'heroes.json')).heroes : []
   const heroFor = new Map()
@@ -111,7 +112,14 @@ async function main() {
     const b = { id: `m-${h.key}`, osmId: null, source: 'monument', tags: {}, name: h.name, address: null, stories: null, year: null, polygons: [{ outer, holes: [] }], area: Math.PI * r * r, centroid: c, bbox: ringBBox(outer), height: 0, heightSource: 'default', parts: null }
     buildings.push(b); heroFor.set(b, h)
   }
-  for (const h of heroes.filter((x) => !x.match.synthetic)) {
+  // landmarks OSM maps as parks (the Riverwalk) get their park polygon as a footprint
+  for (const h of heroes.filter((x) => x.match.parkOsmId)) {
+    const p = greens.find((g) => g.id === h.match.parkOsmId)
+    if (!p) throw new Error(`hero park not found in OSM data: ${h.name} (${h.match.parkOsmId})`)
+    const b = { id: `p-${h.key}`, osmId: null, source: 'park', tags: {}, name: h.name, address: null, stories: null, year: null, polygons: [{ outer: p.outer, holes: p.holes }], area: Math.abs(signedArea(p.outer)), centroid: ringCentroid(p.outer), bbox: p.bbox, height: 0, heightSource: 'default', parts: null }
+    buildings.push(b); heroFor.set(b, h)
+  }
+  for (const h of heroes.filter((x) => !x.match.synthetic && !x.match.parkOsmId)) {
     let b = h.match.osmId ? findByOsm(buildings, h.match.osmId) : null
     if (!b && h.match.lat) { const p = project(h.match.lon, h.match.lat); b = bIdx.query(p, 200).find((x) => x.polygons.some((q) => pointInRing(p, q.outer))) }
     if (!b) throw new Error(`hero not found in OSM data: ${h.name} (${JSON.stringify(h.match)})`)
@@ -162,7 +170,6 @@ async function main() {
   assertSkyline(sky)
 
   // ── Ground sources ─────────────────────────────────────────────────────────
-  const greens = osmPolys(uniq(chunks('parks')))
   const parks = greens.filter((p) => p.tags.natural !== 'beach' && p.tags.leisure !== 'pitch'), beaches = greens.filter((p) => p.tags.natural === 'beach')
   const pitches = greens.filter((p) => p.tags.leisure === 'pitch')
   const water = osmPolys(uniq(chunks('water'))).filter((p) => keepWater(p.tags))
