@@ -5,6 +5,8 @@ import { loadManifest, groundFiles } from '../lib/manifest.js'
 import SafeLoad from './SafeLoad.jsx'
 import { sunForPreset } from '../lib/sun.js'
 import City from './City.jsx'
+import Trees from './Trees.jsx'
+import ElevatedL from './ElevatedL.jsx'
 import Ground from './Ground.jsx'
 import Lake from './Lake.jsx'
 import SkyRig from './SkyRig.jsx'
@@ -22,6 +24,8 @@ export default function Scene() {
   const [now, setNow] = useState(() => new Date())
   const sun = useMemo(() => sunForPreset(preset, now), [preset, now])
   const sunRef = useRef(null)
+  const markTrees = useMemo(() => () => useStore.getState().markLoaded('trees'), [])
+  const markColumns = useMemo(() => () => useStore.getState().markLoaded('columns'), [])
   const reducedMotion = useMemo(() => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false, [])
 
   useEffect(() => {
@@ -36,7 +40,8 @@ export default function Scene() {
     if (['LIVE', 'DAWN', 'DAY', 'DUSK', 'NIGHT'].includes(t)) setTimePreset(t)
     loadManifest().then((r) => {
       if (!r.ok) { setLoadError(r.error); return }
-      setLoadTotal(r.manifest.tiles.length + 2)
+      const g = r.manifest.ground
+      setLoadTotal(r.manifest.tiles.length + Object.keys(g).length + (r.manifest.trees ? 1 : 0) + (r.manifest.columns ? 1 : 0))
       setManifest(r.manifest)
     })
   }, [])
@@ -49,6 +54,8 @@ export default function Scene() {
       <SafeLoad><Suspense fallback={null}><Lake sunRef={sunRef} /></Suspense></SafeLoad>
       {(manifest || failed) && <Ground ground={groundFiles(manifest)} />}
       {manifest && <City tiles={manifest.tiles} />}
+      {manifest?.trees && <Trees file={manifest.trees} onLoaded={markTrees} />}
+      {manifest?.columns && <ElevatedL file={manifest.columns} onLoaded={markColumns} />}
       <AtlasRig />
       <PostFX />
       <PerfWatch />

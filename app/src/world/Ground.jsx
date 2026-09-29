@@ -1,29 +1,37 @@
-// app/src/world/Ground.jsx — land (city boundary) + river/harbour water.
-import { Suspense, useEffect, useMemo } from 'react'
+// app/src/world/Ground.jsx — land, water, parks, beaches, sidewalks, roads, rail, the L deck.
+import { Suspense, useEffect, useMemo, useState } from 'react'
+import { useFrame } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
-import * as THREE from 'three'
 import { useStore } from '../state/store.js'
 import SafeLoad from './SafeLoad.jsx'
+import { groundMaterials } from './materials/groundMaterials.js'
+import { facadeUniforms } from './materials/facadeMaterial.js'
 
-const landMat = new THREE.MeshStandardMaterial({ color: '#8a8780', roughness: 1 })
-const riverMat = new THREE.MeshStandardMaterial({ color: '#2f5a63', roughness: 0.3, metalness: 0, polygonOffset: true, polygonOffsetFactor: -2 })
+const LAYERS = ['land', 'river', 'parks', 'beaches', 'sidewalks', 'roads', 'rail', 'elevated']
 
-function Flat({ file, material }) {
+function Flat({ file, material, cast }) {
   const { scene } = useGLTF(`/world/${file}`, false, false)
   const markLoaded = useStore((s) => s.markLoaded)
   const obj = useMemo(() => {
-    scene.traverse((o) => { if (o.isMesh) { o.material = material; o.receiveShadow = true } })
+    scene.traverse((o) => { if (o.isMesh) { o.material = material; o.receiveShadow = true; o.castShadow = !!cast } })
     return scene
-  }, [scene, material])
+  }, [scene, material, cast])
   useEffect(() => { markLoaded(file) }, [markLoaded, file])
   return <primitive object={obj} />
 }
 
 export default function Ground({ ground }) {
+  const [g, setG] = useState(null)
+  useEffect(() => {
+    fetch('/textures/ground/ground.json').then((r) => (r.ok ? r.json() : {})).catch(() => ({})).then(setG)
+  }, [])
+  const mats = useMemo(() => (g ? groundMaterials(g) : null), [g])
+  useFrame(() => { if (mats) mats.roads.emissiveIntensity = facadeUniforms.uNight.value * 0.18 })
+  if (!mats) return null
   const fail = (file) => (err) => { console.warn(`ground failed: ${file}`, err); useStore.getState().markLoaded(file) }
-  return [[ground.land, landMat], [ground.river, riverMat]].map(([file, mat]) => (
-    <SafeLoad key={file} onError={fail(file)}>
-      <Suspense fallback={null}><Flat file={file} material={mat} /></Suspense>
+  return LAYERS.filter((k) => ground[k]).map((k) => (
+    <SafeLoad key={k} onError={fail(ground[k])}>
+      <Suspense fallback={null}><Flat file={ground[k]} material={mats[k]} cast={k === 'elevated'} /></Suspense>
     </SafeLoad>
   ))
 }
