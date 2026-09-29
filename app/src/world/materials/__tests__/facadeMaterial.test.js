@@ -66,7 +66,7 @@ describe('patchFacadeShader', () => {
   })
   it('crown night light: flood reflects off the wall, lantern glows, both only at night inside the band', () => {
     const f = patchFacadeShader(std()).fragmentShader
-    const em = f.slice(f.indexOf('crown and façade night lighting'))
+    const em = f.slice(f.indexOf('if (styled && uNight > 0.001)'))
     expect(em).toContain('if (styled && uNight > 0.001)')
     expect(em).toContain('vec4 C5 = styleTexel(si, 5), C6 = styleTexel(si, 6);')
     expect(em).toContain('float band = step(C6.r, vWPos.y) * step(vWPos.y, C6.g);')
