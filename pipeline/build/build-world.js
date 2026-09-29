@@ -245,6 +245,8 @@ async function main() {
       { name: 'Wikipedia — List of tallest buildings in Chicago', id: 'skyline.json' },
     ],
     skyline: { missing: sky.missing, wrongHeight: sky.wrongHeight },
+    landmarks: buildings.filter((b) => b.hero).map((b) => ({ key: b.hero, name: heroes.find((h) => h.key === b.hero)?.name ?? b.name, x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(...b.pieces.map((p) => p.top), ...(b.extraMeshes || []).flatMap((m) => m.positions.filter((_, i) => i % 3 === 1)))) })),
+    tallest: buildings.filter((b) => !b.hero && b.name && b.pieces.length && Math.max(...b.pieces.map((p) => p.top)) > 150).map((b) => ({ key: b.id, name: b.name, x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(...b.pieces.map((p) => p.top))) })),
     tiles, land: 'ground/land.glb', landMask: 'land.json', minimap: { file: 'minimap.png', bounds: mmBounds, size: 2048 },
   }, null, 1))
   log('manifest written')

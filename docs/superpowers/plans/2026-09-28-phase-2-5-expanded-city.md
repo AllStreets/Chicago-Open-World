@@ -436,3 +436,28 @@ describe('planTiles', () => {
 - [ ] **Step 3:** e2e: add `wrigleyville@day`, `westloop@dusk`, `navypier@night`; regenerate; 3 consecutive green runs.
 - [ ] **Step 4:** README: new hero shot, scope section (bounds + neighbourhoods), skyline section (top-50 validated, 28 landmarks), data section (OSM primary, City enrichment), roadmap (Phase 2.5 ticked; note Phases 3–7 revised).
 - [ ] **Step 5:** `npm test`, `npm run build`, sizes; commit + push `feat: Phase 2.5 — expanded city and accurate skyline`
+
+---
+
+### Task 11: Human controls (added at the user's request, 2026-09-28)
+
+The world must be operable by someone with no coding ability, with familiar computer controls. URL params stay test-only.
+
+**Files:** Create `app/src/lib/controls.js`, `app/src/lib/flight.js`, `app/src/lib/places.js` (+ tests), `app/src/hud/CommandPalette.jsx/.css`, `app/src/hud/ControlDock.jsx/.css`, `app/src/hud/HelpOverlay.jsx`; modify `AtlasRig.jsx`, `store.js`, `HintBar.jsx`, `Hud.jsx`, `pipeline/build/build-world.js` (manifest `landmarks`).
+
+**Interfaces:**
+- `keyIntent(keys:Set<string>) → { move:[fwd,right], turn, tilt, climb, zoom, boost }` — Google-Earth-style: **W/↑ forward, S/↓ back, A/← left, D/→ right; Shift+←/→ or Q/E turn; Shift+↑/↓ tilt; R/PageUp up, F/PageDown down; =/+ zoom in, − zoom out; Shift (with letters) boost**.
+- Discrete keys (ControlPills/AtlasRig): **⌘K / Ctrl+K / "/"** palette; **[ ]** previous/next view; **H** home; **N** face north; **?** help; **O** orbit; **1–5** time; **Q quality moves to the dock** (Q now turns).
+- `flightDuration(fromPose, toPose) → s` (1.4–4.5 s by distance); `flyPose(from, to, t) → pose` — eased target interpolation, position arcs up by `min(1400, 0.35·dist)`·sin(πt) so long jumps swoop over the city; exact endpoints.
+- `poseForPlace({x, z, top})` — framing shot from the south-east: distance `max(420, top·2.3)`, altitude `top·0.85 + 90`, target height `top·0.5`.
+- `NEIGHBORHOODS` (≈26 named areas with world x,z); `buildPlaces(manifest, bookmarks) → Place[]` (`{id, kind:'landmark'|'neighborhood'|'view', name, sub, pose}`); `searchPlaces(q, places) → Place[]` ranked (prefix > word-start > substring > subsequence), empty query → curated defaults.
+- Store: `flight: null | { to: pose, from?: pose, t0?, dur }`, `startFlight(pose)`, `viewIndex`, `helpOpen`, `paletteOpen`.
+- AtlasRig: runs flights (any user input cancels), `keyIntent` for continuous motion, double-click on the ground → fly there (raycast y=0 plane), minimap click → flight.
+- `<CommandPalette>`: CHI-style glass modal (fade + pop), grouped results (Landmarks, Neighborhoods, Views, Time of day, Quality), ↑↓ + Enter, hover highlight, Esc; picking a place closes the palette and starts the fly-over with a "FLYING TO …" chip.
+- `<ControlDock>` (right side, above the minimap): zoom + / −, turn ⟲ ⟳, tilt ▲ ▼, compass (click → north, needle follows heading), home, previous / next view with the current view's name, help "?", quality pill.
+- `<HelpOverlay>`: every control in plain words, grouped (Move, Look, Jump, Time & quality); opens on "?" and on first visit (dismissible, remembered in localStorage).
+
+- [ ] Step 1: failing tests for `keyIntent`, `flyPose`/`flightDuration`/`poseForPlace`, `searchPlaces`/`buildPlaces`, palette keyboard flow (RTL), dock buttons dispatching store actions.
+- [ ] Step 2–3: implement; ✓ tests.
+- [ ] Step 4: visual check the way a person uses it: press ⌘K, type "wrig", Enter → watch the fly-over land on Wrigley Field; arrows move; Shift+arrows turn; ] cycles views; dock buttons work; ? shows help.
+- [ ] Step 5: commit + push `feat(app): human controls — ⌘K fly-to, arrows, views, dock, help`
