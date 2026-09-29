@@ -8,7 +8,7 @@
         "material": "black anodized aluminium curtain wall, bronze-tinted glass, white antennas",
         "finish": "metal",
         "base": "#1c1b1a",
-        "glass": "#4a3a2c",
+        "glass": "#2a241f",
         "mullion": "#121212",
         "spandrel": "#1c1b1a",
         "top": "#e6e6e3",
@@ -28,7 +28,8 @@
         "source": [
           "https://en.wikipedia.org/wiki/Willis_Tower",
           "https://www.architecturelab.net/willis-tower-sears-tower-skidmore-owings-merrill/"
-        ]
+        ],
+        "note": "tuned V2: sourced bronze glass #4a3a2c read brown at scale (glass fills most of the curtain wall); darkened toward the near-black the tower reads as"
       },
       "skylineName": "Willis Tower",
       "match": {
@@ -100,7 +101,7 @@
       "key": "aon",
       "name": "Aon Center",
       "look": {
-        "material": "white Mount Airy granite (1992–94 recladding of the Carrara marble), narrow vertical windows",
+        "material": "white Mount Airy granite (1992\u201394 recladding of the Carrara marble), narrow vertical windows",
         "finish": "granite",
         "base": "#e6e4de",
         "glass": "#3b4046",
@@ -1328,7 +1329,7 @@
       "key": "chicagotheatre",
       "name": "Chicago Theatre",
       "look": {
-        "material": "glazed off-white ('old ivory') terra cotta, triumphal-arch façade",
+        "material": "glazed off-white ('old ivory') terra cotta, triumphal-arch fa\u00e7ade",
         "finish": "terracotta",
         "base": "#e8dcc4",
         "glass": "#3a3f44",
@@ -1463,7 +1464,7 @@
       "key": "historicwatertower",
       "name": "Chicago Water Tower",
       "look": {
-        "material": "yellow Joliet–Lemont limestone, castellated Gothic Revival",
+        "material": "yellow Joliet\u2013Lemont limestone, castellated Gothic Revival",
         "finish": "limestone",
         "base": "#d8c38f",
         "glass": "#3a3f44",
@@ -1504,7 +1505,7 @@
         "mullion": "#151618",
         "spandrel": "#1f2124",
         "render": false,
-        "note": "the venue glass-steel wall already reads correctly; a pattern-unaware black recolour would darken the glass — refine in Phase 3",
+        "note": "the venue glass-steel wall already reads correctly; a pattern-unaware black recolour would darken the glass \u2014 refine in Phase 3",
         "source": [
           "https://docomomo-us.org/register/s-r-crown-hall",
           "https://en.wikipedia.org/wiki/S._R._Crown_Hall"

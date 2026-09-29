@@ -56,7 +56,7 @@ describe('heroes.json looks (F1, F7)', () => {
   })
   it('the named targets read as specified (B.6)', () => {
     const L = Object.fromEntries(heroes.map((h) => [h.key, h.look]))
-    expect(L.willis).toMatchObject({ finish: 'metal', base: '#1c1b1a', glass: '#4a3a2c' })
+    expect(L.willis).toMatchObject({ finish: 'metal', base: '#1c1b1a', glass: '#2a241f' })
     expect(L.aon).toMatchObject({ finish: 'granite', base: '#e6e4de' })
     expect(L.trump).toMatchObject({ finish: 'glass', glass: '#9fb3c4' })
     expect(L.wrigleybldg).toMatchObject({ finish: 'terracotta', crownLight: { kind: 'flood' } })
