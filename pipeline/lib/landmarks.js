@@ -54,6 +54,7 @@ function disc(at, r, y, sides = 48) {
   return out
 }
 
+const ringAround = (c, r, n = 24) => Array.from({ length: n }, (_, i) => [c[0] + r * Math.cos((i / n) * Math.PI * 2), c[1] + r * Math.sin((i / n) * Math.PI * 2)])
 const hullOf = (b) => convexHull(b.polygons.flatMap((p) => p.outer))
 const obOf = (b) => orientedBox(hullOf(b))
 
@@ -104,7 +105,8 @@ function bean(b) {
     const want = sub3(a.p, a.ctr)
     tri(out, a.p, b2.p, cc.p, want, [i, j], [i + 1, j], [i + 1, j + 1]); tri(out, a.p, cc.p, d.p, want, [i, j], [i + 1, j + 1], [i, j + 1])
   }
-  return { replace: true, pieces: [], meshes: [{ mesh: out, facade: F.chrome, seed: 0.1, part: 'bean' }] }
+  // AT&T Plaza: open granite around the sculpture
+  return { replace: true, pieces: [], meshes: [{ mesh: out, facade: F.chrome, seed: 0.1, part: 'bean' }], clear: [ringAround(c, 42)] }
 }
 
 // ── Buckingham Fountain ──────────────────────────────────────────────────────
@@ -121,7 +123,7 @@ function fountain(b) {
     meshes.push({ mesh: disc(c, r * 0.97, top - 0.05, 40), facade: F.water, seed: 0.1, part: 'basin-water' })
   }
   meshes.push({ mesh: spire({ at: c, base: 9.2, top: 17, r0: 0.45, r1: 0.12, sides: 10 }), facade: F.paint, seed: STYLE.paint.white, part: 'jet' })
-  return { replace: true, pieces: [], meshes }
+  return { replace: true, pieces: [], meshes, clear: [ringAround(c, 58)] }
 }
 
 // ── Chicago Theatre sign ─────────────────────────────────────────────────────
@@ -234,7 +236,8 @@ function pavilion(b, spec) {
     const p = add2(add2(lc, mul2(d, x * lawn.L)), mul2(side, sv * (lawn.W / 2 + 2)))
     tube(trellis, at3(p, 0), at3(p, arch(x * lawn.L)), 1.2, 8)
   }
-  return { meshes: [
+  const lawnRing = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([a, s2]) => add2(add2(lc, mul2(d, (a * lawn.L) / 2)), mul2(side, (s2 * lawn.W) / 2)))
+  return { clear: [lawnRing], meshes: [
     { mesh: ribbons, facade: F.chrome, seed: 0.1, part: 'headdress' },
     { mesh: trellis, facade: F.steel, seed: STYLE.steel.white, part: 'trellis' },
   ] }

@@ -10,7 +10,10 @@
       },
       "facade": "curtain-glass",
       "tint": "dark",
-      "crowns": []
+      "crowns": [],
+      "aliases": [
+        "Sears Tower"
+      ]
     },
     {
       "key": "trump",
@@ -22,7 +25,10 @@
       "facade": "curtain-glass",
       "tint": "silver",
       "crowns": [],
-      "spireCounts": true
+      "spireCounts": true,
+      "aliases": [
+        "Trump Tower"
+      ]
     },
     {
       "key": "stregis",
@@ -34,7 +40,11 @@
       "heightM": 363,
       "facade": "curtain-glass",
       "tint": "green",
-      "crowns": []
+      "crowns": [],
+      "aliases": [
+        "Vista Tower",
+        "Wanda Vista"
+      ]
     },
     {
       "key": "aon",
@@ -45,7 +55,11 @@
       },
       "heightM": 346,
       "facade": "precast-concrete",
-      "crowns": []
+      "crowns": [],
+      "aliases": [
+        "Standard Oil Building",
+        "Amoco Building"
+      ]
     },
     {
       "key": "hancock",
@@ -59,7 +73,12 @@
       },
       "facade": "curtain-glass",
       "tint": "dark",
-      "crowns": []
+      "crowns": [],
+      "aliases": [
+        "John Hancock Center",
+        "Hancock Tower",
+        "875 North Michigan"
+      ]
     },
     {
       "key": "franklin",
@@ -110,6 +129,10 @@
           "top": 307,
           "r0": 1.8
         }
+      ],
+      "aliases": [
+        "AT&T Corporate Center",
+        "Franklin Center"
       ]
     },
     {
@@ -145,6 +168,10 @@
           "top": 303,
           "r0": 1.4
         }
+      ],
+      "aliases": [
+        "Two Prudential Plaza",
+        "Pru"
       ]
     },
     {
@@ -176,7 +203,10 @@
           "to": 146
         }
       ],
-      "crowns": []
+      "crowns": [],
+      "aliases": [
+        "One Chicago Square"
+      ]
     },
     {
       "key": "311wacker",
@@ -198,7 +228,10 @@
       "heightM": 273,
       "facade": "curtain-glass",
       "tint": "silver",
-      "crowns": []
+      "crowns": [],
+      "aliases": [
+        "NEMA Chicago"
+      ]
     },
     {
       "key": "900michigan",
@@ -218,7 +251,11 @@
         "osmId": 230613007
       },
       "facade": "precast-concrete",
-      "crowns": []
+      "crowns": [],
+      "aliases": [
+        "Chase Tower",
+        "Bank One"
+      ]
     },
     {
       "key": "watertower",
@@ -228,7 +265,10 @@
         "osmId": 64627674
       },
       "facade": "precast-concrete",
-      "crowns": []
+      "crowns": [],
+      "aliases": [
+        "Water Tower Place"
+      ]
     },
     {
       "key": "aqua",
@@ -240,7 +280,10 @@
       "heightM": 261.8,
       "facade": "curtain-glass",
       "tint": "silver",
-      "crowns": []
+      "crowns": [],
+      "aliases": [
+        "Aqua Tower"
+      ]
     },
     {
       "key": "400lsd",
@@ -252,7 +295,11 @@
       "heightM": 259.1,
       "facade": "curtain-glass",
       "tint": "silver",
-      "crowns": []
+      "crowns": [],
+      "aliases": [
+        "400 Lake Shore Drive",
+        "Spire site"
+      ]
     },
     {
       "key": "salesforce",
@@ -263,7 +310,10 @@
       },
       "facade": "curtain-glass",
       "tint": "blue",
-      "crowns": []
+      "crowns": [],
+      "aliases": [
+        "Salesforce Tower"
+      ]
     },
     {
       "key": "110wacker",
@@ -297,7 +347,11 @@
       },
       "heightM": 179,
       "facade": "precast-concrete",
-      "crowns": []
+      "crowns": [],
+      "aliases": [
+        "Marina City",
+        "corn cobs"
+      ]
     },
     {
       "key": "marina2",
@@ -307,7 +361,11 @@
       },
       "heightM": 179,
       "facade": "precast-concrete",
-      "crowns": []
+      "crowns": [],
+      "aliases": [
+        "Marina City",
+        "corn cobs"
+      ]
     },
     {
       "key": "lakepoint",
@@ -318,7 +376,10 @@
       },
       "facade": "curtain-glass",
       "tint": "dark",
-      "crowns": []
+      "crowns": [],
+      "aliases": [
+        "Lake Point Tower"
+      ]
     },
     {
       "key": "wrigleybldg",
@@ -327,7 +388,10 @@
         "osmId": 17460539
       },
       "facade": "precast-concrete",
-      "crowns": []
+      "crowns": [],
+      "aliases": [
+        "Wrigley Building"
+      ]
     },
     {
       "key": "tribune",
@@ -336,7 +400,10 @@
         "osmId": 150407241
       },
       "facade": "loop-limestone",
-      "crowns": []
+      "crowns": [],
+      "aliases": [
+        "Tribune Tower"
+      ]
     },
     {
       "key": "mart",
@@ -345,7 +412,11 @@
         "osmId": 28293211
       },
       "facade": "loop-limestone",
-      "crowns": []
+      "crowns": [],
+      "aliases": [
+        "Merchandise Mart",
+        "theMART"
+      ]
     },
     {
       "key": "cbot",
@@ -354,7 +425,11 @@
         "osmId": 28951633
       },
       "facade": "loop-limestone",
-      "crowns": []
+      "crowns": [],
+      "aliases": [
+        "Board of Trade",
+        "CBOT"
+      ]
     },
     {
       "key": "crain",
@@ -377,6 +452,11 @@
             -1
           ]
         }
+      ],
+      "aliases": [
+        "Diamond building",
+        "Smurfit-Stone Building",
+        "Crain Communications Building"
       ]
     },
     {
@@ -388,7 +468,12 @@
       "heightM": 30,
       "facade": "arena",
       "crowns": [],
-      "wallStyle": "arena"
+      "wallStyle": "arena",
+      "aliases": [
+        "Bulls",
+        "Blackhawks",
+        "UC"
+      ]
     },
     {
       "key": "soldierfield",
@@ -486,7 +571,10 @@
             "setback": 14
           }
         ]
-      }
+      },
+      "aliases": [
+        "Bears"
+      ]
     },
     {
       "key": "wrigleyfield",
@@ -582,7 +670,11 @@
           "base": 7
         },
         "roofDepth": 0.42
-      }
+      },
+      "aliases": [
+        "Cubs",
+        "Wrigley"
+      ]
     },
     {
       "key": "ratefield",
@@ -664,7 +756,13 @@
           "setback": 10
         },
         "roofDepth": 0.3
-      }
+      },
+      "aliases": [
+        "Guaranteed Rate Field",
+        "Comiskey Park",
+        "White Sox",
+        "Sox Park"
+      ]
     },
     {
       "key": "wintrust",
@@ -675,7 +773,11 @@
       "heightM": 25,
       "facade": "arena",
       "wallStyle": "glass-steel",
-      "crowns": []
+      "crowns": [],
+      "aliases": [
+        "DePaul arena",
+        "Sky"
+      ]
     },
     {
       "key": "centennialwheel",
@@ -687,7 +789,11 @@
       "landmark": {
         "type": "wheel",
         "heightM": 59.7
-      }
+      },
+      "aliases": [
+        "Ferris wheel",
+        "Navy Pier wheel"
+      ]
     },
     {
       "key": "cloudgate",
@@ -698,7 +804,11 @@
       "crowns": [],
       "landmark": {
         "type": "bean"
-      }
+      },
+      "aliases": [
+        "The Bean",
+        "Bean"
+      ]
     },
     {
       "key": "buckingham",
@@ -712,7 +822,11 @@
       "crowns": [],
       "landmark": {
         "type": "fountain"
-      }
+      },
+      "aliases": [
+        "fountain",
+        "Clarence Buckingham Memorial Fountain"
+      ]
     },
     {
       "key": "pritzker",
@@ -730,7 +844,11 @@
           "W": 80,
           "h": 20
         }
-      }
+      },
+      "aliases": [
+        "bandshell",
+        "Millennium Park pavilion"
+      ]
     },
     {
       "key": "chicagotheatre",
@@ -742,7 +860,10 @@
       "landmark": {
         "type": "theatreSign",
         "facingBearing": 90
-      }
+      },
+      "aliases": [
+        "Chicago Theater"
+      ]
     },
     {
       "key": "adler",
@@ -760,7 +881,10 @@
           "r": 11,
           "style": "copper"
         }
-      }
+      },
+      "aliases": [
+        "planetarium"
+      ]
     },
     {
       "key": "shedd",
@@ -779,7 +903,10 @@
           "style": "slate",
           "sides": 8
         }
-      }
+      },
+      "aliases": [
+        "aquarium"
+      ]
     },
     {
       "key": "fieldmuseum",
@@ -798,7 +925,11 @@
           "columns": 8,
           "h": 14
         }
-      }
+      },
+      "aliases": [
+        "natural history museum",
+        "Sue the T. rex"
+      ]
     },
     {
       "key": "historicwatertower",
@@ -813,7 +944,10 @@
       "landmark": {
         "type": "castellated",
         "heightM": 55.4
-      }
+      },
+      "aliases": [
+        "Old Water Tower"
+      ]
     },
     {
       "key": "crownhall",
@@ -823,7 +957,11 @@
       },
       "facade": "arena",
       "wallStyle": "glass-steel",
-      "crowns": []
+      "crowns": [],
+      "aliases": [
+        "IIT",
+        "Mies van der Rohe"
+      ]
     }
   ]
 }

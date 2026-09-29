@@ -18,4 +18,12 @@ describe('places', () => {
     expect(searchPlaces('', places).length).toBeGreaterThan(5)
     expect(searchPlaces('zzqxv', places)).toEqual([])
   })
+  it('finds landmarks by the names people actually use', () => {
+    const places = buildPlaces({ landmarks: [
+      { key: 'cloudgate', name: 'Cloud Gate', aliases: ['The Bean'], x: 0, z: 0, top: 10 },
+      { key: 'willis', name: 'Willis Tower', aliases: ['Sears Tower'], x: 0, z: 0, top: 527 },
+    ], tallest: [{ key: 'cq', name: 'Club Quarters Hotel, Wacker at Michigan', x: 0, z: 0, top: 158 }] }, {})
+    expect(searchPlaces('bean', places)[0].name).toBe('Cloud Gate')
+    expect(searchPlaces('sears', places)[0].name).toBe('Willis Tower')
+  })
 })

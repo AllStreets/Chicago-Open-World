@@ -67,3 +67,15 @@ describe('campus buildings', () => {
     expect(classifyFacade({ height: 12, year: 1910, area: 900, type: 'college' })).toBe(F2['loop-limestone'])
   })
 })
+
+describe('landmark clearings', () => {
+  it('the Bean, the fountain and the Great Lawn keep their ground free of trees', () => {
+    const bean = buildLandmark(B(rect(-10, -6.4, 10, 6.4)), { type: 'bean' })
+    expect(bean.clear?.length).toBe(1)
+    const f = buildLandmark({ id: 'f', polygons: [], centroid: [0, 0] }, { type: 'fountain' })
+    expect(Math.max(...f.clear[0].map((p) => Math.hypot(...p)))).toBeGreaterThan(45)
+    const pav = buildLandmark(B(rect(-15, -15, 15, 15)), { type: 'pavilion', facingBearing: 90, lawn: { dist: 70, L: 118, W: 80, h: 20 } })
+    const xs = pav.clear[0].map((p) => p[0])
+    expect(Math.max(...xs)).toBeGreaterThan(120)
+  })
+})

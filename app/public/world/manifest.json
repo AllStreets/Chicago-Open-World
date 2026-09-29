@@ -1,6 +1,6 @@
 {
  "version": 3,
- "generatedAt": "2026-09-29T04:41:05.806Z",
+ "generatedAt": "2026-09-29T05:01:08.111Z",
  "origin": {
   "lat": 41.88203,
   "lon": -87.62784
@@ -44,6 +44,10 @@
   {
    "key": "wintrust",
    "name": "Wintrust Arena",
+   "aliases": [
+    "DePaul arena",
+    "Sky"
+   ],
    "x": 538,
    "z": 3150,
    "top": 25
@@ -51,6 +55,10 @@
   {
    "key": "fieldmuseum",
    "name": "Field Museum",
+   "aliases": [
+    "natural history museum",
+    "Sue the T. rex"
+   ],
    "x": 900,
    "z": 1757,
    "top": 26
@@ -58,6 +66,9 @@
   {
    "key": "nema",
    "name": "NEMA Chicago",
+   "aliases": [
+    "NEMA Chicago"
+   ],
    "x": 395,
    "z": 1672,
    "top": 281
@@ -65,6 +76,7 @@
   {
    "key": "1000m",
    "name": "1000M",
+   "aliases": [],
    "x": 251,
    "z": 1346,
    "top": 245
@@ -72,6 +84,9 @@
   {
    "key": "soldierfield",
    "name": "Soldier Field",
+   "aliases": [
+    "Bears"
+   ],
    "x": 854,
    "z": 2194,
    "top": 51
@@ -79,6 +94,9 @@
   {
    "key": "shedd",
    "name": "Shedd Aquarium",
+   "aliases": [
+    "aquarium"
+   ],
    "x": 1179,
    "z": 1602,
    "top": 37
@@ -86,6 +104,9 @@
   {
    "key": "adler",
    "name": "Adler Planetarium",
+   "aliases": [
+    "planetarium"
+   ],
    "x": 1762,
    "z": 1740,
    "top": 31
@@ -93,6 +114,11 @@
   {
    "key": "unitedcenter",
    "name": "United Center",
+   "aliases": [
+    "Bulls",
+    "Blackhawks",
+    "UC"
+   ],
    "x": -3847,
    "z": 150,
    "top": 30
@@ -100,6 +126,10 @@
   {
    "key": "mart",
    "name": "Merchandise Mart",
+   "aliases": [
+    "Merchandise Mart",
+    "theMART"
+   ],
    "x": -625,
    "z": -724,
    "top": 104
@@ -107,6 +137,10 @@
   {
    "key": "cbot",
    "name": "Chicago Board of Trade Building",
+   "aliases": [
+    "Board of Trade",
+    "CBOT"
+   ],
    "x": -334,
    "z": 513,
    "top": 184
@@ -114,6 +148,10 @@
   {
    "key": "franklin",
    "name": "Franklin Center",
+   "aliases": [
+    "AT&T Corporate Center",
+    "Franklin Center"
+   ],
    "x": -572,
    "z": 193,
    "top": 307
@@ -121,6 +159,7 @@
   {
    "key": "110wacker",
    "name": "110 North Wacker",
+   "aliases": [],
    "x": -797,
    "z": -186,
    "top": 248
@@ -128,6 +167,7 @@
   {
    "key": "311wacker",
    "name": "311 South Wacker Drive",
+   "aliases": [],
    "x": -657,
    "z": 507,
    "top": 293
@@ -135,6 +175,10 @@
   {
    "key": "chase",
    "name": "Chase Tower",
+   "aliases": [
+    "Chase Tower",
+    "Bank One"
+   ],
    "x": -191,
    "z": 45,
    "top": 259
@@ -142,6 +186,10 @@
   {
    "key": "marina2",
    "name": "Marina City 2",
+   "aliases": [
+    "Marina City",
+    "corn cobs"
+   ],
    "x": -54,
    "z": -686,
    "top": 179
@@ -149,6 +197,9 @@
   {
    "key": "willis",
    "name": "Willis Tower",
+   "aliases": [
+    "Sears Tower"
+   ],
    "x": -674,
    "z": 366,
    "top": 527
@@ -156,6 +207,9 @@
   {
    "key": "salesforce",
    "name": "Salesforce Tower Chicago",
+   "aliases": [
+    "Salesforce Tower"
+   ],
    "x": -815,
    "z": -596,
    "top": 255
@@ -163,6 +217,10 @@
   {
    "key": "marina1",
    "name": "Marina City 1",
+   "aliases": [
+    "Marina City",
+    "corn cobs"
+   ],
    "x": -108,
    "z": -658,
    "top": 179
@@ -170,6 +228,10 @@
   {
    "key": "aon",
    "name": "Aon Center",
+   "aliases": [
+    "Standard Oil Building",
+    "Amoco Building"
+   ],
    "x": 522,
    "z": -361,
    "top": 346
@@ -177,6 +239,10 @@
   {
    "key": "twopru",
    "name": "Two Prudential Plaza",
+   "aliases": [
+    "Two Prudential Plaza",
+    "Pru"
+   ],
    "x": 425,
    "z": -376,
    "top": 303
@@ -184,6 +250,9 @@
   {
    "key": "trump",
    "name": "Trump International Hotel & Tower",
+   "aliases": [
+    "Trump Tower"
+   ],
    "x": 115,
    "z": -760,
    "top": 423
@@ -191,6 +260,9 @@
   {
    "key": "aqua",
    "name": "Aqua",
+   "aliases": [
+    "Aqua Tower"
+   ],
    "x": 659,
    "z": -475,
    "top": 262
@@ -198,6 +270,9 @@
   {
    "key": "chicagotheatre",
    "name": "Chicago Theatre",
+   "aliases": [
+    "Chicago Theater"
+   ],
    "x": 50,
    "z": -374,
    "top": 25
@@ -205,6 +280,10 @@
   {
    "key": "pritzker",
    "name": "Jay Pritzker Pavilion",
+   "aliases": [
+    "bandshell",
+    "Millennium Park pavilion"
+   ],
    "x": 494,
    "z": -165,
    "top": 36
@@ -212,6 +291,10 @@
   {
    "key": "cloudgate",
    "name": "Cloud Gate",
+   "aliases": [
+    "The Bean",
+    "Bean"
+   ],
    "x": 374,
    "z": -73,
    "top": 10
@@ -219,6 +302,11 @@
   {
    "key": "crain",
    "name": "Crain Communications Building (150 N Michigan)",
+   "aliases": [
+    "Diamond building",
+    "Smurfit-Stone Building",
+    "Crain Communications Building"
+   ],
    "x": 238,
    "z": -311,
    "top": 177
@@ -226,6 +314,10 @@
   {
    "key": "stregis",
    "name": "St. Regis Chicago",
+   "aliases": [
+    "Vista Tower",
+    "Wanda Vista"
+   ],
    "x": 879,
    "z": -578,
    "top": 363
@@ -233,6 +325,9 @@
   {
    "key": "onechicago",
    "name": "One Chicago",
+   "aliases": [
+    "One Chicago Square"
+   ],
    "x": -99,
    "z": -1574,
    "top": 296
@@ -240,6 +335,7 @@
   {
    "key": "900michigan",
    "name": "900 North Michigan",
+   "aliases": [],
    "x": 187,
    "z": -1953,
    "top": 265
@@ -247,6 +343,11 @@
   {
    "key": "hancock",
    "name": "875 North Michigan Avenue",
+   "aliases": [
+    "John Hancock Center",
+    "Hancock Tower",
+    "875 North Michigan"
+   ],
    "x": 394,
    "z": -1865,
    "top": 457
@@ -254,6 +355,9 @@
   {
    "key": "watertower",
    "name": "Water Tower Place",
+   "aliases": [
+    "Water Tower Place"
+   ],
    "x": 408,
    "z": -1775,
    "top": 261
@@ -261,6 +365,9 @@
   {
    "key": "historicwatertower",
    "name": "Chicago Water Tower",
+   "aliases": [
+    "Old Water Tower"
+   ],
    "x": 282,
    "z": -1682,
    "top": 55
@@ -268,6 +375,9 @@
   {
    "key": "tribune",
    "name": "Tribune Tower",
+   "aliases": [
+    "Tribune Tower"
+   ],
    "x": 376,
    "z": -946,
    "top": 141
@@ -275,6 +385,9 @@
   {
    "key": "lakepoint",
    "name": "Lake Point Tower",
+   "aliases": [
+    "Lake Point Tower"
+   ],
    "x": 1289,
    "z": -1052,
    "top": 198
@@ -282,6 +395,10 @@
   {
    "key": "400lsd",
    "name": "400 Lake Shore Drive North Tower",
+   "aliases": [
+    "400 Lake Shore Drive",
+    "Spire site"
+   ],
    "x": 1075,
    "z": -872,
    "top": 259
@@ -289,6 +406,9 @@
   {
    "key": "wrigleybldg",
    "name": "Wrigley Building",
+   "aliases": [
+    "Wrigley Building"
+   ],
    "x": 249,
    "z": -873,
    "top": 134
@@ -296,6 +416,10 @@
   {
    "key": "centennialwheel",
    "name": "Centennial Wheel",
+   "aliases": [
+    "Ferris wheel",
+    "Navy Pier wheel"
+   ],
    "x": 1690,
    "z": -1074,
    "top": 60
@@ -303,6 +427,12 @@
   {
    "key": "ratefield",
    "name": "Rate Field",
+   "aliases": [
+    "Guaranteed Rate Field",
+    "Comiskey Park",
+    "White Sox",
+    "Sox Park"
+   ],
    "x": -486,
    "z": 5793,
    "top": 60
@@ -310,6 +440,10 @@
   {
    "key": "crownhall",
    "name": "S.R. Crown Hall",
+   "aliases": [
+    "IIT",
+    "Mies van der Rohe"
+   ],
    "x": 47,
    "z": 5424,
    "top": 8
@@ -317,6 +451,10 @@
   {
    "key": "wrigleyfield",
    "name": "Wrigley Field",
+   "aliases": [
+    "Cubs",
+    "Wrigley"
+   ],
    "x": -2299,
    "z": -7349,
    "top": 53
@@ -324,6 +462,10 @@
   {
    "key": "buckingham",
    "name": "Buckingham Fountain",
+   "aliases": [
+    "fountain",
+    "Clarence Buckingham Memorial Fountain"
+   ],
    "x": 711,
    "z": 692,
    "top": 17
@@ -7982,21 +8124,6 @@
    "lod0": "tiles/8_18.glb",
    "lod1": "tiles/8_18.lod1.glb",
    "meta": "tiles/8_18.json",
-   "buildings": 0,
-   "maxHeight": 0
-  },
-  {
-   "key": "2_2",
-   "block": "0_0",
-   "bounds": {
-    "minX": 1000,
-    "maxX": 1500,
-    "minZ": 1000,
-    "maxZ": 1500
-   },
-   "lod0": "tiles/2_2.glb",
-   "lod1": "tiles/2_2.lod1.glb",
-   "meta": "tiles/2_2.json",
    "buildings": 0,
    "maxHeight": 0
   },

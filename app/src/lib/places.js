@@ -26,7 +26,7 @@ export const VIEW_NAMES = {
 
 export function buildPlaces(manifest, bookmarks) {
   const out = []
-  for (const l of manifest?.landmarks ?? []) out.push({ id: `lm:${l.key}`, kind: 'landmark', name: l.name, sub: `${l.top} m · Landmark`, pose: poseForPlace(l) })
+  for (const l of manifest?.landmarks ?? []) out.push({ id: `lm:${l.key}`, kind: 'landmark', name: l.name, aliases: l.aliases ?? [], sub: `${l.top} m · Landmark`, pose: poseForPlace(l) })
   for (const t of manifest?.tallest ?? []) out.push({ id: `tb:${t.key}`, kind: 'landmark', name: t.name, sub: `${t.top} m · Tower`, pose: poseForPlace(t) })
   for (const n of NEIGHBORHOODS) {
     const [x, z] = project(n.lon, n.lat)
@@ -50,5 +50,7 @@ export function searchPlaces(query, places) {
   const q = query.trim().toLowerCase()
   if (!q) return [...places.filter((p) => p.kind === 'view'), ...places.filter((p) => p.kind === 'landmark').slice(0, 8), ...places.filter((p) => p.kind === 'neighborhood').slice(0, 6)]
   const bonus = { landmark: 2, view: 1, neighborhood: 0, command: 1 } // on a tie, a landmark beats the area named after it
-  return places.map((p) => { const s = score(q, p.name); return { p, s: s > 0 ? s + (bonus[p.kind] ?? 0) : 0 } }).filter((r) => r.s > 0).sort((a, b) => b.s - a.s).map((r) => r.p)
+  // nicknames count almost as much as the official name ("the Bean", "Sears Tower")
+  const best = (p) => Math.max(score(q, p.name), ...(p.aliases ?? []).map((a) => score(q, a) - 1))
+  return places.map((p) => { const s = best(p); return { p, s: s > 0 ? s + (bonus[p.kind] ?? 0) : 0 } }).filter((r) => r.s > 0).sort((a, b) => b.s - a.s).map((r) => r.p)
 }

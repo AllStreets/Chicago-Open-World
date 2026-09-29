@@ -133,7 +133,7 @@ async function main() {
   for (const b of buildings) if (!heroFor.has(b) && /\b(screen|scoreboard)\b/i.test(b.name ?? '')) { b.facadeOverride = 'screen'; b.seedOverride = STYLE.screen.video }
   for (const b of buildings) {
     const h = heroFor.get(b)
-    if (h) { const r = applyHero(b, h); b.pieces = r.pieces; b.extraMeshes = r.extraMeshes; b.venueMeshes = r.venueMeshes; b.venueTop = (r.venueMeshes || []).reduce((t, v) => { for (let k = 1; k < v.mesh.positions.length; k += 3) t = Math.max(t, v.mesh.positions[k]); return t }, 0); b.hero = h.key; b.crownTop = Math.max(0, ...r.extraMeshes.flatMap((m) => m.positions.filter((_, i) => i % 3 === 1)), ...(h.spireCounts ? r.pieces.map((q) => q.top) : [])) }
+    if (h) { const r = applyHero(b, h); b.pieces = r.pieces; b.extraMeshes = r.extraMeshes; b.venueMeshes = r.venueMeshes; b.clearPolys = r.clear; b.venueTop = (r.venueMeshes || []).reduce((t, v) => { for (let k = 1; k < v.mesh.positions.length; k += 3) t = Math.max(t, v.mesh.positions[k]); return t }, 0); b.hero = h.key; b.crownTop = Math.max(0, ...r.extraMeshes.flatMap((m) => m.positions.filter((_, i) => i % 3 === 1)), ...(h.spireCounts ? r.pieces.map((q) => q.top) : [])) }
     else b.pieces = shapePieces(b)
   }
   log(`heroes applied: ${heroFor.size}`)
@@ -172,13 +172,25 @@ async function main() {
   const roads = uniq(chunks('roads')).filter((e) => e.geometry && roadHalfWidth(e.tags || {}))
   const rail = uniq(chunks('rail')).filter((e) => e.geometry)
   const treeNodes = uniq(chunks('trees')).map((n) => project(n.lon, n.lat))
-  for (const p of parks) if (['park', 'garden'].includes(p.tags.leisure)) treeNodes.push(...scatterInPolygon(p.outer, 22, p.outer.length))
+  // Synthetic trees only where OSM hasn't mapped the park's real trees (Millennium Park is mapped tree by tree)
+  const realTreeIdx = buildGridIndex(treeNodes, 100, (p) => p)
+  let scattered = 0
+  for (const p of parks) {
+    if (!['park', 'garden'].includes(p.tags.leisure)) continue
+    const bb = p.bbox, real = realTreeIdx.rect({ minX: bb.minX, maxX: bb.maxX, minZ: bb.minZ, maxZ: bb.maxZ }).filter((t) => pointInRing(t, p.outer)).length
+    if (real >= 0.5 * Math.abs(signedArea(p.outer)) / (22 * 22)) continue // already densely mapped
+    const pts = scatterInPolygon(p.outer, 22, p.outer.length)
+    scattered += pts.length
+    treeNodes.push(...pts)
+  }
+  log(`synthetic park trees: ${scattered}`)
   // no park trees inside rebuilt venues (Soldier Field sits inside Burnham Park)
   const venueHulls = buildings.filter((b) => b.venueMeshes?.some((v) => v.fieldRing) || b.hero === 'buckingham').map((b) => convexHull(b.polygons.flatMap((p) => p.outer)))
   // …nor trees growing through rooftops: drop any tree inside a building footprint
   const footIdx = buildGridIndex(buildings.filter((b) => b.area > 30), 200, (b) => b.centroid)
   const inBuilding = (p) => footIdx.query(p, 400).some((b) => p[0] >= b.bbox.minX && p[0] <= b.bbox.maxX && p[1] >= b.bbox.minZ && p[1] <= b.bbox.maxZ && b.polygons.some((q) => pointInRing(p, q.outer)))
-  const keptTrees = treeNodes.filter((p) => !venueHulls.some((h) => pointInRing(p, h)) && !inBuilding(p))
+  const clearings = buildings.flatMap((b) => b.clearPolys ?? [])
+  const keptTrees = treeNodes.filter((p) => !venueHulls.some((h) => pointInRing(p, h)) && !clearings.some((c) => pointInRing(p, c)) && !inBuilding(p))
   log(`trees removed from venues and rooftops: ${treeNodes.length - keptTrees.length}`)
   treeNodes.length = 0
   for (const p of keptTrees) treeNodes.push(p)
@@ -354,7 +366,7 @@ async function main() {
       { name: 'Wikipedia — List of tallest buildings in Chicago', id: 'skyline.json' },
     ],
     skyline: { missing: sky.missing, wrongHeight: sky.wrongHeight },
-    landmarks: buildings.filter((b) => b.hero).map((b) => ({ key: b.hero, name: heroes.find((h) => h.key === b.hero)?.name ?? b.name, x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(b.venueTop ?? 0, ...b.pieces.map((p) => p.top), ...(b.extraMeshes || []).flatMap((m) => m.positions.filter((_, i) => i % 3 === 1)))) })),
+    landmarks: buildings.filter((b) => b.hero).map((b) => ({ key: b.hero, name: heroes.find((h) => h.key === b.hero)?.name ?? b.name, aliases: heroes.find((h) => h.key === b.hero)?.aliases ?? [], x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(b.venueTop ?? 0, ...b.pieces.map((p) => p.top), ...(b.extraMeshes || []).flatMap((m) => m.positions.filter((_, i) => i % 3 === 1)))) })),
     tallest: buildings.filter((b) => !b.hero && b.name && b.pieces.length && Math.max(...b.pieces.map((p) => p.top)) > 150).map((b) => ({ key: b.id, name: b.name, x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(...b.pieces.map((p) => p.top))) })),
     tiles, blocks: blockList, land: 'ground/land.glb', landMask: 'land.json', minimap: { file: 'minimap.png', bounds: mmBounds, size: 2048 },
   }, null, 1))
