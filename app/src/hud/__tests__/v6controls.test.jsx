@@ -13,4 +13,11 @@ describe('V6 controls are discoverable', () => {
     expect(screen.getByText(/raise the river bridges/i)).toBeInTheDocument()
     expect(screen.getByText('bridges')).toBeInTheDocument()
   })
+  it('⌘K, help card and hint bar offer the fountain show', () => {
+    expect(commands().some((c) => c.name === 'Buckingham Fountain water show')).toBe(true)
+    useStore.getState().setHelpOpen(true)
+    render(<><HelpOverlay /><HintBar /></>)
+    expect(screen.getByText(/play the Buckingham Fountain water show/i)).toBeInTheDocument()
+    expect(screen.getByText('fountain')).toBeInTheDocument()
+  })
 })

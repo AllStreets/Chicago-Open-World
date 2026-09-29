@@ -29,6 +29,7 @@ export function commands() {
     { id: 'c:home', kind: 'command', name: 'Home view', sub: 'H', run: () => s.camCommand('home') },
     { id: 'c:north', kind: 'command', name: 'Face north', sub: 'N', run: () => s.camCommand('north') },
     { id: 'tr:toggle', kind: 'command', name: 'Transit lines on / off', sub: 'T', run: () => s.toggleTransit() },
+    { id: 'x:fountain', kind: 'command', name: 'Buckingham Fountain water show', sub: 'J · play the 20-minute show now', run: () => s.startFountainPreview() },
     { id: 'x:bridges', kind: 'command', name: 'Raise the river bridges', sub: 'B · a boat-run bridge lift', run: () => s.startBridgeLift() },
     { id: 'snd:toggle', kind: 'command', name: 'Sound on / off', sub: 'Train rumble · off by default', run: () => useSoundStore.getState().toggleSound() },
     { id: 'c:help', kind: 'command', name: 'Show controls & help', sub: '?', run: () => s.setHelpOpen(true) },

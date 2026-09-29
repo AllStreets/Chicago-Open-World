@@ -83,9 +83,10 @@ export default function AtlasRig() {
       else if (e.code === 'KeyH') s.camCommand('home')
       else if (e.code === 'KeyN') s.camCommand('north')
       else if (e.code === 'KeyB') s.startBridgeLift()
+      else if (e.code === 'KeyJ') s.startFountainPreview()
       else if (e.key === '?') s.setHelpOpen(!s.helpOpen)
       else if (e.code === 'Escape') { s.setHelpOpen(false); s.clearFlight() }
-      if (flightRun.current && !['BracketLeft', 'BracketRight', 'KeyH', 'KeyB'].includes(e.code)) s.clearFlight() // any other key takes back control
+      if (flightRun.current && !['BracketLeft', 'BracketRight', 'KeyH', 'KeyB', 'KeyJ'].includes(e.code)) s.clearFlight() // any other key takes back control
     }
     const up = (e) => keys.current.delete(e.code)
     const blur = () => keys.current.clear()

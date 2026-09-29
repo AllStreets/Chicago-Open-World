@@ -12,6 +12,8 @@ export const useStore = create((set) => ({
   setPaletteOpen: (paletteOpen) => set({ paletteOpen }),
   helpOpen: false,
   setHelpOpen: (helpOpen) => set({ helpOpen }),
+  fountainPreview: null,
+  startFountainPreview: () => set({ fountainPreview: Date.now() }),
   bridgeLift: null,
   startBridgeLift: () => set({ bridgeLift: { startedAt: Date.now(), id: Math.random() } }),
   stopBridgeLift: () => set({ bridgeLift: null }),
