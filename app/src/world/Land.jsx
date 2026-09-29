@@ -4,18 +4,20 @@ import { useEffect, useState } from 'react'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { useStore } from '../state/store.js'
 import { useGroundMaterials } from './materials/useGroundMaterials.js'
+import { worldUrl } from '../lib/manifest.js'
+import { disposeObject } from './dispose.js'
 
-export default function Land({ file }) {
+export default function Land({ file, version }) {
   const mats = useGroundMaterials()
   const [scene, setScene] = useState(null)
   useEffect(() => {
-    let alive = true
-    new GLTFLoader().loadAsync(`/world/${file}`)
-      .then((g) => { if (alive) setScene(g.scene) })
+    let alive = true, loaded = null
+    new GLTFLoader().loadAsync(worldUrl(file, version))
+      .then((g) => { loaded = g.scene; if (alive) setScene(g.scene); else disposeObject(g.scene) })
       .catch((e) => console.warn('land failed', e))
       .finally(() => useStore.getState().markLoaded('land'))
-    return () => { alive = false }
-  }, [file])
+    return () => { alive = false; disposeObject(loaded) }
+  }, [file, version])
   useEffect(() => {
     if (!scene || !mats) return
     scene.traverse((o) => { if (o.isMesh) { o.material = mats.land; o.receiveShadow = true } })

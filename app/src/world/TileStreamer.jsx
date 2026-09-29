@@ -72,7 +72,7 @@ export default function TileStreamer({ manifest }) {
     return (
       <SafeLoad key={id} onError={() => onReady(id)}>
         <Suspense fallback={null}>
-          <TileContent id={id} file={file} meta={t?.meta} lod={lod} mats={mats} onReady={onReady} />
+          <TileContent id={id} file={file} meta={t?.meta} lod={lod} mats={mats} version={manifest.version} onReady={onReady} />
         </Suspense>
       </SafeLoad>
     )

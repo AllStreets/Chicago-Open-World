@@ -13,3 +13,5 @@ export async function loadManifest(fetchImpl = fetch) {
     return { ok: false, error: `manifest ${e.message}` }
   }
 }
+// Every world file is fetched with the manifest version: a format bump never mixes cached old tiles with new ones.
+export const worldUrl = (file, version) => `/world/${file}${version ? `?v=${version}` : ''}`

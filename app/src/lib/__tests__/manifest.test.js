@@ -32,3 +32,12 @@ describe('groundFiles', () => {
     expect(DEFAULT_GROUND).toEqual({ land: 'ground/land.glb', river: 'ground/river.glb' })
   })
 })
+
+describe('worldUrl (review focus: no stale v3 files after a v4 rebuild)', () => {
+  it('every world URL carries the manifest version', async () => {
+    const { worldUrl } = await import('../manifest.js')
+    expect(worldUrl('tiles/0_0.glb', 4)).toBe('/world/tiles/0_0.glb?v=4')
+    expect(worldUrl('tiles/0_0.json', 4)).toBe('/world/tiles/0_0.json?v=4')
+    expect(worldUrl('ground/land.glb')).toBe('/world/ground/land.glb')
+  })
+})

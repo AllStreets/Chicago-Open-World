@@ -55,7 +55,7 @@ export default function Scene() {
     <>
       <SkyRig target={sun} sunRef={sunRef} instant={reducedMotion} shadowMap={QUALITY[quality].shadowMap} fog={QUALITY[quality].fog} />
       <SafeLoad><Suspense fallback={null}><Lake sunRef={sunRef} /></Suspense></SafeLoad>
-      {manifest && <Land file={manifest.land} />}
+      {manifest && <Land file={manifest.land} version={manifest.version} />}
       {manifest && <TileStreamer manifest={manifest} />}
       <AtlasRig />
       <PostFX />

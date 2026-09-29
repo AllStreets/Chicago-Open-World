@@ -7,6 +7,8 @@ import { createGroundMaterial } from './materials/groundShader.js'
 import Trees from './Trees.jsx'
 import RoofProps from './RoofProps.jsx'
 import ElevatedL from './ElevatedL.jsx'
+import { worldUrl } from '../lib/manifest.js'
+import { disposeObject } from './dispose.js'
 
 export const groundMaterial = createGroundMaterial()
 
@@ -19,13 +21,13 @@ function release(url, scene) {
   clearTimeout(pendingRelease.get(url))
   pendingRelease.set(url, setTimeout(() => {
     pendingRelease.delete(url)
-    scene.traverse((o) => o.isMesh && o.geometry.dispose())
+    disposeObject(scene)
     useGLTF.clear(url)
   }, RELEASE_MS))
 }
 
-export default function TileContent({ id, file, meta, lod, mats, onReady }) {
-  const url = `/world/${file}`
+export default function TileContent({ id, file, meta, lod, mats, version, onReady }) {
+  const url = worldUrl(file, version)
   const { scene } = useGLTF(url, false, true)
   const [side, setSide] = useState(null)
   const obj = useMemo(() => {
@@ -46,9 +48,9 @@ export default function TileContent({ id, file, meta, lod, mats, onReady }) {
   useEffect(() => {
     if (lod !== 'lod0' || !meta) return
     let alive = true
-    fetch(`/world/${meta}`).then((r) => r.json()).then((j) => alive && setSide(j)).catch(() => {})
+    fetch(worldUrl(meta, version)).then((r) => r.json()).then((j) => alive && setSide(j)).catch(() => {})
     return () => { alive = false }
-  }, [meta, lod])
+  }, [meta, lod, version])
   useEffect(() => { retain(url); return () => release(url, scene) }, [scene, url])
   return (
     <>
