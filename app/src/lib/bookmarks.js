@@ -11,6 +11,8 @@ export const BOOKMARKS = {
   // Hancock from the southeast, over Streeterville
   hancock: { position: [900, 420, -1500], target: [395, 200, -1865] },
   // Willis from the south over the river
+  // The Loop L at Wabash & Lake, low over the tracks
+  wabash: { position: [150, 55, -80], target: [140, 6, -440] },
   willis: { position: [-200, 380, 900], target: [-669, 260, 348] },
 }
 

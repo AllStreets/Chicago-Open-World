@@ -3,9 +3,9 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { treePalette, chicagoMonth } from '../lib/seasons.js'
 
-const canopyGeo = new THREE.IcosahedronGeometry(1, 1)
-canopyGeo.scale(3.2, 3.6, 3.2).translate(0, 7.5, 0)
-const trunkGeo = new THREE.CylinderGeometry(0.22, 0.32, 5.5, 6, 1, true).translate(0, 2.75, 0)
+const canopyGeo = new THREE.IcosahedronGeometry(1, 0) // 20 tris: ~29k trees stay within budget
+canopyGeo.scale(3.5, 3.9, 3.5).translate(0, 7.5, 0)
+const trunkGeo = new THREE.CylinderGeometry(0.22, 0.32, 5.5, 5, 1, true).translate(0, 2.75, 0)
 const canopyMat = new THREE.MeshStandardMaterial({ roughness: 0.9, flatShading: true })
 const trunkMat = new THREE.MeshStandardMaterial({ color: '#4a3b2f', roughness: 1 })
 const UP = new THREE.Vector3(0, 1, 0)
@@ -34,7 +34,7 @@ export default function Trees({ file, onLoaded }) {
   if (!trees?.length) return null
   return (
     <>
-      <instancedMesh ref={trunk} args={[trunkGeo, trunkMat, trees.length]} castShadow receiveShadow />
+      <instancedMesh ref={trunk} args={[trunkGeo, trunkMat, trees.length]} receiveShadow />
       <instancedMesh ref={canopy} args={[canopyGeo, canopyMat, trees.length]} castShadow receiveShadow />
     </>
   )

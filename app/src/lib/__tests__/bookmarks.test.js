@@ -10,6 +10,7 @@ describe('bookmarks', () => {
     expect(bookmarkFromUrl('?view=loop')).toBe(BOOKMARKS.loop)
     expect(bookmarkFromUrl('?view=hancock')).toBe(BOOKMARKS.hancock)
     expect(bookmarkFromUrl('?view=willis')).toBe(BOOKMARKS.willis)
+    expect(bookmarkFromUrl('?view=wabash')).toBe(BOOKMARKS.wabash)
   })
   it('every bookmark is above minimum altitude', () => {
     for (const b of Object.values(BOOKMARKS)) expect(b.position[1]).toBeGreaterThanOrEqual(30)

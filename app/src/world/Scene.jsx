@@ -1,5 +1,6 @@
 // app/src/world/Scene.jsx — the whole 3D world.
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
+import { useThree } from '@react-three/fiber'
 import { useStore } from '../state/store.js'
 import { loadManifest, groundFiles } from '../lib/manifest.js'
 import SafeLoad from './SafeLoad.jsx'
@@ -50,6 +51,8 @@ export default function Scene() {
   }, [])
 
   useEffect(() => { if (ready) window.__worldReady = true }, [ready])
+  const gl = useThree((s) => s.gl)
+  useEffect(() => { if (new URLSearchParams(window.location.search).has('stats')) window.__gl = gl }, [gl])
 
   return (
     <>

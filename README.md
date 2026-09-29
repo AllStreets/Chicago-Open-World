@@ -4,9 +4,10 @@
 
 **THE CITY, AT FULL SCALE**
 
-<img alt="phase" src="https://img.shields.io/badge/phase-1_foundation-45d8ff?style=for-the-badge&labelColor=030509"/>
+<img alt="phase" src="https://img.shields.io/badge/phase-2_beauty_pass-45d8ff?style=for-the-badge&labelColor=030509"/>
 <img alt="buildings" src="https://img.shields.io/badge/real_buildings-2,517-ff3b53?style=for-the-badge&labelColor=030509"/>
 <img alt="setbacks" src="https://img.shields.io/badge/OSM_setbacks-187_towers-45d8ff?style=for-the-badge&labelColor=030509"/>
+<img alt="trees" src="https://img.shields.io/badge/seasonal_trees-28,862-ff3b53?style=for-the-badge&labelColor=030509"/>
 <a href="LICENSE"><img alt="license" src="https://img.shields.io/badge/license-MIT-45d8ff?style=for-the-badge&labelColor=030509"/></a>
 <br/>
 <img alt="stack" src="https://img.shields.io/badge/stack-React_19_·_Three.js_·_R3F-6b7382?style=flat-square&labelColor=030509"/>
@@ -18,10 +19,10 @@
 ---
 
 <p align="center">
-  <img src="docs/screenshots/phase1-loop-day.png" alt="Looking northeast across the Loop — Hancock's twin masts and Trump's spire, Lake Michigan beyond" width="100%"/>
+  <img src="docs/screenshots/phase2-streeterville-dusk.png" alt="Dusk over Streeterville — Willis and Trump against an amber horizon, windows coming on" width="100%"/>
 </p>
 
-<p align="center"><em>Northeast across the Loop. Every building here is a real City of Chicago footprint at its real height.</em></p>
+<p align="center"><em>Dusk over Streeterville. Real footprints at real heights, generated façades, windows lighting up floor by floor as the real Chicago sun goes down.</em></p>
 
 ---
 
@@ -40,14 +41,32 @@ grid — so the HUD always knows which corner you are over.
 
 <table>
 <tr>
-<td width="50%"><img src="docs/screenshots/phase1-museum-day.png" alt="The postcard view from Museum Campus" width="100%"/></td>
-<td width="50%"><img src="docs/screenshots/phase1-streeterville-dusk.png" alt="Dusk over Streeterville from the lake" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/phase2-streeterville-night.png" alt="Streeterville at night" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/phase2-hancock-dusk.png" alt="The tapered Hancock at dusk" width="100%"/></td>
 </tr>
 <tr>
-<td><em>Museum Campus — the postcard view, Grant Park in front.</em></td>
-<td><em>Dusk over Streeterville, real Chicago sun position.</em></td>
+<td><em>Night — offices light whole floors at a time; the lake carries the reflections.</em></td>
+<td><em>875 N Michigan, tapered like the real obelisk, masts on the roof.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/phase2-museum-day.png" alt="Grant Park and the skyline from Museum Campus" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/phase2-river-day.png" alt="The Chicago River canyon" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Grant Park in September — the trees follow the real calendar.</em></td>
+<td><em>Down the river canyon to Trump Tower, the Riverwalk lined with trees.</em></td>
 </tr>
 </table>
+
+### The beauty pass
+
+- **Façades** — eight Chicago façade families (Loop limestone, art deco, prewar brick, curtain glass, precast, River North loft, three-flat, industrial) generated with Z-Image, cropped to whole window bays by autocorrelation and made seamless. Glass reflects the live sky; every tower gets its own tint.
+- **Night** — windows light by office floor, warm and cool, per-building occupancy; bloom, a navy sky with stars, amber street light on the roads.
+- **Sky** — follows real Chicago time on load (`LIVE · DUSK`), with DAWN / DAY / DUSK / NIGHT overrides that tween over 2.5 s.
+- **Rooftops** — parapets, gravel / tar / white-membrane / green roofs, 120 water towers on prewar lofts, 2,440 HVAC units, 329 mechanical penthouses.
+- **Ground** — parks, beaches, Lake Shore Drive and the street grid with sidewalks, the elevated Loop L on steel bents, and 28,862 trees coloured by the current month.
+- **Landmarks** — Willis's antennas at their real 527 m; Hancock tapered with its masts reseated on the roof.
+- **HUD** — heading-up minimap with a compass strip and click-to-fly, a cinematic intro flight from the lake, LOW / HIGH / ULTRA quality with auto-downgrade.
 
 ---
 
@@ -59,12 +78,13 @@ cd Chicago-Open-World
 npm install --prefix pipeline && npm install --prefix app
 
 npm run fetch          # download footprints, boundary and OSM data (cached)
+npm run textures       # process generated façades + procedural ground textures
 npm run build:world    # build tiles + ground into app/public/world
 npm run dev            # http://localhost:5173
 ```
 
 The generated world is committed, so `npm run dev` works straight after install.
-Jump to a view with `?view=streeterville|loop|river|museum` and `?time=live|dawn|day|dusk|night`.
+Jump to a view with `?view=streeterville|loop|river|museum|hancock|willis|wabash` and `?time=live|dawn|day|dusk|night`.
 
 ## Controls
 
@@ -77,6 +97,9 @@ Jump to a view with `?view=streeterville|loop|river|museum` and `?time=live|dawn
 | `Shift` | boost |
 | `O` | orbit |
 | `1`–`5` | LIVE · DAWN · DAY · DUSK · NIGHT |
+| `Q` | quality LOW / HIGH / ULTRA |
+| Minimap click | fly there |
+| Any key | skip the intro flight |
 
 ## Under the hood
 
@@ -97,13 +120,13 @@ npm run e2e --prefix app          # hero-view screenshot baselines (Playwright)
 ## Data
 
 - **City of Chicago Data Portal** — Building Footprints (`syp8-uezg`), City Boundary (`qqq8-j68g`).
-- **OpenStreetMap** — building heights, `building:part` setbacks, river and harbour polygons.
+- **OpenStreetMap** — building heights, `building:part` setbacks, water, parks, roads, rail, street trees.
   © OpenStreetMap contributors, available under the [ODbL](https://www.openstreetmap.org/copyright).
 
 ## Roadmap
 
 - [x] **1 · Foundation** — real footprints and heights, land, river, lake, sky, Atlas camera, HUD shell
-- [ ] **2 · Beauty pass** — generated façade atlases, lit windows at night, post-processing, minimap, intro flight
+- [x] **2 · Beauty pass** — generated façades, lit windows, living sky, rooftops, parks & trees, the L, post-processing, minimap, intro flight
 - [ ] **3 · Heroes** — Blender-modelled landmarks (Willis, Hancock, Marina City, …)
 - [ ] **4 · Guide** — VISIT / LIVE / WORK lenses, ⌘K palette, tours
 - [ ] **5 · Alive** — live L trains and weather via the CHI ATLAS API, Scan mode
