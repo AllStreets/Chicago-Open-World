@@ -50,6 +50,14 @@ varying vec3 vWPos;
 varying vec3 vWNormal;
 varying vec2 vMUv;
 float owHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+// Pointed lancet windows in 4.2 m bays, a tall lower tier and a clerestory above (sacred walls).
+float lancet(vec2 uv, float y) {
+  float bx = abs(fract(uv.x / 4.2) - 0.5) * 4.2;
+  float wy = mod(y - 2.4, 8.5);
+  if (y < 2.4 || wy > 6.2) return 0.0;
+  float hw = wy < 4.9 ? 0.6 : 0.6 * (1.0 - (wy - 4.9) / 1.3);
+  return step(bx, hw);
+}
 // Venue surfaces (façade 9+): stadium seats, turf, clay, paint, steel, lamps, boards, walls, marquee, ivy.
 // The style selector rides in the seed (see pipeline/lib/venue.js STYLE).
 vec3 venueAlbedo(int vi, float s, vec2 uv, vec3 wp, vec3 n, vec3 grain, vec3 roofAlb) {
@@ -111,6 +119,21 @@ vec3 venueAlbedo(int vi, float s, vec2 uv, vec3 wp, vec3 n, vec3 grain, vec3 roo
     return mix(vec3(0.16, 0.2, 0.24), vec3(0.55, 0.56, 0.58), mull);
   }
   if (vi == 17) return vec3(0.64, 0.07, 0.06);
+  if (vi == 19) {   // sacred walls: limestone, brick, grey stone, cream brick, with lancet windows
+    if (n.y > 0.6) return roofAlb;
+    bool stone = s < 0.225 || (s > 0.475 && s < 0.725);
+    vec3 c = s < 0.225 ? vec3(0.66, 0.61, 0.51) : s < 0.475 ? vec3(0.44, 0.2, 0.14) : s < 0.725 ? vec3(0.47, 0.47, 0.46) : vec3(0.66, 0.53, 0.34);
+    float course = stone ? step(fract(wp.y / 0.62), 0.05) : step(fract(wp.y / 0.26), 0.12);
+    c *= (0.9 + 0.18 * grain.r) * (1.0 - 0.12 * course);
+    return mix(c, vec3(0.09, 0.1, 0.13), lancet(uv, wp.y));
+  }
+  if (vi == 20) {   // roofing: slate, verdigris copper, gold leaf, terracotta
+    float row = step(fract(uv.y / 0.34), 0.14);
+    if (s < 0.225) return vec3(0.25, 0.27, 0.31) * (0.9 + 0.2 * grain.r) * (1.0 - 0.2 * row);
+    if (s < 0.475) return mix(vec3(0.24, 0.47, 0.39), vec3(0.32, 0.55, 0.46), grain.g) * (1.0 - 0.1 * row);
+    if (s < 0.725) return vec3(0.74, 0.5, 0.12) * (0.9 + 0.2 * grain.r);
+    return vec3(0.62, 0.32, 0.2) * (0.9 + 0.2 * grain.r) * (1.0 - 0.15 * row);
+  }
   if (vi == 18) {   // ivy on brick
     float leaf = owHash(floor(vec2(uv.x, wp.y) * 3.0));
     return mix(vec3(0.12, 0.30, 0.10), vec3(0.22, 0.42, 0.14), leaf) * (0.85 + 0.3 * grain.g);
@@ -172,6 +195,14 @@ if (isVenue && uNight > 0.001) {
     vec2 c = floor(vMUv / vec2(0.8, 0.6));
     totalEmissiveRadiance += mix(vec3(0.2, 0.45, 1.0), vec3(1.0, 0.8, 0.4), owHash(c)) * (0.25 + 0.5 * owHash(c + 7.0)) * uNight * uLitBoost;
   }
+  if (vi == 19 && vWNormal.y < 0.6) {   // stained glass: about two thirds of congregations light up
+    float lw = lancet(vMUv, vWPos.y);
+    vec2 bay = vec2(floor(vMUv.x / 4.2), floor((vWPos.y - 2.4) / 8.5));
+    float on = step(0.34, owHash(floor(vWPos.xz / 60.0)));
+    vec3 glass = mix(mix(vec3(0.9, 0.25, 0.2), vec3(0.25, 0.4, 1.0), owHash(bay)), vec3(1.0, 0.75, 0.3), owHash(bay + 3.7) * 0.6);
+    totalEmissiveRadiance += glass * lw * on * 0.7 * uNight * uLitBoost;
+  }
+  if (vi == 20 && vSeed > 0.475 && vSeed < 0.725) totalEmissiveRadiance += vec3(1.0, 0.75, 0.35) * 0.12 * uNight; // floodlit gold domes
   if (vi == 17) totalEmissiveRadiance += (vec3(1.0, 0.18, 0.12) * 0.5 + vec3(1.0, 0.95, 0.85) * step(0.55, owHash(floor(vMUv * vec2(3.0, 4.0)))) * 0.8) * uNight * uLitBoost;
 }
 if (!isRoof && !isParapet && !isVenue && uNight > 0.001) {

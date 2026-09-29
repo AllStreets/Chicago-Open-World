@@ -17,6 +17,7 @@ import { writeMeshGlb } from '../lib/glb.js'
 import { shapePieces } from '../lib/shapes.js'
 import { applyHero } from '../lib/heroes.js'
 import { VENUE_FACADES, STYLE, convexHull } from '../lib/venue.js'
+import { shapeSacred } from '../lib/sacred.js'
 import { parapetPiece, PARAPET_FACADE } from '../lib/roofs.js'
 import { roofProps } from '../lib/props.js'
 import { minimapSvg } from '../lib/minimap.js'
@@ -169,6 +170,31 @@ async function main() {
   for (let i = treeNodes.length - 1; i >= 0; i--) if (venueHulls.some((h) => pointInRing(treeNodes[i], h))) treeNodes.splice(i, 1)
   log(`parks ${parks.length}, water ${water.length}, roads ${roads.length}, rail ${rail.length}, trees ${treeNodes.length}`)
 
+  // ── Churches, cathedrals, mosques, synagogues, temples ─────────────────────
+  const roadPts = []
+  for (const e of roads) {
+    const pts = e.geometry.map((p) => project(p.lon, p.lat))
+    for (let i = 1; i < pts.length; i++) {
+      const [a, c] = [pts[i - 1], pts[i]], n = Math.max(1, Math.ceil(Math.hypot(c[0] - a[0], c[1] - a[1]) / 15))
+      for (let k = 0; k < n; k++) roadPts.push([a[0] + ((c[0] - a[0]) * k) / n, a[1] + ((c[1] - a[1]) * k) / n])
+    }
+  }
+  const roadIdx = buildGridIndex(roadPts, 100, (p) => p)
+  const nearestRoad = (c) => roadIdx.query(c, 120).reduce((best, p) => (!best || Math.hypot(p[0] - c[0], p[1] - c[1]) < Math.hypot(best[0] - c[0], best[1] - c[1]) ? p : best), null)
+  const sacredOverrides = loadJson(join(ROOT, 'data', 'sacred.json')).overrides
+  let sacredShaped = 0, sacredTinted = 0
+  for (const b of buildings) {
+    if (b.hero) continue
+    const r = shapeSacred(b, { front: nearestRoad(b.centroid), override: sacredOverrides[String(b.osmId)] })
+    if (!r) continue
+    b.facadeOverride = r.facade; b.seedOverride = r.seed; b.noParapet = true
+    if (r.keepPieces) { sacredTinted++; continue }
+    b.pieces = r.pieces; b.venueMeshes = r.meshes; b.sacred = true
+    b.venueTop = r.meshes.reduce((t, v) => { for (let k = 1; k < v.mesh.positions.length; k += 3) t = Math.max(t, v.mesh.positions[k]); return t }, 0)
+    sacredShaped++
+  }
+  log(`sacred buildings shaped: ${sacredShaped}, material only: ${sacredTinted}`)
+
   // ── Per-tile assembly ──────────────────────────────────────────────────────
   rmSync(join(OUT, 'tiles'), { recursive: true, force: true })
   mkdirSync(join(OUT, 'tiles'), { recursive: true })
@@ -217,13 +243,13 @@ async function main() {
       const top = Math.max(0, ...b.pieces.map((p) => p.top), b.venueTop ?? 0)
       const family = b.facadeOverride ? (VENUE_FACADES[b.facadeOverride] ?? FACADE_FAMILIES.indexOf(b.facadeOverride)) : classifyFacade({ height: top, year: b.year ?? 0, area: b.area, type: b.tags?.building })
       const seed = b.seedOverride ?? hashSeed(b.id)
-      const parapets = b.pieces.map(parapetPiece).filter(Boolean)
+      const parapets = b.noParapet ? [] : b.pieces.map(parapetPiece).filter(Boolean)
       for (const pc of b.pieces) appendBuilding(L0, extrudeBuilding(pc), family, seed, i)
       for (const pc of parapets) appendBuilding(L0, extrudeBuilding(pc), PARAPET_FACADE, seed, i)
       for (const m of b.extraMeshes || []) appendBuilding(L0, m, family, seed, i)
       for (const v of b.venueMeshes || []) { appendBuilding(L0, v.mesh, v.facade, v.seed, i); appendBuilding(L1, v.mesh, v.facade, v.seed, i) }
       // LOD1: heroes and part-buildings keep their shape (they are the skyline); plain footprints simplify
-      if (b.hero || b.parts) { for (const pc of b.pieces) appendBuilding(L1, extrudeBuilding(pc), family, seed, i); for (const m of b.extraMeshes || []) appendBuilding(L1, m, family, seed, i) }
+      if (b.hero || b.parts || b.sacred) { for (const pc of b.pieces) appendBuilding(L1, extrudeBuilding(pc), family, seed, i); for (const m of b.extraMeshes || []) appendBuilding(L1, m, family, seed, i) }
       else if (b.area >= 80) for (const p of b.polygons) {
         const outer = simplifyRing(p.outer, 2)
         if (outer.length >= 3) appendBuilding(L1, extrudeBuilding({ outer, holes: [], base: 0, top: b.height }), family, seed, i)

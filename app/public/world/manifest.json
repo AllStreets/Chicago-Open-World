@@ -1,6 +1,6 @@
 {
  "version": 3,
- "generatedAt": "2026-09-29T03:53:12.576Z",
+ "generatedAt": "2026-09-29T04:04:26.779Z",
  "origin": {
   "lat": 41.88203,
   "lon": -87.62784
@@ -1163,7 +1163,7 @@
    "lod1": "tiles/-11_9.lod1.glb",
    "meta": "tiles/-11_9.json",
    "buildings": 20,
-   "maxHeight": 15.2
+   "maxHeight": 38.4
   },
   {
    "key": "-12_9",
@@ -1283,7 +1283,7 @@
    "lod1": "tiles/-9_11.lod1.glb",
    "meta": "tiles/-9_11.json",
    "buildings": 478,
-   "maxHeight": 16
+   "maxHeight": 58
   },
   {
    "key": "-9_10",
@@ -1313,7 +1313,7 @@
    "lod1": "tiles/-9_12.lod1.glb",
    "meta": "tiles/-9_12.json",
    "buildings": 244,
-   "maxHeight": 19
+   "maxHeight": 33.5
   },
   {
    "key": "-9_9",
@@ -1358,7 +1358,7 @@
    "lod1": "tiles/-7_10.lod1.glb",
    "meta": "tiles/-7_10.json",
    "buildings": 554,
-   "maxHeight": 15.2
+   "maxHeight": 39.8
   },
   {
    "key": "-6_11",
@@ -1403,7 +1403,7 @@
    "lod1": "tiles/-7_11.lod1.glb",
    "meta": "tiles/-7_11.json",
    "buildings": 573,
-   "maxHeight": 34.2
+   "maxHeight": 54
   },
   {
    "key": "-7_12",
@@ -1478,7 +1478,7 @@
    "lod1": "tiles/-8_12.lod1.glb",
    "meta": "tiles/-8_12.json",
    "buildings": 458,
-   "maxHeight": 11.4
+   "maxHeight": 43.4
   },
   {
    "key": "-6_9",
@@ -1583,7 +1583,7 @@
    "lod1": "tiles/-1_8.lod1.glb",
    "meta": "tiles/-1_8.json",
    "buildings": 173,
-   "maxHeight": 15.2
+   "maxHeight": 59.8
   },
   {
    "key": "2_6",
@@ -1703,7 +1703,7 @@
    "lod1": "tiles/0_7.lod1.glb",
    "meta": "tiles/0_7.json",
    "buildings": 54,
-   "maxHeight": 26.6
+   "maxHeight": 54.8
   },
   {
    "key": "0_6",
@@ -1823,7 +1823,7 @@
    "lod1": "tiles/-10_5.lod1.glb",
    "meta": "tiles/-10_5.json",
    "buildings": 270,
-   "maxHeight": 15.2
+   "maxHeight": 50.6
   },
   {
    "key": "-11_5",
@@ -1868,7 +1868,7 @@
    "lod1": "tiles/-11_3.lod1.glb",
    "meta": "tiles/-11_3.json",
    "buildings": 151,
-   "maxHeight": 26.6
+   "maxHeight": 39.5
   },
   {
    "key": "-12_3",
@@ -1943,7 +1943,7 @@
    "lod1": "tiles/-10_3.lod1.glb",
    "meta": "tiles/-10_3.json",
    "buildings": 257,
-   "maxHeight": 19
+   "maxHeight": 60.9
   },
   {
    "key": "-11_4",
@@ -1973,7 +1973,7 @@
    "lod1": "tiles/-12_4.lod1.glb",
    "meta": "tiles/-12_4.json",
    "buildings": 49,
-   "maxHeight": 20
+   "maxHeight": 34
   },
   {
    "key": "-10_1",
@@ -1988,7 +1988,7 @@
    "lod1": "tiles/-10_1.lod1.glb",
    "meta": "tiles/-10_1.json",
    "buildings": 230,
-   "maxHeight": 26.6
+   "maxHeight": 48.5
   },
   {
    "key": "-11_1",
@@ -2123,7 +2123,7 @@
    "lod1": "tiles/-7_3.lod1.glb",
    "meta": "tiles/-7_3.json",
    "buildings": 59,
-   "maxHeight": 30.4
+   "maxHeight": 57.2
   },
   {
    "key": "-6_5",
@@ -2138,7 +2138,7 @@
    "lod1": "tiles/-6_5.lod1.glb",
    "meta": "tiles/-6_5.json",
    "buildings": 558,
-   "maxHeight": 19
+   "maxHeight": 43
   },
   {
    "key": "-7_5",
@@ -2153,7 +2153,7 @@
    "lod1": "tiles/-7_5.lod1.glb",
    "meta": "tiles/-7_5.json",
    "buildings": 634,
-   "maxHeight": 22.8
+   "maxHeight": 67.2
   },
   {
    "key": "-8_5",
@@ -2198,7 +2198,7 @@
    "lod1": "tiles/-6_2.lod1.glb",
    "meta": "tiles/-6_2.json",
    "buildings": 511,
-   "maxHeight": 16
+   "maxHeight": 52.9
   },
   {
    "key": "-6_3",
@@ -2213,7 +2213,7 @@
    "lod1": "tiles/-6_3.lod1.glb",
    "meta": "tiles/-6_3.json",
    "buildings": 190,
-   "maxHeight": 22.8
+   "maxHeight": 38.8
   },
   {
    "key": "-8_3",
@@ -2228,7 +2228,7 @@
    "lod1": "tiles/-8_3.lod1.glb",
    "meta": "tiles/-8_3.json",
    "buildings": 19,
-   "maxHeight": 34.2
+   "maxHeight": 59.6
   },
   {
    "key": "-7_4",
@@ -2258,7 +2258,7 @@
    "lod1": "tiles/-6_1.lod1.glb",
    "meta": "tiles/-6_1.json",
    "buildings": 170,
-   "maxHeight": 30.4
+   "maxHeight": 54
   },
   {
    "key": "-6_4",
@@ -2333,7 +2333,7 @@
    "lod1": "tiles/-5_5.lod1.glb",
    "meta": "tiles/-5_5.json",
    "buildings": 737,
-   "maxHeight": 34.2
+   "maxHeight": 54
   },
   {
    "key": "-4_5",
@@ -2348,7 +2348,7 @@
    "lod1": "tiles/-4_5.lod1.glb",
    "meta": "tiles/-4_5.json",
    "buildings": 489,
-   "maxHeight": 26.6
+   "maxHeight": 39.3
   },
   {
    "key": "-5_3",
@@ -2363,7 +2363,7 @@
    "lod1": "tiles/-5_3.lod1.glb",
    "meta": "tiles/-5_3.json",
    "buildings": 167,
-   "maxHeight": 15.2
+   "maxHeight": 49
   },
   {
    "key": "-5_2",
@@ -2408,7 +2408,7 @@
    "lod1": "tiles/-4_3.lod1.glb",
    "meta": "tiles/-4_3.json",
    "buildings": 28,
-   "maxHeight": 49.4
+   "maxHeight": 57
   },
   {
    "key": "-5_1",
@@ -2513,7 +2513,7 @@
    "lod1": "tiles/-3_5.lod1.glb",
    "meta": "tiles/-3_5.json",
    "buildings": 411,
-   "maxHeight": 26.6
+   "maxHeight": 64.6
   },
   {
    "key": "-2_4",
@@ -2918,7 +2918,7 @@
    "lod1": "tiles/-12_0.lod1.glb",
    "meta": "tiles/-12_0.json",
    "buildings": 82,
-   "maxHeight": 11.4
+   "maxHeight": 56.9
   },
   {
    "key": "-10_-1",
@@ -2933,7 +2933,7 @@
    "lod1": "tiles/-10_-1.lod1.glb",
    "meta": "tiles/-10_-1.json",
    "buildings": 160,
-   "maxHeight": 16
+   "maxHeight": 61.8
   },
   {
    "key": "-11_-1",
@@ -3038,7 +3038,7 @@
    "lod1": "tiles/-9_-1.lod1.glb",
    "meta": "tiles/-9_-1.json",
    "buildings": 149,
-   "maxHeight": 45.6
+   "maxHeight": 59.8
   },
   {
    "key": "-9_-2",
@@ -3098,7 +3098,7 @@
    "lod1": "tiles/-8_0.lod1.glb",
    "meta": "tiles/-8_0.json",
    "buildings": 22,
-   "maxHeight": 30
+   "maxHeight": 52.8
   },
   {
    "key": "-7_0",
@@ -3128,7 +3128,7 @@
    "lod1": "tiles/-8_-1.lod1.glb",
    "meta": "tiles/-8_-1.json",
    "buildings": 65,
-   "maxHeight": 34.2
+   "maxHeight": 51.5
   },
   {
    "key": "-7_-1",
@@ -3143,7 +3143,7 @@
    "lod1": "tiles/-7_-1.lod1.glb",
    "meta": "tiles/-7_-1.json",
    "buildings": 113,
-   "maxHeight": 45.6
+   "maxHeight": 50.6
   },
   {
    "key": "-6_-2",
@@ -3263,7 +3263,7 @@
    "lod1": "tiles/-4_9.lod1.glb",
    "meta": "tiles/-4_9.json",
    "buildings": 658,
-   "maxHeight": 15.2
+   "maxHeight": 37.2
   },
   {
    "key": "-5_9",
@@ -3278,7 +3278,7 @@
    "lod1": "tiles/-5_9.lod1.glb",
    "meta": "tiles/-5_9.json",
    "buildings": 853,
-   "maxHeight": 16
+   "maxHeight": 46.4
   },
   {
    "key": "-4_12",
@@ -3308,7 +3308,7 @@
    "lod1": "tiles/-5_10.lod1.glb",
    "meta": "tiles/-5_10.json",
    "buildings": 989,
-   "maxHeight": 15.2
+   "maxHeight": 60.7
   },
   {
    "key": "-3_9",
@@ -3323,7 +3323,7 @@
    "lod1": "tiles/-3_9.lod1.glb",
    "meta": "tiles/-3_9.json",
    "buildings": 861,
-   "maxHeight": 16
+   "maxHeight": 55
   },
   {
    "key": "-3_10",
@@ -3368,7 +3368,7 @@
    "lod1": "tiles/-3_12.lod1.glb",
    "meta": "tiles/-3_12.json",
    "buildings": 404,
-   "maxHeight": 16
+   "maxHeight": 54
   },
   {
    "key": "-5_8",
@@ -3383,7 +3383,7 @@
    "lod1": "tiles/-5_8.lod1.glb",
    "meta": "tiles/-5_8.json",
    "buildings": 509,
-   "maxHeight": 16
+   "maxHeight": 66.8
   },
   {
    "key": "-4_8",
@@ -3413,7 +3413,7 @@
    "lod1": "tiles/-3_8.lod1.glb",
    "meta": "tiles/-3_8.json",
    "buildings": 844,
-   "maxHeight": 16
+   "maxHeight": 62.2
   },
   {
    "key": "-4_-1",
@@ -3533,7 +3533,7 @@
    "lod1": "tiles/-5_0.lod1.glb",
    "meta": "tiles/-5_0.json",
    "buildings": 133,
-   "maxHeight": 45.6
+   "maxHeight": 62.3
   },
   {
    "key": "-5_-2",
@@ -3848,7 +3848,7 @@
    "lod1": "tiles/-10_-3.lod1.glb",
    "meta": "tiles/-10_-3.json",
    "buildings": 658,
-   "maxHeight": 16
+   "maxHeight": 54
   },
   {
    "key": "-10_-6",
@@ -3863,7 +3863,7 @@
    "lod1": "tiles/-10_-6.lod1.glb",
    "meta": "tiles/-10_-6.json",
    "buildings": 504,
-   "maxHeight": 41.8
+   "maxHeight": 54.9
   },
   {
    "key": "-10_-4",
@@ -3878,7 +3878,7 @@
    "lod1": "tiles/-10_-4.lod1.glb",
    "meta": "tiles/-10_-4.json",
    "buildings": 551,
-   "maxHeight": 16
+   "maxHeight": 54
   },
   {
    "key": "-11_-4",
@@ -3908,7 +3908,7 @@
    "lod1": "tiles/-12_-4.lod1.glb",
    "meta": "tiles/-12_-4.json",
    "buildings": 108,
-   "maxHeight": 16
+   "maxHeight": 33
   },
   {
    "key": "-10_-5",
@@ -3938,7 +3938,7 @@
    "lod1": "tiles/-11_-5.lod1.glb",
    "meta": "tiles/-11_-5.json",
    "buildings": 771,
-   "maxHeight": 19
+   "maxHeight": 54
   },
   {
    "key": "-12_-5",
@@ -3968,7 +3968,7 @@
    "lod1": "tiles/-11_-6.lod1.glb",
    "meta": "tiles/-11_-6.json",
    "buildings": 679,
-   "maxHeight": 16
+   "maxHeight": 43.8
   },
   {
    "key": "-12_-6",
@@ -4028,7 +4028,7 @@
    "lod1": "tiles/-9_-4.lod1.glb",
    "meta": "tiles/-9_-4.json",
    "buildings": 710,
-   "maxHeight": 22.8
+   "maxHeight": 58.3
   },
   {
    "key": "-9_-5",
@@ -4043,7 +4043,7 @@
    "lod1": "tiles/-9_-5.lod1.glb",
    "meta": "tiles/-9_-5.json",
    "buildings": 764,
-   "maxHeight": 16
+   "maxHeight": 24.9
   },
   {
    "key": "-9_-6",
@@ -4058,7 +4058,7 @@
    "lod1": "tiles/-9_-6.lod1.glb",
    "meta": "tiles/-9_-6.json",
    "buildings": 585,
-   "maxHeight": 49.4
+   "maxHeight": 61.6
   },
   {
    "key": "-6_-4",
@@ -4103,7 +4103,7 @@
    "lod1": "tiles/-6_-3.lod1.glb",
    "meta": "tiles/-6_-3.json",
    "buildings": 632,
-   "maxHeight": 26.6
+   "maxHeight": 49
   },
   {
    "key": "-7_-3",
@@ -4118,7 +4118,7 @@
    "lod1": "tiles/-7_-3.lod1.glb",
    "meta": "tiles/-7_-3.json",
    "buildings": 668,
-   "maxHeight": 16
+   "maxHeight": 59.9
   },
   {
    "key": "-7_-4",
@@ -4178,7 +4178,7 @@
    "lod1": "tiles/-6_-5.lod1.glb",
    "meta": "tiles/-6_-5.json",
    "buildings": 123,
-   "maxHeight": 16
+   "maxHeight": 66.6
   },
   {
    "key": "-8_-5",
@@ -4208,7 +4208,7 @@
    "lod1": "tiles/-7_-6.lod1.glb",
    "meta": "tiles/-7_-6.json",
    "buildings": 619,
-   "maxHeight": 30.4
+   "maxHeight": 58.4
   },
   {
    "key": "-6_-6",
@@ -4223,7 +4223,7 @@
    "lod1": "tiles/-6_-6.lod1.glb",
    "meta": "tiles/-6_-6.json",
    "buildings": 111,
-   "maxHeight": 22.8
+   "maxHeight": 56.7
   },
   {
    "key": "-8_-6",
@@ -4283,7 +4283,7 @@
    "lod1": "tiles/-5_-4.lod1.glb",
    "meta": "tiles/-5_-4.json",
    "buildings": 299,
-   "maxHeight": 45.6
+   "maxHeight": 65.5
   },
   {
    "key": "-3_-5",
@@ -4298,7 +4298,7 @@
    "lod1": "tiles/-3_-5.lod1.glb",
    "meta": "tiles/-3_-5.json",
    "buildings": 199,
-   "maxHeight": 34.2
+   "maxHeight": 54
   },
   {
    "key": "-3_-4",
@@ -4463,7 +4463,7 @@
    "lod1": "tiles/-3_-6.lod1.glb",
    "meta": "tiles/-3_-6.json",
    "buildings": 290,
-   "maxHeight": 41.8
+   "maxHeight": 53.6
   },
   {
    "key": "-1_-4",
@@ -4718,7 +4718,7 @@
    "lod1": "tiles/-1_9.lod1.glb",
    "meta": "tiles/-1_9.json",
    "buildings": 254,
-   "maxHeight": 30.4
+   "maxHeight": 53.8
   },
   {
    "key": "-2_10",
@@ -4793,7 +4793,7 @@
    "lod1": "tiles/-1_12.lod1.glb",
    "meta": "tiles/-1_12.json",
    "buildings": 19,
-   "maxHeight": 12
+   "maxHeight": 62.3
   },
   {
    "key": "-2_11",
@@ -4898,7 +4898,7 @@
    "lod1": "tiles/-11_-7.lod1.glb",
    "meta": "tiles/-11_-7.json",
    "buildings": 793,
-   "maxHeight": 19
+   "maxHeight": 40.3
   },
   {
    "key": "-10_-7",
@@ -4913,7 +4913,7 @@
    "lod1": "tiles/-10_-7.lod1.glb",
    "meta": "tiles/-10_-7.json",
    "buildings": 544,
-   "maxHeight": 19
+   "maxHeight": 50.1
   },
   {
    "key": "-12_-7",
@@ -5018,7 +5018,7 @@
    "lod1": "tiles/-9_-9.lod1.glb",
    "meta": "tiles/-9_-9.json",
    "buildings": 727,
-   "maxHeight": 16
+   "maxHeight": 65.7
   },
   {
    "key": "-8_-9",
@@ -5138,7 +5138,7 @@
    "lod1": "tiles/-8_-8.lod1.glb",
    "meta": "tiles/-8_-8.json",
    "buildings": 671,
-   "maxHeight": 15.2
+   "maxHeight": 45.2
   },
   {
    "key": "-6_-9",
@@ -5213,7 +5213,7 @@
    "lod1": "tiles/-4_-9.lod1.glb",
    "meta": "tiles/-4_-9.json",
    "buildings": 544,
-   "maxHeight": 19
+   "maxHeight": 51.9
   },
   {
    "key": "-5_-9",
@@ -5228,7 +5228,7 @@
    "lod1": "tiles/-5_-9.lod1.glb",
    "meta": "tiles/-5_-9.json",
    "buildings": 669,
-   "maxHeight": 16
+   "maxHeight": 54
   },
   {
    "key": "-5_-8",
@@ -5243,7 +5243,7 @@
    "lod1": "tiles/-5_-8.lod1.glb",
    "meta": "tiles/-5_-8.json",
    "buildings": 420,
-   "maxHeight": 22.8
+   "maxHeight": 62.6
   },
   {
    "key": "-3_-7",
@@ -5258,7 +5258,7 @@
    "lod1": "tiles/-3_-7.lod1.glb",
    "meta": "tiles/-3_-7.json",
    "buildings": 354,
-   "maxHeight": 45.6
+   "maxHeight": 53.4
   },
   {
    "key": "-4_-8",
@@ -5438,7 +5438,7 @@
    "lod1": "tiles/-11_-11.lod1.glb",
    "meta": "tiles/-11_-11.json",
    "buildings": 340,
-   "maxHeight": 16
+   "maxHeight": 54
   },
   {
    "key": "-10_-11",
@@ -5483,7 +5483,7 @@
    "lod1": "tiles/-11_-10.lod1.glb",
    "meta": "tiles/-11_-10.json",
    "buildings": 695,
-   "maxHeight": 19
+   "maxHeight": 21.5
   },
   {
    "key": "-12_-10",
@@ -5498,7 +5498,7 @@
    "lod1": "tiles/-12_-10.lod1.glb",
    "meta": "tiles/-12_-10.json",
    "buildings": 125,
-   "maxHeight": 16
+   "maxHeight": 28.3
   },
   {
    "key": "-11_-12",
@@ -5588,7 +5588,7 @@
    "lod1": "tiles/-12_-13.lod1.glb",
    "meta": "tiles/-12_-13.json",
    "buildings": 105,
-   "maxHeight": 16
+   "maxHeight": 57.8
   },
   {
    "key": "-9_-10",
@@ -5618,7 +5618,7 @@
    "lod1": "tiles/-9_-12.lod1.glb",
    "meta": "tiles/-9_-12.json",
    "buildings": 533,
-   "maxHeight": 19
+   "maxHeight": 50.6
   },
   {
    "key": "-9_-13",
@@ -5633,7 +5633,7 @@
    "lod1": "tiles/-9_-13.lod1.glb",
    "meta": "tiles/-9_-13.json",
    "buildings": 796,
-   "maxHeight": 15.2
+   "maxHeight": 37.9
   },
   {
    "key": "-9_-11",
@@ -5708,7 +5708,7 @@
    "lod1": "tiles/-7_-12.lod1.glb",
    "meta": "tiles/-7_-12.json",
    "buildings": 679,
-   "maxHeight": 16
+   "maxHeight": 68
   },
   {
    "key": "-8_-10",
@@ -5738,7 +5738,7 @@
    "lod1": "tiles/-6_-10.lod1.glb",
    "meta": "tiles/-6_-10.json",
    "buildings": 397,
-   "maxHeight": 19
+   "maxHeight": 65.3
   },
   {
    "key": "-6_-12",
@@ -5783,7 +5783,7 @@
    "lod1": "tiles/-7_-11.lod1.glb",
    "meta": "tiles/-7_-11.json",
    "buildings": 637,
-   "maxHeight": 15.2
+   "maxHeight": 29.1
   },
   {
    "key": "-7_-13",
@@ -5798,7 +5798,7 @@
    "lod1": "tiles/-7_-13.lod1.glb",
    "meta": "tiles/-7_-13.json",
    "buildings": 550,
-   "maxHeight": 22.8
+   "maxHeight": 50.6
   },
   {
    "key": "-8_-13",
@@ -5888,7 +5888,7 @@
    "lod1": "tiles/-5_-11.lod1.glb",
    "meta": "tiles/-5_-11.json",
    "buildings": 514,
-   "maxHeight": 41.8
+   "maxHeight": 45.7
   },
   {
    "key": "-3_-10",
@@ -5918,7 +5918,7 @@
    "lod1": "tiles/-5_-13.lod1.glb",
    "meta": "tiles/-5_-13.json",
    "buildings": 543,
-   "maxHeight": 26.6
+   "maxHeight": 49.5
   },
   {
    "key": "-4_-12",
@@ -5948,7 +5948,7 @@
    "lod1": "tiles/-4_-11.lod1.glb",
    "meta": "tiles/-4_-11.json",
    "buildings": 735,
-   "maxHeight": 19
+   "maxHeight": 52.8
   },
   {
    "key": "-3_-11",
@@ -6218,7 +6218,7 @@
    "lod1": "tiles/1_12.lod1.glb",
    "meta": "tiles/1_12.json",
    "buildings": 103,
-   "maxHeight": 15.2
+   "maxHeight": 62
   },
   {
    "key": "1_10",
@@ -6308,7 +6308,7 @@
    "lod1": "tiles/-9_-16.lod1.glb",
    "meta": "tiles/-9_-16.json",
    "buildings": 434,
-   "maxHeight": 16
+   "maxHeight": 55.7
   },
   {
    "key": "-10_-14",
@@ -6323,7 +6323,7 @@
    "lod1": "tiles/-10_-14.lod1.glb",
    "meta": "tiles/-10_-14.json",
    "buildings": 907,
-   "maxHeight": 15.2
+   "maxHeight": 28
   },
   {
    "key": "-10_-15",
@@ -6338,7 +6338,7 @@
    "lod1": "tiles/-10_-15.lod1.glb",
    "meta": "tiles/-10_-15.json",
    "buildings": 826,
-   "maxHeight": 16
+   "maxHeight": 43.6
   },
   {
    "key": "-12_-15",
@@ -6443,7 +6443,7 @@
    "lod1": "tiles/-9_-14.lod1.glb",
    "meta": "tiles/-9_-14.json",
    "buildings": 1014,
-   "maxHeight": 15.2
+   "maxHeight": 52.4
   },
   {
    "key": "-9_-15",
@@ -6503,7 +6503,7 @@
    "lod1": "tiles/-8_-15.lod1.glb",
    "meta": "tiles/-8_-15.json",
    "buildings": 618,
-   "maxHeight": 22.8
+   "maxHeight": 57.3
   },
   {
    "key": "-8_-14",
@@ -6518,7 +6518,7 @@
    "lod1": "tiles/-8_-14.lod1.glb",
    "meta": "tiles/-8_-14.json",
    "buildings": 756,
-   "maxHeight": 16
+   "maxHeight": 55.1
   },
   {
    "key": "-7_-14",
@@ -6548,7 +6548,7 @@
    "lod1": "tiles/-6_-15.lod1.glb",
    "meta": "tiles/-6_-15.json",
    "buildings": 672,
-   "maxHeight": 16
+   "maxHeight": 50.4
   },
   {
    "key": "-7_-15",
@@ -6653,7 +6653,7 @@
    "lod1": "tiles/-5_-14.lod1.glb",
    "meta": "tiles/-5_-14.json",
    "buildings": 575,
-   "maxHeight": 30.4
+   "maxHeight": 58.3
   },
   {
    "key": "-5_-16",
@@ -6863,7 +6863,7 @@
    "lod1": "tiles/-12_6.lod1.glb",
    "meta": "tiles/-12_6.json",
    "buildings": 95,
-   "maxHeight": 15.2
+   "maxHeight": 31.8
   },
   {
    "key": "-11_6",
@@ -6908,7 +6908,7 @@
    "lod1": "tiles/-12_7.lod1.glb",
    "meta": "tiles/-12_7.json",
    "buildings": 88,
-   "maxHeight": 16
+   "maxHeight": 52.5
   },
   {
    "key": "-10_7",
@@ -6923,7 +6923,7 @@
    "lod1": "tiles/-10_7.lod1.glb",
    "meta": "tiles/-10_7.json",
    "buildings": 489,
-   "maxHeight": 16
+   "maxHeight": 37.5
   },
   {
    "key": "-11_7",
@@ -6938,7 +6938,7 @@
    "lod1": "tiles/-11_7.lod1.glb",
    "meta": "tiles/-11_7.json",
    "buildings": 495,
-   "maxHeight": 16
+   "maxHeight": 54
   },
   {
    "key": "-9_6",
@@ -6953,7 +6953,7 @@
    "lod1": "tiles/-9_6.lod1.glb",
    "meta": "tiles/-9_6.json",
    "buildings": 784,
-   "maxHeight": 16
+   "maxHeight": 55.2
   },
   {
    "key": "-9_7",
@@ -7013,7 +7013,7 @@
    "lod1": "tiles/-8_6.lod1.glb",
    "meta": "tiles/-8_6.json",
    "buildings": 701,
-   "maxHeight": 16
+   "maxHeight": 40.6
   },
   {
    "key": "-6_6",

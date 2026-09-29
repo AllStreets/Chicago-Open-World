@@ -1,0 +1,7 @@
+{
+  "note": "Landmark churches whose silhouette differs from the steepled default. Keyed by OSM way/relation id.",
+  "overrides": {
+    "366043547": { "name": "Saint Mary of the Angels", "crown": "dome" },
+    "129575948": { "name": "Fourth Presbyterian Church", "crown": "tower" }
+  }
+}

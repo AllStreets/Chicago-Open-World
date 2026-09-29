@@ -7,7 +7,7 @@ import { drum, spire } from './crowns.js'
 import { insetRing } from './roofs.js'
 import { pointInRing } from './geom.js'
 
-export const VENUE_FACADES = { seats: 9, turf: 10, clay: 11, paint: 12, steel: 13, lamp: 14, screen: 15, wall: 16, marquee: 17, ivy: 18, arena: 16 }
+export const VENUE_FACADES = { seats: 9, turf: 10, clay: 11, paint: 12, steel: 13, lamp: 14, screen: 15, wall: 16, marquee: 17, ivy: 18, arena: 16, sacred: 19, roofing: 20 }
 // Style selectors travel in _SEED; the shader reads the ranges.
 export const STYLE = {
   seats: { green: 0.1, navy: 0.35, red: 0.6, blue: 0.85 },
