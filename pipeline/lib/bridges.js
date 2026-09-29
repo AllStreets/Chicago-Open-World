@@ -2,7 +2,8 @@
 // ribbon cuts so each crossing draws ONE deck, then trunnion leaves, pits, tender/bridge houses and lights.
 import { project } from '../../shared/project.js'
 import { roadHalfWidth } from './ground.js'
-import { add2, sub2, mul2, dot2, len2, norm2, left, bearing } from './meshkit.js'
+import { add2, sub2, mul2, dot2, len2, norm2, left, bearing, at3, mesh, slab, tube } from './meshkit.js'
+import { LANDMARK_FACADES as F } from './facadeIds.js'
 
 export const isMovableBridge = (tags = {}) => {
   const kind = tags['bridge:movable']
@@ -83,4 +84,100 @@ export function cutPolyline(points, rect) {
   }
   if (cur.length >= 2) pieces.push(cur)
   return pieces.filter((p) => lenOf(p) >= 0.5)
+}
+
+// ── Leaves ───────────────────────────────────────────────────────────────────
+// Chicago-type trunnion bascule: each leaf turns about a fixed trunnion at the bank; a counterweight on the
+// short tail behind the trunnion drops into a pit as the leaf rises (https://en.wikipedia.org/wiki/Bascule_bridge).
+export const DECK = { sidewalkW: 3, slabT: 0.35, trunnionDrop: 1.2, gap: 0.04, tailFrac: 0.32 }
+export const L_DECK_Y = 7.6 // build-world.js lays the elevated L ribbon at 7.6 m
+const STEEL = 'chicago-bridge-steel'
+
+export function leafGeometry(b, deckY) {
+  return [1, -1].map((s, leaf) => {
+    const p2 = add2(b.centre, mul2(b.axis, (s * b.span) / 2)), d = mul2(b.axis, -s)
+    return { leaf, s, p2, d, pivot: [p2[0], deckY - DECK.trunnionDrop, p2[1]], k: [-d[1], 0, d[0]], Lf: b.span / 2 - DECK.gap, Lt: (DECK.tailFrac * b.span) / 2 }
+  })
+}
+
+const frameOf = (g) => { const v = left(g.d); return (a, o = 0) => add2(add2(g.p2, mul2(g.d, a)), mul2(v, o)) }
+const panels = (g, N = 8) => Array.from({ length: N + 1 }, (_, i) => -g.Lt + ((g.Lf + g.Lt) * i) / N)
+
+function deckTrusses(b, g, deckY) {
+  const out = mesh(), at = frameOf(g), W = b.width, top = deckY - DECK.slabT
+  const offs = W > 26 ? [-(W / 2 - 2.5), -W / 6, W / 6, W / 2 - 2.5] : [-(W / 2 - 2.5), W / 2 - 2.5]
+  const [d0, d1] = b.decks === 2 ? [7.5, 6.6] : [5.5, 1.8]
+  const depth = (a) => (a <= 0 ? d0 : d0 + ((d1 - d0) * a) / g.Lf)
+  const A = panels(g)
+  for (const o of offs) for (let i = 0; i < A.length - 1; i++) {
+    const T0 = at3(at(A[i], o), top), T1 = at3(at(A[i + 1], o), top)
+    const B0 = at3(at(A[i], o), top - depth(A[i])), B1 = at3(at(A[i + 1], o), top - depth(A[i + 1]))
+    tube(out, T0, T1, 0.25, 4); tube(out, B0, B1, 0.25, 4); tube(out, T0, B0, 0.18, 4)
+    tube(out, i % 2 ? T0 : B0, i % 2 ? B1 : T1, 0.18, 4)   // Warren diagonals
+  }
+  return out
+}
+
+function throughTrusses(b, g, deckY) {
+  const out = mesh(), at = frameOf(g), W = b.width, o = W / 2 - 0.6
+  const H = b.decks === 2 ? L_DECK_Y - 0.4 - deckY : 6.0
+  const height = (a) => (b.decks === 2 || a <= 0.2 * g.Lf ? H : H * (1 - (0.45 * (a - 0.2 * g.Lf)) / (0.8 * g.Lf)))
+  const A = panels(g)
+  for (const side of [-o, o]) for (let i = 0; i < A.length - 1; i++) {
+    const B0 = at3(at(A[i], side), deckY), B1 = at3(at(A[i + 1], side), deckY)
+    const T0 = at3(at(A[i], side), deckY + height(A[i])), T1 = at3(at(A[i + 1], side), deckY + height(A[i + 1]))
+    tube(out, B0, B1, 0.25, 4); tube(out, T0, T1, 0.25, 4); tube(out, B0, T0, 0.18, 4)
+    tube(out, i % 2 ? B0 : T0, i % 2 ? T1 : B1, 0.18, 4)
+  }
+  for (let i = 0; i < A.length; i += 2) tube(out, at3(at(A[i], -o), deckY + height(A[i])), at3(at(A[i], o), deckY + height(A[i])), 0.15, 4) // top struts
+  return out
+}
+
+function girders(b, g, deckY) {
+  const out = mesh(), at = frameOf(g), W = b.width, top = deckY - DECK.slabT
+  const offs = W > 20 ? [-(W / 2 - 2), -W / 6, W / 6, W / 2 - 2] : [-(W / 2 - 2), W / 2 - 2]
+  const depth = (a) => (a <= 0 ? 3.5 : 3.5 - (2.1 * a) / g.Lf)
+  const A = panels(g)
+  for (const o of offs) for (let i = 0; i < A.length - 1; i++) {
+    const m = (A[i] + A[i + 1]) / 2
+    slab(out, at(m, o), g.d, A[i + 1] - A[i], 0.6, top - depth(m), top)
+  }
+  return out
+}
+
+export function buildLeaves(b, deckY) {
+  const W = b.width
+  return leafGeometry(b, deckY).map((g) => {
+    const at = frameOf(g), len = g.Lf + g.Lt, mid = (g.Lf - g.Lt) / 2, meshes = []
+    const push = (m, facade, style, part) => meshes.push({ mesh: m, facade, seed: 0.5, style, part })
+    push(slab(mesh(), at(mid), g.d, len, W - 2 * DECK.sidewalkW, deckY - DECK.slabT, deckY), F.grid, 'grid-deck-steel', 'deck')
+    const walks = mesh(), rails = mesh()
+    for (const o of [-1, 1]) {
+      slab(walks, at(mid, o * (W / 2 - DECK.sidewalkW / 2)), g.d, len, DECK.sidewalkW, deckY - DECK.slabT, deckY + 0.15)
+      slab(rails, at(mid, o * (W / 2 - 0.04)), g.d, len, 0.08, deckY + 0.15, deckY + 1.25)   // lattice railing
+    }
+    push(walks, F.stone, 'sidewalk-concrete', 'sidewalk')
+    push(rails, F.grid, STEEL, 'railing')
+    if (b.leaf === 'through-truss') push(throughTrusses(b, g, deckY), F.steel, STEEL, 'truss')
+    else if (b.leaf === 'girder') push(girders(b, g, deckY), F.steel, STEEL, 'girder')
+    else push(deckTrusses(b, g, deckY), F.steel, STEEL, 'truss')
+    if (b.decks === 2 && b.leaf === 'through-truss') push(slab(mesh(), at(mid), g.d, len, 8, L_DECK_Y - 0.4, L_DECK_Y), F.steel, STEEL, 'upper-deck')
+    else if (b.decks === 2) push(slab(mesh(), at(mid), g.d, len, W - 4, deckY - 6.3, deckY - 5.95), F.stone, 'sidewalk-concrete', 'lower-deck')
+    push(slab(mesh(), at(-g.Lt / 2 - 0.5), g.d, Math.max(1, g.Lt - 1), W - 4, deckY - 9, deckY - 3), F.stone, 'pit-concrete', 'counterweight')
+    const nav = mesh()
+    for (const o of [-1, 1]) slab(nav, at(g.Lf - 0.3, o * (W / 2 - 0.3)), g.d, 0.35, 0.35, deckY + 1.0, deckY + 1.45)
+    push(nav, F.signal, 'nav-red', 'nav')
+    return { leaf: g.leaf, pivot: g.pivot, k: g.k, meshes }
+  })
+}
+
+// Open pit behind each trunnion: the tail and counterweight swing down into it as the leaf rises.
+export function buildPits(b, deckY) {
+  return leafGeometry(b, deckY).map((g) => {
+    const at = frameOf(g), m = mesh(), a0 = -g.Lt - 0.6, a1 = 0.4, L = a1 - a0, W = b.width, y0 = deckY - 9.4, y1 = deckY - 0.4
+    slab(m, at((a0 + a1) / 2), g.d, L, W, y0, y0 + 0.4)                       // floor
+    for (const o of [-1, 1]) slab(m, at((a0 + a1) / 2, o * (W / 2 - 0.25)), g.d, L, 0.5, y0, y1)
+    slab(m, at(a0 + 0.25), g.d, 0.5, W, y0, y1)                               // back wall
+    return { mesh: m, facade: F.stone, seed: 0.5, style: 'pit-concrete', part: 'pit' }
+  })
 }
