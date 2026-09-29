@@ -50,7 +50,7 @@ export function createSim(transit) {
     services.push({ id: sv.id, line: sv.line, inbound: !!sv.inbound, spec, path, stops, profile, phase: hash01(sv.id), to: last?.to || stops.at(-1)?.name || line.name })
   }
 
-  const base = new Map(), final = new Map()
+  const base = new Map(), final = new Map(), consists = new Map()
   const baseFor = (sv, day) => memo(base, `${sv.id}|${day.date}`, () => departuresForDay(sv, day.midnightMs, day.weekend, periods))
   // a day's departures start at least one headway after yesterday's last (no bunching at midnight)
   function departures(sv, day) {
@@ -63,7 +63,8 @@ export function createSim(transit) {
 
   function trainAt(sv, day, k, dep, ms) {
     const tau = (ms - dep) / 1000, sHead = sAt(sv.profile, tau)
-    const cars = carPoses(sv.path, sHead, consistFor(sv.spec, periodOf(chicagoClock(dep), periods), sv.inbound), dims)
+    const consist = memo(consists, `${sv.id}|${day.date}|${k}`, () => consistFor(sv.spec, periodOf(chicagoClock(dep), periods), sv.inbound))
+    const cars = carPoses(sv.path, sHead, consist, dims)
     const next = sv.stops.find((st) => st.s > sHead + 1) ?? null
     return {
       id: `${sv.id}:${day.date}:${k}`, rn: String(sv.spec.runBase + (k % 100)), line: sv.line, service: sv.id, destination: sv.to,
@@ -72,8 +73,18 @@ export function createSim(transit) {
     }
   }
 
+  // chicagoClock is an Intl call: per frame, only re-resolve the day when the clock leaves the cached one
+  let days = null
+  function daysFor(ms) {
+    if (!days || ms < days.today.midnightMs || ms >= days.until) {
+      const today = chicagoClock(ms)
+      days = { today, yday: chicagoClock(today.midnightMs - 3600000), until: chicagoClock(today.midnightMs + 25 * 3600000).midnightMs }
+    }
+    return days
+  }
+
   function trainsAt(ms) {
-    const today = chicagoClock(ms), yday = chicagoClock(today.midnightMs - 3600000), out = []
+    const { today, yday } = daysFor(ms), out = []
     for (const sv of services) for (const day of [yday, today]) {
       departures(sv, day).forEach((dep, k) => { if (ms >= dep && ms <= dep + sv.profile.duration * 1000) out.push(trainAt(sv, day, k, dep, ms)) })
     }
