@@ -29,18 +29,18 @@ Origin tags: `[S1]`, `[S2]`, `[derived]` (needed to deliver an S1/S2 item).
 
 ## A. Process & docs
 
-- [ ] **A1** `[S1]` — Write this backlog. Acceptance: the file exists, and every S1 clause is mapped in the traceability table.
-- [ ] **A2** `[S1]` — Write the master plan, `docs/superpowers/plans/2026-09-29-vision-master-plan.md`. It orders sections B–I into phases or milestones with dependencies, and marks each milestone's push point. Acceptance: every backlog ID appears in exactly one milestone.
-- [ ] **A3** `[S1]` — Write one implementation plan per feature area: water, transit, stadiums & sports life, landmarks & bridges, building colours, camera, review minors. Acceptance: a plan file per area in `docs/superpowers/plans/`, each with tasks, files, tests and screenshot poses.
-- [ ] **A4** `[S1]` `[S2]` — Write the revised later-phase plans (3 heroes, 4 guide, 5 alive, 6 rings, 7 traversal) against Addendum A and this backlog. Acceptance: five plan files exist, each referencing the section I IDs.
-- [ ] **A5** `[S1]` — Update the spec with Addendum B, "Vision pass": unified water, transit, sports life, landmark detail, true building colours, the README gallery rule and the ≤ 900 budget. It also reconciles §5 "L tracks" and §10 trains with section C. Acceptance: the addendum is merged into the spec, and §13 phasing is updated.
-- [ ] **A6** `[S1]` — Commit and push the backlog, plans and spec (docs only). Acceptance: the commit is on `origin/main`, and no code changed.
+- [x] **A1** `[S1]` — Write this backlog. Acceptance: the file exists, and every S1 clause is mapped in the traceability table.
+- [x] **A2** `[S1]` — Write the master plan, `docs/superpowers/plans/2026-09-29-vision-master-plan.md`. It orders sections B–I into phases or milestones with dependencies, and marks each milestone's push point. Acceptance: every backlog ID appears in exactly one milestone.
+- [x] **A3** `[S1]` — Write one implementation plan per feature area: water, transit, stadiums & sports life, landmarks & bridges, building colours, camera, review minors. Acceptance: a plan file per area in `docs/superpowers/plans/`, each with tasks, files, tests and screenshot poses.
+- [x] **A4** `[S1]` `[S2]` — Write the revised later-phase plans (3 heroes, 4 guide, 5 alive, 6 rings, 7 traversal) against Addendum A and this backlog. Acceptance: five plan files exist, each referencing the section I IDs.
+- [x] **A5** `[S1]` — Update the spec with Addendum B, "Vision pass": unified water, transit, sports life, landmark detail, true building colours, the README gallery rule and the ≤ 900 budget. It also reconciles §5 "L tracks" and §10 trains with section C. Acceptance: the addendum is merged into the spec, and §13 phasing is updated.
+- [x] **A6** `[S1]` — Commit and push the backlog, plans and spec (docs only). Acceptance: the commit is on `origin/main`, and no code changed.
 - [ ] **A7** `[S1]` — Stop and wait for the user's explicit "go ahead" before any coding, build, test or browser run. Acceptance: no code commits before the go-ahead message.
-- [ ] **A8** `[S1]` — README progressive gallery: add a "How it came together" section showing phase 1 → 2 → 2.5 → vision pass in order, starting with the initial phase-1 images (`phase1-*.png`, which are currently unused in the README). Acceptance: the phase-1 images appear first, all existing images are unchanged, and new images are appended with a date or phase caption.
-- [ ] **A9** `[S1]` — Never overwrite a README image file. New shots use new filenames (for example `phase3-*.png` or `vision-*.png`). Acceptance: `git log` shows no modification of any existing `docs/screenshots/*.png`.
+- [x] **A8** `[S1]` — README progressive gallery: add a "How it came together" section showing phase 1 → 2 → 2.5 → vision pass in order, starting with the initial phase-1 images (`phase1-*.png`, which are currently unused in the README). Acceptance: the phase-1 images appear first, all existing images are unchanged, and new images are appended with a date or phase caption.
+- [x] **A9** `[S1]` — Never overwrite a README image file. New shots use new filenames (for example `phase3-*.png` or `vision-*.png`). Acceptance: `git log` shows no modification of any existing `docs/screenshots/*.png`.
 - [ ] **A10** `[S1]` — Record S1 feedback in the README story: the note "bridges are starting to look good" is logged as a milestone caption in the gallery. Acceptance: the gallery contains a bridges image with a caption.
 - [ ] **A11** `[S2]` — Push after each phase or major task (memory rule). Acceptance: each milestone in A2 ends with a push step.
-- [ ] **A12** `[derived]` — Keep the ledger at `.superpowers/sdd/<vision-pass>/progress.md` with rulings, including evaluate-and-revert decisions (F10) and the ambiguity defaults below. Acceptance: the ledger exists and every revert is logged.
+- [x] **A12** `[derived]` — Keep the ledger at `.superpowers/sdd/<vision-pass>/progress.md` with rulings, including evaluate-and-revert decisions (F10) and the ambiguity defaults below. Acceptance: the ledger exists and every revert is logged.
 - [ ] **A13** `[derived]` — Update the README roadmap and badges as each milestone lands, without touching images. Acceptance: roadmap checkboxes match the shipped work.
 
 ## B. Water & lake
