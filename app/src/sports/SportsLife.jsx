@@ -4,6 +4,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import FieldTextures from './FieldTextures.jsx'
 import Crowd from './Crowd.jsx'
+import Scoreboard from './Scoreboard.jsx'
+import { boardLines } from './scoreboard.js'
 import Players, { Ball } from './Players.jsx'
 import { uniformColors } from './formations.js'
 import { useSports } from './sportsStore.js'
@@ -34,21 +36,36 @@ function SeatCrowd({ venue, st, cheer = 0 }) {
     wave={party.wave} cheer={cheer} level={lightLevel(st?.state)} center={venue.center} radius={venue.radius} />
 }
 
+const BOARD_RANGE_M = 3000
+function Boards({ venue, st }) {
+  const override = useSports((s) => s.boardOverrides[venue.key])
+  const [now, setNow] = useState(() => Date.now())
+  useEffect(() => { const id = setInterval(() => setNow(Date.now()), 5000); return () => clearInterval(id) }, [])
+  const group = useRef()
+  useFrame(({ camera }) => { if (group.current) group.current.visible = lifeVisible([camera.position.x, 0, camera.position.z], venue.center, 'HIGH', BOARD_RANGE_M) })
+  if (!venue.boards?.length) return null
+  const lines = boardLines(venue, st, now, override)
+  return <group ref={group}>{venue.boards.map((b, i) => <Scoreboard key={i} board={b} lines={lines} />)}</group>
+}
+
 function VenueLife({ venue }) {
   const st = useSports((s) => s.states[venue.key])
   const quality = useStore((s) => s.quality)
   const group = useRef()
   useFrame(({ camera }) => { if (group.current) group.current.visible = lifeVisible([camera.position.x, camera.position.y, camera.position.z], venue.center, quality) })
   return (
-    <group ref={group}>
-      {quality !== 'LOW' && venue.seats && <SeatCrowd venue={venue} st={st} />}
-      {quality !== 'LOW' && venue.frame && st?.state === 'live' && st.game && (
-        <>
-          <Players frame={venue.frame} sport={st.game.sport} colors={uniformColors(st.game.sport, homeTeamFor(venue, st))} />
-          <Ball frame={venue.frame} sport={st.game.sport} />
-        </>
-      )}
-    </group>
+    <>
+      <group ref={group}>
+        {quality !== 'LOW' && venue.seats && <SeatCrowd venue={venue} st={st} />}
+        {quality !== 'LOW' && venue.frame && st?.state === 'live' && st.game && (
+          <>
+            <Players frame={venue.frame} sport={st.game.sport} colors={uniformColors(st.game.sport, homeTeamFor(venue, st))} />
+            <Ball frame={venue.frame} sport={st.game.sport} />
+          </>
+        )}
+      </group>
+      <Boards venue={venue} st={st} />
+    </>
   )
 }
 
