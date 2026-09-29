@@ -5,56 +5,10 @@ import { convexHull, box, STYLE } from './venue.js'
 import { orientedBox, lathe, DOME, SACRED_STYLE } from './sacred.js'
 import { drum, spire, pyramid } from './crowns.js'
 
-export const LANDMARK_FACADES = { chrome: 21, water: 22, led: 23, marquee: 17, steel: 13, wall: 16, roofing: 20, paint: 12 }
+import { add2, mul2, left, bearing, sub3, at3, mesh, tri, merge, tube, disc, ringAround } from './meshkit.js'
+import { LANDMARK_FACADES } from './facadeIds.js'
+export { LANDMARK_FACADES }
 const F = LANDMARK_FACADES
-
-const add2 = (a, b) => [a[0] + b[0], a[1] + b[1]]
-const mul2 = (a, s) => [a[0] * s, a[1] * s]
-const left = (d) => [d[1], -d[0]]
-const bearing = (deg) => [Math.sin((deg * Math.PI) / 180), -Math.cos((deg * Math.PI) / 180)]
-const sub3 = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]]
-const cross3 = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]]
-const norm3 = (a) => { const l = Math.hypot(...a) || 1; return a.map((x) => x / l) }
-const at3 = (p2, y) => [p2[0], y, p2[1]]
-
-const mesh = () => ({ positions: [], normals: [], uvs: [] })
-function tri(out, a, b, c, want, ua = [0, 0], ub = [0, 0], uc = [0, 0]) {
-  const u = sub3(b, a), v = sub3(c, a)
-  let n = cross3(u, v)
-  const l = Math.hypot(...n)
-  if (l < 1e-9) return
-  if (want && n[0] * want[0] + n[1] * want[1] + n[2] * want[2] < 0) { [b, c] = [c, b]; [ub, uc] = [uc, ub]; n = n.map((x) => -x) }
-  for (const [p, t] of [[a, ua], [b, ub], [c, uc]]) { out.positions.push(...p); out.normals.push(n[0] / l || 0, n[1] / l || 0, n[2] / l || 0); out.uvs.push(...t) }
-}
-const merge = (...ms) => { const o = mesh(); for (const m of ms) for (const k of ['positions', 'normals', 'uvs']) o[k].push(...m[k]); return o }
-
-// Cylinder between two 3D points; uvX pins the u coordinate (the wheel's LEDs read their angle from it).
-function tube(out, a, b, r, sides = 6, uvX = null) {
-  const d = norm3(sub3(b, a)), h = Math.abs(d[1]) < 0.9 ? [0, 1, 0] : [1, 0, 0]
-  const e1 = norm3(cross3(d, h)), e2 = cross3(d, e1)
-  const ring = (p) => Array.from({ length: sides }, (_, k) => {
-    const t = (k / sides) * Math.PI * 2, o = [e1[0] * Math.cos(t) + e2[0] * Math.sin(t), e1[1] * Math.cos(t) + e2[1] * Math.sin(t), e1[2] * Math.cos(t) + e2[2] * Math.sin(t)]
-    return { p: [p[0] + o[0] * r, p[1] + o[1] * r, p[2] + o[2] * r], o }
-  })
-  const A = ring(a), B = ring(b), len = Math.hypot(...sub3(b, a))
-  for (let k = 0; k < sides; k++) {
-    const k2 = (k + 1) % sides, want = A[k].o.map((x, i) => x + A[k2].o[i])
-    const u0 = uvX ?? k / sides, u1 = uvX ?? (k + 1) / sides
-    tri(out, A[k].p, A[k2].p, B[k2].p, want, [u0, 0], [u1, 0], [u1, len]); tri(out, A[k].p, B[k2].p, B[k].p, want, [u0, 0], [u1, len], [u0, len])
-  }
-  return out
-}
-function disc(at, r, y, sides = 48) {
-  const out = mesh()
-  for (let k = 0; k < sides; k++) {
-    const a0 = (k / sides) * Math.PI * 2, a1 = ((k + 1) / sides) * Math.PI * 2
-    const p0 = [at[0] + r * Math.cos(a0), y, at[1] + r * Math.sin(a0)], p1 = [at[0] + r * Math.cos(a1), y, at[1] + r * Math.sin(a1)]
-    tri(out, [at[0], y, at[1]], p0, p1, [0, 1, 0], [at[0], at[1]], [p0[0], p0[2]], [p1[0], p1[2]])
-  }
-  return out
-}
-
-const ringAround = (c, r, n = 24) => Array.from({ length: n }, (_, i) => [c[0] + r * Math.cos((i / n) * Math.PI * 2), c[1] + r * Math.sin((i / n) * Math.PI * 2)])
 const hullOf = (b) => convexHull(b.polygons.flatMap((p) => p.outer))
 const obOf = (b) => orientedBox(hullOf(b))
 

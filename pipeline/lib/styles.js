@@ -1,7 +1,7 @@
 // pipeline/lib/styles.js — the style palette: one row per sourced look, indexed per vertex by _STYLE (spec B.6).
 // Row 0 is "no style". The app builds a float DataTexture from styles.json; the PNG is a review swatch sheet.
 import sharp from 'sharp'
-import { mkdirSync } from 'node:fs'
+import { mkdirSync, readFileSync } from 'node:fs'
 import { dirname } from 'node:path'
 import { FINISH_PRESETS, FINISHES, hexToRgb } from './looks.js'
 
@@ -69,4 +69,25 @@ export function assignHeroStyles(buildings, heroes, registry) {
     b.styleIndex = registry.indexOf(b.hero)
     b.styleParts = byKey.get(b.hero)?.look?.parts ?? []
   }
+}
+
+// ── V6 material rows (pipeline/data/styles.json) ─────────────────────────────────────────────────────────
+// Registered right after the hero looks and before the OSM looks, so their palette index is stable and the
+// pipeline builders can ask for it by key (styleIndex) before build-world has assembled the registry.
+const STYLES_JSON = new URL('../data/styles.json', import.meta.url)
+const HEROES_JSON = new URL('../data/heroes.json', import.meta.url)
+export const materialRows = () => JSON.parse(readFileSync(STYLES_JSON, 'utf8')).styles
+export const materialLook = (r) => ({ finish: r.finish, base: r.base, glass: r.base, mullion: r.base, spandrel: r.base })
+export function addMaterialStyles(registry, rows = materialRows()) { for (const r of rows) registry.add(r.key, materialLook(r)) }
+
+let defaultRegistry = null
+export function styleIndex(key) {
+  if (!defaultRegistry) {
+    defaultRegistry = createStyleRegistry()
+    for (const h of JSON.parse(readFileSync(HEROES_JSON, 'utf8')).heroes) if (h.look) defaultRegistry.add(h.key, h.look)
+    addMaterialStyles(defaultRegistry)
+  }
+  const i = defaultRegistry.indexOf(key)
+  if (!i) throw new Error(`styleIndex: unknown style ${key}`)
+  return i
 }

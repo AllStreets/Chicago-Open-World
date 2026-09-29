@@ -23,7 +23,7 @@ import { horizonBoxes } from '../lib/horizon.js'
 import { venueZones, filterTrees, assertNoVenueTrees, outsideZones, cutZones } from '../lib/trees.js'
 import { createBlock, addTileToBlock, blockLayers, blockSidecar } from '../lib/blocks.js'
 import { bAcc, appendBuilding, appendLayer, asLayer } from '../lib/layers.js'
-import { createStyleRegistry, assignHeroStyles, meshStyle, writeStylePalettePng } from '../lib/styles.js'
+import { createStyleRegistry, assignHeroStyles, meshStyle, writeStylePalettePng, addMaterialStyles } from '../lib/styles.js'
 import { applyOsmLooks } from '../lib/osmLook.js'
 import { lakePolygons, landMinusWater, joinLines, lakeSide } from '../lib/lake.js'
 import { bakeShore, SHORE } from '../lib/shore.js'
@@ -255,6 +255,7 @@ async function main() {
   // ── Sourced looks (V2): hero rows first; OSM-tagged looks are added in Task 9 ──
   const styles = createStyleRegistry()
   assignHeroStyles(buildings, heroes, styles)
+  addMaterialStyles(styles) // V6 materials: after the heroes, before the OSM looks — styleIndex() relies on this order
   const osmLooks = applyOsmLooks(buildings, styles, loadJson(join(ROOT, 'data', 'osm-looks.json')))
   log(`OSM-tagged looks: ${osmLooks.styled} buildings, ${osmLooks.skipped} over the palette cap`)
   // ── Transit (V3): CTA + Metra tracks, stations and glow ────────────────────

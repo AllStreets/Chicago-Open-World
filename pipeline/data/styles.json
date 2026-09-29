@@ -1,0 +1,211 @@
+{
+  "version": 1,
+  "note": "V6 material rows, registered after hero looks and before OSM looks (see pipeline/lib/styles.js)",
+  "styles": [
+    {
+      "key": "georgia-pink-marble",
+      "base": "#d8b4a6",
+      "finish": "granite",
+      "source": "https://en.wikipedia.org/wiki/Buckingham_Fountain (Georgia pink marble; photo-matched)",
+      "finishSource": "stone"
+    },
+    {
+      "key": "seahorse-bronze",
+      "base": "#58705c",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Buckingham_Fountain (bronze seahorses, verdigris patina; photo-matched)"
+    },
+    {
+      "key": "chicago-bridge-steel",
+      "base": "#5f6b72",
+      "finish": "metal",
+      "source": "https://www.chicagoloopbridges.com/ (CDOT bascule paint; photo-matched)"
+    },
+    {
+      "key": "grid-deck-steel",
+      "base": "#8b9095",
+      "finish": "metal",
+      "source": "https://www.chicagoloopbridges.com/ (open steel grid decks; photo-matched)"
+    },
+    {
+      "key": "sidewalk-concrete",
+      "base": "#b8b4aa",
+      "finish": "concrete",
+      "source": "photo-matched, Chicago bridge sidewalks"
+    },
+    {
+      "key": "pit-concrete",
+      "base": "#6e6c67",
+      "finish": "concrete",
+      "source": "https://en.wikipedia.org/wiki/Bascule_bridge (counterweight pits; photo-matched)"
+    },
+    {
+      "key": "tender-limestone",
+      "base": "#cdc3ad",
+      "finish": "limestone",
+      "source": "https://www.chicagoloopbridges.com/ (bridge-tender houses; photo-matched)"
+    },
+    {
+      "key": "tender-glass",
+      "base": "#3c4a55",
+      "finish": "glass",
+      "source": "https://www.chicagoloopbridges.com/ (post-war tender houses; photo-matched)"
+    },
+    {
+      "key": "bedford-limestone",
+      "base": "#d4cab4",
+      "finish": "limestone",
+      "source": "https://en.wikipedia.org/wiki/DuSable_Bridge (Bedford stone bridgehouses)"
+    },
+    {
+      "key": "bedford-limestone-relief",
+      "base": "#ddd3bd",
+      "finish": "limestone",
+      "source": "https://en.wikipedia.org/wiki/DuSable_Bridge (Fraser and Hering reliefs, 1928)"
+    },
+    {
+      "key": "lamp-post-black",
+      "base": "#202326",
+      "finish": "metal",
+      "source": "photo-matched, Chicago bridge lamp standards"
+    },
+    {
+      "key": "lantern-warm",
+      "base": "#ffd49a",
+      "finish": "glass",
+      "source": "photo-matched, sodium/LED warm lanterns on Chicago bridges"
+    },
+    {
+      "key": "nav-red",
+      "base": "#ff2a18",
+      "finish": "glass",
+      "source": "33 CFR 118 (drawbridge lighting: red lights mark the span)"
+    },
+    {
+      "key": "crown-glass-block",
+      "base": "#c9d3d1",
+      "finish": "glass",
+      "source": "https://en.wikipedia.org/wiki/Crown_Fountain (glass-brick towers)"
+    },
+    {
+      "key": "black-granite",
+      "base": "#1b1c1e",
+      "finish": "granite",
+      "source": "https://en.wikipedia.org/wiki/Crown_Fountain (black granite reflecting pool)"
+    },
+    {
+      "key": "lurie-hedge",
+      "base": "#2e4a26",
+      "finish": "limestone",
+      "source": "https://en.wikipedia.org/wiki/Lurie_Garden (Shoulder Hedge)",
+      "finishSource": "stone"
+    },
+    {
+      "key": "lurie-dark-plate",
+      "base": "#5a4a78",
+      "finish": "limestone",
+      "source": "https://en.wikipedia.org/wiki/Lurie_Garden (dark plate: salvia; photo-matched)",
+      "finishSource": "stone"
+    },
+    {
+      "key": "lurie-light-plate",
+      "base": "#c2ad6e",
+      "finish": "limestone",
+      "source": "https://en.wikipedia.org/wiki/Lurie_Garden (light plate; photo-matched)",
+      "finishSource": "stone"
+    },
+    {
+      "key": "bp-deck-wood",
+      "base": "#8a6a4a",
+      "finish": "limestone",
+      "source": "https://en.wikipedia.org/wiki/BP_Pedestrian_Bridge (hardwood deck)",
+      "finishSource": "stone"
+    },
+    {
+      "key": "gehry-stainless",
+      "base": "#c8cbcd",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/BP_Pedestrian_Bridge (brushed stainless steel)"
+    },
+    {
+      "key": "aic-lion-bronze",
+      "base": "#3e5a4b",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Art_Institute_of_Chicago_Building (Kemeys bronze lions; photo-matched)"
+    },
+    {
+      "key": "aic-plinth-granite",
+      "base": "#8d8a86",
+      "finish": "granite",
+      "source": "photo-matched, Art Institute lion plinths"
+    },
+    {
+      "key": "modern-wing-white",
+      "base": "#e8eaea",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Modern_Wing (aluminium 'flying carpet' canopy)"
+    },
+    {
+      "key": "corten",
+      "base": "#7b3d22",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Chicago_Picasso (Cor-Ten steel)"
+    },
+    {
+      "key": "calder-red",
+      "base": "#c6331f",
+      "finish": "limestone",
+      "source": "https://en.wikipedia.org/wiki/Flamingo_(sculpture) (vermilion 'Calder red')",
+      "finishSource": "paint"
+    },
+    {
+      "key": "tiffany-glass",
+      "base": "#d9a441",
+      "finish": "glass",
+      "source": "https://en.wikipedia.org/wiki/Chicago_Cultural_Center (Tiffany dome, Preston Bradley Hall)"
+    },
+    {
+      "key": "healy-millet-glass",
+      "base": "#9fb7c4",
+      "finish": "glass",
+      "source": "https://en.wikipedia.org/wiki/Chicago_Cultural_Center (Healy & Millet dome, G.A.R. Hall)"
+    },
+    {
+      "key": "union-limestone",
+      "base": "#cdc2aa",
+      "finish": "limestone",
+      "source": "https://en.wikipedia.org/wiki/Chicago_Union_Station (Bedford limestone)"
+    },
+    {
+      "key": "mart-limestone",
+      "base": "#c8b79a",
+      "finish": "limestone",
+      "source": "https://en.wikipedia.org/wiki/Merchandise_Mart (limestone and terra cotta; photo-matched)"
+    },
+    {
+      "key": "navy-pier-brick",
+      "base": "#9f5a40",
+      "finish": "limestone",
+      "source": "https://en.wikipedia.org/wiki/Navy_Pier (Headhouse brick; photo-matched)",
+      "finishSource": "stone"
+    },
+    {
+      "key": "ballroom-dome",
+      "base": "#d9d3c6",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Navy_Pier (Aon Grand Ballroom dome; photo-matched)"
+    },
+    {
+      "key": "riverwalk-granite",
+      "base": "#9b958d",
+      "finish": "granite",
+      "source": "https://en.wikipedia.org/wiki/Chicago_Riverwalk (granite paving; photo-matched)"
+    },
+    {
+      "key": "conservatory-glass",
+      "base": "#b8d0cc",
+      "finish": "glass",
+      "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory (glass palm house)"
+    }
+  ]
+}
