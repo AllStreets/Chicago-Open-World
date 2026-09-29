@@ -4,6 +4,9 @@ import { mkdirSync } from 'node:fs'
 import { dirname } from 'node:path'
 
 export async function writeMeshGlb(path, { positions, normals, uvs, colors, extra = {} }) {
+  if (!positions.length) { // empty layer: one degenerate triangle far below ground keeps the file loadable
+    positions = [0, -100, 0, 0, -100, 0, 0, -100, 0]; normals = [0, 1, 0, 0, 1, 0, 0, 1, 0]; uvs = uvs && [0, 0, 0, 0, 0, 0]; colors = colors && [0, 0, 0, 0, 0, 0, 0, 0, 0]; extra = {}
+  }
   const doc = new Document()
   const buffer = doc.createBuffer()
   const acc = (arr, type) => doc.createAccessor().setType(type).setArray(arr instanceof Float32Array ? arr : new Float32Array(arr)).setBuffer(buffer)

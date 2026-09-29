@@ -20,4 +20,11 @@ describe('sources', () => {
     expect(q).toContain('out geom')
     expect(() => overpassQuery('nope', RING0_BBOX)).toThrow()
   })
+  it('ground kinds: trees are nodes, rail matches railways', () => {
+    expect(overpassQuery('trees', RING0_BBOX)).toContain('node["natural"="tree"]')
+    expect(overpassQuery('trees', RING0_BBOX).endsWith('out;')).toBe(true)
+    expect(overpassQuery('rail', RING0_BBOX)).toContain('railway')
+    expect(overpassQuery('parks', RING0_BBOX)).toContain('leisure')
+    expect(overpassQuery('roads', RING0_BBOX)).toContain('highway')
+  })
 })

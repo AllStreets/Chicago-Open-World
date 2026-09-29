@@ -16,6 +16,10 @@ export const cityBoundaryUrl = () => 'https://data.cityofchicago.org/resource/qq
 const FILTERS = {
   buildings: ['way["building"]["height"]', 'way["building"]["building:levels"]'],
   parts: ['way["building:part"]', 'relation["building:part"]'],
+  parks: ['way["leisure"~"^(park|garden|playground|pitch)$"]', 'relation["leisure"="park"]', 'way["landuse"~"^(grass|recreation_ground|village_green)$"]', 'way["natural"="beach"]'],
+  roads: ['way["highway"~"^(motorway|trunk|primary|secondary|tertiary|unclassified|residential|service|motorway_link|trunk_link|primary_link|secondary_link)$"]'],
+  trees: ['node["natural"="tree"]'],
+  rail: ['way["railway"~"^(subway|light_rail|rail)$"]'],
   water: ['relation["water"="river"]', 'way["water"="river"]', 'way["waterway"="canal"]["area"]', 'way["water"="canal"]', 'way["water"="harbour"]', 'relation["water"="harbour"]'],
 }
 
@@ -23,5 +27,5 @@ export function overpassQuery(kind, { s, w, n, e }) {
   const f = FILTERS[kind]
   if (!f) throw new Error(`unknown overpass kind: ${kind}`)
   const bb = `(${s},${w},${n},${e})`
-  return `[out:json][timeout:120];(${f.map((x) => x + bb + ';').join('')});out geom;`
+  return `[out:json][timeout:120];(${f.map((x) => x + bb + ';').join('')});${kind === 'trees' ? 'out;' : 'out geom;'}`
 }

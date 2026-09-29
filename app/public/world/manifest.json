@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "generatedAt": "2026-09-29T00:38:20.292Z",
+  "version": 2,
+  "generatedAt": "2026-09-29T00:56:32.371Z",
   "origin": {
     "lat": 41.88203,
     "lon": -87.62784
@@ -10,17 +10,17 @@
     {
       "name": "City of Chicago Building Footprints",
       "id": "syp8-uezg",
-      "fetchedAt": "2026-09-28T23:08:37.646Z"
+      "fetchedAt": "2026-09-29T00:55:38.640Z"
     },
     {
       "name": "City of Chicago Boundary",
       "id": "qqq8-j68g",
-      "fetchedAt": "2026-09-28T23:08:37.971Z"
+      "fetchedAt": "2026-09-29T00:55:39.148Z"
     },
     {
       "name": "OpenStreetMap (ODbL) heights, parts, water",
       "id": "overpass",
-      "fetchedAt": "2026-09-28T23:08:43.547Z"
+      "fetchedAt": "2026-09-29T00:55:44.850Z"
     }
   ],
   "tiles": [
@@ -411,6 +411,14 @@
   ],
   "ground": {
     "land": "ground/land.glb",
-    "river": "ground/river.glb"
-  }
+    "river": "ground/river.glb",
+    "parks": "ground/parks.glb",
+    "beaches": "ground/beaches.glb",
+    "roads": "ground/roads.glb",
+    "sidewalks": "ground/sidewalks.glb",
+    "rail": "ground/rail.glb",
+    "elevated": "ground/elevated.glb"
+  },
+  "trees": "trees.json",
+  "columns": "columns.json"
 }

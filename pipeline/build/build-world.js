@@ -12,6 +12,8 @@ import { extrudeBuilding } from '../lib/extrude.js'
 import { groupByTile, TILE_SIZE } from '../lib/tiles.js'
 import { writeMeshGlb } from '../lib/glb.js'
 import { shapePieces } from '../lib/shapes.js'
+import { bufferPolyline } from '../lib/ribbon.js'
+import { roadHalfWidth, isElevatedRail, scatterInPolygon } from '../lib/ground.js'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const CACHE = join(ROOT, 'cache')
@@ -109,15 +111,75 @@ async function main() {
   await writeMeshGlb(join(OUT, 'ground', 'river.glb'), flatMesh(water, 0.15))
   console.log(`land polys: ${land.length}, water polys: ${water.length}`)
 
+  // Parks & beaches
+  const greens = osmPolys(load('osm-parks.json').data.elements)
+  const beaches = greens.filter((p) => p.tags.natural === 'beach')
+  const parks = greens.filter((p) => p.tags.natural !== 'beach')
+  await writeMeshGlb(join(OUT, 'ground', 'parks.glb'), flatMesh(parks, 0.08))
+  await writeMeshGlb(join(OUT, 'ground', 'beaches.glb'), flatMesh(beaches, 0.07))
+
+  // Roads + sidewalks (sidewalk = road + 3 m each side, drawn below)
+  const merge = (ms) => {
+    const out = { positions: [], normals: [], uvs: [] }
+    for (const m of ms) for (const k of ['positions', 'normals', 'uvs']) for (const v of m[k]) out[k].push(v)
+    return out
+  }
+  const roadWays = load('osm-roads.json').data.elements.filter((e) => e.geometry)
+  const roadMeshes = [], walkMeshes = []
+  for (const e of roadWays) {
+    const hw = roadHalfWidth(e.tags || {})
+    if (!hw) continue
+    const pts = e.geometry.map((p) => project(p.lon, p.lat))
+    roadMeshes.push(bufferPolyline(pts, hw, 0.12))
+    if (!['motorway', 'motorway_link', 'service'].includes(e.tags.highway)) walkMeshes.push(bufferPolyline(pts, hw + 3, 0.1))
+  }
+  await writeMeshGlb(join(OUT, 'ground', 'roads.glb'), merge(roadMeshes))
+  await writeMeshGlb(join(OUT, 'ground', 'sidewalks.glb'), merge(walkMeshes))
+
+  // Rail: elevated L structure deck + columns; at-grade rail ballast
+  const railWays = load('osm-rail.json').data.elements.filter((e) => e.geometry)
+  const deck = [], grade = [], columns = []
+  for (const e of railWays) {
+    const pts = e.geometry.map((p) => project(p.lon, p.lat))
+    const t = e.tags || {}
+    if (isElevatedRail(t)) {
+      deck.push(bufferPolyline(pts, 3.6, 7.6))
+      let acc = 0
+      for (let i = 1; i < pts.length; i++) {
+        const seg = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1])
+        const rot = Math.atan2(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1])
+        for (let d = (18 - acc) % 18; d < seg; d += 18) {
+          const k = d / seg
+          columns.push([+(pts[i - 1][0] + (pts[i][0] - pts[i - 1][0]) * k).toFixed(1), +(pts[i - 1][1] + (pts[i][1] - pts[i - 1][1]) * k).toFixed(1), +rot.toFixed(3)])
+        }
+        acc = (acc + seg) % 18
+      }
+    } else if (!(t.tunnel && t.tunnel !== 'no') && parseInt(t.layer ?? '0', 10) >= 0) grade.push(bufferPolyline(pts, t.railway === 'rail' ? 2.4 : 1.8, 0.09))
+  }
+  await writeMeshGlb(join(OUT, 'ground', 'elevated.glb'), merge(deck))
+  await writeMeshGlb(join(OUT, 'ground', 'rail.glb'), merge(grade))
+  writeFileSync(join(OUT, 'columns.json'), JSON.stringify({ columns }))
+
+  // Trees: mapped street trees + scatter inside parks (not pitches/playgrounds)
+  const trees = load('osm-trees.json').data.elements.map((n) => project(n.lon, n.lat))
+  for (const p of parks) if (['park', 'garden'].includes(p.tags.leisure)) trees.push(...scatterInPolygon(p.outer, 22, p.outer.length))
+  writeFileSync(join(OUT, 'trees.json'), JSON.stringify({ trees: trees.map(([x, z]) => {
+    const h = hashSeed(`${Math.round(x)}:${Math.round(z)}`)
+    return [+x.toFixed(1), +z.toFixed(1), +(0.8 + h * 0.6).toFixed(2), Math.floor(h * 4)]
+  }) }))
+  console.log(`parks ${parks.length}, beaches ${beaches.length}, roads ${roadMeshes.length}, elevated segments ${deck.length}, columns ${columns.length}, trees ${trees.length}`)
+
   const src = (name, id, file) => ({ name, id, fetchedAt: load(file).fetchedAt })
   writeFileSync(join(OUT, 'manifest.json'), JSON.stringify({
-    version: 1, generatedAt: new Date().toISOString(), origin: ORIGIN, tileSize: TILE_SIZE,
+    version: 2, generatedAt: new Date().toISOString(), origin: ORIGIN, tileSize: TILE_SIZE,
     sources: [
       src('City of Chicago Building Footprints', 'syp8-uezg', 'footprints.json'),
       src('City of Chicago Boundary', 'qqq8-j68g', 'city-boundary.json'),
       src('OpenStreetMap (ODbL) heights, parts, water', 'overpass', 'osm-parts.json'),
     ],
-    tiles, ground: { land: 'ground/land.glb', river: 'ground/river.glb' },
+    tiles,
+    ground: { land: 'ground/land.glb', river: 'ground/river.glb', parks: 'ground/parks.glb', beaches: 'ground/beaches.glb', roads: 'ground/roads.glb', sidewalks: 'ground/sidewalks.glb', rail: 'ground/rail.glb', elevated: 'ground/elevated.glb' },
+    trees: 'trees.json', columns: 'columns.json',
   }, null, 2))
   console.log('manifest written')
 }

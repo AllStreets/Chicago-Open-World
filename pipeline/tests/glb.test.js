@@ -19,4 +19,10 @@ describe('writeMeshGlb', () => {
     expect(prim.getAttribute('_FACADE').getArray()[0]).toBe(3)
     expect(prim.getAttribute('COLOR_0')).toBeTruthy()
   })
+  it('writes a loadable file for an empty mesh', async () => {
+    const path = join(mkdtempSync(join(tmpdir(), 'glb-')), 'e.glb')
+    await writeMeshGlb(path, { positions: [], normals: [], uvs: [] })
+    const doc = await new NodeIO().read(path)
+    expect(doc.getRoot().listMeshes()[0].listPrimitives()[0].getAttribute('POSITION').getCount()).toBe(3)
+  })
 })

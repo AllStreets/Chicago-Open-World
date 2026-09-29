@@ -39,5 +39,5 @@ async function overpass(kind) {
 console.log('Fetching Ring 0 sources…')
 await footprints()
 save('city-boundary.json', await getJson(cityBoundaryUrl()))
-for (const k of ['buildings', 'parts', 'water']) await overpass(k)
+for (const k of ['buildings', 'parts', 'water', 'parks', 'roads', 'trees', 'rail']) await overpass(k)
 console.log('Done.')
