@@ -4,10 +4,17 @@ import * as THREE from 'three'
 import { useFrame } from '@react-three/fiber'
 import { formation, ballAt } from './formations.js'
 import { frameToWorld } from './anchors.js'
+import { facadeUniforms } from '../world/materials/facadeMaterial.js'
 
 const MAX = 32
 const capsule = new THREE.CapsuleGeometry(0.32, 1.15, 2, 6).translate(0, 0.9, 0)
-const playerMat = new THREE.MeshStandardMaterial({ roughness: 0.75 })
+// Floodlights are not real lights: at night the players take a share of their own colour as emission, like the crowd.
+export const floodlit = { value: 0 }
+export const playerMat = new THREE.MeshStandardMaterial({ roughness: 0.75 })
+playerMat.onBeforeCompile = (shader) => {
+  shader.uniforms.uFlood = floodlit
+  shader.fragmentShader = 'uniform float uFlood;\n' + shader.fragmentShader.replace('#include <emissivemap_fragment>', '#include <emissivemap_fragment>\ntotalEmissiveRadiance += diffuseColor.rgb * uFlood;')
+}
 const ballGeo = new THREE.SphereGeometry(0.22, 10, 8) // ~2× true size so the arc reads from the stands
 const ballMat = new THREE.MeshStandardMaterial({ color: '#ffffff', emissive: '#ffffff', emissiveIntensity: 0.3 })
 const FIELD_Y = 0.22
@@ -16,6 +23,7 @@ export default function Players({ frame, sport, colors }) {
   const ref = useRef()
   const m = useMemo(() => new THREE.Matrix4(), []), c = useMemo(() => new THREE.Color(), [])
   useFrame(() => {
+    floodlit.value = 0.8 * facadeUniforms.uNight.value
     const mesh = ref.current
     if (!mesh) return
     const list = formation(sport, Date.now() / 1000).slice(0, MAX)
