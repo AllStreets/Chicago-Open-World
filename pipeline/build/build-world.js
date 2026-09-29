@@ -1,5 +1,5 @@
 // pipeline/build/build-world.js — world build v3: 110 km², OSM-primary, validated skyline, streamed tiles.
-import { readFileSync, writeFileSync, rmSync, mkdirSync, readdirSync, existsSync, statSync } from 'node:fs'
+import { readFileSync, writeFileSync, rmSync, mkdirSync, readdirSync, existsSync, statSync, copyFileSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import earcut from 'earcut'
@@ -17,6 +17,7 @@ import { writeMeshGlb } from '../lib/glb.js'
 import { shapePieces } from '../lib/shapes.js'
 import { applyHero, findByOsm, matchesOsm } from '../lib/heroes.js'
 import { VENUE_FACADES, STYLE, convexHull } from '../lib/venue.js'
+import { venueRecord, encodeAnchors, plazaAnchors } from '../lib/sportsSites.js'
 import { shapeSacred } from '../lib/sacred.js'
 import { horizonBoxes } from '../lib/horizon.js'
 import { venueZones, filterTrees, assertNoVenueTrees, outsideZones } from '../lib/trees.js'
@@ -187,6 +188,34 @@ async function main() {
   treeNodes.length = 0
   for (const p of keptTrees) treeNodes.push(p)
   log(`parks ${parks.length}, water ${water.length}, roads ${roads.length}, rail ${rail.length}, trees ${treeNodes.length}`)
+  // a point inside any building footprint (arena plaza fans stand on open ground only)
+  const inBuilding = (p) => footIdx.query(p, 400).some((b) => b.polygons.some((poly) => pointInRing(p, poly.outer)))
+  // ── Sports venues sidecar (V5): field frames, boards, seat and plaza anchors ─
+  rmSync(join(OUT, 'venues'), { recursive: true, force: true })
+  mkdirSync(join(OUT, 'venues'), { recursive: true })
+  const venueList = []
+  for (const b of buildings) {
+    const h = b.hero && heroes.find((x) => x.key === b.hero)
+    if (!h?.sports) continue
+    const hull = convexHull(b.polygons.flatMap((p) => p.outer))
+    const info = b.venueMeshes?.find((v) => v.venue)?.venue
+    const rec = venueRecord(h, hull, info)
+    if (info) {
+      if (info.seats.length < 10000) throw new Error(`venue ${h.key}: only ${info.seats.length} seat anchors`)
+      writeFileSync(join(OUT, rec.seats), encodeAnchors(info.seats, rec.center))
+    }
+    if (h.sports.kind === 'arena') {
+      const plaza = plazaAnchors(hull, { seed: h.sports.slot + 11 }, (p) => !inBuilding(p))
+      rec.plaza = `venues/${h.key}.plaza.bin`; rec.plazaCount = plaza.length
+      writeFileSync(join(OUT, rec.plaza), encodeAnchors(plaza, rec.center))
+    }
+    venueList.push(rec)
+  }
+  if (venueList.length !== heroes.filter((x) => x.sports).length) throw new Error(`venue sidecar: ${venueList.length} venues for ${heroes.filter((x) => x.sports).length} sports heroes`)
+  writeFileSync(join(OUT, 'venues.json'), JSON.stringify({ version: 1, venues: venueList }))
+  const schedSrc = join(ROOT, 'data', 'schedules.json')
+  if (existsSync(schedSrc)) copyFileSync(schedSrc, join(OUT, 'schedules.json'))
+  log(`venues sidecar: ${venueList.map((v) => `${v.key} ${v.seatCount} seats${v.plaza ? ` ${v.plazaCount} plaza` : ''}`).join(', ')}`)
 
 
   // ── Churches, cathedrals, mosques, synagogues, temples ─────────────────────
@@ -418,6 +447,7 @@ async function main() {
     tiles, blocks: blockList, land: 'ground/land.glb', lake: 'ground/lake.glb', landMask: 'land.json', transit: 'transit.json', trains: 'trains.glb', styles: 'styles.json', stylePalette: 'style-palette.png',
     shore: { file: 'water/shore.png', ...shore.grid, maxDist: SHORE.maxDist },
     heightfield: { file: 'heightfield.png', ...hf.grid, scale: HEIGHTFIELD.scale }, minimap: { file: 'minimap.png', bounds: mmBounds, size: 2048 },
+    venues: 'venues.json', schedules: existsSync(join(ROOT, 'data', 'schedules.json')) ? 'schedules.json' : null,
   }, null, 1))
   log('manifest written')
   const dirBytes = (d) => readdirSync(d, { withFileTypes: true }).reduce((sum, e) => sum + (e.isDirectory() ? dirBytes(join(d, e.name)) : statSync(join(d, e.name)).size), 0)

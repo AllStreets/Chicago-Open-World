@@ -63,7 +63,7 @@
    ],
    "x": -486,
    "z": 5793,
-   "top": 60
+   "top": 66
   },
   {
    "key": "crownhall",
@@ -85,7 +85,7 @@
    ],
    "x": 538,
    "z": 3150,
-   "top": 25
+   "top": 31
   },
   {
    "key": "fieldmuseum",
@@ -124,7 +124,7 @@
    ],
    "x": 854,
    "z": 2194,
-   "top": 51
+   "top": 56
   },
   {
    "key": "shedd",
@@ -156,7 +156,7 @@
    ],
    "x": -3847,
    "z": 150,
-   "top": 30
+   "top": 39
   },
   {
    "key": "mart",
@@ -2076,7 +2076,7 @@
    "lod1": "tiles/-1_11.lod1.glb",
    "meta": "tiles/-1_11.json",
    "buildings": 43,
-   "maxHeight": 60.2
+   "maxHeight": 66.2
   },
   {
    "key": "-2_9",
@@ -10074,5 +10074,7 @@
    "maxZ": 6523.3
   },
   "size": 2048
- }
+ },
+ "venues": "venues.json",
+ "schedules": "schedules.json"
 }
