@@ -45,6 +45,7 @@ export default function Scene() {
       const g = r.manifest.ground
       setLoadTotal(r.manifest.tiles.length + Object.keys(g).length + (r.manifest.trees ? 1 : 0) + (r.manifest.columns ? 1 : 0) + (r.manifest.props ? 1 : 0))
       setManifest(r.manifest)
+      useStore.getState().setManifest(r.manifest)
     })
   }, [])
 

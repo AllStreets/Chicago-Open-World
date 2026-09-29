@@ -14,6 +14,9 @@ import { writeMeshGlb } from '../lib/glb.js'
 import { shapePieces } from '../lib/shapes.js'
 import { parapetPiece, PARAPET_FACADE } from '../lib/roofs.js'
 import { roofProps } from '../lib/props.js'
+import { minimapSvg } from '../lib/minimap.js'
+import { RING0_BBOX } from '../lib/sources.js'
+import sharp from 'sharp'
 import { bufferPolyline } from '../lib/ribbon.js'
 import { roadHalfWidth, isElevatedRail, scatterInPolygon } from '../lib/ground.js'
 
@@ -179,6 +182,20 @@ async function main() {
   }) }))
   console.log(`parks ${parks.length}, beaches ${beaches.length}, roads ${roadMeshes.length}, elevated segments ${deck.length}, columns ${columns.length}, trees ${trees.length}`)
 
+  // Minimap raster (CHI palette), square bounds = Ring 0 ± 400 m
+  const [x0, z0] = project(RING0_BBOX.w, RING0_BBOX.n), [x1, z1] = project(RING0_BBOX.e, RING0_BBOX.s)
+  const cx = (x0 + x1) / 2, cz = (z0 + z1) / 2, half = Math.max(x1 - x0, z1 - z0) / 2 + 400
+  const mmBounds = { minX: +(cx - half).toFixed(1), minZ: +(cz - half).toFixed(1), maxX: +(cx + half).toFixed(1), maxZ: +(cz + half).toFixed(1) }
+  const svg = minimapSvg({
+    land: land.map((p) => p.outer),
+    water: water.map((p) => p.outer),
+    parks: parks.map((p) => p.outer),
+    roads: roadWays.filter((e) => roadHalfWidth(e.tags || {})).map((e) => e.geometry.map((p) => project(p.lon, p.lat))),
+    buildings: buildings.flatMap((b) => b.polygons.map((p) => p.outer)),
+  }, mmBounds, 1024)
+  await sharp(Buffer.from(svg)).png().toFile(join(OUT, 'minimap.png'))
+  console.log('minimap written')
+
   const src = (name, id, file) => ({ name, id, fetchedAt: load(file).fetchedAt })
   writeFileSync(join(OUT, 'manifest.json'), JSON.stringify({
     version: 2, generatedAt: new Date().toISOString(), origin: ORIGIN, tileSize: TILE_SIZE,
@@ -190,6 +207,7 @@ async function main() {
     tiles,
     ground: { land: 'ground/land.glb', river: 'ground/river.glb', parks: 'ground/parks.glb', beaches: 'ground/beaches.glb', roads: 'ground/roads.glb', sidewalks: 'ground/sidewalks.glb', rail: 'ground/rail.glb', elevated: 'ground/elevated.glb' },
     trees: 'trees.json', columns: 'columns.json', props: 'props.json',
+    minimap: { file: 'minimap.png', bounds: mmBounds },
   }, null, 2))
   console.log('manifest written')
 }

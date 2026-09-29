@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generatedAt": "2026-09-29T00:59:39.539Z",
+  "generatedAt": "2026-09-29T01:03:24.255Z",
   "origin": {
     "lat": 41.88203,
     "lon": -87.62784
@@ -421,5 +421,14 @@
   },
   "trees": "trees.json",
   "columns": "columns.json",
-  "props": "props.json"
+  "props": "props.json",
+  "minimap": {
+    "file": "minimap.png",
+    "bounds": {
+      "minX": -2108,
+      "minZ": -2395.9,
+      "maxX": 2579.5,
+      "maxZ": 2291.5
+    }
+  }
 }

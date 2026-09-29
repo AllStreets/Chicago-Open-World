@@ -24,6 +24,18 @@ export default function AtlasRig() {
   const setCameraMode = useStore((s) => s.setCameraMode)
 
   const introDone = useStore((s) => s.introDone)
+  const flyTo = useStore((s) => s.flyTo)
+
+  useEffect(() => { if (ref.current) ref.current.enabled = introDone }, [introDone])
+
+  useEffect(() => {
+    if (!flyTo || !ref.current) return
+    const c = ref.current
+    c.getTarget(tmpT); c.getPosition(tmpP)
+    const ox = tmpP.x - tmpT.x, oz = tmpP.z - tmpT.z
+    c.setLookAt(flyTo.x + ox, tmpP.y, flyTo.z + oz, flyTo.x, tmpT.y, flyTo.z, true)
+    useStore.getState().clearFlyTo()
+  }, [flyTo])
   const introStart = useRef(null)
 
   useEffect(() => {
@@ -110,7 +122,6 @@ export default function AtlasRig() {
     <CameraControls
       ref={ref}
       makeDefault
-      enabled={introDone}
       minDistance={60}
       maxDistance={MAX_DIST}
       maxPolarAngle={Math.PI * 0.47}
