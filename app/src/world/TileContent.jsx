@@ -6,10 +6,10 @@ import { buildingMaterial } from './City.jsx'
 import { createGroundMaterial } from './materials/groundShader.js'
 import Trees from './Trees.jsx'
 import RoofProps from './RoofProps.jsx'
-import ElevatedL from './ElevatedL.jsx'
 import { worldUrl } from '../lib/manifest.js'
 import { disposeObject } from './dispose.js'
 import { waterMaterial, REFLECT_LAYER } from './materials/waterSurface.js'
+import { TRANSIT_LAYERS, addTileLayer, removeTileLayer } from '../transit/pools.js'
 
 export const groundMaterial = createGroundMaterial()
 
@@ -35,16 +35,26 @@ export default function TileContent({ id, file, meta, lod, mats, version, onRead
     scene.traverse((o) => {
       if (!o.isMesh) return
       const layer = o.name || o.parent?.name
+      if (TRANSIT_LAYERS.includes(layer)) { o.visible = false; return } // drawn by the transit pools
       o.receiveShadow = true
       o.castShadow = false
       if (layer === 'buildings') { o.material = buildingMaterial; o.castShadow = lod === 'lod0'; o.layers.enable(REFLECT_LAYER) }
       else if (layer === 'ground') o.material = groundMaterial
       else if (layer === 'water') { o.material = waterMaterial; o.receiveShadow = false }
-      else if (layer === 'elevated') { o.material = mats.elevated; o.castShadow = true; o.layers.enable(REFLECT_LAYER) }
       else o.material = mats.land
     })
     return scene
   }, [scene, mats, lod])
+  // hand this tile's track, stations and glow to the shared batched meshes; take them back on unmount
+  useEffect(() => {
+    const handles = []
+    scene.updateMatrixWorld(true)
+    scene.traverse((o) => {
+      const layer = o.name || o.parent?.name
+      if (o.isMesh && TRANSIT_LAYERS.includes(layer)) handles.push(addTileLayer(layer, o.geometry, o.matrixWorld))
+    })
+    return () => handles.forEach(removeTileLayer)
+  }, [scene])
   useEffect(() => { onReady?.(id, lod) }, [onReady, id, lod])
   useEffect(() => {
     if (lod !== 'lod0' || !meta) return
@@ -58,7 +68,6 @@ export default function TileContent({ id, file, meta, lod, mats, version, onRead
       <primitive object={obj} />
       {side?.trees?.length > 0 && <Trees trees={side.trees} />}
       {side?.props?.length > 0 && <RoofProps props={side.props} />}
-      {side?.columns?.length > 0 && <ElevatedL columns={side.columns} />}
     </>
   )
 }

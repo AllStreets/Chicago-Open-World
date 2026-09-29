@@ -19,8 +19,8 @@ describe('bookmarks', () => {
   it('transit poses exist; Tower 18 is a named view people can step to', async () => {
     const { VIEW_NAMES } = await import('../places.js')
     const { VIEW_ORDER } = await import('../views.js')
-    expect(BOOKMARKS.wellslake).toEqual({ position: [-420, 30, -335], target: [-495, 7, -412] })
-    expect(BOOKMARKS.transit150).toEqual({ position: [40, 150, 330], target: [-175, 8, 86] })
+    expect(BOOKMARKS.wellslake).toEqual({ position: [-380, 32, -412], target: [-495, 7, -412] })
+    expect(BOOKMARKS.transit150).toEqual({ position: [215, 150, 660], target: [152, 8, 581] })
     expect(BOOKMARKS.transit1000).toEqual({ position: [900, 1000, 1400], target: [-175, 0, 86] })
     expect(BOOKMARKS.northside).toEqual({ position: [-1700, 400, -4270], target: [-2080, 8, -4773] })
     expect(VIEW_NAMES.wellslake).toBe('Tower 18 — the Loop L junction')

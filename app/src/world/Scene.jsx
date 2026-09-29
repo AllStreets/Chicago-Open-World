@@ -18,6 +18,7 @@ import PostFX from './PostFX.jsx'
 import PerfWatch from './PerfWatch.jsx'
 import { QUALITY } from '../lib/quality.js'
 import { loadHeightfield, clearanceAt } from '../lib/clearance.js'
+import TransitLayer from '../transit/TransitLayer.jsx'
 
 export default function Scene() {
   const [manifest, setManifest] = useState(null)
@@ -46,6 +47,7 @@ export default function Scene() {
       useStore.getState().setManifest(r.manifest)
       loadStylePalette(r.manifest)
       if (r.manifest.heightfield) loadHeightfield(worldUrl(r.manifest.heightfield.file, r.manifest.version), r.manifest.heightfield)
+      if (r.manifest.transit) fetch(worldUrl(r.manifest.transit, r.manifest.version)).then((x) => (x.ok ? x.json() : null)).then((j) => j && useStore.getState().setTransit(j)).catch(() => {})
       if (r.manifest.landMask) fetch(`/world/${r.manifest.landMask}`).then((x) => x.json()).then((j) => useStore.getState().setIsWater(makeIsWater(j.rings))).catch(() => {})
     })
     Promise.all([loadFacadeTextures(), loadGroundTextures()]).catch(() => {}).finally(() => useStore.getState().markLoaded('facades'))
@@ -65,6 +67,7 @@ export default function Scene() {
   
       {manifest && <Land file={manifest.land} version={manifest.version} />}
       {manifest && <TileStreamer manifest={manifest} />}
+      <TransitLayer />
       <AtlasRig />
       <PostFX />
       <PerfWatch />
