@@ -4,9 +4,9 @@
 
 **THE CITY, AT FULL SCALE**
 
-<img alt="phase" src="https://img.shields.io/badge/phase-vision_V5_stadiums-45d8ff?style=for-the-badge&labelColor=030509"/>
+<img alt="phase" src="https://img.shields.io/badge/phase-vision_V6_landmarks-45d8ff?style=for-the-badge&labelColor=030509"/>
 <img alt="buildings" src="https://img.shields.io/badge/real_buildings-105,971-ff3b53?style=for-the-badge&labelColor=030509"/>
-<img alt="landmarks" src="https://img.shields.io/badge/landmarks-41-45d8ff?style=for-the-badge&labelColor=030509"/>
+<img alt="landmarks" src="https://img.shields.io/badge/landmarks-86-45d8ff?style=for-the-badge&labelColor=030509"/>
 <img alt="skyline" src="https://img.shields.io/badge/top_50_skyline-verified-ff3b53?style=for-the-badge&labelColor=030509"/>
 <a href="LICENSE"><img alt="license" src="https://img.shields.io/badge/license-MIT-45d8ff?style=for-the-badge&labelColor=030509"/></a>
 <br/>
@@ -227,6 +227,43 @@ A progressive gallery, oldest first. Images are never replaced — each phase ad
 
 Game days come from the real ESPN schedules of all seven Chicago teams, fetched when the world is built; without them the city falls back to a simulated calendar and says so.
 
+### Vision pass · V6 landmarks and bridges — *bascules, Buckingham, the Bean, the civic icons*
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/v6-bridges-before-dusk.png" alt="V6 — the river bridges before the detail work" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v6-bridges-after-dusk.png" alt="V6 — the river bridges as Chicago-type trunnion bascules" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Before: the river bridges were flat road ribbons over the water.</em></td>
+<td><em>After: 32 named bascules — grid decks, lattice railings, tender houses, lanterns and navigation lights (press B to raise them).</em></td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/v6-south-branch-bascules-day.png" alt="V6 — the run of bascule bridges up the South Branch" width="100%"/></td>
+<td><img src="docs/screenshots/v6-dusable-dusk.png" alt="V6 — the DuSable Bridge with its four bridgehouses" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Up the South Branch: one bascule per street, each with its tender houses, no double decks.</em></td>
+<td><em>The DuSable Bridge: four Bedford-stone bridgehouses, balustrades, lanterns and red channel lights.</em></td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/v6-buckingham-night.png" alt="V6 — Buckingham Fountain's evening water show" width="100%"/></td>
+<td><img src="docs/screenshots/v6-cloudgate-day.png" alt="V6 — Cloud Gate mirroring the skyline" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Buckingham Fountain in pink marble with eight bronze seahorses; the 46 m jet plays on the real schedule (press J for a show now).</em></td>
+<td><em>Cloud Gate at its true 20 × 13 × 10 m shape, mirroring the live sky and the skyline, with people on the plaza.</em></td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/v6-crownfountain-night.png" alt="V6 — Crown Fountain's faces at night" width="100%"/></td>
+<td></td>
+</tr>
+<tr>
+<td><em>Crown Fountain's LED faces pucker and spout on their cycle. Also new: Lurie Garden, the BP Bridge, the Art Institute lions, the Picasso, the Flamingo, the Cultural Center domes, Union Station, Navy Pier's Headhouse and Ballroom, the Riverwalk and the Zoo.</em></td>
+<td></td>
+</tr>
+</table>
+
 ### Next · Vision pass — *one lake, living transit, game nights*
 
 Planned in [the master plan](docs/superpowers/plans/2026-09-29-vision-master-plan.md): a single continuous lake and river, CTA lines in their true colours with a restrained neon glow and accurate trains running on them, stadiums with crowds and game nights (and the W flag when the Cubs win), detailed bridges and landmarks, and each tower in its real colours. Its images will be added here as each milestone lands.
@@ -266,6 +303,8 @@ Everything is reachable with the keyboard, the mouse and the on-screen dock — 
 | `⌘K` "Follow a … train" · "Go to …" · "Show … Line" | transit from the search |
 | Sound button | train rumble and crowd cheers, off until you turn it on |
 | Games button · `⌘K` "tonight" | tonight's game, scores and the next game at every venue |
+| `B` · Bridges button | raise the river bridges (a boat-run lift) |
+| `J` · Fountain button | Buckingham Fountain water show |
 | `?` · `Esc` | help card · close / stop a flight |
 | Control dock & minimap | the same moves as buttons; click the minimap to fly |
 
@@ -296,7 +335,7 @@ npm run e2e --prefix app          # hero-view screenshot baselines (Playwright)
 - [x] **1 · Foundation** — real footprints and heights, land, river, lake, sky, Atlas camera, HUD shell
 - [x] **2 · Beauty pass** — generated façades, lit windows, living sky, rooftops, parks & trees, the L, post-processing, minimap, intro flight
 - [x] **2.5 · Expanded city** — Wrigleyville → 35th St, verified top-50 skyline, 41 landmarks, stadiums, sacred buildings, civic icons, horizon fill, streaming, human-first controls
-- [ ] **Vision pass** — ✅ V1 unified lake & river, camera clearance · ✅ V2 true building colours · ✅ V3 CTA lines · ✅ V4 trains · ✅ V5 stadium game nights · V6 bridges & landmarks · V7–V8 controls, perf, gallery
+- [ ] **Vision pass** — ✅ V1 unified lake & river, camera clearance · ✅ V2 true building colours · ✅ V3 CTA lines · ✅ V4 trains · ✅ V5 stadium game nights · ✅ V6 bridges & landmarks · V7–V8 controls, perf, gallery
 - [ ] **3 · Heroes** — Blender refinement of the procedural landmarks (Aqua's waves, Marina City's petals, …)
 - [ ] **4 · Guide** — VISIT / LIVE / WORK lenses: places (bars, restaurants, venues), neighbourhoods, jobs, tours
 - [ ] **5 · Alive** — live L trains and weather via the CHI ATLAS API, Scan mode

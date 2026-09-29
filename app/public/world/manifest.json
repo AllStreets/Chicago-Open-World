@@ -63,7 +63,12 @@
    ],
    "x": -486,
    "z": 5793,
-   "top": 66
+   "top": 66,
+   "beacon": [
+    -486,
+    72,
+    5793
+   ]
   },
   {
    "key": "crownhall",
@@ -74,7 +79,12 @@
    ],
    "x": 47,
    "z": 5424,
-   "top": 8
+   "top": 8,
+   "beacon": [
+    47,
+    14,
+    5424
+   ]
   },
   {
    "key": "wintrust",
@@ -85,7 +95,12 @@
    ],
    "x": 538,
    "z": 3150,
-   "top": 31
+   "top": 31,
+   "beacon": [
+    538,
+    37,
+    3150
+   ]
   },
   {
    "key": "fieldmuseum",
@@ -96,7 +111,12 @@
    ],
    "x": 900,
    "z": 1757,
-   "top": 26
+   "top": 26,
+   "beacon": [
+    900,
+    32,
+    1757
+   ]
   },
   {
    "key": "nema",
@@ -106,7 +126,12 @@
    ],
    "x": 395,
    "z": 1672,
-   "top": 281
+   "top": 281,
+   "beacon": [
+    395,
+    287,
+    1672
+   ]
   },
   {
    "key": "1000m",
@@ -114,7 +139,12 @@
    "aliases": [],
    "x": 251,
    "z": 1346,
-   "top": 245
+   "top": 245,
+   "beacon": [
+    251,
+    251,
+    1346
+   ]
   },
   {
    "key": "soldierfield",
@@ -124,7 +154,12 @@
    ],
    "x": 854,
    "z": 2194,
-   "top": 56
+   "top": 56,
+   "beacon": [
+    854,
+    62,
+    2194
+   ]
   },
   {
    "key": "shedd",
@@ -134,7 +169,12 @@
    ],
    "x": 1179,
    "z": 1602,
-   "top": 37
+   "top": 37,
+   "beacon": [
+    1179,
+    43,
+    1602
+   ]
   },
   {
    "key": "adler",
@@ -144,7 +184,12 @@
    ],
    "x": 1762,
    "z": 1740,
-   "top": 31
+   "top": 31,
+   "beacon": [
+    1762,
+    37,
+    1740
+   ]
   },
   {
    "key": "unitedcenter",
@@ -156,7 +201,12 @@
    ],
    "x": -3847,
    "z": 150,
-   "top": 39
+   "top": 39,
+   "beacon": [
+    -3847,
+    45,
+    150
+   ]
   },
   {
    "key": "mart",
@@ -167,7 +217,12 @@
    ],
    "x": -625,
    "z": -724,
-   "top": 104
+   "top": 104,
+   "beacon": [
+    -625,
+    110,
+    -671
+   ]
   },
   {
    "key": "cbot",
@@ -178,7 +233,12 @@
    ],
    "x": -334,
    "z": 513,
-   "top": 184
+   "top": 184,
+   "beacon": [
+    -334,
+    190,
+    513
+   ]
   },
   {
    "key": "franklin",
@@ -189,7 +249,12 @@
    ],
    "x": -572,
    "z": 193,
-   "top": 307
+   "top": 307,
+   "beacon": [
+    -572,
+    313,
+    193
+   ]
   },
   {
    "key": "110wacker",
@@ -197,7 +262,12 @@
    "aliases": [],
    "x": -797,
    "z": -186,
-   "top": 248
+   "top": 248,
+   "beacon": [
+    -797,
+    254,
+    -186
+   ]
   },
   {
    "key": "311wacker",
@@ -205,7 +275,29 @@
    "aliases": [],
    "x": -657,
    "z": 507,
-   "top": 293
+   "top": 293,
+   "beacon": [
+    -657,
+    299,
+    507
+   ]
+  },
+  {
+   "key": "unionstation",
+   "name": "Union Station",
+   "aliases": [
+    "Chicago Union Station",
+    "Great Hall",
+    "Amtrak"
+   ],
+   "x": -1043,
+   "z": 374,
+   "top": 34,
+   "beacon": [
+    -995,
+    40,
+    373
+   ]
   },
   {
    "key": "chase",
@@ -216,7 +308,12 @@
    ],
    "x": -191,
    "z": 45,
-   "top": 259
+   "top": 259,
+   "beacon": [
+    -191,
+    265,
+    45
+   ]
   },
   {
    "key": "marina2",
@@ -227,7 +324,12 @@
    ],
    "x": -54,
    "z": -686,
-   "top": 179
+   "top": 179,
+   "beacon": [
+    -54,
+    185,
+    -686
+   ]
   },
   {
    "key": "willis",
@@ -237,7 +339,12 @@
    ],
    "x": -674,
    "z": 366,
-   "top": 527
+   "top": 527,
+   "beacon": [
+    -674,
+    533,
+    366
+   ]
   },
   {
    "key": "salesforce",
@@ -247,7 +354,12 @@
    ],
    "x": -815,
    "z": -596,
-   "top": 255
+   "top": 255,
+   "beacon": [
+    -815,
+    261,
+    -596
+   ]
   },
   {
    "key": "marina1",
@@ -258,7 +370,12 @@
    ],
    "x": -108,
    "z": -658,
-   "top": 179
+   "top": 179,
+   "beacon": [
+    -108,
+    185,
+    -658
+   ]
   },
   {
    "key": "aon",
@@ -269,7 +386,12 @@
    ],
    "x": 522,
    "z": -361,
-   "top": 346
+   "top": 346,
+   "beacon": [
+    522,
+    352,
+    -361
+   ]
   },
   {
    "key": "twopru",
@@ -280,7 +402,12 @@
    ],
    "x": 425,
    "z": -376,
-   "top": 303
+   "top": 303,
+   "beacon": [
+    425,
+    309,
+    -376
+   ]
   },
   {
    "key": "trump",
@@ -290,7 +417,12 @@
    ],
    "x": 115,
    "z": -760,
-   "top": 423
+   "top": 423,
+   "beacon": [
+    115,
+    429,
+    -760
+   ]
   },
   {
    "key": "aqua",
@@ -300,7 +432,12 @@
    ],
    "x": 659,
    "z": -475,
-   "top": 262
+   "top": 262,
+   "beacon": [
+    659,
+    268,
+    -475
+   ]
   },
   {
    "key": "chicagotheatre",
@@ -310,7 +447,12 @@
    ],
    "x": 50,
    "z": -374,
-   "top": 25
+   "top": 25,
+   "beacon": [
+    50,
+    31,
+    -374
+   ]
   },
   {
    "key": "pritzker",
@@ -321,7 +463,12 @@
    ],
    "x": 494,
    "z": -165,
-   "top": 36
+   "top": 36,
+   "beacon": [
+    494,
+    42,
+    -165
+   ]
   },
   {
    "key": "cloudgate",
@@ -332,7 +479,12 @@
    ],
    "x": 374,
    "z": -73,
-   "top": 10
+   "top": 10,
+   "beacon": [
+    372,
+    18,
+    -70
+   ]
   },
   {
    "key": "crain",
@@ -344,7 +496,12 @@
    ],
    "x": 238,
    "z": -311,
-   "top": 177
+   "top": 177,
+   "beacon": [
+    238,
+    183,
+    -311
+   ]
   },
   {
    "key": "stregis",
@@ -355,7 +512,47 @@
    ],
    "x": 879,
    "z": -578,
-   "top": 363
+   "top": 363,
+   "beacon": [
+    879,
+    369,
+    -578
+   ]
+  },
+  {
+   "key": "artinstitute",
+   "name": "Art Institute of Chicago",
+   "aliases": [
+    "Art Institute",
+    "Art Institute lions",
+    "Modern Wing",
+    "AIC"
+   ],
+   "x": 444,
+   "z": 263,
+   "top": 24,
+   "beacon": [
+    308,
+    14,
+    300
+   ]
+  },
+  {
+   "key": "culturalcenter",
+   "name": "Chicago Cultural Center",
+   "aliases": [
+    "Cultural Center",
+    "Tiffany dome",
+    "Preston Bradley Hall"
+   ],
+   "x": 237,
+   "z": -205,
+   "top": 34,
+   "beacon": [
+    237,
+    40,
+    -205
+   ]
   },
   {
    "key": "onechicago",
@@ -365,7 +562,12 @@
    ],
    "x": -99,
    "z": -1574,
-   "top": 296
+   "top": 296,
+   "beacon": [
+    -99,
+    302,
+    -1574
+   ]
   },
   {
    "key": "900michigan",
@@ -373,7 +575,12 @@
    "aliases": [],
    "x": 187,
    "z": -1953,
-   "top": 265
+   "top": 265,
+   "beacon": [
+    187,
+    271,
+    -1953
+   ]
   },
   {
    "key": "hancock",
@@ -385,7 +592,12 @@
    ],
    "x": 394,
    "z": -1865,
-   "top": 457
+   "top": 457,
+   "beacon": [
+    394,
+    463,
+    -1865
+   ]
   },
   {
    "key": "watertower",
@@ -395,7 +607,12 @@
    ],
    "x": 408,
    "z": -1775,
-   "top": 261
+   "top": 261,
+   "beacon": [
+    408,
+    267,
+    -1775
+   ]
   },
   {
    "key": "historicwatertower",
@@ -405,7 +622,12 @@
    ],
    "x": 282,
    "z": -1682,
-   "top": 55
+   "top": 55,
+   "beacon": [
+    282,
+    61,
+    -1682
+   ]
   },
   {
    "key": "tribune",
@@ -415,7 +637,12 @@
    ],
    "x": 376,
    "z": -946,
-   "top": 141
+   "top": 141,
+   "beacon": [
+    376,
+    147,
+    -946
+   ]
   },
   {
    "key": "lakepoint",
@@ -425,7 +652,12 @@
    ],
    "x": 1289,
    "z": -1052,
-   "top": 198
+   "top": 198,
+   "beacon": [
+    1289,
+    204,
+    -1052
+   ]
   },
   {
    "key": "400lsd",
@@ -436,7 +668,12 @@
    ],
    "x": 1075,
    "z": -872,
-   "top": 259
+   "top": 259,
+   "beacon": [
+    1075,
+    265,
+    -872
+   ]
   },
   {
    "key": "wrigleybldg",
@@ -446,7 +683,29 @@
    ],
    "x": 249,
    "z": -873,
-   "top": 134
+   "top": 134,
+   "beacon": [
+    249,
+    140,
+    -873
+   ]
+  },
+  {
+   "key": "grandballroom",
+   "name": "Aon Grand Ballroom",
+   "aliases": [
+    "Grand Ballroom",
+    "Navy Pier ballroom",
+    "Navy Pier dome"
+   ],
+   "x": 2359,
+   "z": -1091,
+   "top": 35,
+   "beacon": [
+    2261,
+    42,
+    -1085
+   ]
   },
   {
    "key": "centennialwheel",
@@ -457,7 +716,62 @@
    ],
    "x": 1690,
    "z": -1074,
-   "top": 60
+   "top": 60,
+   "beacon": [
+    1690,
+    66,
+    -1074
+   ]
+  },
+  {
+   "key": "navypier",
+   "name": "Navy Pier",
+   "aliases": [
+    "Navy Pier entrance",
+    "Headhouse",
+    "Family Pavilion"
+   ],
+   "x": 1540,
+   "z": -1073,
+   "top": 36,
+   "beacon": [
+    1520,
+    44,
+    -1078
+   ]
+  },
+  {
+   "key": "conservatory",
+   "name": "Lincoln Park Conservatory",
+   "aliases": [
+    "Conservatory",
+    "palm house"
+   ],
+   "x": -599,
+   "z": -4704,
+   "top": 15,
+   "beacon": [
+    -652,
+    24,
+    -4695
+   ]
+  },
+  {
+   "key": "lincolnparkzoo",
+   "name": "Lincoln Park Zoo",
+   "aliases": [
+    "zoo",
+    "Kovler Lion House",
+    "Lion House"
+   ],
+   "x": -456,
+   "z": -4365,
+   "top": 16,
+   "beacon": [
+    -453,
+    24,
+    -4340
+   ]
   },
   {
    "key": "wrigleyfield",
@@ -468,7 +782,12 @@
    ],
    "x": -2299,
    "z": -7349,
-   "top": 53
+   "top": 53,
+   "beacon": [
+    -2299,
+    59,
+    -7349
+   ]
   },
   {
    "key": "buckingham",
@@ -479,7 +798,544 @@
    ],
    "x": 711,
    "z": 692,
-   "top": 17
+   "top": 11,
+   "beacon": [
+    711,
+    56,
+    692
+   ]
+  },
+  {
+   "key": "crownfountain",
+   "name": "Crown Fountain",
+   "aliases": [
+    "Plensa fountain",
+    "the faces fountain"
+   ],
+   "x": 340,
+   "z": 60,
+   "top": 15,
+   "beacon": [
+    340,
+    22,
+    60
+   ]
+  },
+  {
+   "key": "lurie",
+   "name": "Lurie Garden",
+   "aliases": [
+    "Millennium Park garden",
+    "Shoulder Hedge"
+   ],
+   "x": 506,
+   "z": 66,
+   "top": 5,
+   "beacon": [
+    506,
+    12,
+    66
+   ]
+  },
+  {
+   "key": "bpbridge",
+   "name": "BP Bridge",
+   "aliases": [
+    "BP Pedestrian Bridge",
+    "Gehry bridge"
+   ],
+   "x": 645,
+   "z": -116,
+   "top": 7,
+   "beacon": [
+    645,
+    14,
+    -116
+   ]
+  },
+  {
+   "key": "picasso",
+   "name": "The Picasso",
+   "aliases": [
+    "Chicago Picasso",
+    "Daley Plaza"
+   ],
+   "x": -186,
+   "z": -202,
+   "top": 15,
+   "beacon": [
+    -186,
+    22,
+    -202
+   ]
+  },
+  {
+   "key": "flamingo",
+   "name": "Flamingo",
+   "aliases": [
+    "Calder Flamingo",
+    "Federal Plaza"
+   ],
+   "x": -167,
+   "z": 303,
+   "top": 16,
+   "beacon": [
+    -167,
+    23,
+    303
+   ]
+  },
+  {
+   "key": "riverwalk",
+   "name": "Chicago Riverwalk",
+   "aliases": [
+    "Riverwalk",
+    "River Theater"
+   ],
+   "x": 219,
+   "z": -624,
+   "top": 2,
+   "beacon": [
+    -330,
+    10,
+    -565
+   ]
+  },
+  {
+   "key": "bridge-franklin-orleans",
+   "name": "Franklin–Orleans Street Bridge",
+   "aliases": [
+    "Franklin Street Bridge",
+    "Orleans Street Bridge"
+   ],
+   "x": -662,
+   "z": -594,
+   "top": 8,
+   "beacon": [
+    -662,
+    14,
+    -594
+   ]
+  },
+  {
+   "key": "bridge-wells",
+   "name": "Wells Street Bridge",
+   "aliases": [
+    "Wells St Bridge"
+   ],
+   "x": -511,
+   "z": -611,
+   "top": 8,
+   "beacon": [
+    -511,
+    14,
+    -611
+   ]
+  },
+  {
+   "key": "bridge-lasalle",
+   "name": "LaSalle Street Bridge",
+   "aliases": [
+    "La Salle Street Bridge"
+   ],
+   "x": -388,
+   "z": -607,
+   "top": 8,
+   "beacon": [
+    -388,
+    14,
+    -607
+   ]
+  },
+  {
+   "key": "bridge-clark",
+   "name": "Clark Street Bridge",
+   "aliases": [],
+   "x": -265,
+   "z": -606,
+   "top": 8,
+   "beacon": [
+    -265,
+    14,
+    -606
+   ]
+  },
+  {
+   "key": "bridge-dearborn",
+   "name": "Dearborn Street Bridge",
+   "aliases": [],
+   "x": -141,
+   "z": -608,
+   "top": 8,
+   "beacon": [
+    -141,
+    14,
+    -608
+   ]
+  },
+  {
+   "key": "bridge-state",
+   "name": "State Street Bridge",
+   "aliases": [
+    "Bataan–Corregidor Memorial Bridge"
+   ],
+   "x": -14,
+   "z": -612,
+   "top": 8,
+   "beacon": [
+    -14,
+    14,
+    -612
+   ]
+  },
+  {
+   "key": "bridge-wabash",
+   "name": "Wabash Avenue Bridge",
+   "aliases": [
+    "Irv Kupcinet Bridge"
+   ],
+   "x": 81,
+   "z": -651,
+   "top": 8,
+   "beacon": [
+    81,
+    14,
+    -651
+   ]
+  },
+  {
+   "key": "bridge-dusable",
+   "name": "DuSable Bridge",
+   "aliases": [
+    "Michigan Avenue Bridge"
+   ],
+   "x": 287,
+   "z": -757,
+   "top": 8,
+   "beacon": [
+    287,
+    14,
+    -757
+   ]
+  },
+  {
+   "key": "bridge-columbus",
+   "name": "Columbus Drive Bridge",
+   "aliases": [],
+   "x": 603,
+   "z": -726,
+   "top": 8,
+   "beacon": [
+    603,
+    14,
+    -726
+   ]
+  },
+  {
+   "key": "bridge-lakeshore",
+   "name": "Outer Drive Bridge",
+   "aliases": [
+    "Lake Shore Drive Bridge",
+    "Link Bridge"
+   ],
+   "x": 1142,
+   "z": -710,
+   "top": 8,
+   "beacon": [
+    1142,
+    14,
+    -710
+   ]
+  },
+  {
+   "key": "bridge-lake",
+   "name": "Lake Street Bridge",
+   "aliases": [],
+   "x": -820,
+   "z": -411,
+   "top": 8,
+   "beacon": [
+    -820,
+    14,
+    -411
+   ]
+  },
+  {
+   "key": "bridge-randolph",
+   "name": "Randolph Street Bridge",
+   "aliases": [],
+   "x": -840,
+   "z": -270,
+   "top": 8,
+   "beacon": [
+    -840,
+    14,
+    -270
+   ]
+  },
+  {
+   "key": "bridge-washington",
+   "name": "Washington Boulevard Bridge",
+   "aliases": [],
+   "x": -851,
+   "z": -130,
+   "top": 8,
+   "beacon": [
+    -851,
+    14,
+    -130
+   ]
+  },
+  {
+   "key": "bridge-madison",
+   "name": "Madison Street Bridge",
+   "aliases": [
+    "Lyric Opera Bridge"
+   ],
+   "x": -862,
+   "z": 14,
+   "top": 8,
+   "beacon": [
+    -862,
+    14,
+    14
+   ]
+  },
+  {
+   "key": "bridge-monroe",
+   "name": "Monroe Street Bridge",
+   "aliases": [],
+   "x": -864,
+   "z": 157,
+   "top": 8,
+   "beacon": [
+    -864,
+    14,
+    157
+   ]
+  },
+  {
+   "key": "bridge-adams",
+   "name": "Adams Street Bridge",
+   "aliases": [],
+   "x": -852,
+   "z": 299,
+   "top": 8,
+   "beacon": [
+    -852,
+    14,
+    299
+   ]
+  },
+  {
+   "key": "bridge-jackson",
+   "name": "Jackson Boulevard Bridge",
+   "aliases": [],
+   "x": -820,
+   "z": 439,
+   "top": 8,
+   "beacon": [
+    -820,
+    14,
+    439
+   ]
+  },
+  {
+   "key": "bridge-vanburen",
+   "name": "Van Buren Street Bridge",
+   "aliases": [],
+   "x": -795,
+   "z": 580,
+   "top": 8,
+   "beacon": [
+    -795,
+    14,
+    580
+   ]
+  },
+  {
+   "key": "bridge-congress",
+   "name": "Congress Parkway Bridge",
+   "aliases": [
+    "Eisenhower Expressway bridge"
+   ],
+   "x": -735,
+   "z": 711,
+   "top": 8,
+   "beacon": [
+    -735,
+    14,
+    711
+   ]
+  },
+  {
+   "key": "bridge-harrison",
+   "name": "Harrison Street Bridge",
+   "aliases": [],
+   "x": -679,
+   "z": 841,
+   "top": 8,
+   "beacon": [
+    -679,
+    14,
+    841
+   ]
+  },
+  {
+   "key": "bridge-roosevelt",
+   "name": "Roosevelt Road Bridge",
+   "aliases": [],
+   "x": -572,
+   "z": 1634,
+   "top": 8,
+   "beacon": [
+    -572,
+    14,
+    1634
+   ]
+  },
+  {
+   "key": "bridge-eighteenth",
+   "name": "18th Street Bridge",
+   "aliases": [],
+   "x": -616,
+   "z": 2699,
+   "top": 8,
+   "beacon": [
+    -616,
+    14,
+    2699
+   ]
+  },
+  {
+   "key": "bridge-canal",
+   "name": "Canal Street Bridge",
+   "aliases": [],
+   "x": -902,
+   "z": 3031,
+   "top": 8,
+   "beacon": [
+    -902,
+    14,
+    3031
+   ]
+  },
+  {
+   "key": "bridge-cermak",
+   "name": "Cermak Road Bridge",
+   "aliases": [],
+   "x": -1048,
+   "z": 3251,
+   "top": 8,
+   "beacon": [
+    -1048,
+    14,
+    3251
+   ]
+  },
+  {
+   "key": "bridge-halsted-s",
+   "name": "South Halsted Street Bridge",
+   "aliases": [],
+   "x": -1547,
+   "z": 3636,
+   "top": 8,
+   "beacon": [
+    -1547,
+    14,
+    3636
+   ]
+  },
+  {
+   "key": "bridge-loomis",
+   "name": "Loomis Street Bridge",
+   "aliases": [],
+   "x": -2734,
+   "z": 4021,
+   "top": 8,
+   "beacon": [
+    -2734,
+    14,
+    4021
+   ]
+  },
+  {
+   "key": "bridge-ashland-s",
+   "name": "Ashland Avenue Bridge",
+   "aliases": [],
+   "x": -3157,
+   "z": 4120,
+   "top": 8,
+   "beacon": [
+    -3157,
+    14,
+    4120
+   ]
+  },
+  {
+   "key": "bridge-kinzie",
+   "name": "Kinzie Street Bridge",
+   "aliases": [],
+   "x": -967,
+   "z": -783,
+   "top": 8,
+   "beacon": [
+    -967,
+    14,
+    -783
+   ]
+  },
+  {
+   "key": "bridge-grand",
+   "name": "Grand Avenue Bridge",
+   "aliases": [],
+   "x": -1102,
+   "z": -1043,
+   "top": 8,
+   "beacon": [
+    -1102,
+    14,
+    -1043
+   ]
+  },
+  {
+   "key": "bridge-ohio-feeder",
+   "name": "Ohio Street Feeder Bridge",
+   "aliases": [],
+   "x": -1179,
+   "z": -1163,
+   "top": 8,
+   "beacon": [
+    -1179,
+    14,
+    -1163
+   ]
+  },
+  {
+   "key": "bridge-halsted-n",
+   "name": "North Halsted Street Bridge",
+   "aliases": [],
+   "x": -1659,
+   "z": -1756,
+   "top": 8,
+   "beacon": [
+    -1659,
+    14,
+    -1756
+   ]
+  },
+  {
+   "key": "bridge-division",
+   "name": "Division Street Bridge",
+   "aliases": [],
+   "x": -2454,
+   "z": -2385,
+   "top": 8,
+   "beacon": [
+    -2454,
+    14,
+    -2385
+   ]
   }
  ],
  "tallest": [
@@ -4520,7 +5376,7 @@
    "lod0": "tiles/-1_-1.glb",
    "lod1": "tiles/-1_-1.lod1.glb",
    "meta": "tiles/-1_-1.json",
-   "buildings": 76,
+   "buildings": 77,
    "maxHeight": 234
   },
   {
@@ -4550,7 +5406,7 @@
    "lod0": "tiles/-1_0.glb",
    "lod1": "tiles/-1_0.lod1.glb",
    "meta": "tiles/-1_0.json",
-   "buildings": 85,
+   "buildings": 86,
    "maxHeight": 259
   },
   {
@@ -4595,7 +5451,7 @@
    "lod0": "tiles/0_0.glb",
    "lod1": "tiles/0_0.lod1.glb",
    "meta": "tiles/0_0.json",
-   "buildings": 76,
+   "buildings": 75,
    "maxHeight": 249.6
   },
   {
@@ -4610,7 +5466,7 @@
    "lod0": "tiles/1_-1.glb",
    "lod1": "tiles/1_-1.lod1.glb",
    "meta": "tiles/1_-1.json",
-   "buildings": 58,
+   "buildings": 59,
    "maxHeight": 346
   },
   {
@@ -4640,7 +5496,7 @@
    "lod0": "tiles/0_-2.glb",
    "lod1": "tiles/0_-2.lod1.glb",
    "meta": "tiles/0_-2.json",
-   "buildings": 54,
+   "buildings": 55,
    "maxHeight": 423
   },
   {
@@ -4700,7 +5556,7 @@
    "lod0": "tiles/1_0.glb",
    "lod1": "tiles/1_0.lod1.glb",
    "meta": "tiles/1_0.json",
-   "buildings": 22,
+   "buildings": 23,
    "maxHeight": 12
   },
   {
@@ -4716,7 +5572,7 @@
    "lod1": "tiles/1_1.lod1.glb",
    "meta": "tiles/1_1.json",
    "buildings": 11,
-   "maxHeight": 17
+   "maxHeight": 10.6
   },
   {
    "key": "3_-2",
@@ -5616,7 +6472,7 @@
    "lod1": "tiles/4_-3.lod1.glb",
    "meta": "tiles/4_-3.json",
    "buildings": 10,
-   "maxHeight": 15.2
+   "maxHeight": 34.7
   },
   {
    "key": "3_-4",
@@ -6186,7 +7042,7 @@
    "lod1": "tiles/-1_-9.lod1.glb",
    "meta": "tiles/-1_-9.json",
    "buildings": 27,
-   "maxHeight": 9
+   "maxHeight": 16
   },
   {
    "key": "0_-7",
@@ -10076,5 +10932,7 @@
   "size": 2048
  },
  "venues": "venues.json",
+ "bridges": "bridges.json",
+ "landmarkRuntime": "landmarks.json",
  "schedules": "schedules.json"
 }
