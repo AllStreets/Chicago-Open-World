@@ -4,6 +4,7 @@ import { project } from '../../shared/project.js'
 import { roadHalfWidth } from './ground.js'
 import { add2, sub2, mul2, dot2, len2, norm2, left, bearing, at3, mesh, slab, tube } from './meshkit.js'
 import { LANDMARK_FACADES as F } from './facadeIds.js'
+import { drum, pyramid } from './crowns.js'
 
 export const isMovableBridge = (tags = {}) => {
   const kind = tags['bridge:movable']
@@ -180,4 +181,99 @@ export function buildPits(b, deckY) {
     slab(m, at(a0 + 0.25), g.d, 0.5, W, y0, y1)                               // back wall
     return { mesh: m, facade: F.stone, seed: 0.5, style: 'pit-concrete', part: 'pit' }
   })
+}
+
+// ── Houses, balustrades, lanterns ────────────────────────────────────────────
+// Tender houses stand on diagonal corners (the operating houses); DuSable has four Bedford-stone bridgehouses
+// with Fraser's (north) and Hering's (south) 1928 reliefs (https://en.wikipedia.org/wiki/DuSable_Bridge).
+export const HOUSE_STYLES = {
+  'beaux-arts': { w: 6, dpt: 5, h: 6.5, roof: 'hip' },
+  deco: { w: 6, dpt: 5, h: 7, roof: 'stepped' },
+  moderne: { w: 7, dpt: 4.5, h: 6, roof: 'flat' },
+  modern: { w: 7, dpt: 5, h: 5.5, roof: 'flat', glass: true },
+  dusable: { w: 9.5, dpt: 9.5, h: 12.5, roof: 'attic' },
+}
+const cornerName = (p, c) => `${p[1] < c[1] ? 'n' : 's'}${p[0] < c[0] ? 'w' : 'e'}`
+const slug = (s) => s.toLowerCase().replace(/[^a-z]+/g, '-').replace(/^-|-$/g, '')
+
+export function houseSpots(b) {
+  const st = HOUSE_STYLES[b.houses?.style] ?? HOUSE_STYLES.moderne, v = left(b.axis), n = b.houses?.count ?? 0
+  const corners = n >= 4 ? [[1, 1], [1, -1], [-1, 1], [-1, -1]] : n === 2 ? [[1, 1], [-1, -1]] : n === 1 ? [[1, 1]] : []
+  const tail = (DECK.tailFrac * b.span) / 2
+  return corners.map(([s, side]) => {
+    const along = b.span / 2 + (b.houses.style === 'dusable' ? st.dpt / 2 + 0.5 : tail * 0.6)
+    const at = add2(add2(b.centre, mul2(b.axis, s * along)), mul2(v, side * (b.width / 2 + st.w / 2 + 0.6)))
+    return { at, s, side, facing: mul2(v, -side), corner: cornerName(at, b.centre) }
+  })
+}
+
+export function buildHouse(spot, styleKey, relief = null) {
+  const st = HOUSE_STYLES[styleKey] ?? HOUSE_STYLES.moderne, u = spot.facing, out = []
+  const push = (m, facade, style, part, seed = 0.5) => out.push({ mesh: m, facade, seed, style, part })
+  const stone = styleKey === 'dusable' ? 'bedford-limestone' : 'tender-limestone'
+  if (st.glass) push(slab(mesh(), spot.at, u, st.dpt, st.w, 0, st.h), F.wall, 'tender-glass', 'house', 0.35) // glass-steel band
+  else push(slab(mesh(), spot.at, u, st.dpt, st.w, 0, st.h), F.stone, stone, 'house')
+  const v = left(u), ring = (e) => [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([a, o]) => add2(add2(spot.at, mul2(u, a * (st.dpt / 2 + e))), mul2(v, o * (st.w / 2 + e))))
+  if (st.roof === 'hip') push(pyramid({ ring: ring(0.4), base: st.h, top: st.h + 2.6 }), F.roofing, null, 'roof', 0.35) // verdigris copper
+  if (st.roof === 'stepped') { const m = mesh(); slab(m, spot.at, u, st.dpt - 1, st.w - 1, st.h, st.h + 1); slab(m, spot.at, u, st.dpt - 2.4, st.w - 2.4, st.h + 1, st.h + 1.8); push(m, F.stone, stone, 'roof') }
+  if (st.roof === 'flat') push(slab(mesh(), spot.at, u, st.dpt + 1, st.w + 1, st.h, st.h + 0.4), F.stone, stone, 'roof')
+  if (st.roof === 'attic') {
+    const m = mesh(); slab(m, spot.at, u, st.dpt + 1, st.w + 1, st.h, st.h + 0.9); slab(m, spot.at, u, st.dpt - 1, st.w - 1, st.h + 0.9, st.h + 2.5)
+    push(m, F.stone, stone, 'roof')
+  }
+  if (relief) {   // bas-relief panel with five standing figures on the face toward the roadway
+    const face = add2(spot.at, mul2(u, st.dpt / 2)), m = slab(mesh(), add2(face, mul2(u, 0.17)), u, 0.35, 6, 3, 10)
+    for (let i = 0; i < 5; i++) {
+      const o = -2.2 + 1.1 * i, p = add2(add2(face, mul2(u, 0.45)), mul2(v, o)), lean = 0.25 * Math.sin(i * 1.7)
+      tube(m, at3(p, 3.6), at3(add2(p, mul2(v, lean)), 8.4), 0.42, 6)
+      const head = drum({ at: add2(p, mul2(v, lean)), base: 8.4, top: 9.2, r: 0.38, sides: 8 })
+      for (const k of ['positions', 'normals', 'uvs']) m[k].push(...head[k])
+    }
+    push(m, F.stone, 'bedford-limestone-relief', `relief:${slug(relief)}`)
+  }
+  return out
+}
+
+export function buildBalustrades(b, deckY) {
+  const v = left(b.axis), out = mesh(), L = 16
+  for (const s of [1, -1]) for (const side of [1, -1]) {
+    const base = (a) => add2(add2(b.centre, mul2(b.axis, s * a)), mul2(v, side * (b.width / 2 - 0.3)))
+    for (let a = b.span / 2; a <= b.span / 2 + L + 1e-6; a += 2.4) slab(out, base(a), b.axis, 0.45, 0.45, deckY, deckY + 1.1)
+    slab(out, base(b.span / 2 + L / 2), b.axis, L, 0.55, deckY + 1.1, deckY + 1.35)
+  }
+  return { mesh: out, facade: F.stone, seed: 0.5, style: 'bedford-limestone', part: 'balustrade' }
+}
+
+export function lanternSpots(b, deckY) {
+  const v = left(b.axis), out = []
+  const along = b.houses?.style === 'dusable' ? [b.span / 2 + 2, b.span / 2 + 9, b.span / 2 + 16] : [b.span / 2 + 1]
+  for (const s of [1, -1]) for (const side of [1, -1]) for (const a of along)
+    out.push(at3(add2(add2(b.centre, mul2(b.axis, s * a)), mul2(v, side * (b.width / 2 - 0.3))), deckY + 5.6))
+  return out
+}
+
+export function bridgeLights(b, deckY) {
+  const out = lanternSpots(b, deckY).map((p) => ({ p, kind: 'lantern' }))
+  for (const g of leafGeometry(b, deckY)) {
+    const v = left(g.d)
+    for (const o of [-1, 1]) {
+      out.push({ p: at3(add2(add2(g.p2, mul2(g.d, g.Lf - 0.3)), mul2(v, o * (b.width / 2 - 0.3))), deckY + 1.25), kind: 'nav', leaf: g.leaf })
+      out.push({ p: at3(add2(add2(g.p2, mul2(g.d, 0.6)), mul2(v, o * (b.width / 2 + 0.4))), deckY + 0.5), kind: 'pier' })
+    }
+  }
+  return out
+}
+
+export function buildBridge(b, { deckY }) {
+  const fixed = [...buildPits(b, deckY)]
+  for (const spot of houseSpots(b)) fixed.push(...buildHouse(spot, b.houses.style, b.reliefs?.[spot.corner] ?? null))
+  if (b.houses?.style === 'dusable') fixed.push(buildBalustrades(b, deckY))
+  const posts = mesh(), glass = mesh()
+  for (const p of lanternSpots(b, deckY)) {
+    tube(posts, [p[0], deckY, p[2]], [p[0], p[1] - 0.4, p[2]], 0.12, 6)
+    slab(glass, [p[0], p[2]], b.axis, 0.55, 0.55, p[1] - 0.4, p[1] + 0.3)
+  }
+  fixed.push({ mesh: posts, facade: F.steel, seed: 0.5, style: 'lamp-post-black', part: 'lamp-post' })
+  fixed.push({ mesh: glass, facade: F.signal, seed: 0.5, style: 'lantern-warm', part: 'lantern' })
+  return { fixed, leaves: buildLeaves(b, deckY), lights: bridgeLights(b, deckY) }
 }
