@@ -27,6 +27,8 @@ const need = (src, marker) => {
 const VERT_HEAD = /* glsl */ `
 attribute float _facade;
 attribute float _seed;
+attribute float _style;
+varying float vStyle;
 varying float vFacade;
 varying float vSeed;
 varying vec3 vWPos;
@@ -36,6 +38,7 @@ varying vec2 vMUv;
 const VERT_BODY = /* glsl */ `
 vFacade = _facade;
 vSeed = _seed;
+vStyle = _style;
 vWPos = (modelMatrix * vec4(transformed, 1.0)).xyz;
 vWNormal = normalize(mat3(modelMatrix) * objectNormal);
 vMUv = uv;
@@ -48,6 +51,10 @@ uniform vec4 uTile[8];
 uniform float uNight;
 uniform float uLitBoost;
 uniform float uReady;
+uniform sampler2D uStylePal;
+uniform float uStyleRows;
+varying float vStyle;
+vec4 styleTexel(int si, int col) { return texelFetch(uStylePal, ivec2(col, si), 0); }
 varying float vFacade;
 varying float vSeed;
 varying vec3 vWPos;
@@ -173,28 +180,49 @@ vec3 coping = vec3(0.58, 0.56, 0.52) * (0.9 + 0.2 * gravel.r);
 vec3 alb = isRoof ? roofAlb : (isParapet ? coping : wallAlb);
 win = (isRoof || isParapet) ? 0.0 : win;
 float fwRow = fwidth(vWPos.y / 0.42), fwAisle = fwidth(vMUv.x / 17.0) * 17.0;   // before any branch
+int si = int(vStyle + 0.5);
+si = float(si) < uStyleRows ? si : 0;                   // stale tiles vs palette: unstyled, never garbage
+bool styled = si > 0;
+vec4 S0 = styleTexel(si, 0), S1 = styleTexel(si, 1), S2 = styleTexel(si, 2), S3 = styleTexel(si, 3), S4 = styleTexel(si, 4);
+float S6a = styleTexel(si, 6).a;
 if (isVenue) { alb = venueAlbedo(vi, vSeed, vMUv, vWPos, vWNormal, gravel, roofAlb, fwRow, fwAisle); win = 0.0; }
 alb = mix(vec3(0.62, 0.6, 0.57), alb, uReady);
 win *= uReady;
-if (!isVenue) {
+if (!isVenue && !styled) {
   alb *= mix(0.55, 1.0, smoothstep(0.0, 14.0, vWPos.y)); // ground contact
   alb *= 0.88 + 0.24 * vSeed;                            // per-building variation
 }
-if (fi == 3) {                                           // curtain glass: bronze-black, green, silver, blue
+if (fi == 3 && !styled) {                                // curtain glass: bronze-black, green, silver, blue
   float g = fract(vSeed * 3.7);
   vec3 tint = g < 0.28 ? vec3(0.30, 0.28, 0.27) : g < 0.5 ? vec3(0.62, 0.8, 0.74) : g < 0.78 ? vec3(0.86, 0.9, 0.98) : vec3(0.72, 0.8, 0.95);
   alb *= tint;
+}
+if (styled && !isRoof && !isParapet && !isVenue) {       // sourced colours (V2 · F1–F8)
+  vec2 cf = fract(tuv * T.zw);
+  float mull = 1.0 - step(0.06, cf.x) * step(cf.x, 0.94);
+  float span = step(cf.y, 0.2);
+  vec3 body = S4.a > S6a ? mix(S0.rgb, S4.rgb, smoothstep(S6a, S4.a, vWPos.y)) : S0.rgb;
+  vec3 lookC = mix(mix(body, S3.rgb, span), S1.rgb, win);
+  lookC = mix(lookC, S2.rgb, mull * (1.0 - span) * 0.9);
+  float lum = dot(wallAlb, vec3(0.299, 0.587, 0.114));
+  alb = lookC * clamp(lum / 0.45, 0.8, 1.2) * mix(0.55, 1.0, smoothstep(0.0, 14.0, vWPos.y));
+}
+if (styled && isVenue && vi == 16 && !isRoof) {          // hero-owned stadium and museum walls: recolour, keep the pattern
+  float lum = dot(alb, vec3(0.299, 0.587, 0.114));
+  alb = S0.rgb * clamp(0.55 + 0.9 * lum, 0.5, 1.3);
 }
 diffuseColor.rgb *= alb;
 `
 const FRAG_ROUGH = /* glsl */ `
 roughnessFactor = mix(roughnessFactor, 0.06, win * 0.95);
+if (styled && !isRoof && !isParapet) roughnessFactor = mix(S1.a, 0.06, win * 0.95);
 if (isVenue && vi == 21) roughnessFactor = 0.05;
 if (isVenue && vi == 22) roughnessFactor = 0.1;
 if (isVenue && vi == 23) roughnessFactor = 0.4;
 `
 const FRAG_METAL = /* glsl */ `
 metalnessFactor = mix(metalnessFactor, 0.9, win * 0.85);
+if (styled && !isRoof && !isParapet) metalnessFactor = mix(S2.a, 0.9, win * 0.85);
 if (isVenue && vi == 21) metalnessFactor = 1.0;
 `
 const FRAG_EMISSIVE = /* glsl */ `
@@ -258,7 +286,7 @@ export function patchFacadeShader(shader) {
 export function createFacadeMaterial() {
   const m = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.86, metalness: 0.02 })
   m.onBeforeCompile = patchFacadeShader
-  m.customProgramCacheKey = () => 'facade-v7'
+  m.customProgramCacheKey = () => 'facade-v8'
   return m
 }
 
