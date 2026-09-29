@@ -4,6 +4,32 @@
     {
       "key": "willis",
       "name": "Willis Tower",
+      "look": {
+        "material": "black anodized aluminium curtain wall, bronze-tinted glass, white antennas",
+        "finish": "metal",
+        "base": "#1c1b1a",
+        "glass": "#4a3a2c",
+        "mullion": "#121212",
+        "spandrel": "#1c1b1a",
+        "top": "#e6e6e3",
+        "topFromM": 442.5,
+        "topM": 443.5,
+        "crownLight": {
+          "kind": "lantern",
+          "color": "#ffffff",
+          "fromM": 500,
+          "toM": 527,
+          "intensity": 2,
+          "source": [
+            "https://www.willistower.com/about",
+            "https://www.bdcnetwork.com/home/news/55161905/willis-tower-upgrades-antenna-lighting"
+          ]
+        },
+        "source": [
+          "https://en.wikipedia.org/wiki/Willis_Tower",
+          "https://www.architecturelab.net/willis-tower-sears-tower-skidmore-owings-merrill/"
+        ]
+      },
       "skylineName": "Willis Tower",
       "match": {
         "osmId": 380868216
@@ -18,6 +44,18 @@
     {
       "key": "trump",
       "name": "Trump International Hotel & Tower",
+      "look": {
+        "material": "clear low-e glass, polished stainless-steel mullions, brushed stainless spandrels, clear anodized aluminium",
+        "finish": "glass",
+        "base": "#c9d0d6",
+        "glass": "#9fb3c4",
+        "mullion": "#d8dde2",
+        "spandrel": "#b9c0c7",
+        "source": [
+          "https://global.ctbuh.org/resources/papers/download/29-case-study-trump-international-hotel-tower.pdf",
+          "https://en.wikipedia.org/wiki/Trump_International_Hotel_and_Tower_(Chicago)"
+        ]
+      },
       "skylineName": "Trump International Hotel and Tower",
       "match": {
         "osmId": 64594680
@@ -33,6 +71,18 @@
     {
       "key": "stregis",
       "name": "St. Regis Chicago",
+      "look": {
+        "material": "six shades of blue-green high-performance glass in a gradient",
+        "finish": "glass",
+        "base": "#5f8f93",
+        "glass": "#4f8a8f",
+        "mullion": "#aab4b8",
+        "spandrel": "#3f6f78",
+        "source": [
+          "https://studiogang.com/projects/vista-tower/",
+          "https://www.agc-yourglass.com/en-UK/client-testimonial/sculpting-chicago-skyline"
+        ]
+      },
       "skylineName": "St. Regis Chicago",
       "match": {
         "osmId": 464802811
@@ -49,6 +99,18 @@
     {
       "key": "aon",
       "name": "Aon Center",
+      "look": {
+        "material": "white Mount Airy granite (1992–94 recladding of the Carrara marble), narrow vertical windows",
+        "finish": "granite",
+        "base": "#e6e4de",
+        "glass": "#3b4046",
+        "mullion": "#cfcac1",
+        "spandrel": "#e6e4de",
+        "source": [
+          "https://www.wje.com/projects/detail/amoco-building",
+          "https://en.wikipedia.org/wiki/Aon_Center_(Chicago)"
+        ]
+      },
       "skylineName": "Aon Center",
       "match": {
         "osmId": 64388609
@@ -64,6 +126,29 @@
     {
       "key": "hancock",
       "name": "875 North Michigan Avenue",
+      "look": {
+        "material": "black anodized aluminium with tinted bronze glass, exposed X-braces, white masts",
+        "finish": "metal",
+        "base": "#1a1a1a",
+        "glass": "#3f3328",
+        "mullion": "#111111",
+        "spandrel": "#1a1a1a",
+        "top": "#e6e6e3",
+        "topFromM": 344.5,
+        "topM": 345.5,
+        "crownLight": {
+          "kind": "lantern",
+          "color": "#ffffff",
+          "fromM": 440,
+          "toM": 457,
+          "intensity": 1.8,
+          "source": "https://en.wikipedia.org/wiki/875_North_Michigan_Avenue"
+        },
+        "source": [
+          "https://en.wikipedia.org/wiki/875_North_Michigan_Avenue",
+          "https://sah-archipedia.org/buildings/IL-01-031-0043"
+        ]
+      },
       "skylineName": "875 North Michigan Avenue",
       "match": {
         "osmId": 31064573
@@ -83,6 +168,18 @@
     {
       "key": "franklin",
       "name": "Franklin Center",
+      "look": {
+        "material": "granite shading from deep red at the base to pale rose-beige at the top",
+        "finish": "granite",
+        "base": "#7a3b33",
+        "glass": "#2e3238",
+        "mullion": "#6e3c34",
+        "spandrel": "#7c463d",
+        "top": "#c9a894",
+        "topFromM": 0,
+        "topM": 307,
+        "source": "https://en.wikipedia.org/wiki/Franklin_Center_(Chicago)"
+      },
       "skylineName": "Franklin Center",
       "match": {
         "osmId": 64398410
@@ -138,6 +235,19 @@
     {
       "key": "twopru",
       "name": "Two Prudential Plaza",
+      "look": {
+        "material": "polished granite with reflective glass, limestone pilasters",
+        "finish": "granite",
+        "base": "#9a9a98",
+        "glass": "#5f6f7c",
+        "mullion": "#8d8d8b",
+        "spandrel": "#9a9a98",
+        "note": "sources name polished granite; the grey hue is read from photographs",
+        "source": [
+          "https://en.wikipedia.org/wiki/Two_Prudential_Plaza",
+          "https://buildingsdb.com/IL/chicago/two-prudential-plaza/"
+        ]
+      },
       "skylineName": "Two Prudential Plaza",
       "match": {
         "osmId": 64388666
@@ -177,6 +287,19 @@
     {
       "key": "onechicago",
       "name": "One Chicago",
+      "look": {
+        "material": "continuous reflective glass with vertical aluminium accents",
+        "finish": "glass",
+        "base": "#8fa3b5",
+        "glass": "#7d95ab",
+        "mullion": "#b8c0c8",
+        "spandrel": "#8fa3b5",
+        "note": "sources say reflective glass; the silver-blue hue is read from photographs",
+        "source": [
+          "https://www.gpchicago.com/architecture/one-chicago/",
+          "https://en.wikipedia.org/wiki/One_Chicago_(building)"
+        ]
+      },
       "skylineName": "One Chicago East Tower",
       "match": {
         "osmId": 846476842
@@ -211,6 +334,23 @@
     {
       "key": "311wacker",
       "name": "311 South Wacker Drive",
+      "look": {
+        "material": "pale pink Texas granite, translucent lit crown cylinder",
+        "finish": "granite",
+        "base": "#c9a79a",
+        "glass": "#3a3f45",
+        "mullion": "#b38f82",
+        "spandrel": "#bf9d90",
+        "crownLight": {
+          "kind": "lantern",
+          "color": "#fff6e8",
+          "fromM": 261,
+          "toM": 293,
+          "intensity": 1.6,
+          "source": "https://en.wikipedia.org/wiki/311_South_Wacker_Drive"
+        },
+        "source": "https://en.wikipedia.org/wiki/311_South_Wacker_Drive"
+      },
       "skylineName": "311 South Wacker Drive",
       "match": {
         "osmId": 147350208
@@ -221,6 +361,18 @@
     {
       "key": "nema",
       "name": "NEMA Chicago",
+      "look": {
+        "material": "floor-to-ceiling window wall framed by white concrete columns and slabs",
+        "finish": "concrete",
+        "base": "#e9e9e6",
+        "glass": "#6f8796",
+        "mullion": "#e9e9e6",
+        "spandrel": "#e9e9e6",
+        "source": [
+          "https://en.wikipedia.org/wiki/NEMA_Chicago",
+          "https://buildingsdb.com/IL/chicago/nema-chicago/"
+        ]
+      },
       "skylineName": "NEMA Chicago",
       "match": {
         "osmId": 509032412
@@ -236,6 +388,26 @@
     {
       "key": "900michigan",
       "name": "900 North Michigan",
+      "look": {
+        "material": "cream limestone and green-tinted glass, four corner pavilions lit as lanterns",
+        "finish": "limestone",
+        "base": "#d9ccb0",
+        "glass": "#5e7a6c",
+        "mullion": "#c9bb9f",
+        "spandrel": "#d0c2a6",
+        "crownLight": {
+          "kind": "lantern",
+          "color": "#fff1d6",
+          "fromM": 245,
+          "toM": 266,
+          "intensity": 1.4,
+          "source": "https://www.kpf.com/project/900-north-michigan-avenue"
+        },
+        "source": [
+          "https://www.kpf.com/project/900-north-michigan-avenue",
+          "https://en.wikipedia.org/wiki/900_North_Michigan"
+        ]
+      },
       "skylineName": "900 North Michigan",
       "match": {
         "osmId": 31064552
@@ -246,6 +418,18 @@
     {
       "key": "chase",
       "name": "Chase Tower",
+      "look": {
+        "material": "pearl-grey Texas granite (Marble Falls) on the sweeping curved shaft",
+        "finish": "granite",
+        "base": "#b8b6b0",
+        "glass": "#3c434a",
+        "mullion": "#a9a7a1",
+        "spandrel": "#b8b6b0",
+        "source": [
+          "https://en.wikipedia.org/wiki/Chase_Tower_(Chicago)",
+          "https://www.preservationchicago.org/win-jp-morgan-chase-announces-chase-tower-renovation/"
+        ]
+      },
       "skylineName": "Chase Tower",
       "match": {
         "osmId": 230613007
@@ -260,6 +444,16 @@
     {
       "key": "watertower",
       "name": "Water Tower Place",
+      "look": {
+        "material": "grey marble panels on slabs and columns",
+        "finish": "granite",
+        "base": "#b9b8b3",
+        "glass": "#2f3338",
+        "mullion": "#a8a7a2",
+        "spandrel": "#b9b8b3",
+        "note": "Wikipedia says grey marble (the backlog's 'white marble' is overridden); marble uses the polished-stone finish",
+        "source": "https://en.wikipedia.org/wiki/Water_Tower_Place"
+      },
       "skylineName": "Water Tower Place",
       "match": {
         "osmId": 64627674
@@ -273,6 +467,18 @@
     {
       "key": "aqua",
       "name": "Aqua",
+      "look": {
+        "material": "white concrete balcony slabs, blue-green tinted glass 'pools'",
+        "finish": "concrete",
+        "base": "#ecebe6",
+        "glass": "#6fa3a6",
+        "mullion": "#d9dcdc",
+        "spandrel": "#ecebe6",
+        "source": [
+          "https://en.wikipedia.org/wiki/Aqua_(Chicago)",
+          "https://www.architecture.org/online-resources/buildings-of-chicago/aqua"
+        ]
+      },
       "skylineName": "Aqua",
       "match": {
         "osmId": 95486962
@@ -288,6 +494,19 @@
     {
       "key": "400lsd",
       "name": "400 Lake Shore Drive North Tower",
+      "look": {
+        "material": "faceted bay-window curtain wall, low-reflectance Stopray-coated glass",
+        "finish": "glass",
+        "base": "#7f8f9c",
+        "glass": "#6f8394",
+        "mullion": "#aeb6bd",
+        "spandrel": "#7f8f9c",
+        "note": "the coating takes the sky's hue; the resting grey-blue is read from photographs",
+        "source": [
+          "https://www.som.com/projects/400-lake-shore/",
+          "https://gbdmagazine.com/400-lake-shore-som/"
+        ]
+      },
       "skylineName": "400 Lake Shore Drive North Tower",
       "match": {
         "osmId": 1361811949
@@ -304,6 +523,15 @@
     {
       "key": "salesforce",
       "name": "Salesforce Tower Chicago",
+      "look": {
+        "material": "silvery-blue vision glass matched to opaque glass spandrels",
+        "finish": "glass",
+        "base": "#9fb2c3",
+        "glass": "#8ea6bb",
+        "mullion": "#c3ccd4",
+        "spandrel": "#9fb2c3",
+        "source": "https://www.archpaper.com/2025/01/pelli-clarke-partners-salesforce-tower-chicago/"
+      },
       "skylineName": "Salesforce Tower Chicago",
       "match": {
         "osmId": 839664090
@@ -318,6 +546,18 @@
     {
       "key": "110wacker",
       "name": "110 North Wacker",
+      "look": {
+        "material": "glass with vertical glass fins, linen-finish stainless-steel panels",
+        "finish": "glass",
+        "base": "#b7c0c7",
+        "glass": "#8d9dab",
+        "mullion": "#d0d5d9",
+        "spandrel": "#c2c8cd",
+        "source": [
+          "https://www.pohl-facades.com/en/projects/further-projects/110-north-wacker/",
+          "https://en.wikipedia.org/wiki/110_North_Wacker"
+        ]
+      },
       "skylineName": "110 North Wacker",
       "match": {
         "osmId": 137127809
@@ -330,6 +570,18 @@
     {
       "key": "1000m",
       "name": "1000M",
+      "look": {
+        "material": "unitized glass curtain wall banded with mill-finish aluminium spandrels",
+        "finish": "glass",
+        "base": "#a9adb0",
+        "glass": "#3d4a55",
+        "mullion": "#b3b7ba",
+        "spandrel": "#b3b7ba",
+        "source": [
+          "https://www.archpaper.com/2024/09/jahn-chicago-aluminum-spandrels-curtain-wall/",
+          "https://en.wikipedia.org/wiki/1000M"
+        ]
+      },
       "skylineName": "1000M",
       "match": {
         "osmId": 1013794039
@@ -342,6 +594,16 @@
     {
       "key": "marina1",
       "name": "Marina City 1",
+      "look": {
+        "material": "exposed reinforced concrete, painted white",
+        "finish": "concrete",
+        "base": "#d8d6cf",
+        "glass": "#3a4046",
+        "mullion": "#cfcdc6",
+        "spandrel": "#d8d6cf",
+        "note": "sources give exposed concrete; the off-white finish is read from photographs",
+        "source": "https://en.wikipedia.org/wiki/Marina_City"
+      },
       "match": {
         "osmId": 1177923716
       },
@@ -356,6 +618,16 @@
     {
       "key": "marina2",
       "name": "Marina City 2",
+      "look": {
+        "material": "exposed reinforced concrete, painted white",
+        "finish": "concrete",
+        "base": "#d8d6cf",
+        "glass": "#3a4046",
+        "mullion": "#cfcdc6",
+        "spandrel": "#d8d6cf",
+        "note": "sources give exposed concrete; the off-white finish is read from photographs",
+        "source": "https://en.wikipedia.org/wiki/Marina_City"
+      },
       "match": {
         "osmId": 284822929
       },
@@ -370,6 +642,18 @@
     {
       "key": "lakepoint",
       "name": "Lake Point Tower",
+      "look": {
+        "material": "bronze-tinted glass in gold/bronze anodized aluminium frames",
+        "finish": "glass",
+        "base": "#3a2f25",
+        "glass": "#4a3a2b",
+        "mullion": "#8a6a3a",
+        "spandrel": "#3a2f25",
+        "source": [
+          "https://sah-archipedia.org/buildings/IL-01-031-0051",
+          "https://lakepointtower.org/history/"
+        ]
+      },
       "skylineName": "Lake Point Tower",
       "match": {
         "osmId": 150408224
@@ -384,6 +668,32 @@
     {
       "key": "wrigleybldg",
       "name": "Wrigley Building",
+      "look": {
+        "material": "glazed white terra cotta in six shades, warmer below and cooler and whiter as it rises; floodlit since 1921",
+        "finish": "terracotta",
+        "base": "#eee6d8",
+        "glass": "#3a3f44",
+        "mullion": "#e6ddcc",
+        "spandrel": "#eee6d8",
+        "top": "#f8f8f5",
+        "topFromM": 0,
+        "topM": 134,
+        "crownLight": {
+          "kind": "flood",
+          "color": "#fff3dc",
+          "fromM": 0,
+          "toM": 134,
+          "intensity": 0.9,
+          "source": [
+            "https://en.wikipedia.org/wiki/Wrigley_Building",
+            "https://en.wikipedia.org/wiki/Architecture_of_the_night"
+          ]
+        },
+        "source": [
+          "https://www.architecture.org/online-resources/buildings-of-chicago/wrigley-building",
+          "https://en.wikipedia.org/wiki/Wrigley_Building"
+        ]
+      },
       "match": {
         "osmId": 17460539
       },
@@ -396,6 +706,26 @@
     {
       "key": "tribune",
       "name": "Tribune Tower",
+      "look": {
+        "material": "Indiana limestone, Gothic crown with flying buttresses, crown floodlit at night",
+        "finish": "limestone",
+        "base": "#cfc6b3",
+        "glass": "#33373c",
+        "mullion": "#c2b8a4",
+        "spandrel": "#c9bfab",
+        "crownLight": {
+          "kind": "flood",
+          "color": "#ffe9c4",
+          "fromM": 112,
+          "toM": 141,
+          "intensity": 1.1,
+          "source": "https://sah-archipedia.org/buildings/IL-01-031-0089"
+        },
+        "source": [
+          "https://en.wikipedia.org/wiki/Tribune_Tower",
+          "https://www.polycor.com/blog/celebrate-indiana-limestone-month-with-a-walking-tour-of-chicago/"
+        ]
+      },
       "match": {
         "osmId": 150407241
       },
@@ -408,6 +738,15 @@
     {
       "key": "mart",
       "name": "Merchandise Mart",
+      "look": {
+        "material": "buff limestone and terra cotta with bronze",
+        "finish": "limestone",
+        "base": "#c8b79a",
+        "glass": "#2f3338",
+        "mullion": "#b5a486",
+        "spandrel": "#bfae90",
+        "source": "https://www.architecture.org/online-resources/buildings-of-chicago/merchandise-mart"
+      },
       "match": {
         "osmId": 28293211
       },
@@ -421,6 +760,18 @@
     {
       "key": "cbot",
       "name": "Chicago Board of Trade Building",
+      "look": {
+        "material": "grey Indiana limestone piers with dark windows and spandrels; aluminium Ceres",
+        "finish": "limestone",
+        "base": "#b9b4a8",
+        "glass": "#2b2f34",
+        "mullion": "#a9a498",
+        "spandrel": "#3a3c3f",
+        "source": [
+          "https://www.architecture.org/online-resources/buildings-of-chicago/chicago-board-of-trade-building",
+          "https://en.wikipedia.org/wiki/Chicago_Board_of_Trade_Building"
+        ]
+      },
       "match": {
         "osmId": 28951633
       },
@@ -434,6 +785,18 @@
     {
       "key": "crain",
       "name": "Crain Communications Building (150 N Michigan)",
+      "look": {
+        "material": "alternating bands of white aluminium and silver reflective glass",
+        "finish": "glass",
+        "base": "#e8eaea",
+        "glass": "#aab6c0",
+        "mullion": "#d7dadc",
+        "spandrel": "#e8eaea",
+        "source": [
+          "https://en.wikipedia.org/wiki/Crain_Communications_Building",
+          "https://buildingsdb.com/IL/chicago/crain-communications-building/"
+        ]
+      },
       "match": {
         "osmId": 210671717
       },
@@ -443,7 +806,7 @@
       "crowns": [
         {
           "type": "sloped",
-          "scale": 1.0,
+          "scale": 1,
           "base": 150,
           "lowTop": 151,
           "highTop": 177,
@@ -462,6 +825,16 @@
     {
       "key": "unitedcenter",
       "name": "United Center",
+      "look": {
+        "material": "precast concrete exterior (chosen over limestone and granite)",
+        "finish": "concrete",
+        "base": "#a0806a",
+        "glass": "#2c3238",
+        "mullion": "#8a7060",
+        "spandrel": "#a0806a",
+        "note": "Wikipedia gives precast concrete; the warm brick-toned hue is read from photographs",
+        "source": "https://en.wikipedia.org/wiki/United_Center"
+      },
       "match": {
         "osmId": 205221993
       },
@@ -478,6 +851,23 @@
     {
       "key": "soldierfield",
       "name": "Soldier Field",
+      "look": {
+        "material": "Doric colonnades of concrete faced with granite-textured cast stone",
+        "finish": "concrete",
+        "base": "#c8c1b2",
+        "glass": "#3a4046",
+        "mullion": "#b8b1a2",
+        "spandrel": "#c8c1b2",
+        "parts": [
+          "podium",
+          "entablature",
+          "column"
+        ],
+        "source": [
+          "https://www.nps.gov/subjects/nationalhistoriclandmarks/grant-park-stadium-soldier-field.htm",
+          "https://www.architecture.org/online-resources/buildings-of-chicago/soldier-field"
+        ]
+      },
       "match": {
         "osmId": 16699535
       },
@@ -579,6 +969,17 @@
     {
       "key": "wrigleyfield",
       "name": "Wrigley Field",
+      "look": {
+        "material": "red brick base, dark green steel, ivy",
+        "finish": "terracotta",
+        "base": "#7b3a2a",
+        "glass": "#2c3238",
+        "mullion": "#1f4a33",
+        "spandrel": "#7b3a2a",
+        "parts": [],
+        "note": "the venue palette already draws brick, green steel and ivy; the look is recorded for the building card",
+        "source": "https://en.wikipedia.org/wiki/Wrigley_Field"
+      },
       "match": {
         "lat": 41.9484,
         "lon": -87.6553
@@ -679,6 +1080,17 @@
     {
       "key": "ratefield",
       "name": "Rate Field",
+      "look": {
+        "material": "precast concrete bowl with dark steel",
+        "finish": "concrete",
+        "base": "#9d9d99",
+        "glass": "#2c3238",
+        "mullion": "#2a3140",
+        "spandrel": "#9d9d99",
+        "parts": [],
+        "note": "the venue palette already draws the bowl; hue read from photographs",
+        "source": "https://en.wikipedia.org/wiki/Rate_Field"
+      },
       "match": {
         "lat": 41.8297,
         "lon": -87.6338
@@ -767,6 +1179,18 @@
     {
       "key": "wintrust",
       "name": "Wintrust Arena",
+      "look": {
+        "material": "aluminium curtain wall of low-e glass under a curved standing-seam metal roof",
+        "finish": "glass",
+        "base": "#9aa7b1",
+        "glass": "#7890a0",
+        "mullion": "#c5ccd2",
+        "spandrel": "#9aa7b1",
+        "source": [
+          "https://www.chicagoconstructionnews.com/150-million-wintrust-arena-christopher-glass-aluminum-collaborates-and-applies-expertise-to-unique-structures-glass-and-aluminum-leed-certified-environment/",
+          "https://en.wikipedia.org/wiki/Wintrust_Arena"
+        ]
+      },
       "match": {
         "osmId": 381265570
       },
@@ -782,6 +1206,17 @@
     {
       "key": "centennialwheel",
       "name": "Centennial Wheel",
+      "look": {
+        "material": "white-painted steel wheel with an LED rim",
+        "finish": "metal",
+        "base": "#eeeeec",
+        "glass": "#8fa3b5",
+        "mullion": "#eeeeec",
+        "spandrel": "#eeeeec",
+        "parts": [],
+        "note": "the landmark builder already draws white steel and LEDs",
+        "source": "https://en.wikipedia.org/wiki/Centennial_Wheel"
+      },
       "match": {
         "osmId": 686996484
       },
@@ -798,6 +1233,17 @@
     {
       "key": "cloudgate",
       "name": "Cloud Gate",
+      "look": {
+        "material": "168 mirror-polished stainless-steel plates",
+        "finish": "metal",
+        "base": "#d9dde0",
+        "glass": "#d9dde0",
+        "mullion": "#d9dde0",
+        "spandrel": "#d9dde0",
+        "parts": [],
+        "note": "the landmark builder already draws mirror steel",
+        "source": "https://en.wikipedia.org/wiki/Cloud_Gate"
+      },
       "match": {
         "osmId": 137060274
       },
@@ -813,6 +1259,20 @@
     {
       "key": "buckingham",
       "name": "Buckingham Fountain",
+      "look": {
+        "material": "Georgia pink marble",
+        "finish": "granite",
+        "base": "#d9b3a6",
+        "glass": "#d9b3a6",
+        "mullion": "#c9a396",
+        "spandrel": "#d9b3a6",
+        "parts": [
+          "rim",
+          "column",
+          "basin"
+        ],
+        "source": "https://en.wikipedia.org/wiki/Buckingham_Fountain"
+      },
       "match": {
         "synthetic": true,
         "lat": 41.8758,
@@ -831,6 +1291,20 @@
     {
       "key": "pritzker",
       "name": "Jay Pritzker Pavilion",
+      "look": {
+        "material": "brushed stainless-steel headdress and steel-pipe trellis",
+        "finish": "metal",
+        "base": "#c7ccd0",
+        "glass": "#c7ccd0",
+        "mullion": "#c7ccd0",
+        "spandrel": "#c7ccd0",
+        "parts": [],
+        "note": "the landmark builder already draws brushed steel",
+        "source": [
+          "https://en.wikipedia.org/wiki/Jay_Pritzker_Pavilion",
+          "https://www.architecture.org/online-resources/buildings-of-chicago/pritzker-pavilion"
+        ]
+      },
       "match": {
         "osmId": 126978545
       },
@@ -853,6 +1327,18 @@
     {
       "key": "chicagotheatre",
       "name": "Chicago Theatre",
+      "look": {
+        "material": "glazed off-white ('old ivory') terra cotta, triumphal-arch façade",
+        "finish": "terracotta",
+        "base": "#e8dcc4",
+        "glass": "#3a3f44",
+        "mullion": "#d8ccb4",
+        "spandrel": "#e8dcc4",
+        "source": [
+          "https://www.architecture.org/online-resources/buildings-of-chicago/chicago-theatre",
+          "https://cinematreasures.org/theaters/71"
+        ]
+      },
       "match": {
         "osmId": 124873919
       },
@@ -868,6 +1354,18 @@
     {
       "key": "adler",
       "name": "Adler Planetarium",
+      "look": {
+        "material": "twelve-sided rainbow granite drum under a copper dome",
+        "finish": "granite",
+        "base": "#a88f86",
+        "glass": "#3a3f44",
+        "mullion": "#98807a",
+        "spandrel": "#a88f86",
+        "parts": [
+          "drum"
+        ],
+        "source": "https://en.wikipedia.org/wiki/Adler_Planetarium"
+      },
       "match": {
         "osmId": 24825591
       },
@@ -889,6 +1387,19 @@
     {
       "key": "shedd",
       "name": "Shedd Aquarium",
+      "look": {
+        "material": "white Georgia marble, Doric columns",
+        "finish": "granite",
+        "base": "#e7e4dc",
+        "glass": "#3a3f44",
+        "mullion": "#d7d4cc",
+        "spandrel": "#e7e4dc",
+        "parts": [
+          "drum",
+          "lantern"
+        ],
+        "source": "https://en.wikipedia.org/wiki/Shedd_Aquarium"
+      },
       "match": {
         "osmId": 17430414
       },
@@ -911,6 +1422,23 @@
     {
       "key": "fieldmuseum",
       "name": "Field Museum",
+      "look": {
+        "material": "white Georgia marble, Ionic porticos",
+        "finish": "granite",
+        "base": "#e4e1d8",
+        "glass": "#3a3f44",
+        "mullion": "#d4d1c8",
+        "spandrel": "#e4e1d8",
+        "parts": [
+          "column",
+          "portico",
+          "pediment"
+        ],
+        "source": [
+          "https://en.wikipedia.org/wiki/Field_Museum_of_Natural_History",
+          "https://en.wikipedia.org/wiki/Museum_Campus"
+        ]
+      },
       "match": {
         "osmId": 24825537
       },
@@ -934,6 +1462,22 @@
     {
       "key": "historicwatertower",
       "name": "Chicago Water Tower",
+      "look": {
+        "material": "yellow Joliet–Lemont limestone, castellated Gothic Revival",
+        "finish": "limestone",
+        "base": "#d8c38f",
+        "glass": "#3a3f44",
+        "mullion": "#c8b37f",
+        "spandrel": "#d8c38f",
+        "parts": [
+          "turret",
+          "lantern"
+        ],
+        "source": [
+          "https://en.wikipedia.org/wiki/Chicago_Water_Tower",
+          "https://sah-archipedia.org/buildings/IL-01-031-0095"
+        ]
+      },
       "match": {
         "osmId": 130147025
       },
@@ -952,6 +1496,20 @@
     {
       "key": "crownhall",
       "name": "S.R. Crown Hall",
+      "look": {
+        "material": "black-painted welded steel frame, translucent lower glass to 4.16 m, clear glass above",
+        "finish": "metal",
+        "base": "#1f2124",
+        "glass": "#6c7a80",
+        "mullion": "#151618",
+        "spandrel": "#1f2124",
+        "render": false,
+        "note": "the venue glass-steel wall already reads correctly; a pattern-unaware black recolour would darken the glass — refine in Phase 3",
+        "source": [
+          "https://docomomo-us.org/register/s-r-crown-hall",
+          "https://en.wikipedia.org/wiki/S._R._Crown_Hall"
+        ]
+      },
       "match": {
         "osmId": 157657436
       },

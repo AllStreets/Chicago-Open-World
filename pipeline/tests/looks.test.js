@@ -42,3 +42,25 @@ describe('looks', () => {
     expect(validateLook({ ...ok, render: false, note: 'reverted: reads grey at dusk' }, 'w')).toEqual([])
   })
 })
+
+import { readFileSync } from 'node:fs'
+import { join, dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+describe('heroes.json looks (F1, F7)', () => {
+  const heroes = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'data', 'heroes.json'), 'utf8')).heroes
+  it('all 41 heroes carry a valid, sourced look', () => {
+    expect(heroes).toHaveLength(41)
+    const errs = heroes.flatMap((h) => validateLook(h.look, h.key))
+    expect(errs).toEqual([])
+  })
+  it('the named targets read as specified (B.6)', () => {
+    const L = Object.fromEntries(heroes.map((h) => [h.key, h.look]))
+    expect(L.willis).toMatchObject({ finish: 'metal', base: '#1c1b1a', glass: '#4a3a2c' })
+    expect(L.aon).toMatchObject({ finish: 'granite', base: '#e6e4de' })
+    expect(L.trump).toMatchObject({ finish: 'glass', glass: '#9fb3c4' })
+    expect(L.wrigleybldg).toMatchObject({ finish: 'terracotta', crownLight: { kind: 'flood' } })
+    expect(L.tribune).toMatchObject({ finish: 'limestone', base: '#cfc6b3' })
+    expect(L['311wacker'].crownLight).toMatchObject({ kind: 'lantern', fromM: 261, toM: 293 })
+  })
+})
