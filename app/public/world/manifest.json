@@ -1,5 +1,5 @@
 {
- "version": 4,
+ "version": 5,
  "origin": {
   "lat": 41.88203,
   "lon": -87.62784
@@ -33,6 +33,10 @@
   {
    "name": "Wikipedia — List of tallest buildings in Chicago",
    "id": "skyline.json"
+  },
+  {
+   "name": "Landmark colours and materials — sourced per look in heroes.json",
+   "id": "heroes.json#look"
   }
  ],
  "skyline": {
@@ -9661,6 +9665,8 @@
  "land": "ground/land.glb",
  "lake": "ground/lake.glb",
  "landMask": "land.json",
+ "styles": "styles.json",
+ "stylePalette": "style-palette.png",
  "shore": {
   "file": "water/shore.png",
   "minX": -1298.3051428777032,
