@@ -28,7 +28,14 @@ export function boatRunAt(date, order) {
   return { season, elapsed, order: season === 'spring' ? order : [...order].reverse() }
 }
 
-export function liftState({ now, manualStart = null, order }) {
+// manualStop: the person pressed B again mid-lift — every leaf eases down from where it was over one lowerS.
+export function liftState({ now, manualStart = null, manualStop = null, order }) {
+  if (manualStart != null && manualStop != null) {
+    const k = (now - manualStop) / 1000 / LIFT_DEMO.lowerS
+    if (k >= 1) return { source: 'manual', done: true, angles: {} }
+    const from = liftPlan(order, (manualStop - manualStart) / 1000, LIFT_DEMO), e = ease(Math.max(0, k))
+    return { source: 'manual', done: false, angles: Object.fromEntries(order.map((b) => [b, from[b] * (1 - e)])) }
+  }
   if (manualStart != null) {
     const elapsed = (now - manualStart) / 1000
     const done = elapsed > runDuration(order.length, LIFT_DEMO)

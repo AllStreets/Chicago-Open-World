@@ -18,6 +18,7 @@ export const useStore = create((set) => ({
   bridgeLift: null,
   startBridgeLift: () => set({ bridgeLift: { startedAt: Date.now(), id: Math.random() } }),
   stopBridgeLift: () => set({ bridgeLift: null }),
+  lowerBridges: () => set((s) => (s.bridgeLift && !s.bridgeLift.stoppedAt ? { bridgeLift: { ...s.bridgeLift, stoppedAt: Date.now() } } : {})),
   gamesOpen: false,
   setGamesOpen: (gamesOpen) => set({ gamesOpen }),
   viewIndex: 0,

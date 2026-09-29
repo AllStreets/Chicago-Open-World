@@ -82,7 +82,7 @@ uniform sampler2D uStylePal;
 uniform float uStyleRows;
 varying float vStyle;
 vec4 styleTexel(int si, int col) { return texelFetch(uStylePal, ivec2(col, si), 0); }
-vec3 styleBase(float style) { return styleTexel(int(style + 0.5), 0).rgb; }   // V6: a row's base colour
+vec3 styleBase(float style) { int si = int(style + 0.5); return (si > 0 && float(si) < uStyleRows) ? styleTexel(si, 0).rgb : vec3(0.62, 0.6, 0.56); } // V6: a row's base colour (stone grey until the palette loads)
 float gFwXZ;   // world-xz pixel footprint, set in main before any branch (fine patterns filter against it)
 varying float vFacade;
 varying float vSeed;

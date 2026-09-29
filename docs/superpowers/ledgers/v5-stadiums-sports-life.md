@@ -90,3 +90,4 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Final: fixed #3 unlit W/L flag (only ever flies after dark on weeknights) — emissive self-map driven by uNight — v5ReviewFixes #3 RED→GREEN; verified by night shot.
 - Final: minor (deferred): #4 WinFlag PlaneGeometry never disposed on unmount.
 - Final: minor (deferred): #5 Games dock button lacks pressed/aria-expanded state.
+- Final (follow-up): fixed deferred V5 #4 (WinFlag geometry disposed); #5 superseded by V7's registry button (aria-pressed).

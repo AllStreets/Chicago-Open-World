@@ -26,6 +26,7 @@ export default function WinFlag({ pole, normal, kind }) {
   }, [tex, uTime])
   const geo = useMemo(() => new THREE.PlaneGeometry(FW, FH, 16, 6).translate(FW / 2, -FH / 2, 0), [])
   useEffect(() => () => { tex.dispose(); mat.dispose() }, [tex, mat])
+  useEffect(() => () => geo.dispose(), [geo])
   useFrame((st) => { uTime.value = st.clock.elapsedTime; mat.emissiveIntensity = 0.8 * facadeUniforms.uNight.value })
   return <mesh geometry={geo} material={mat} position={[pole[0], pole[1] - 0.3, pole[2]]} rotation={[0, Math.atan2(normal[0], normal[1]), 0]} castShadow={false} />
 }

@@ -2,12 +2,13 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
+import { worldUrl } from '../lib/manifest.js'
 import * as THREE from 'three'
 import { useStore } from '../state/store.js'
 import { CUBE, cubeFaceFor, cubeActive, renderCubeFaces } from './cubeFaces.js'
 
-export default function CloudGate({ file, centre }) {
-  const { scene: glb } = useGLTF(`/world/${file}`, false, true)
+export default function CloudGate({ file, version, centre }) {
+  const { scene: glb } = useGLTF(worldUrl(file, version), false, true)
   const quality = useStore((s) => s.quality)
   const { gl, scene, camera } = useThree()
   // 8-bit sRGB with trilinear mips: half-float cube targets can lose linear filtering on some GPUs, which drew

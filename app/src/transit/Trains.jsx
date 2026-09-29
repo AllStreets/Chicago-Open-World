@@ -18,6 +18,15 @@ const CAP = { cta5000: 800, cta7000: 400, metraCoach: 300, metraLoco: 60, impost
 const ATTRS = ['position', 'normal', 'color', '_kind']
 const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), eu = new THREE.Euler(0, 0, 0, 'YZX'), p = new THREE.Vector3(), sc = new THREE.Vector3()
 
+// per-frame work reuses these: line colours are built once per transit.json, not every frame (V4 review #8)
+const LAYOUT_KEYS = [...MODELS, 'impostor', 'hits']
+const colourCache = new WeakMap()
+function coloursFor(transit) {
+  if (!transit) return {}
+  if (!colourCache.has(transit)) colourCache.set(transit, Object.fromEntries(transit.lines.map((l) => [l.id, new THREE.Color(l.colour).toArray()])))
+  return colourCache.get(transit)
+}
+
 function instanced(geometry, material, cap, extra = []) {
   const g = geometry.clone()
   for (const [name, size] of extra) g.setAttribute(name, new THREE.InstancedBufferAttribute(new Float32Array(cap * size), size))
@@ -56,10 +65,10 @@ export default function Trains({ file, version }) {
     const s = useStore.getState(), sim = getSim()
     const trains = sim && s.transitOn ? sim.trainsAt(Date.now()) : []
     publishTrains(trains)
-    const colours = Object.fromEntries((s.transit?.lines ?? []).map((l) => [l.id, new THREE.Color(l.colour).toArray()]))
+    const colours = coloursFor(s.transit)
     const L = layoutCars(trains, camera.position.toArray(), { lod: LOD_M[s.quality] ?? LOD_M.HIGH, hidden: s.hiddenLines, colours })
     const dims = s.transit?.rollingStock ?? {}
-    for (const k of [...MODELS, 'impostor', 'hits']) {
+    for (const k of LAYOUT_KEYS) {
       const mesh = meshes[k], items = L[k].slice(0, CAP[k]), a = mesh.geometry.attributes
       items.forEach((c, i) => {
         const d = dims[c.model]

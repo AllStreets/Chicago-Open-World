@@ -18,7 +18,7 @@ export default function BridgeLeaves({ sidecar }) {
     if (acc.current < 0.05) return
     acc.current = 0
     const lift = useStore.getState().bridgeLift
-    const s = liftState({ now: Date.now(), manualStart: lift?.startedAt ?? null, order: sidecar.liftOrder })
+    const s = liftState({ now: Date.now(), manualStart: lift?.startedAt ?? null, manualStop: lift?.stoppedAt ?? null, order: sidecar.liftOrder })
     if (s.done) useStore.getState().stopBridgeLift()
     const key = JSON.stringify(s.angles)
     if (key === last.current) return

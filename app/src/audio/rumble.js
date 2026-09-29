@@ -25,6 +25,7 @@ export function createRumble(ctx) {
     set(level, hz) {
       const t = ctx.currentTime
       gain.gain.setTargetAtTime(level * 0.6, t, 0.25)
+      clack.gain.setTargetAtTime(level * 0.15, t, 0.25) // base under the square LFO: the gain swings 0…2A, a pulse per rail joint
       lfoGain.gain.setTargetAtTime(level * 0.15, t, 0.25)
       lfo.frequency.setTargetAtTime(Math.max(0.1, hz), t, 0.25)
     },

@@ -9,13 +9,15 @@ import { showEmitters } from '../landmarks/jets.js'
 import CloudGate from '../landmarks/CloudGate.jsx'
 import PlazaPeople from '../landmarks/PlazaPeople.jsx'
 import { crownFace, crownWaterOn } from '../landmarks/crownFace.js'
+import { worldUrl } from '../lib/manifest.js'
 
-const getJson = (file) => (file ? fetch(`/world/${file}`).then((r) => (r.ok ? r.json() : null)).catch(() => null) : Promise.resolve(null))
+// versioned like the tiles, so a cached sidecar never disagrees with rebuilt tiles (_LEAF ids, pivots)
+const getJson = (file, version) => (file ? fetch(worldUrl(file, version)).then((r) => (r.ok ? r.json() : null)).catch(() => null) : Promise.resolve(null))
 
 export default function Landmarks({ manifest }) {
   const [bridges, setBridges] = useState(null)
   const [runtime, setRuntime] = useState(null)
-  useEffect(() => { getJson(manifest.bridges).then(setBridges); getJson(manifest.landmarkRuntime).then(setRuntime) }, [manifest])
+  useEffect(() => { getJson(manifest.bridges, manifest.version).then(setBridges); getJson(manifest.landmarkRuntime, manifest.version).then(setRuntime) }, [manifest])
   const crownLevels = useRef([0, 0])
   useFrame(({ clock }) => {
     facadeUniforms.uTime.value = clock.elapsedTime
@@ -32,7 +34,7 @@ export default function Landmarks({ manifest }) {
       {/* Tasks 9, 12, 14, 15, 16 add: BridgeLights, FountainShow, CloudGate, PlazaPeople, and the Crown face driver (they use `runtime`) */}
       {runtime?.fountain && <FountainShow emitters={showEmitters(runtime)} crownLevels={crownLevels} />}
       {runtime?.plazas?.length > 0 && <PlazaPeople plazas={runtime.plazas} />}
-      {runtime?.detached?.filter((d) => d.key === 'cloudgate').map((d) => <Suspense key={d.key} fallback={null}><CloudGate file={d.file} centre={d.centre} /></Suspense>)}
+      {runtime?.detached?.filter((d) => d.key === 'cloudgate').map((d) => <Suspense key={d.key} fallback={null}><CloudGate file={d.file} version={manifest.version} centre={d.centre} /></Suspense>)}
     </>
   )
 }
