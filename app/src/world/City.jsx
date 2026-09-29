@@ -1,11 +1,11 @@
 // app/src/world/City.jsx — loads every manifest tile; one shared material.
 import { Suspense, useEffect, useMemo } from 'react'
 import { useGLTF } from '@react-three/drei'
-import * as THREE from 'three'
+import { createFacadeMaterial, loadFacadeTextures } from './materials/facadeMaterial.js'
 import { useStore } from '../state/store.js'
 import SafeLoad from './SafeLoad.jsx'
 
-export const buildingMaterial = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.82, metalness: 0.05 })
+export const buildingMaterial = createFacadeMaterial()
 
 function Tile({ file }) {
   const { scene } = useGLTF(`/world/${file}`, false, false)
@@ -21,6 +21,7 @@ function Tile({ file }) {
 }
 
 export default function City({ tiles }) {
+  useEffect(() => { loadFacadeTextures() }, [])
   const fail = (file) => (err) => { console.warn(`tile failed: ${file}`, err); useStore.getState().markLoaded(file) }
   return tiles.map((t) => (
     <SafeLoad key={t.key} onError={fail(t.file)}>
