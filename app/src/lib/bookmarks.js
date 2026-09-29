@@ -12,7 +12,7 @@ export const BOOKMARKS = {
   hancock: { position: [900, 420, -1500], target: [395, 200, -1865] },
   // Willis from the south over the river
   // The Loop L at Wabash & Lake, low over the tracks
-  wabash: { position: [150, 55, -80], target: [140, 6, -440] },
+  wabash: { position: [135, 55, -200], target: [138, 6, -470] }, // on the street centreline: clearance there is open sky
   // Wider world (Phase 2.5)
   wrigleyville: { position: [-1650, 280, -6850], target: [-2279, 12, -7372] },
   lincolnpark: { position: [900, 420, -3800], target: [-511, 20, -4351] },
