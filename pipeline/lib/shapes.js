@@ -8,11 +8,11 @@ export const HERO_SHAPES = {
 
 const areaOf = (p) => Math.abs(signedArea(p.outer))
 
-export function shapePieces(b) {
+export function shapePieces(b, shapeOverride) {
   const pieces = []
   if (b.height > 0) for (const p of b.polygons) pieces.push({ outer: p.outer, holes: p.holes, base: 0, top: b.height })
   for (const p of b.parts || []) if (p.top > p.base) pieces.push({ ...p })
-  const shape = HERO_SHAPES[b.id]
+  const shape = shapeOverride ?? HERO_SHAPES[b.id]
   if (!shape) return pieces
 
   const isAntenna = (p) => areaOf(p) < 0.03 * b.area
