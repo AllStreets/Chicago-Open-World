@@ -13,6 +13,7 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Task 11: Ruling: plan test expected level 0.2 after setVenueLights(level 0.5) — stale from the idle-light 0.2→0.5 override; test expects 0.5 — cost: none.
 - Task 11: Ruling: cache key 'facade-v9' (V2 already used v8, so v8 would not invalidate compiled programs); plan's GLSL comment used backticks inside the JS template literal — replaced with quotes — cost: none.
 - Task 12: Ruling: found a pre-V5 bug — Burnham Park's ground polygon (polygon offset −1) overdrew Soldier Field's field at oblique angles (black at night, unpainted by day). Fixed in the pipeline: `cutZones` subtracts venue hulls from park polygons (6111 → 6107) — test trees 'cutZones' RED→GREEN — cost: none.
+- Task 13: Ruling: plan's fieldMarks draws a navy keyline behind the midfield C (true to the Bears logo) but its test counted all navy polys as end zones; test now filters end zones by extent — cost: none.
 
 ## Evaluate and revert (one line per visual step: Keep | Revert — item — shots — reason)
 
@@ -23,6 +24,7 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Keep — D4/D6 — soldier-aerial vs -game night — field glows (dim idle 0.5, full on game nights), west rim row blazes.
 - Keep — D5 — rate-from-loop night — Rate Field is now a visible floodlight cluster on the south horizon (was a single dot).
 - Keep — D14 — uc-aerial / wintrust-aerial -game night — UC fascia glows warm (brighter on game nights); Wintrust concourse glass bands light on game nights. Not garish; no coefficient change.
+- Keep — D3 — soldier-top (+LOW, +soccer), wrigley-top, rate-top, wrigley-aerial night — NFL field with BEARS/CHICAGO end zones, orange C, numbers and hashes; IFAB pitch for the Fire; MLB diamonds with checker/stripe mowing, clay, foul lines; LOW identical in layout.
 
 ## Perf (pose — calls — triangles — fps — quality — sports)
 
@@ -40,3 +42,4 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Task 11: complete (materials 39/39)
 - Task 12: code complete (app 291/291); evaluation after rebuild
 - Task 12: complete — evaluated D2/D4/D5/D6/D14 keep (app 291/291, pipeline 356/356)
+- Task 13: complete (app 304/304)
