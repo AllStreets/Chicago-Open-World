@@ -20,6 +20,7 @@ import { QUALITY } from '../lib/quality.js'
 import { loadHeightfield, clearanceAt } from '../lib/clearance.js'
 import TransitLayer from '../transit/TransitLayer.jsx'
 import Trains from '../transit/Trains.jsx'
+import SportsClock from '../sports/SportsClock.jsx'
 import StationHits from '../transit/StationHits.jsx'
 import TrainAudio from '../transit/TrainAudio.jsx'
 import { followNearest } from '../transit/actions.js'
@@ -86,6 +87,7 @@ export default function Scene() {
       <AtlasRig />
       <PostFX />
       <PerfWatch />
+      <SportsClock />
     </>
   )
 }

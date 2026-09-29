@@ -50,3 +50,12 @@ describe('store', () => {
     s.setHiddenLines(['a', 'b']); expect(useStore.getState().hiddenLines).toEqual(['a', 'b'])
   })
 })
+
+describe('games panel flag (V7 contract)', () => {
+  it('gamesOpen starts false and setGamesOpen toggles it', () => {
+    useStore.setState(useStore.getInitialState())
+    expect(useStore.getState().gamesOpen).toBe(false)
+    useStore.getState().setGamesOpen(true)
+    expect(useStore.getState().gamesOpen).toBe(true)
+  })
+})

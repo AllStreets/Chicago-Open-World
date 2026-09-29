@@ -33,3 +33,4 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Task 7: complete (pipeline 341/341; build EXIT 0; venues sidecar 5 venues)
 - Task 8: complete (teams+schedules 10/10; ESPN 17/17 ok, 594 games, 296 at our venues)
 - Task 11: complete (materials 39/39)
+- Task 12: code complete (app 291/291); evaluation after rebuild

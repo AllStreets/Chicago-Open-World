@@ -12,6 +12,8 @@ export const useStore = create((set) => ({
   setPaletteOpen: (paletteOpen) => set({ paletteOpen }),
   helpOpen: false,
   setHelpOpen: (helpOpen) => set({ helpOpen }),
+  gamesOpen: false,
+  setGamesOpen: (gamesOpen) => set({ gamesOpen }),
   viewIndex: 0,
   setViewIndex: (viewIndex) => set({ viewIndex }),
   cam: null,

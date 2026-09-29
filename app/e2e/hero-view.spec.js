@@ -8,7 +8,7 @@ for (const [view, time] of VIEWS) {
     await page.clock.setFixedTime(new Date('2026-09-28T12:00:00-05:00'))
     // a returning visitor: the first-visit help card would cover the view
     await page.addInitScript(() => { try { localStorage.setItem('chi-ow-help-seen', '1') } catch {} })
-    await page.goto(`/?view=${view}&time=${time}`)
+    await page.goto(`/?view=${view}&time=${time}&sports=idle`)
     await page.waitForFunction(() => window.__worldReady === true, null, { timeout: 90_000 })
     // settled, not a fixed sleep: camera and sun at rest, every planned tile drawn, loading screen gone (G5)
     await page.waitForFunction(() => window.__camRest === true && window.__skyRest === true && window.__tilesIdle === true && window.__hudReady === true, null, { timeout: 60_000 })
