@@ -20,6 +20,12 @@ describe('proceduralTexture', () => {
     expect(avg('asphalt').reduce((a, b) => a + b) / 3).toBeLessThan(90)
     expect(avg('sand').reduce((a, b) => a + b) / 3).toBeGreaterThan(160)
   })
+  it('pitch has mowing stripes (alternating light/dark bands)', () => {
+    const s = 64, d = proceduralTexture('pitch', s)
+    const rowAvg = (y) => { let a = 0; for (let x = 0; x < s; x++) a += d[(y * s + x) * 3 + 1]; return a / s }
+    const bands = Array.from({ length: 8 }, (_, i) => rowAvg(i * 8 + 4))
+    expect(Math.max(...bands) - Math.min(...bands)).toBeGreaterThan(12)
+  })
   it('rejects unknown kinds', () => {
     expect(() => proceduralTexture('lava', 8)).toThrow()
   })

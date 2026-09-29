@@ -2,6 +2,7 @@
 import { shapePieces } from './shapes.js'
 import { spire, antenna, pyramid, drum, sloped } from './crowns.js'
 import { signedArea } from './geom.js'
+import { insetRing } from './roofs.js'
 
 // Mirror of the façade shader's curtain-glass tint buckets: g = fract(seed * 3.7).
 const TINT_G = { dark: 0.14, green: 0.39, silver: 0.64, blue: 0.89 }
@@ -15,7 +16,10 @@ export function applyHero(b, spec) {
   const [cx, cz] = b.centroid
   const main = b.polygons.reduce((a, p) => (Math.abs(signedArea(p.outer)) > Math.abs(signedArea(a.outer)) ? p : a))
 
-  if (spec.tiers?.length) {
+  if (spec.stands) {
+    // stadium: grandstand ring around an open field
+    pieces = b.polygons.map((p) => ({ outer: p.outer, holes: [insetRing(p.outer, spec.stands)], base: 0, top: spec.heightM ?? 25 }))
+  } else if (spec.tiers?.length) {
     const first = spec.tiers[0].from
     pieces = [{ outer: main.outer, holes: main.holes, base: 0, top: first }]
     for (const t of spec.tiers) pieces.push({ outer: scaleRing(main.outer, [cx, cz], t.scale, t.offset), holes: [], base: t.from, top: t.to })

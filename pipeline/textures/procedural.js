@@ -1,5 +1,5 @@
 // pipeline/textures/procedural.js — seeded, tileable ground materials (periodic value-noise fBm).
-export const PROCEDURAL_KINDS = ['grass', 'asphalt', 'sidewalk', 'concrete', 'gravel', 'sand']
+export const PROCEDURAL_KINDS = ['grass', 'asphalt', 'sidewalk', 'concrete', 'gravel', 'sand', 'pitch']
 
 function hash(x, y, s) {
   let h = (x * 374761393 + y * 668265263 + s * 2147483647) | 0
@@ -49,6 +49,10 @@ const KINDS = {
   gravel: (u, v) => {
     const n = noise(u, v, 192, 51), m = noise(u, v, 96, 52), f = fbm(u, v, 4, 3, 53)
     return mix(mix([118, 116, 112], [160, 158, 152], n), [84, 82, 80], (m > 0.7 ? 0.5 : 0) + f * 0.1)
+  },
+  pitch: (u, v) => {                                     // ball-field turf with mowing stripes (8 bands per tile)
+    const band = Math.floor(v * 8) % 2, n = fbm(u, v, 8, 3, 71)
+    return mix(band ? [66, 118, 48] : [88, 142, 60], [52, 96, 40], n * 0.35)
   },
   sand: (u, v) => {
     const n = fbm(u, v, 4, 4, 61), fine = noise(u, v, 256, 62)

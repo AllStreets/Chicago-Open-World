@@ -24,4 +24,8 @@ describe('patchFacadeShader', () => {
   it('has one tile descriptor per façade family', () => {
     expect(facadeUniforms.uTile.value).toHaveLength(8)
   })
+  it('residential façades get their own sparser, warmer night occupancy', () => {
+    const s = patchFacadeShader(std())
+    expect(s.fragmentShader).toContain('isResidential')
+  })
 })

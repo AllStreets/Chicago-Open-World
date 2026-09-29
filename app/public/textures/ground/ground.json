@@ -22,5 +22,9 @@
   "sand": {
     "file": "ground/sand.jpg",
     "sizeM": 10
+  },
+  "pitch": {
+    "file": "ground/pitch.jpg",
+    "sizeM": 40
   }
 }

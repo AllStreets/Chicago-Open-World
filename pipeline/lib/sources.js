@@ -29,6 +29,7 @@ const FILTERS = {
   parks: ['way["leisure"~"^(park|garden|playground|pitch)$"]', 'relation["leisure"="park"]', 'way["landuse"~"^(grass|recreation_ground|village_green)$"]', 'way["natural"="beach"]'],
   roads: ['way["highway"~"^(motorway|trunk|primary|secondary|tertiary|unclassified|residential|service|motorway_link|trunk_link|primary_link|secondary_link)$"]'],
   trees: ['node["natural"="tree"]'],
+  stadiums: ['way["leisure"="stadium"]', 'relation["leisure"="stadium"]'],
   rail: ['way["railway"~"^(subway|light_rail|rail)$"]'],
   water: ['relation["water"="river"]', 'way["water"="river"]', 'way["waterway"="canal"]["area"]', 'way["water"="canal"]', 'way["water"="harbour"]', 'relation["water"="harbour"]'],
 }

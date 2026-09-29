@@ -143,6 +143,10 @@
     "sand": {
       "procedural": "sand",
       "sizeM": 10
+    },
+    "pitch": {
+      "procedural": "pitch",
+      "sizeM": 40
     }
   }
 }

@@ -24,7 +24,7 @@ async function getJson(url, init = {}) {
   throw new Error(`failed: ${String(url).slice(0, 100)}`)
 }
 
-const KINDS = { allbuildings: [6, 8], parts: [2, 3], water: [2, 3], parks: [2, 3], roads: [3, 4], trees: [2, 3], rail: [2, 3] }
+const KINDS = { allbuildings: [6, 8], parts: [2, 3], water: [2, 3], parks: [2, 3], roads: [3, 4], trees: [2, 3], rail: [2, 3], stadiums: [1, 1] }
 const ENDPOINTS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter']
 
 for (const [kind, [nx, ny]] of Object.entries(KINDS)) {

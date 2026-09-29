@@ -1,0 +1,415 @@
+{
+  "note": "Landmark specs (Phase 2.5). Heights from data/skyline.json; setbacks from OSM building:part where present; crowns hand-built. Phase 3 (Blender) refines sculptural detail.",
+  "heroes": [
+    {
+      "key": "willis",
+      "name": "Willis Tower",
+      "skylineName": "Willis Tower",
+      "match": {
+        "osmId": 380868216
+      },
+      "facade": "curtain-glass",
+      "tint": "dark",
+      "crowns": []
+    },
+    {
+      "key": "trump",
+      "name": "Trump International Hotel & Tower",
+      "skylineName": "Trump International Hotel and Tower",
+      "match": {
+        "osmId": 64594680
+      },
+      "facade": "curtain-glass",
+      "tint": "silver",
+      "crowns": []
+    },
+    {
+      "key": "stregis",
+      "name": "St. Regis Chicago",
+      "skylineName": "St. Regis Chicago",
+      "match": {
+        "osmId": 464802811
+      },
+      "heightM": 363,
+      "facade": "curtain-glass",
+      "tint": "green",
+      "crowns": []
+    },
+    {
+      "key": "aon",
+      "name": "Aon Center",
+      "skylineName": "Aon Center",
+      "match": {
+        "osmId": 64388609
+      },
+      "heightM": 346,
+      "facade": "precast-concrete",
+      "crowns": []
+    },
+    {
+      "key": "hancock",
+      "name": "875 North Michigan Avenue",
+      "skylineName": "875 North Michigan Avenue",
+      "match": {
+        "osmId": 31064573
+      },
+      "taper": {
+        "topScale": 0.62
+      },
+      "facade": "curtain-glass",
+      "tint": "dark",
+      "crowns": []
+    },
+    {
+      "key": "franklin",
+      "name": "Franklin Center",
+      "skylineName": "Franklin Center",
+      "match": {
+        "osmId": 64398410
+      },
+      "facade": "precast-concrete",
+      "crowns": [
+        {
+          "type": "spire",
+          "at": [
+            27,
+            25
+          ],
+          "base": 285,
+          "top": 307,
+          "r0": 1.8
+        },
+        {
+          "type": "spire",
+          "at": [
+            -27,
+            25
+          ],
+          "base": 285,
+          "top": 307,
+          "r0": 1.8
+        },
+        {
+          "type": "spire",
+          "at": [
+            27,
+            -25
+          ],
+          "base": 285,
+          "top": 307,
+          "r0": 1.8
+        },
+        {
+          "type": "spire",
+          "at": [
+            -27,
+            -25
+          ],
+          "base": 285,
+          "top": 307,
+          "r0": 1.8
+        }
+      ]
+    },
+    {
+      "key": "twopru",
+      "name": "Two Prudential Plaza",
+      "skylineName": "Two Prudential Plaza",
+      "match": {
+        "osmId": 64388666
+      },
+      "facade": "precast-concrete",
+      "tiers": [
+        {
+          "scale": 0.86,
+          "from": 232,
+          "to": 246
+        },
+        {
+          "scale": 0.72,
+          "from": 246,
+          "to": 258
+        }
+      ],
+      "crowns": [
+        {
+          "type": "pyramid",
+          "scale": 0.62,
+          "base": 258,
+          "top": 278
+        },
+        {
+          "type": "spire",
+          "base": 278,
+          "top": 303,
+          "r0": 1.4
+        }
+      ]
+    },
+    {
+      "key": "onechicago",
+      "name": "One Chicago",
+      "skylineName": "One Chicago East Tower",
+      "match": {
+        "osmId": 846476842
+      },
+      "facade": "curtain-glass",
+      "tint": "blue",
+      "tiers": [
+        {
+          "scale": 0.42,
+          "offset": [
+            22,
+            0
+          ],
+          "from": 30,
+          "to": 296
+        },
+        {
+          "scale": 0.34,
+          "offset": [
+            -30,
+            0
+          ],
+          "from": 30,
+          "to": 146
+        }
+      ],
+      "crowns": []
+    },
+    {
+      "key": "311wacker",
+      "name": "311 South Wacker Drive",
+      "skylineName": "311 South Wacker Drive",
+      "match": {
+        "osmId": 147350208
+      },
+      "facade": "precast-concrete",
+      "crowns": []
+    },
+    {
+      "key": "nema",
+      "name": "NEMA Chicago",
+      "skylineName": "NEMA Chicago",
+      "match": {
+        "osmId": 509032412
+      },
+      "heightM": 273,
+      "facade": "curtain-glass",
+      "tint": "silver",
+      "crowns": []
+    },
+    {
+      "key": "900michigan",
+      "name": "900 North Michigan",
+      "skylineName": "900 North Michigan",
+      "match": {
+        "osmId": 31064552
+      },
+      "facade": "precast-concrete",
+      "crowns": []
+    },
+    {
+      "key": "chase",
+      "name": "Chase Tower",
+      "skylineName": "Chase Tower",
+      "match": {
+        "osmId": 230613007
+      },
+      "facade": "precast-concrete",
+      "crowns": []
+    },
+    {
+      "key": "watertower",
+      "name": "Water Tower Place",
+      "skylineName": "Water Tower Place",
+      "match": {
+        "osmId": 64627674
+      },
+      "facade": "precast-concrete",
+      "crowns": []
+    },
+    {
+      "key": "aqua",
+      "name": "Aqua",
+      "skylineName": "Aqua",
+      "match": {
+        "osmId": 95486962
+      },
+      "heightM": 261.8,
+      "facade": "curtain-glass",
+      "tint": "silver",
+      "crowns": []
+    },
+    {
+      "key": "400lsd",
+      "name": "400 Lake Shore Drive North Tower",
+      "skylineName": "400 Lake Shore Drive North Tower",
+      "match": {
+        "osmId": 1361811949
+      },
+      "heightM": 259.1,
+      "facade": "curtain-glass",
+      "tint": "silver",
+      "crowns": []
+    },
+    {
+      "key": "salesforce",
+      "name": "Salesforce Tower Chicago",
+      "skylineName": "Salesforce Tower Chicago",
+      "match": {
+        "osmId": 839664090
+      },
+      "facade": "curtain-glass",
+      "tint": "blue",
+      "crowns": []
+    },
+    {
+      "key": "110wacker",
+      "name": "110 North Wacker",
+      "skylineName": "110 North Wacker",
+      "match": {
+        "osmId": 137127809
+      },
+      "heightM": 248,
+      "facade": "curtain-glass",
+      "tint": "silver",
+      "crowns": []
+    },
+    {
+      "key": "1000m",
+      "name": "1000M",
+      "skylineName": "1000M",
+      "match": {
+        "osmId": 1013794039
+      },
+      "heightM": 245,
+      "facade": "curtain-glass",
+      "tint": "dark",
+      "crowns": []
+    },
+    {
+      "key": "marina1",
+      "name": "Marina City 1",
+      "match": {
+        "osmId": 1177923716
+      },
+      "heightM": 179,
+      "facade": "precast-concrete",
+      "crowns": []
+    },
+    {
+      "key": "marina2",
+      "name": "Marina City 2",
+      "match": {
+        "osmId": 284822929
+      },
+      "heightM": 179,
+      "facade": "precast-concrete",
+      "crowns": []
+    },
+    {
+      "key": "lakepoint",
+      "name": "Lake Point Tower",
+      "skylineName": "Lake Point Tower",
+      "match": {
+        "osmId": 150408224
+      },
+      "facade": "curtain-glass",
+      "tint": "dark",
+      "crowns": []
+    },
+    {
+      "key": "wrigleybldg",
+      "name": "Wrigley Building",
+      "match": {
+        "osmId": 17460539
+      },
+      "facade": "precast-concrete",
+      "crowns": []
+    },
+    {
+      "key": "tribune",
+      "name": "Tribune Tower",
+      "match": {
+        "osmId": 150407241
+      },
+      "facade": "loop-limestone",
+      "crowns": []
+    },
+    {
+      "key": "mart",
+      "name": "Merchandise Mart",
+      "match": {
+        "osmId": 28293211
+      },
+      "facade": "loop-limestone",
+      "crowns": []
+    },
+    {
+      "key": "cbot",
+      "name": "Chicago Board of Trade Building",
+      "match": {
+        "osmId": 28951633
+      },
+      "facade": "loop-limestone",
+      "crowns": []
+    },
+    {
+      "key": "crain",
+      "name": "Crain Communications Building (150 N Michigan)",
+      "match": {
+        "osmId": 210671717
+      },
+      "heightM": 150,
+      "facade": "curtain-glass",
+      "tint": "silver",
+      "crowns": [
+        {
+          "type": "sloped",
+          "scale": 1.0,
+          "base": 150,
+          "lowTop": 151,
+          "highTop": 177,
+          "dir": [
+            -1,
+            -1
+          ]
+        }
+      ]
+    },
+    {
+      "key": "unitedcenter",
+      "name": "United Center",
+      "match": {
+        "osmId": 205221993
+      },
+      "heightM": 30,
+      "facade": "precast-concrete",
+      "crowns": []
+    },
+    {
+      "key": "soldierfield",
+      "name": "Soldier Field",
+      "match": {
+        "osmId": 2305649
+      },
+      "heightM": 30,
+      "facade": "precast-concrete",
+      "crowns": [],
+      "stands": 34
+    },
+    {
+      "key": "wrigleyfield",
+      "name": "Wrigley Field",
+      "match": {
+        "lat": 41.9484,
+        "lon": -87.6553
+      },
+      "heightM": 24,
+      "stands": 38,
+      "facade": "precast-concrete",
+      "crowns": []
+    }
+  ]
+}

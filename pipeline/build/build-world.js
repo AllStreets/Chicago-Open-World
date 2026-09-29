@@ -79,6 +79,14 @@ async function main() {
   // ── Buildings ──────────────────────────────────────────────────────────────
   const osmEls = uniq(chunks('allbuildings')).filter((e) => !SKIP_TYPES.has(e.tags?.building))
   const buildings = osmEls.map(osmToBuilding).filter(Boolean)
+  // Stadiums tagged only as leisure=stadium (e.g. Wrigley Field) become buildings so heroes can shape them
+  for (const s of osmPolys(uniq(chunks('stadiums')))) {
+    const c = ringCentroid(s.outer)
+    if (buildings.some((b) => b.area > 2000 && b.polygons.some((q) => pointInRing(c, q.outer)))) continue
+    const area = Math.abs(signedArea(s.outer))
+    buildings.push({ id: `s${s.tags.name ?? Math.round(c[0])}`, osmId: null, source: 'osm-stadium', tags: { building: 'stadium', ...s.tags }, name: s.tags.name ?? null, address: null, stories: null, year: null,
+      polygons: [{ outer: s.outer, holes: s.holes }], area, centroid: c, bbox: s.bbox, height: 24, heightSource: 'default', parts: null })
+  }
   log(`osm buildings: ${buildings.length}`)
   const cityRows = readdirSync(CACHE).filter((f) => f.startsWith('footprints-')).flatMap((f) => loadJson(join(CACHE, f)).data)
   const city = cityRows.map(normalizeFootprint).filter(Boolean).map((c) => ({ id: c.id, centroid: c.centroid, stories: c.stories, year: c.year, address: c.address }))
@@ -125,7 +133,8 @@ async function main() {
 
   // ── Ground sources ─────────────────────────────────────────────────────────
   const greens = osmPolys(uniq(chunks('parks')))
-  const parks = greens.filter((p) => p.tags.natural !== 'beach'), beaches = greens.filter((p) => p.tags.natural === 'beach')
+  const parks = greens.filter((p) => p.tags.natural !== 'beach' && p.tags.leisure !== 'pitch'), beaches = greens.filter((p) => p.tags.natural === 'beach')
+  const pitches = greens.filter((p) => p.tags.leisure === 'pitch')
   const water = osmPolys(uniq(chunks('water')))
   const roads = uniq(chunks('roads')).filter((e) => e.geometry && roadHalfWidth(e.tags || {}))
   const rail = uniq(chunks('rail')).filter((e) => e.geometry)
@@ -167,7 +176,7 @@ async function main() {
     t.trees.push([+x.toFixed(1), +z.toFixed(1), +(0.8 + h * 0.6).toFixed(2), Math.floor(h * 4)])
   }
   const polyIdx = (polys) => buildGridIndex(polys.map((p) => ({ p, c: [(p.bbox.minX + p.bbox.maxX) / 2, (p.bbox.minZ + p.bbox.maxZ) / 2] })), TILE_SIZE, (i) => i.c)
-  const polyIndexes = { parks: polyIdx(parks), beaches: polyIdx(beaches), water: polyIdx(water) }
+  const polyIndexes = { parks: polyIdx(parks), pitches: polyIdx(pitches), beaches: polyIdx(beaches), water: polyIdx(water) }
   const polysFor = (name, bounds) => polyIndexes[name].rect({ minX: bounds.minX - 6000, maxX: bounds.maxX + 6000, minZ: bounds.minZ - 6000, maxZ: bounds.maxZ + 6000 })
     .map((i) => i.p).filter((p) => p.bbox.maxX > bounds.minX && p.bbox.minX < bounds.maxX && p.bbox.maxZ > bounds.minZ && p.bbox.minZ < bounds.maxZ)
 
@@ -195,11 +204,12 @@ async function main() {
     })
     const parksM = flatMesh(clipPolysToTile(polysFor('parks', bounds), bounds), 0.08)
     const beachesM = flatMesh(clipPolysToTile(polysFor('beaches', bounds), bounds), 0.07)
+    const pitchesM = flatMesh(clipPolysToTile(polysFor('pitches', bounds), bounds), 0.09)
     const waterM = flatMesh(clipPolysToTile(polysFor('water', bounds), bounds), 0.15)
     const hasContent = L0.positions.length || t.roads.positions.length || parksM.positions.length || waterM.positions.length
     if (!hasContent) continue
-    await writeTileGlb(join(OUT, 'tiles', `${key}.glb`), { buildings: asLayer(L0), roads: t.roads, sidewalks: t.walks, parks: parksM, beaches: beachesM, water: waterM, rail: t.rail, elevated: t.elevated })
-    await writeTileGlb(join(OUT, 'tiles', `${key}.lod1.glb`), { buildings: asLayer(L1), roads: t.roadsLod1, parks: parksM, beaches: beachesM, water: waterM })
+    await writeTileGlb(join(OUT, 'tiles', `${key}.glb`), { buildings: asLayer(L0), roads: t.roads, sidewalks: t.walks, parks: parksM, pitches: pitchesM, beaches: beachesM, water: waterM, rail: t.rail, elevated: t.elevated })
+    await writeTileGlb(join(OUT, 'tiles', `${key}.lod1.glb`), { buildings: asLayer(L1), roads: t.roadsLod1, parks: parksM, pitches: pitchesM, beaches: beachesM, water: waterM })
     writeFileSync(join(OUT, 'tiles', `${key}.json`), JSON.stringify({ buildings: meta, trees: t.trees, props: t.props, columns: t.columns }))
     tiles.push({ key, bounds, lod0: `tiles/${key}.glb`, lod1: `tiles/${key}.lod1.glb`, meta: `tiles/${key}.json`, buildings: t.b.length, maxHeight: Math.max(0, ...meta.map((m) => m.height)) })
     if (++n % 50 === 0) log(`tiles written: ${n}`)

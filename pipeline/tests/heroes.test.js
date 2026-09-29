@@ -38,4 +38,11 @@ describe('heroes', () => {
     expect(b.facadeOverride).toBe('precast-concrete')
     expect(bucket(b.seedOverride)).toBe('dark')
   })
+  it('stands: a grandstand ring with an open field in the middle', () => {
+    const big = bldg({ polygons: [{ outer: sq(0, 0, 200), holes: [] }], area: 40000, centroid: [100, -100] })
+    const { pieces } = applyHero(big, { heightM: 28, stands: 40, crowns: [] })
+    expect(pieces).toHaveLength(1)
+    expect(pieces[0]).toMatchObject({ base: 0, top: 28 })
+    expect(pieces[0].holes).toHaveLength(1)
+  })
 })

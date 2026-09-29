@@ -99,10 +99,11 @@ if (!isRoof && !isParapet && uNight > 0.001) {
               * smoothstep(0.05, 0.12, cf.y) * smoothstep(0.08, 0.18, 1.0 - cf.y);
   float h = owHash(cell + vec2(vSeed * 173.0, vSeed * 91.0));
   float floorH = owHash(vec2(cell.y, vSeed * 57.0));          // whole office floors light together
-  float busy = mix(0.05, 0.5, fract(vSeed * 7.31));           // some towers dark, some busy
+  bool isResidential = fi == 6 || (fi == 2 && vWPos.y < 22.0); // three-flats, walk-ups: homes, not offices
+  float busy = isResidential ? mix(0.12, 0.38, fract(vSeed * 7.31)) : mix(0.05, 0.5, fract(vSeed * 7.31));
   float lit = step(h * 0.55 + floorH * 0.45, busy * (0.45 + 0.55 * uNight));
   vec3 warm = vec3(1.0, 0.72, 0.45), cool = vec3(0.78, 0.86, 1.0);
-  vec3 wc = mix(warm, cool, step(0.7, owHash(vec2(cell.y, vSeed * 13.0))));
+  vec3 wc = mix(warm, cool, step(isResidential ? 0.93 : 0.7, owHash(vec2(cell.y, vSeed * 13.0))));
   float level = 0.45 + 0.55 * owHash(cell * 1.7 + 3.1);
   totalEmissiveRadiance += wc * win * inset * lit * uNight * level * 0.9 * uLitBoost;
 }
@@ -126,7 +127,7 @@ export function patchFacadeShader(shader) {
 export function createFacadeMaterial() {
   const m = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.86, metalness: 0.02 })
   m.onBeforeCompile = patchFacadeShader
-  m.customProgramCacheKey = () => 'facade-v4'
+  m.customProgramCacheKey = () => 'facade-v5'
   return m
 }
 
