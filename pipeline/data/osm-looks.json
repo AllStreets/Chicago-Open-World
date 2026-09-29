@@ -1,0 +1,1 @@
+{ "enabled": true, "note": "F11: OSM building:colour / building:material on non-landmark buildings. Set enabled to false to revert (evaluate-and-revert).", "source": "OpenStreetMap contributors (ODbL)" }

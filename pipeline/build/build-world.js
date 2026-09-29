@@ -23,6 +23,7 @@ import { venueZones, filterTrees, assertNoVenueTrees, outsideZones } from '../li
 import { createBlock, addTileToBlock, blockLayers, blockSidecar } from '../lib/blocks.js'
 import { bAcc, appendBuilding, appendLayer, asLayer } from '../lib/layers.js'
 import { createStyleRegistry, assignHeroStyles, meshStyle, writeStylePalettePng } from '../lib/styles.js'
+import { applyOsmLooks } from '../lib/osmLook.js'
 import { lakePolygons, landMinusWater, joinLines, lakeSide } from '../lib/lake.js'
 import { bakeShore, SHORE } from '../lib/shore.js'
 import { bakeHeightfield, meshPoints, boundsUnion, HEIGHTFIELD } from '../lib/heightfield.js'
@@ -215,6 +216,9 @@ async function main() {
   // ── Sourced looks (V2): hero rows first; OSM-tagged looks are added in Task 9 ──
   const styles = createStyleRegistry()
   assignHeroStyles(buildings, heroes, styles)
+  const osmLooks = applyOsmLooks(buildings, styles, loadJson(join(ROOT, 'data', 'osm-looks.json')))
+  log(`OSM-tagged looks: ${osmLooks.styled} buildings, ${osmLooks.skipped} over the palette cap`)
+   
   log(`styles: ${styles.size - 1} rows`)
 
   // ── Per-tile assembly ──────────────────────────────────────────────────────
