@@ -226,6 +226,12 @@ if (styled && !isRoof && !isParapet) metalnessFactor = mix(S2.a, 0.9, win * 0.85
 if (isVenue && vi == 21) metalnessFactor = 1.0;
 `
 const FRAG_EMISSIVE = /* glsl */ `
+if (styled && uNight > 0.001) {                          // crown and façade night lighting (F9)
+  vec4 C5 = styleTexel(si, 5), C6 = styleTexel(si, 6);
+  float band = step(C6.r, vWPos.y) * step(vWPos.y, C6.g);
+  if (C6.b > 0.5 && C6.b < 1.5) totalEmissiveRadiance += diffuseColor.rgb * C5.rgb * C5.a * (0.35 + 0.65 * smoothstep(C6.r, C6.g, vWPos.y)) * band * uNight;
+  else if (C6.b > 1.5) totalEmissiveRadiance += C5.rgb * C5.a * band * uNight * uLitBoost;
+}
 if (isVenue && uNight > 0.001) {
   if (vi == 14) totalEmissiveRadiance += vec3(1.0, 0.96, 0.88) * 3.2 * uNight * uLitBoost;
   // under the floodlights: the field and stands glow as if lit for a night game
