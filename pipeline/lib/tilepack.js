@@ -58,6 +58,7 @@ export async function writeTileGlb(path, layers) {
     if (!m || !m.positions.length) continue
     const prim = doc.createPrimitive().setAttribute('POSITION', acc(m.positions, 'VEC3')).setAttribute('NORMAL', acc(m.normals, 'VEC3'))
     if (m.uvs?.length) prim.setAttribute('TEXCOORD_0', acc(m.uvs, 'VEC2'))
+    if (m.colors?.length) prim.setAttribute('COLOR_0', acc(m.colors, 'VEC3'))
     for (const [k, arr] of Object.entries(m.extra || {})) prim.setAttribute(`_${k}`, acc(arr, 'SCALAR'))
     scene.addChild(doc.createNode(name).setMesh(doc.createMesh(name).addPrimitive(prim)))
   }
@@ -101,5 +102,16 @@ export function splitLineWithContext(points) {
       out.get(key).push(cur)
     } else cur.line.push(b)
   }
+  return out
+}
+
+// Joins same-shaped layers (e.g. every tile's coarse glow into its 2 km block).
+export function concatLayers(list) {
+  const out = { positions: [], normals: [], uvs: [], colors: [], extra: {} }
+  for (const m of list) {
+    for (const k of ['positions', 'normals', 'uvs', 'colors']) for (const v of m[k] ?? []) out[k].push(v)
+    for (const [k, arr] of Object.entries(m.extra ?? {})) { out.extra[k] ??= []; for (const v of arr) out.extra[k].push(v) }
+  }
+  out.extra = Object.fromEntries(Object.entries(out.extra).map(([k, v]) => [k, new Float32Array(v)]))
   return out
 }

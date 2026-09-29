@@ -61,3 +61,26 @@ describe('ground merge + blocks', () => {
     expect(blockKeyFor('4_0')).toBe('1_0'); expect(blockKeyFor('-1_-1')).toBe('-1_-1'); expect(blockKeyFor('-5_2')).toBe('-2_0')
   })
 })
+
+describe('tilepack colours + concat (V3)', () => {
+  it('COLOR_0 and large custom scalars survive compression', async () => {
+    const path = join(mkdtempSync(join(tmpdir(), 't-')), 'c.glb')
+    const tri = { positions: [0, 0, 0, 10, 0, 0, 0, 0, 10], normals: [0, 1, 0, 0, 1, 0, 0, 1, 0], colors: [0.5, 0.25, 1, 0.5, 0.25, 1, 0.5, 0.25, 1], extra: { KIND: new Float32Array([4, 4, 4]), ALONG: new Float32Array([0, 350.5, 700.25]) } }
+    await writeTileGlb(path, { transit: tri })
+    await MeshoptDecoder.ready
+    const doc = await new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({ 'meshopt.decoder': MeshoptDecoder }).read(path)
+    const prim = doc.getRoot().listMeshes()[0].listPrimitives()[0]
+    const c = prim.getAttribute('COLOR_0').getElement(0, [])
+    expect(c[0]).toBeCloseTo(0.5, 2); expect(c[1]).toBeCloseTo(0.25, 2); expect(c[2]).toBeCloseTo(1, 2)
+    expect(prim.getAttribute('_KIND').getScalar(0)).toBe(4)
+    const along = [0, 1, 2].map((i) => prim.getAttribute('_ALONG').getScalar(i)).sort((a, b) => a - b)
+    expect(along[2]).toBeCloseTo(700.25, 1)
+  })
+  it('concatLayers joins layers and their extras', async () => {
+    const { concatLayers } = await import('../lib/tilepack.js')
+    const a = { positions: [1, 2, 3], normals: [0, 1, 0], colors: [1, 0, 0], extra: { SIDE: new Float32Array([1]) } }
+    const out = concatLayers([a, a])
+    expect(out.positions).toEqual([1, 2, 3, 1, 2, 3]); expect(out.colors).toEqual([1, 0, 0, 1, 0, 0])
+    expect(out.extra.SIDE).toEqual(new Float32Array([1, 1]))
+  })
+})
