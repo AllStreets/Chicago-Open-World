@@ -24,4 +24,9 @@ describe('store', () => {
     useStore.getState().setQuality('LOW')
     expect(useStore.getState().quality).toBe('LOW')
   })
+  it('intro runs once until finished', () => {
+    expect(useStore.getState().introDone).toBe(false)
+    useStore.getState().finishIntro()
+    expect(useStore.getState().introDone).toBe(true)
+  })
 })

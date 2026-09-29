@@ -4,6 +4,8 @@ export const useStore = create((set) => ({
   timePreset: 'LIVE',
   cameraMode: 'FLY',
   quality: 'HIGH',
+  introDone: false,
+  finishIntro: () => set({ introDone: true }),
   setQuality: (quality) => set({ quality }),
   readout: { streets: 'STATE & MADISON', altitude: 0, heading: 0 },
   load: { total: 0, done: 0, keys: [], error: null, ready: false },

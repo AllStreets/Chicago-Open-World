@@ -6,6 +6,7 @@ import * as THREE from 'three'
 import { useStore } from '../state/store.js'
 import { clampCamera, glideVector, headingDeg, MAX_DIST } from '../lib/cameraMath.js'
 import { bookmarkFromUrl } from '../lib/bookmarks.js'
+import { introPose, INTRO_SECONDS } from '../lib/introPath.js'
 import { crossStreets } from '../lib/grid.js'
 
 const GLIDE_MPS = 140
@@ -22,9 +23,30 @@ export default function AtlasRig() {
   const setReadout = useStore((s) => s.setReadout)
   const setCameraMode = useStore((s) => s.setCameraMode)
 
+  const introDone = useStore((s) => s.introDone)
+  const introStart = useRef(null)
+
   useEffect(() => {
-    const b = bookmarkFromUrl(window.location.search)
-    ref.current?.setLookAt(...b.position, ...b.target, false)
+    const params = new URLSearchParams(window.location.search)
+    const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    const playIntro = !params.has('view') && !reduced && !useStore.getState().introDone
+    if (!playIntro) {
+      useStore.getState().finishIntro()
+      const b = bookmarkFromUrl(window.location.search)
+      ref.current?.setLookAt(...b.position, ...b.target, false)
+      return
+    }
+    const p0 = introPose(0)
+    ref.current?.setLookAt(...p0.position, ...p0.target, false)
+    const skip = () => {
+      if (useStore.getState().introDone) return
+      const e = introPose(1)
+      ref.current?.setLookAt(...e.position, ...e.target, false)
+      useStore.getState().finishIntro()
+    }
+    const evs = ['keydown', 'pointerdown', 'wheel']
+    evs.forEach((ev) => window.addEventListener(ev, skip, { once: true }))
+    return () => evs.forEach((ev) => window.removeEventListener(ev, skip))
   }, [])
 
   useEffect(() => {
@@ -41,6 +63,16 @@ export default function AtlasRig() {
   useFrame((state, dt) => {
     const c = ref.current
     if (!c) return
+    if (!useStore.getState().introDone) {
+      if (!useStore.getState().load.ready) return // hold on the opening frame while the city streams in
+      introStart.current ??= state.clock.elapsedTime
+      const t = (state.clock.elapsedTime - introStart.current) / INTRO_SECONDS
+      const p = introPose(t)
+      c.setLookAt(...p.position, ...p.target, false)
+      if (t >= 1) useStore.getState().finishIntro()
+      publishReadout(c, state.clock.elapsedTime)
+      return
+    }
     const k = keys.current
     const boost = k.has('ShiftLeft') || k.has('ShiftRight') ? BOOST : 1
     const [dx, dz] = glideVector(k, c.azimuthAngle)
@@ -64,17 +96,21 @@ export default function AtlasRig() {
       c.setLookAt(...cl.position, ...cl.target, false)
     }
 
-    const t = state.clock.elapsedTime
-    if (t - lastReadout.current > 0.2) {
-      lastReadout.current = t
-      setReadout({ streets: crossStreets(tmpT.x, tmpT.z), altitude: Math.round(tmpP.y), heading: headingDeg(c.azimuthAngle) })
-    }
+    publishReadout(c, state.clock.elapsedTime)
   })
+
+  function publishReadout(c, t) {
+    if (t - lastReadout.current <= 0.2) return
+    lastReadout.current = t
+    c.getTarget(tmpT); c.getPosition(tmpP)
+    setReadout({ streets: crossStreets(tmpT.x, tmpT.z), altitude: Math.round(tmpP.y), heading: headingDeg(c.azimuthAngle), x: tmpT.x, z: tmpT.z })
+  }
 
   return (
     <CameraControls
       ref={ref}
       makeDefault
+      enabled={introDone}
       minDistance={60}
       maxDistance={MAX_DIST}
       maxPolarAngle={Math.PI * 0.47}
