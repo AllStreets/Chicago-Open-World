@@ -91,3 +91,15 @@ export function applyBuildingParts(buildings, osmParts) {
 // Buildings whose silhouette matters from afar keep their full pieces in LOD1 tiles and 2 km blocks;
 // the rest are simplified to one extruded footprint at b.height.
 export const keepsShapeAtDistance = (b) => Boolean(b.hero || b.parts?.length || b.sacred || b.skylineFixed)
+
+// LOD1 footprint of a plain building: the simplified outline AND its courtyards, so far roofs stay open.
+export function lod1Pieces(b, tol = 2) {
+  const out = []
+  for (const p of b.polygons) {
+    const outer = simplifyRing(p.outer, tol)
+    if (outer.length < 3) continue
+    const holes = (p.holes || []).map((h) => simplifyRing(h, tol)).filter((h) => h.length >= 3)
+    out.push({ outer, holes, base: 0, top: b.height })
+  }
+  return out
+}

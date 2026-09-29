@@ -7,7 +7,7 @@ import sharp from 'sharp'
 import { project, ORIGIN } from '../../shared/project.js'
 import { openRing, ringCentroid, ringBBox, simplifyRing, signedArea, pointInRing } from '../lib/geom.js'
 import { assembleRings } from '../lib/multipolygon.js'
-import { normalizeFootprint, applyBuildingParts, hashSeed, keepsShapeAtDistance } from '../lib/buildings.js'
+import { normalizeFootprint, applyBuildingParts, hashSeed, keepsShapeAtDistance, lod1Pieces } from '../lib/buildings.js'
 import { osmToBuilding } from '../lib/osm.js'
 import { enrichFromCity, buildGridIndex } from '../lib/enrich.js'
 import { classifyFacade, FACADE_FAMILIES } from '../lib/classify.js'
@@ -275,10 +275,7 @@ async function main() {
       for (const v of b.venueMeshes || []) { appendBuilding(L0, v.mesh, v.facade, v.seed, i); appendBuilding(L1, v.mesh, v.facade, v.seed, i) }
       // LOD1: heroes and part-buildings keep their shape (they are the skyline); plain footprints simplify
       if (keepsShapeAtDistance(b)) { for (const pc of b.pieces) appendBuilding(L1, extrudeBuilding(pc), family, seed, i); for (const m of b.extraMeshes || []) appendBuilding(L1, m, family, seed, i) }
-      else if (b.area >= 80) for (const p of b.polygons) {
-        const outer = simplifyRing(p.outer, 2)
-        if (outer.length >= 3) appendBuilding(L1, extrudeBuilding({ outer, holes: [], base: 0, top: b.height }), family, seed, i)
-      }
+      else if (b.area >= 80) for (const pc of lod1Pieces(b)) appendBuilding(L1, extrudeBuilding(pc), family, seed, i)
       if (top > 15) for (const pr of roofProps(b, b.pieces)) t.props.push(pr)
       meta.push({ id: b.id, name: b.name, address: b.address, stories: b.stories, year: b.year, height: Math.round(top * 10) / 10, hero: b.hero ?? null })
     })

@@ -92,3 +92,28 @@ describe('distance detail', () => {
     expect(keepsShapeAtDistance({})).toBe(false)
   })
 })
+
+import { lod1Pieces } from '../lib/buildings.js'
+import { extrudeBuilding } from '../lib/extrude.js'
+
+describe('LOD1 courtyards (H1)', () => {
+  const b = { height: 20, polygons: [{ outer: [[0, 0], [40, 0], [40, -40], [0, -40]], holes: [[[10, -10], [30, -10], [30, -30], [10, -30]]] }] }
+  it('carries the holes through simplification', () => {
+    const [p] = lod1Pieces(b)
+    expect(p.holes).toHaveLength(1)
+    expect(p).toMatchObject({ base: 0, top: 20 })
+  })
+  it('no roof triangle covers the open courtyard', () => {
+    const m = extrudeBuilding(lod1Pieces(b)[0])
+    const inTri = ([px, pz], a, c, d) => {
+      const s = (p, q, r) => (p[0] - r[0]) * (q[1] - r[1]) - (q[0] - r[0]) * (p[1] - r[1])
+      const d1 = s([px, pz], a, c), d2 = s([px, pz], c, d), d3 = s([px, pz], d, a)
+      return !((d1 < 0 || d2 < 0 || d3 < 0) && (d1 > 0 || d2 > 0 || d3 > 0))
+    }
+    const P = m.positions
+    for (let i = 0; i < P.length; i += 9) {
+      if (m.normals[i + 1] < 0.99) continue // roof triangles only
+      expect(inTri([20, -20], [P[i], P[i + 2]], [P[i + 3], P[i + 5]], [P[i + 6], P[i + 8]])).toBe(false)
+    }
+  })
+})
