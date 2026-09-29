@@ -7,6 +7,7 @@ import { drum, spire, pyramid } from './crowns.js'
 
 import { add2, mul2, left, bearing, sub3, at3, mesh, tri, merge, tube, disc, ringAround, revolve, place, slab, norm3, gridSurface } from './meshkit.js'
 import { LANDMARK_FACADES } from './facadeIds.js'
+import { CIVIC } from './civic.js'
 export { LANDMARK_FACADES }
 const F = LANDMARK_FACADES
 const hullOf = (b) => convexHull(b.polygons.flatMap((p) => p.outer))
@@ -269,7 +270,7 @@ function pavilion(b, spec) {
   ] }
 }
 
-const BUILDERS = { wheel, bean, fountain, theatreSign, museum, castellated, pavilion }
+const BUILDERS = { wheel, bean, fountain, theatreSign, museum, castellated, pavilion, ...CIVIC }
 export function buildLandmark(b, spec) {
   const f = BUILDERS[spec.type]
   if (!f) throw new Error(`unknown landmark type: ${spec.type}`)

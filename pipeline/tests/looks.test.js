@@ -49,10 +49,11 @@ import { fileURLToPath } from 'node:url'
 
 describe('heroes.json looks (F1, F7)', () => {
   const heroes = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'data', 'heroes.json'), 'utf8')).heroes
-  it('all 41 heroes carry a valid, sourced look', () => {
-    expect(heroes).toHaveLength(41)
-    const errs = heroes.flatMap((h) => validateLook(h.look, h.key))
-    expect(errs).toEqual([])
+  it('the 41 V2 heroes carry a valid, sourced look; V6 civic landmarks colour through their material rows', () => {
+    const looked = heroes.filter((h) => h.look)
+    expect(looked).toHaveLength(41)
+    expect(looked.flatMap((h) => validateLook(h.look, h.key))).toEqual([])
+    for (const h of heroes.filter((x) => !x.look)) expect(h.landmark?.type, h.key).toBeTruthy() // V6: styled per mesh (styles.json)
   })
   it('the named targets read as specified (B.6)', () => {
     const L = Object.fromEntries(heroes.map((h) => [h.key, h.look]))

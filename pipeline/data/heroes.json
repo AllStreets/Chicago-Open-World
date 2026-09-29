@@ -1644,6 +1644,178 @@
         "IIT",
         "Mies van der Rohe"
       ]
+    },
+    {
+      "key": "crownfountain",
+      "name": "Crown Fountain",
+      "match": {
+        "synthetic": true,
+        "lat": 41.88149,
+        "lon": -87.62374,
+        "radius": 40
+      },
+      "suppress": [
+        126945440,
+        126945441
+      ],
+      "crowns": [],
+      "landmark": {
+        "type": "crownFountain",
+        "towers": [
+          {
+            "lat": 41.88172,
+            "lon": -87.62375
+          },
+          {
+            "lat": 41.88126,
+            "lon": -87.62374
+          }
+        ]
+      },
+      "aliases": [
+        "Plensa fountain",
+        "the faces fountain"
+      ],
+      "beacon": {
+        "lat": 41.88149,
+        "lon": -87.62374,
+        "y": 22
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Crown_Fountain",
+        "OpenStreetMap ways 126945440, 126945441 (tower footprints)"
+      ]
+    },
+    {
+      "key": "lurie",
+      "name": "Lurie Garden",
+      "match": {
+        "synthetic": true,
+        "lat": 41.88144,
+        "lon": -87.62174,
+        "radius": 50
+      },
+      "crowns": [],
+      "landmark": {
+        "type": "lurie",
+        "L": 100,
+        "W": 100,
+        "bearing": 90
+      },
+      "aliases": [
+        "Millennium Park garden",
+        "Shoulder Hedge"
+      ],
+      "beacon": {
+        "lat": 41.88144,
+        "lon": -87.62174,
+        "y": 12
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lurie_Garden",
+        "OpenStreetMap way 126945427"
+      ]
+    },
+    {
+      "key": "bpbridge",
+      "name": "BP Bridge",
+      "match": {
+        "synthetic": true,
+        "lat": 41.88307,
+        "lon": -87.62007,
+        "radius": 20
+      },
+      "crowns": [],
+      "landmark": {
+        "type": "bpBridge",
+        "rise": 4.4,
+        "path": [
+          {
+            "lat": 41.88309,
+            "lon": -87.62095
+          },
+          {
+            "lat": 41.88289,
+            "lon": -87.62061
+          },
+          {
+            "lat": 41.88327,
+            "lon": -87.62025
+          },
+          {
+            "lat": 41.88291,
+            "lon": -87.61989
+          },
+          {
+            "lat": 41.88334,
+            "lon": -87.6195
+          },
+          {
+            "lat": 41.88311,
+            "lon": -87.61914
+          }
+        ]
+      },
+      "aliases": [
+        "BP Pedestrian Bridge",
+        "Gehry bridge"
+      ],
+      "beacon": {
+        "lat": 41.88307,
+        "lon": -87.62007,
+        "y": 14
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/BP_Pedestrian_Bridge"
+      ]
+    },
+    {
+      "key": "artinstitute",
+      "name": "Art Institute of Chicago",
+      "match": {
+        "osmId": 1870546
+      },
+      "crowns": [],
+      "landmark": {
+        "type": "artInstitute",
+        "facingBearing": 270,
+        "lions": [
+          {
+            "lat": 41.87944,
+            "lon": -87.62413
+          },
+          {
+            "lat": 41.87922,
+            "lon": -87.62413
+          }
+        ],
+        "canopy": {
+          "at": {
+            "lat": 41.88018,
+            "lon": -87.62191
+          },
+          "bearing": 90,
+          "L": 100,
+          "W": 110,
+          "y": 24
+        }
+      },
+      "aliases": [
+        "Art Institute",
+        "Art Institute lions",
+        "Modern Wing",
+        "AIC"
+      ],
+      "beacon": {
+        "lat": 41.87933,
+        "lon": -87.62413,
+        "y": 14
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Art_Institute_of_Chicago_Building",
+        "https://en.wikipedia.org/wiki/Modern_Wing",
+        "OpenStreetMap relation 1870546"
+      ]
     }
   ]
 }
