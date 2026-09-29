@@ -17,3 +17,4 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Task 2: complete (geom+crowns 15/15)
 - Task 3: code complete (pipeline 325/325); rebuild + evaluate with Task 7
 - Task 4: complete (pipeline 330/330; app materials 35/35)
+- Task 5: complete (pipeline 333/333)

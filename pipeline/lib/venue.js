@@ -5,6 +5,7 @@ import earcut from 'earcut'
 import { drum, spire } from './crowns.js'
 import { insetRing } from './roofs.js'
 import { pointInRing } from './geom.js'
+import { shuffled } from './sportsSites.js'
 
 export const VENUE_FACADES = { seats: 9, turf: 10, clay: 11, paint: 12, steel: 13, lamp: 14, screen: 15, wall: 16, marquee: 17, ivy: 18, arena: 16, sacred: 19, roofing: 20, field: 24 }
 // Façade 24 is a painted field: the app samples layer `slot` of a canvas-painted texture array (app/src/sports/fieldTexture.js).
@@ -141,6 +142,24 @@ function flatMP(mp, y, o, axis) {
   return out
 }
 
+const ROW_D = 0.85, SEAT_W = 0.55, AISLE_EVERY = 17
+const lerp3 = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]
+// One seating slope between rays k and k2 (profile points j → j+1): rows every 0.85 m, seats every 0.55 m.
+function seatRow(out, a0, a1, b0, b1, u0, du, inward) {
+  const rows = Math.floor(Math.hypot(a1[0] - a0[0], a1[2] - a0[2]) / ROW_D)
+  const yaw = +Math.atan2(inward[0], inward[1]).toFixed(3)
+  for (let r = 0; r < rows; r++) {
+    const t = (r + 0.5) / rows, A = lerp3(a0, a1, t), Bq = lerp3(b0, b1, t)
+    const n = Math.floor(Math.hypot(Bq[0] - A[0], Bq[2] - A[2]) / SEAT_W)
+    for (let s = 0; s < n; s++) {
+      const f = (s + 0.5) / n
+      if (((u0 + f * du) / AISLE_EVERY) % 1 < 0.06) continue // aisle, as painted by the seat shader
+      const p = lerp3(A, Bq, f)
+      out.push([+p[0].toFixed(2), +(p[1] + 0.05).toFixed(2), +p[2].toFixed(2), yaw])
+    }
+  }
+}
+
 // ── the bowl ─────────────────────────────────────────────────────────────────
 // Rays from `center` sample the field edge (inner) and the footprint (outer); each ray carries a seating profile.
 function bowl({ inner, outer, center, ref, rimAt, roofAt, frontAt, spec, N = 192 }) {
@@ -162,6 +181,7 @@ function bowl({ inner, outer, center, ref, rimAt, roofAt, frontAt, spec, N = 192
     return [[0, 0], [0, WALL_H], [tm, y1], [tm + 0.01, y2], [1, H], [1, H + 1.2]]
   }
   const P = rows.map((r) => profile(r).map(([t, y]) => { const q = lerp(r.I, r.O, t); return [q[0], y, q[1]] }))
+  const anchors = []
   const seats = mesh(), front = { ivy: mesh(), wall: mesh() }, riser = mesh(), rail = mesh(), ext = mesh(), roof = mesh()
   const uAcc = Array.from({ length: 6 }, () => 0)
   for (let k = 0; k < N; k++) {
@@ -178,6 +198,7 @@ function bowl({ inner, outer, center, ref, rimAt, roofAt, frontAt, spec, N = 192
     seg(riser, 2, toC)
     seg(seats, 3, up)
     seg(rail, 4, toC)
+    for (const j of [1, 3]) seatRow(anchors, P[k][j], P[k][j + 1], P[k2][j], P[k2][j + 1], u0[j], du[j], inward)
     // exterior wall down to the street
     const oA = rows[k].O, oB = rows[k2].O, hA = rows[k].H + 1.2, hB = rows[k2].H + 1.2
     quad(ext, [oA[0], 0, oA[1]], [oB[0], 0, oB[1]], [oB[0], hB, oB[1]], [oA[0], hA, oA[1]], [-toC[0], 0, -toC[2]], [u0[5], 0], [uAcc[5], 0], [uAcc[5], hB], [u0[5], hA])
@@ -202,7 +223,7 @@ function bowl({ inner, outer, center, ref, rimAt, roofAt, frontAt, spec, N = 192
     }
   }
   const fieldRing = rows.map((r) => r.I)
-  return { rows, fieldRing, seats, front, riser, rail, ext, roof }
+  return { rows, fieldRing, seats, front, riser, rail, ext, roof, anchors }
 }
 
 // ── venue assembly ───────────────────────────────────────────────────────────
@@ -260,7 +281,7 @@ export function buildVenue(outline, spec) {
   if (baseball) frame.grassRing = insetRing(fieldRing, 4.6).map(uv)
   const boardInfo = []
   let flagPole = null
-  const seats = []
+  const seats = shuffled(B.anchors, (spec.slot ?? 0) + 1).slice(0, spec.capacity ?? Infinity)
 
   // ── light towers ──
   for (const L of spec.lights || []) {

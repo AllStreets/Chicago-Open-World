@@ -157,3 +157,29 @@ describe('bowl inner radius (H9)', () => {
     for (const rO of [0.5, 1, 2, 5, 6, 7, 11]) expect(innerRadius([100], rO)).toBeGreaterThan(0)
   })
 })
+
+describe('buildVenue — seat anchors', () => {
+  const meshes = buildVenue(OUT, BASEBALL)
+  const all = meshes.find((m) => m.venue).venue.seats
+  const ring = meshes.find((m) => m.fieldRing).fieldRing
+  const cen = [ring.reduce((s, p) => s + p[0], 0) / ring.length, ring.reduce((s, p) => s + p[1], 0) / ring.length]
+  const quadShares = (pts) => { const q = [0, 0, 0, 0]; for (const [x, , z] of pts) q[(x > cen[0] ? 1 : 0) + (z > cen[1] ? 2 : 0)]++; return q.map((n) => n / pts.length) }
+  it('puts seats on the stands, inside the footprint, facing the field', () => {
+    expect(all.length).toBeGreaterThan(5000)
+    let facing = 0
+    for (const [x, y, z, yaw] of all) {
+      expect(x).toBeGreaterThan(0); expect(x).toBeLessThan(190); expect(z).toBeLessThan(0); expect(z).toBeGreaterThan(-190)
+      expect(y).toBeGreaterThan(3.4); expect(y).toBeLessThan(27.5)
+      if (Math.sin(yaw) * (cen[0] - x) + Math.cos(yaw) * (cen[1] - z) > 0) facing++
+    }
+    expect(facing / all.length).toBeGreaterThan(0.97)
+  })
+  it('a capacity keeps a uniform, deterministic subset', () => {
+    const cap = Math.floor(all.length / 4)
+    const sub = buildVenue(OUT, { ...BASEBALL, capacity: cap }).find((m) => m.venue).venue.seats
+    expect(sub).toHaveLength(cap)
+    expect(buildVenue(OUT, { ...BASEBALL, capacity: cap }).find((m) => m.venue).venue.seats).toEqual(sub)
+    const a = quadShares(all), b = quadShares(sub)
+    for (let i = 0; i < 4; i++) expect(Math.abs(a[i] - b[i])).toBeLessThan(0.03)
+  })
+})
