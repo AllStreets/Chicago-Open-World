@@ -28,6 +28,7 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Keep — D3 — soldier-top (+LOW, +soccer), wrigley-top, rate-top, wrigley-aerial night — NFL field with BEARS/CHICAGO end zones, orange C, numbers and hashes; IFAB pitch for the Fire; MLB diamonds with checker/stripe mowing, clay, foul lines; LOW identical in layout.
 - Keep — D8 — wrigley-bowl ×2, soldier-bowl, wrigley-aerial-game night — full stands in home-team shirts (Cubs blue/red, Bears navy/orange), heads visible, lit at night; texture at 140 m. After fixing the plan's billboard basis (quads faced away → culled; W flags would have been mirrored) — crowdShader test RED→GREEN.
 - Keep — D9 — wrigley-bowl, soldier-bowl ×2, soldier-top-soccer — batter at the plate at Wrigley; Bears navy vs visitors white at the line of scrimmage; figures on the grass. Tuned once: players take a floodlight emissive share at night (were unlit) — playersLight test RED→GREEN.
+- Keep — D13 — wrigley-board-win, soldier-bowl, rate-aerial-game — Wrigley's green board reads WRIGLEY FIELD / VIS 3 / CHC 5 / FINAL from the plate; Rate's video board lit at night; no z-fighting.
 
 ## Perf (pose — calls — triangles — fps — quality — sports)
 
@@ -48,3 +49,4 @@ Plan: `docs/superpowers/plans/2026-09-29-v5-stadiums-sports-life.md`. Shots: `do
 - Task 13: complete (app 304/304)
 - Task 14: complete (app 314/314)
 - Task 15: complete (app 320/320)
+- Task 16: complete (app 325/325)
