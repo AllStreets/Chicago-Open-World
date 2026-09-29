@@ -26,3 +26,32 @@ describe('bufferPolyline', () => {
     expect(m.positions.every(Number.isFinite)).toBe(true)
   })
 })
+
+import { splitLineWithContext } from '../lib/tilepack.js'
+
+describe('tile seams (H2)', () => {
+  const bend = [[450, 100], [495, 100], [505, 130]] // the bend vertex sits on the 0_0 | 1_0 seam's pieces
+  it('splits with the neighbour points outside each piece', () => {
+    const m = splitLineWithContext(bend)
+    expect(m.get('0_0')).toEqual([{ line: [[450, 100], [495, 100]], before: null, after: [505, 130] }])
+    expect(m.get('1_0')).toEqual([{ line: [[495, 100], [505, 130]], before: [450, 100], after: null }])
+  })
+  it('both pieces put identical vertices on the shared bend (no notch)', () => {
+    const m = splitLineWithContext(bend)
+    const near = (mesh) => {
+      const out = new Set()
+      for (let i = 0; i < mesh.positions.length; i += 3) {
+        const x = mesh.positions[i], z = mesh.positions[i + 2]
+        if (Math.hypot(x - 495, z - 100) < 12) out.add(`${x.toFixed(6)},${z.toFixed(6)}`)
+      }
+      return [...out].sort()
+    }
+    const [a] = m.get('0_0'), [b] = m.get('1_0')
+    const ma = bufferPolyline(a.line, 4, 0.12, a), mb = bufferPolyline(b.line, 4, 0.12, b)
+    expect(near(ma)).toHaveLength(2)
+    expect(near(ma)).toEqual(near(mb))
+  })
+  it('without ends a piece still buffers like before', () => {
+    expect(bufferPolyline([[0, 0], [10, 0]], 2, 0.05)).toEqual(bufferPolyline([[0, 0], [10, 0]], 2, 0.05, {}))
+  })
+})

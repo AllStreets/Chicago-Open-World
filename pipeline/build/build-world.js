@@ -27,7 +27,7 @@ import { bufferPolyline } from '../lib/ribbon.js'
 import { roadHalfWidth, isElevatedRail, scatterInPolygon, GROUND_Y } from '../lib/ground.js'
 import { WORLD_BBOX, RING0_BBOX } from '../lib/sources.js'
 import { validateSkyline, assertSkyline } from '../lib/skyline.js'
-import { clipPolysToTile, splitLineByTiles, writeTileGlb, mergeGroundLayers, blockKeyFor, BLOCK_TILES } from '../lib/tilepack.js'
+import { clipPolysToTile, splitLineByTiles, splitLineWithContext, writeTileGlb, mergeGroundLayers, blockKeyFor, BLOCK_TILES } from '../lib/tilepack.js'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const CACHE = join(ROOT, 'cache', 'world')
@@ -228,23 +228,24 @@ async function main() {
   for (const b of buildings) tile(tileKeyFor(b.centroid)).b.push(b)
   for (const e of roads) {
     const pts = e.geometry.map((p) => project(p.lon, p.lat)), hw = roadHalfWidth(e.tags)
-    for (const [k, lines] of splitLineByTiles(pts)) for (const l of lines) {
-      const t = tile(k); append(t.roads, bufferPolyline(l, hw, GROUND_Y.roads)); append(t.roadsLod1, bufferPolyline(l, hw, GROUND_Y.roads))
-      if (!['motorway', 'motorway_link', 'service'].includes(e.tags.highway)) append(t.walks, bufferPolyline(l, hw + 3, GROUND_Y.sidewalks))
+    for (const [k, pieces] of splitLineWithContext(pts)) for (const { line: l, before, after } of pieces) {
+      const t = tile(k), ends = { before, after }
+      append(t.roads, bufferPolyline(l, hw, GROUND_Y.roads, ends)); append(t.roadsLod1, bufferPolyline(l, hw, GROUND_Y.roads, ends))
+      if (!['motorway', 'motorway_link', 'service'].includes(e.tags.highway)) append(t.walks, bufferPolyline(l, hw + 3, GROUND_Y.sidewalks, ends))
     }
   }
   for (const e of rail) {
     const t = e.tags || {}, pts = e.geometry.map((p) => project(p.lon, p.lat))
     const elevated = isElevatedRail(t), grade = !(t.tunnel && t.tunnel !== 'no') && parseInt(t.layer ?? '0', 10) >= 0
     if (!elevated && !grade) continue
-    for (const [k, lines] of splitLineByTiles(pts)) for (const l of lines) {
+    for (const [k, pieces] of splitLineWithContext(pts)) for (const { line: l, before, after } of pieces) {
       if (elevated) {
         append(tile(k).elevated, bufferPolyline(l, 3.6, 7.6))
         for (let i = 1; i < l.length; i++) {
           const seg = Math.hypot(l[i][0] - l[i - 1][0], l[i][1] - l[i - 1][1]), rot = Math.atan2(l[i][0] - l[i - 1][0], l[i][1] - l[i - 1][1])
           for (let d = 9; d < seg; d += 18) { const f = d / seg; tile(k).columns.push([+(l[i - 1][0] + (l[i][0] - l[i - 1][0]) * f).toFixed(1), +(l[i - 1][1] + (l[i][1] - l[i - 1][1]) * f).toFixed(1), +rot.toFixed(3)]) }
         }
-      } else append(tile(k).rail, bufferPolyline(l, t.railway === 'rail' ? 2.4 : 1.8, GROUND_Y.rail))
+      } else append(tile(k).rail, bufferPolyline(l, t.railway === 'rail' ? 2.4 : 1.8, GROUND_Y.rail, { before, after }))
     }
   }
   for (const [x, z] of treeNodes) {

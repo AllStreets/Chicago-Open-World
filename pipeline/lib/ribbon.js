@@ -2,15 +2,18 @@
 const sub = (a, b) => [a[0] - b[0], a[1] - b[1]]
 const norm = (v) => { const l = Math.hypot(v[0], v[1]); return l ? [v[0] / l, v[1] / l] : [NaN, NaN] }
 
-export function bufferPolyline(points, hw, y = 0) {
+// Direction a → b, or null when either point is missing or they coincide.
+const dir = (a, b) => (a && b && Math.hypot(b[0] - a[0], b[1] - a[1]) > 1e-3 ? norm(sub(b, a)) : null)
+
+export function bufferPolyline(points, hw, y = 0, ends = {}) {
   const pts = points.filter((p, i) => i === 0 || Math.hypot(p[0] - points[i - 1][0], p[1] - points[i - 1][1]) > 1e-3)
   const out = { positions: [], normals: [], uvs: [] }
   if (pts.length < 2) return out
   const L = [], R = [], along = [0]
   for (let i = 0; i < pts.length; i++) {
     const prev = pts[Math.max(0, i - 1)], next = pts[Math.min(pts.length - 1, i + 1)]
-    const d0 = i > 0 ? norm(sub(pts[i], prev)) : norm(sub(next, pts[i]))
-    const d1 = i < pts.length - 1 ? norm(sub(next, pts[i])) : d0
+    const d0 = i > 0 ? norm(sub(pts[i], prev)) : dir(ends.before, pts[0]) ?? norm(sub(next, pts[i]))
+    const d1 = i < pts.length - 1 ? norm(sub(next, pts[i])) : dir(pts[i], ends.after) ?? d0
     let t = norm([d0[0] + d1[0], d0[1] + d1[1]])
     if (!Number.isFinite(t[0]) || Math.hypot(...t) < 1e-6) t = d1
     const n = [-t[1], t[0]] // perpendicular to the averaged tangent

@@ -84,3 +84,22 @@ export function mergeGroundLayers(layers) {
 // 2 km blocks (4×4 tiles) for far-away detail.
 export const BLOCK_TILES = 4
 export const blockKeyFor = (tileKey) => tileKey.split('_').map((n) => Math.floor(Number(n) / BLOCK_TILES)).join('_')
+
+// Like splitLineByTiles, but each piece remembers the point before its first vertex and after its last,
+// so ribbons on both sides of a tile seam miter the shared vertex identically (no notch).
+export function splitLineWithContext(points) {
+  const out = new Map()
+  let curKey = null, cur = null
+  for (let i = 1; i < points.length; i++) {
+    const a = points[i - 1], b = points[i]
+    const key = tileKeyFor([(a[0] + b[0]) / 2, (a[1] + b[1]) / 2])
+    if (key !== curKey) {
+      if (cur) cur.after = b
+      cur = { line: [a, b], before: points[i - 2] ?? null, after: null }
+      curKey = key
+      if (!out.has(key)) out.set(key, [])
+      out.get(key).push(cur)
+    } else cur.line.push(b)
+  }
+  return out
+}
