@@ -44,3 +44,12 @@ describe('bascule leaves rotate in object space', () => {
     expect(s.vertexShader).toMatch(/lk\.xyz = normalize\(mat3\(lInv\) \* lk\.xyz\)/)
   })
 })
+
+describe('the fountain pool takes the show light', () => {
+  it('water (façade 22) near the fountain glows in the show colour at night', () => {
+    const s = patchFacadeShader(std())
+    expect(s.uniforms.uShowGlow).toBe(facadeUniforms.uShowGlow)
+    expect(s.uniforms.uShowAt).toBe(facadeUniforms.uShowAt)
+    expect(s.fragmentShader).toMatch(/vi == 22 &&[^\n]*uShowGlow/)
+  })
+})

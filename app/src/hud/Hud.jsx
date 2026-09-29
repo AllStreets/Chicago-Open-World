@@ -17,6 +17,7 @@ import { useStore } from '../state/store.js'
 import { hudScale, hudCompact } from '../lib/hudScale.js'
 import TransitLegend from './TransitLegend.jsx'
 import { useFeatureKeys } from './useFeatureKeys.js'
+import Toast from './Toast.jsx'
 
 export default function Hud() {
   useFeatureKeys()
@@ -42,6 +43,7 @@ export default function Hud() {
       <GamesPanel />
       <VenueCard />
       <FollowChip />
+      <Toast />
       <TransitCard />
       <CommandPalette />
       <HelpOverlay />

@@ -80,3 +80,4 @@
 .tc-empty, .transit-card p { margin: 0; color: var(--text-muted); font: 500 12px var(--font-ui); }
 .tc-speed { font-family: var(--font-mono) !important; }
 .wm-chips { margin-top: 6px; }
+.toast { position: absolute; top: 168px; left: 50%; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 8px; animation: hud-rise 0.3s ease both; }

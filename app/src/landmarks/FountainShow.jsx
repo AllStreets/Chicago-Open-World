@@ -6,6 +6,7 @@ import { useStore } from '../state/store.js'
 import { facadeUniforms } from '../world/materials/facadeMaterial.js'
 import { fountainShow } from './fountainSchedule.js'
 import { buildParticles, KIND } from './jets.js'
+import { SCORES, scoreAt, fountainChoreo } from '../audio/score.js'
 
 const VERT = /* glsl */ `
 uniform float uTime; uniform vec4 uP[64]; uniform vec4 uD[64]; uniform float uFloor[64]; uniform vec4 uLevels; uniform vec2 uCrown; uniform float uPx;
@@ -59,7 +60,7 @@ export default function FountainShow({ emitters, crownLevels = null }) {
     })
     return { geo, mat }
   }, [emitters])
-  const cone = useRef(), centre = emitters.find((e) => e.kind === 'centre'), acc = useRef(1)
+  const cone = useRef(), centre = emitters.find((e) => e.kind === 'centre'), acc = useRef(1), show = useRef({ s: null, at: 0 })
   useEffect(() => () => { geo.dispose(); mat.dispose() }, [geo, mat]) // a new emitter set frees the old buffers
   const coneGeo = useMemo(() => new THREE.CylinderGeometry(0.15, 0.9, 1, 12, 1, true).translate(0, 0.5, 0), [])
   useEffect(() => () => coneGeo.dispose(), [coneGeo])
@@ -67,14 +68,23 @@ export default function FountainShow({ emitters, crownLevels = null }) {
     mat.uniforms.uTime.value = clock.elapsedTime
     mat.uniforms.uPx.value = size.height / (2 * Math.tan(((camera.fov ?? 50) * Math.PI) / 360))
     acc.current += dt
-    if (acc.current < 0.5) return
-    acc.current = 0
-    const s = fountainShow(new Date(), { dark: facadeUniforms.uNight.value > 0.35, previewStart: useStore.getState().fountainPreview })
-    const L = s.levels
+    if (acc.current >= 0.5) { // the schedule (an Intl clock) twice a second; the show time runs on between reads
+      acc.current = 0
+      show.current = { s: fountainShow(new Date(), { dark: facadeUniforms.uNight.value > 0.35, previewStart: useStore.getState().fountainPreview }), at: clock.elapsedTime }
+    }
+    const { s, at } = show.current
+    if (!s) return
+    // during a show the jets dance to the score (the same clock the music plays from) and, after dusk, change colour with it
+    const L = s.state === 'show' ? fountainChoreo(scoreAt(SCORES.fountain, s.minute * 60 + clock.elapsedTime - at)) : s.levels
     mat.uniforms.uLevels.value.set(L.centre, L.seahorse, L.ring, L.lower)
     if (crownLevels) mat.uniforms.uCrown.value.set(crownLevels.current[0], crownLevels.current[1])
-    mat.uniforms.uColourMix.value = s.colour ? 0.75 : 0
-    if (s.colour) mat.uniforms.uColour.value.setRGB(...s.colour)
+    const colour = s.state === 'show' && s.colour ? L.colour : null
+    mat.uniforms.uColourMix.value = colour ? 0.8 : 0
+    if (colour) mat.uniforms.uColour.value.setRGB(...colour)
+    // the pool lights take the same colour, breathing with the ring jets
+    if (centre) facadeUniforms.uShowAt.value.set(centre.p[0], centre.p[2], 48)
+    if (colour) facadeUniforms.uShowGlow.value.set(colour[0], colour[1], colour[2], 0.08 + 0.12 * L.ring)
+    else facadeUniforms.uShowGlow.value.w = 0
     if (cone.current && centre) { cone.current.visible = L.centre > 0; cone.current.scale.set(1, Math.max(0.01, centre.h * L.centre), 1) }
   })
   if (quality === 'LOW') return centre ? (

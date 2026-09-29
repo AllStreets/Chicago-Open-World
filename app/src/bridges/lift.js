@@ -42,7 +42,7 @@ export function liftState({ now, manualStart = null, manualStop = null, order })
     return { source: 'manual', done, angles: done ? {} : liftPlan(order, elapsed, LIFT_DEMO) }
   }
   const run = boatRunAt(new Date(now), order)
-  return { source: run ? run.season : 'idle', done: false, angles: run ? liftPlan(run.order, run.elapsed) : {} }
+  return { source: run ? run.season : 'idle', done: false, angles: run ? liftPlan(run.order, run.elapsed) : {}, elapsed: run ? run.elapsed : null, order: run?.order ?? null }
 }
 
 // Rodrigues rotation of p about the unit axis k through pivot (mirrors the USE_LEAF vertex shader).

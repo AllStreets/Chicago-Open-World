@@ -25,6 +25,8 @@ export const facadeUniforms = {
   uReady: { value: 0 },
   uStylePal: { value: createStyleTexture([{ key: 'none' }]) },
   uStyleRows: { value: 1 },
+  uShowGlow: { value: new THREE.Vector4(0, 0, 0, 0) }, // rgb + strength: Buckingham's show light on its pools
+  uShowAt: { value: new THREE.Vector3(0, 0, 0) },       // x, z, radius (0 = nowhere)
   uLeafTex: { value: (() => { const t = new THREE.DataTexture(new Float32Array(256 * 8), 512, 1, THREE.RGBAFormat, THREE.FloatType); t.needsUpdate = true; return t })() },
   uTime: { value: 0 },
   uCrown: { value: new THREE.Vector4(0, 0, 0, 1) },
@@ -80,6 +82,8 @@ uniform float uLitBoost;
 uniform float uReady;
 uniform sampler2D uStylePal;
 uniform float uStyleRows;
+uniform vec4 uShowGlow;
+uniform vec3 uShowAt;
 varying float vStyle;
 vec4 styleTexel(int si, int col) { return texelFetch(uStylePal, ivec2(col, si), 0); }
 vec3 styleBase(float style) { int si = int(style + 0.5); return (si > 0 && float(si) < uStyleRows) ? styleTexel(si, 0).rgb : vec3(0.62, 0.6, 0.56); } // V6: a row's base colour (stone grey until the palette loads)
@@ -362,6 +366,7 @@ if (isVenue && uNight > 0.001) {
     totalEmissiveRadiance += mix(hue, vec3(1.0), 0.25) * 1.6 * uNight * uLitBoost;
   }
   if (vi == 22) totalEmissiveRadiance += vec3(0.35, 0.6, 1.0) * 0.22 * uNight;   // floodlit fountain
+  if (vi == 22 && uShowAt.z > 0.0 && distance(vWPos.xz, uShowAt.xy) < uShowAt.z) totalEmissiveRadiance += uShowGlow.rgb * uShowGlow.a * uNight; // show lights in the pool
   if (vi == 17) totalEmissiveRadiance += (vec3(1.0, 0.18, 0.12) * 0.5 + vec3(1.0, 0.95, 0.85) * step(0.55, owHash(floor(vMUv * vec2(3.0, 4.0)))) * 0.8) * uNight * uLitBoost;
 }
 if (!isRoof && !isParapet && !isVenue && uNight > 0.001) {

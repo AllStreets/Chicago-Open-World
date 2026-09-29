@@ -10,6 +10,7 @@ import CloudGate from '../landmarks/CloudGate.jsx'
 import PlazaPeople from '../landmarks/PlazaPeople.jsx'
 import { crownFace, crownWaterOn } from '../landmarks/crownFace.js'
 import { worldUrl } from '../lib/manifest.js'
+import ShowMusic from '../landmarks/ShowMusic.jsx'
 
 // versioned like the tiles, so a cached sidecar never disagrees with rebuilt tiles (_LEAF ids, pivots)
 const getJson = (file, version) => (file ? fetch(worldUrl(file, version)).then((r) => (r.ok ? r.json() : null)).catch(() => null) : Promise.resolve(null))
@@ -31,6 +32,7 @@ export default function Landmarks({ manifest }) {
     <>
       {bridges && <BridgeLeaves sidecar={bridges} />}
       {bridges && <BridgeLights sidecar={bridges} />}
+      <ShowMusic fountainCentre={runtime?.fountain?.centre ?? null} bridges={bridges?.bridges ?? []} />
       {/* Tasks 9, 12, 14, 15, 16 add: BridgeLights, FountainShow, CloudGate, PlazaPeople, and the Crown face driver (they use `runtime`) */}
       {runtime?.fountain && <FountainShow emitters={showEmitters(runtime)} crownLevels={crownLevels} />}
       {runtime?.plazas?.length > 0 && <PlazaPeople plazas={runtime.plazas} />}
