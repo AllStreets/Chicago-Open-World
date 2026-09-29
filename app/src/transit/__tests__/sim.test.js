@@ -78,3 +78,29 @@ describe('simulator', () => {
     expect(hash01('svc-r1')).toBeGreaterThanOrEqual(0); expect(hash01('svc-r1')).toBeLessThan(1)
   })
 })
+
+import { getSim, publishTrains, getTrains } from '../simStore.js'
+import { useStore } from '../../state/store.js'
+
+describe('arrivals and the shared simulator', () => {
+  it('lists the next arrivals at a station in CHI arrivals shape, soonest first', () => {
+    const ms = T('2026-09-30T08:15:00-05:00')
+    const a = sim.arrivalsAt('st-a', ms, 30)
+    expect(a.length).toBeGreaterThanOrEqual(5); expect(a.length).toBeLessThanOrEqual(8)
+    expect(Object.keys(a[0]).sort()).toEqual(['arrTime', 'destination', 'isApproaching', 'isDelayed', 'line', 'minutes', 'rn', 'station', 'trainId'])
+    expect(a[0]).toMatchObject({ station: 'A', line: 'red', destination: 'Loop', isDelayed: false })
+    for (let i = 1; i < a.length; i++) expect(a[i].arrTime >= a[i - 1].arrTime).toBe(true)
+    expect(a.every((x) => x.isApproaching === x.minutes < 1)).toBe(true)
+    expect(sim.arrivalsAt('st-nowhere', ms)).toEqual([])
+    const t = red(ms)[0]
+    expect(sim.trainById(t.id, ms)).toEqual(t); expect(sim.trainById('nope', ms)).toBeNull()
+  })
+  it('one simulator per loaded transit.json; none without services', () => {
+    useStore.setState({ transit: null }); expect(getSim()).toBeNull()
+    useStore.setState({ transit: { ...TRANSIT, services: undefined } }); expect(getSim()).toBeNull()
+    useStore.setState({ transit: TRANSIT }); const s = getSim()
+    expect(getSim()).toBe(s)
+    useStore.setState({ transit: { ...TRANSIT } }); expect(getSim()).not.toBe(s)
+    publishTrains([{ id: 'x' }]); expect(getTrains()).toEqual([{ id: 'x' }])
+  })
+})

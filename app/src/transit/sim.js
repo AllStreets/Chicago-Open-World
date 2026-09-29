@@ -80,5 +80,21 @@ export function createSim(transit) {
     return out
   }
 
-  return { transit, services, departures, trainsAt }
+  // simulated arrivals, in the shape of CHI's /api/cta/arrivals so Phase 5 can swap the source
+  function arrivalsAt(stationId, ms, horizonMin = 30) {
+    const today = chicagoClock(ms), end = ms + horizonMin * 60000, out = []
+    const days = [chicagoClock(today.midnightMs - 3600000), today, chicagoClock(today.midnightMs + 25 * 3600000)]
+    for (const sv of services) for (const st of sv.stops) {
+      if (st.station !== stationId) continue
+      const lag = tauAtS(sv.profile, st.s) * 1000
+      for (const day of days) departures(sv, day).forEach((dep, k) => {
+        const at = dep + lag
+        if (at < ms || at > end) return
+        out.push({ station: st.name, line: sv.line, destination: sv.to, arrTime: new Date(at).toISOString(), isApproaching: at - ms < 60000, isDelayed: false, minutes: Math.floor((at - ms) / 60000), rn: String(sv.spec.runBase + (k % 100)), trainId: `${sv.id}:${day.date}:${k}` })
+      })
+    }
+    return out.sort((a, b) => (a.arrTime < b.arrTime ? -1 : a.arrTime > b.arrTime ? 1 : 0)).slice(0, 8)
+  }
+  const trainById = (id, ms) => trainsAt(ms).find((t) => t.id === id) ?? null
+  return { transit, services, departures, trainsAt, arrivalsAt, trainById }
 }
