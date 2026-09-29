@@ -79,3 +79,29 @@ describe('world bounds clamp', () => {
   })
 })
 })
+
+import { slideMove, STEP_M } from '../cameraMath.js'
+
+describe('free-flight clearance (G2)', () => {
+  const open = () => 25
+  const wallEast = (x) => (x > 5 ? 300 : 25) // a 275 m tower face at x = 5
+  it('open ground: the move passes unchanged', () => {
+    expect(slideMove([0, 100, 0], [10, 0, 0], open)).toEqual([10, 0, 0])
+  })
+  it('a diagonal move into a tower slides along its face', () => {
+    expect(slideMove([0, 100, 0], [10, 0, 10], wallEast)).toEqual([0, 0, 10])
+  })
+  it('head-on into a tower: no horizontal motion, the camera rises instead of stopping', () => {
+    const [dx, dy, dz] = slideMove([0, 100, 0], [10, 0, 0], wallEast)
+    expect(dx).toBe(0); expect(dz).toBe(0)
+    expect(dy).toBeGreaterThan(0); expect(dy).toBeLessThanOrEqual(20)
+  })
+  it('a small rise (≤ STEP_M) is climbed while moving', () => {
+    expect(STEP_M).toBe(12)
+    expect(slideMove([0, 100, 0], [10, 0, 0], () => 105)).toEqual([10, 5, 0])
+  })
+  it('holding climb over a tower keeps rising', () => {
+    const [, dy] = slideMove([0, 100, 0], [10, 3, 0], wallEast)
+    expect(dy).toBeGreaterThan(3)
+  })
+})

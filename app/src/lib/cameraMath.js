@@ -50,3 +50,19 @@ export function glideVector(keys, azimuth) {
   const rx = Math.cos(azimuth), rz = -Math.sin(azimuth)  // right
   return [f * fx + r * rx, f * fz + r * rz]
 }
+
+// Free flight never enters a building. A move whose end is under the roof clearance slides along the free
+// axis (x-only, then z-only); a small rise (≤ STEP_M) is climbed; head-on, the camera rises at up to twice
+// its glide speed instead of stopping.
+export const STEP_M = 12
+
+export function slideMove([px, py, pz], [dx, dy, dz], clearance) {
+  const y = py + dy
+  const ok = (x, z) => clearance(x, z) <= y + STEP_M
+  const lift = (x, z) => Math.max(0, clearance(x, z) - y)
+  if (ok(px + dx, pz + dz)) return [dx, dy + lift(px + dx, pz + dz), dz]
+  if (dx && ok(px + dx, pz)) return [dx, dy + lift(px + dx, pz), 0]
+  if (dz && ok(px, pz + dz)) return [0, dy + lift(px, pz + dz), dz]
+  const rise = Math.min(lift(px + dx, pz + dz), 2 * Math.hypot(dx, dz))
+  return [0, dy + rise, 0]
+}

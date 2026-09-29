@@ -4,7 +4,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { CameraControls } from '@react-three/drei'
 import * as THREE from 'three'
 import { useStore } from '../state/store.js'
-import { clampCamera, glideVector, headingDeg, MAX_DIST, WORLD_BOUNDS } from '../lib/cameraMath.js'
+import { clampCamera, glideVector, headingDeg, slideMove, MAX_DIST, WORLD_BOUNDS } from '../lib/cameraMath.js'
 import { BOOKMARKS, bookmarkFromUrl } from '../lib/bookmarks.js'
 import { introPose, INTRO_SECONDS } from '../lib/introPath.js'
 import { crossStreets } from '../lib/grid.js'
@@ -181,7 +181,8 @@ export default function AtlasRig() {
       const [dx, dz] = glideVector(keysForGlide, c.azimuthAngle)
       const dy = intent.climb * CLIMB_MPS * Math.max(0.6, alt / 300) * dt
       c.getTarget(tmpT); c.getPosition(tmpP)
-      c.setLookAt(tmpP.x + dx * speed, tmpP.y + dy, tmpP.z + dz * speed, tmpT.x + dx * speed, Math.max(0, tmpT.y + dy), tmpT.z + dz * speed, false)
+      const [mx, my, mz] = slideMove([tmpP.x, tmpP.y, tmpP.z], [dx * speed, dy, dz * speed], clearanceAt)
+      c.setLookAt(tmpP.x + mx, tmpP.y + my, tmpP.z + mz, tmpT.x + mx, Math.max(0, tmpT.y + my), tmpT.z + mz, false)
     }
     if (intent.turn) c.rotate(-intent.turn * TURN_RAD_PER_S * dt, 0, false)
     if (intent.tilt) c.rotate(0, intent.tilt * TILT_RAD_PER_S * dt, false) // tilt up = toward the horizon
@@ -190,6 +191,9 @@ export default function AtlasRig() {
 
     c.getTarget(tmpT); c.getPosition(tmpP)
     const cl = clampCamera(tmpP.toArray(), tmpT.toArray(), WORLD_BOUNDS)
+    // drag, scroll and dock zoom can't push the camera into a tower either
+    const floor = clearanceAt(cl.position[0], cl.position[2])
+    if (cl.position[1] < floor) { cl.position[1] = floor; cl.clamped = true }
     if (cl.clamped) c.setLookAt(...cl.position, ...cl.target, false)
     publishReadout(c, now)
   })
