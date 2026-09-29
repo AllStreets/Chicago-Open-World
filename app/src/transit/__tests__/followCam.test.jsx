@@ -45,3 +45,41 @@ describe('follow cam', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Stop following' })); expect(useStore.getState().follow).toBeNull()
   })
 })
+
+describe('follow cam in the canyons', () => {
+  const pitch = (p) => Math.atan2(p.position[1] - p.target[1], Math.hypot(p.position[0] - p.target[0], p.position[2] - p.target[2])) * 180 / Math.PI
+  it('side view over a building swaps to the clear side of the track', () => {
+    const rightBlocked = (x, z) => (z > 10 ? 200 : 25)
+    const p = followPose([0, 7.2, 0], [1, 0, 0], 'side', rightBlocked)
+    expect(p.position[2]).toBeLessThan(0); expect(p.position[1]).toBe(25)
+  })
+  it('both sides blocked: falls back to a chase from behind', () => {
+    const sidesBlocked = (x, z) => (Math.abs(z) > 10 ? 200 : 25)
+    const p = followPose([0, 7.2, 0], [1, 0, 0], 'side', sidesBlocked)
+    expect(p.position[0]).toBeLessThan(-30); expect(p.position[1]).toBe(25)
+  })
+  it('everything blocked: lifted but pulled back, never looking straight down', () => {
+    const p = followPose([0, 7.2, 0], [1, 0, 0], 'side', () => 200)
+    expect(p.position[1]).toBe(200); expect(pitch(p)).toBeLessThanOrEqual(46)
+  })
+  it('prefers an elevated train to a nearer one in the subway', async () => {
+    const { pickTrain } = await import('../actions.js')
+    const sub = { id: 's', head: { p: [10, -9, 0] } }, el = { id: 'e', head: { p: [600, 7, 0] } }
+    expect(pickTrain([sub, el], [0, 0]).id).toBe('e')
+    expect(pickTrain([sub], [0, 0]).id).toBe('s')
+    expect(pickTrain([], [0, 0])).toBeUndefined()
+  })
+})
+
+describe('follow cam and the length of the train', () => {
+  const cars = [{ length: 15 }, { length: 15 }, null]
+  it('chase sits behind the last car, not above the middle of the train', () => {
+    const t = { id: 'a', head: { p: [0, 7.2, 0], dir: [1, 0, 0] }, cars }
+    expect(followStep({ trainId: 'a', view: 'chase' }, [t], none).pose.position[0]).toBe(-68)
+  })
+  it('side view frames the leading car whatever the length', () => {
+    const t = { id: 'a', head: { p: [0, 7.2, 0], dir: [1, 0, 0] }, cars }
+    const p = followStep({ trainId: 'a', view: 'side' }, [t], none).pose
+    expect(p.target[0]).toBe(0); expect(p.position[0]).toBe(4)
+  })
+})
