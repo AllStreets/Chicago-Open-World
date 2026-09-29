@@ -19,6 +19,7 @@ import { applyHero, findByOsm, matchesOsm } from '../lib/heroes.js'
 import { VENUE_FACADES, STYLE, convexHull } from '../lib/venue.js'
 import { shapeSacred } from '../lib/sacred.js'
 import { horizonBoxes } from '../lib/horizon.js'
+import { venueZones, filterTrees, assertNoVenueTrees } from '../lib/trees.js'
 import { MANIFEST_VERSION, manifestStamp, sortCacheFiles } from '../lib/manifest.js'
 import { parapetPiece, PARAPET_FACADE } from '../lib/roofs.js'
 import { roofProps } from '../lib/props.js'
@@ -183,14 +184,13 @@ async function main() {
     treeNodes.push(...pts)
   }
   log(`synthetic park trees: ${scattered}`)
-  // no park trees inside rebuilt venues (Soldier Field sits inside Burnham Park)
-  const venueHulls = buildings.filter((b) => b.venueMeshes?.some((v) => v.fieldRing) || b.hero === 'buckingham').map((b) => convexHull(b.polygons.flatMap((p) => p.outer)))
-  // …nor trees growing through rooftops: drop any tree inside a building footprint
+  // Trees: never in a venue (Soldier Field sits inside Burnham Park), a landmark clearing, or through a roof —
+  // courtyards are open ground. Filtered on the rounded coordinates the sidecars store.
+  const zones = venueZones(buildings, (b) => heroFor.get(b))
   const footIdx = buildGridIndex(buildings.filter((b) => b.area > 30), 200, (b) => b.centroid)
-  const inBuilding = (p) => footIdx.query(p, 400).some((b) => p[0] >= b.bbox.minX && p[0] <= b.bbox.maxX && p[1] >= b.bbox.minZ && p[1] <= b.bbox.maxZ && b.polygons.some((q) => pointInRing(p, q.outer)))
   const clearings = buildings.flatMap((b) => b.clearPolys ?? [])
-  const keptTrees = treeNodes.filter((p) => !venueHulls.some((h) => pointInRing(p, h)) && !clearings.some((c) => pointInRing(p, c)) && !inBuilding(p))
-  log(`trees removed from venues and rooftops: ${treeNodes.length - keptTrees.length}`)
+  const { kept: keptTrees, removed } = filterTrees(treeNodes, { zones: zones.map((z) => z.ring), clearings, nearBuildings: (p) => footIdx.query(p, 400) })
+  log(`trees removed — venues ${removed.venue}, clearings ${removed.clearing}, footprints ${removed.building}; venue zones: ${zones.map((z) => z.key).join(', ')}`)
   treeNodes.length = 0
   for (const p of keptTrees) treeNodes.push(p)
   log(`parks ${parks.length}, water ${water.length}, roads ${roads.length}, rail ${rail.length}, trees ${treeNodes.length}`)
@@ -302,6 +302,8 @@ async function main() {
     if (++n % 50 === 0) log(`tiles written: ${n}`)
   }
   log(`tiles: ${tiles.length}`)
+  assertNoVenueTrees([...T].map(([k, t]) => [k, t.trees]), zones)
+  log('venue tree check: 0 trees inside any venue')
   rmSync(join(OUT, 'blocks'), { recursive: true, force: true })
   const blockList = []
   for (const [bk, B] of blocks) {
