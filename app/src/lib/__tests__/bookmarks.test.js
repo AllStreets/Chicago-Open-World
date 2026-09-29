@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { BOOKMARKS, bookmarkFromUrl } from '../bookmarks.js'
+import { BOOKMARKS, bookmarkFromUrl, poseFromParam } from '../bookmarks.js'
 
 describe('bookmarks', () => {
   it('defaults to streeterville', () => {
@@ -26,5 +26,18 @@ describe('bookmarks', () => {
     expect(VIEW_NAMES.wellslake).toBe('Tower 18 — the Loop L junction')
     expect(VIEW_ORDER.at(-1)).toBe('wellslake')
     expect(VIEW_NAMES.transit150).toBeUndefined() // test-only poses stay out of ⌘K
+  })
+})
+
+describe('test-only ?pose=', () => {
+  it('parses six finite numbers into a pose', () => {
+    expect(poseFromParam('928,300,2460,928,10,2187')).toEqual({ position: [928, 300, 2460], target: [928, 10, 2187] })
+  })
+  it('rejects anything else', () => {
+    for (const bad of [null, '', '1,2,3', '1,2,3,4,5,x', '1,2,3,4,5,6,7']) expect(poseFromParam(bad)).toBeNull()
+  })
+  it('wins over ?view= in bookmarkFromUrl', () => {
+    expect(bookmarkFromUrl('?view=loop&pose=1,2,3,4,5,6')).toEqual({ position: [1, 2, 3], target: [4, 5, 6] })
+    expect(bookmarkFromUrl('?view=loop')).toBe(BOOKMARKS.loop)
   })
 })

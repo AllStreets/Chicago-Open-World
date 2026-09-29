@@ -28,7 +28,15 @@ export const BOOKMARKS = {
   northside: { position: [-1700, 400, -4270], target: [-2080, 8, -4773] },
 }
 
+// Test-only: ?pose=px,py,pz,tx,ty,tz (local metres) for evaluation screenshots. People use ⌘K and views.
+export function poseFromParam(value) {
+  if (!value) return null
+  const n = value.split(',').map(Number)
+  if (n.length !== 6 || n.some((x) => !Number.isFinite(x))) return null
+  return { position: n.slice(0, 3), target: n.slice(3) }
+}
+
 export function bookmarkFromUrl(search) {
-  const v = new URLSearchParams(search).get('view')
-  return BOOKMARKS[v] ?? BOOKMARKS.streeterville
+  const params = new URLSearchParams(search)
+  return poseFromParam(params.get('pose')) ?? BOOKMARKS[params.get('view')] ?? BOOKMARKS.streeterville
 }

@@ -8,3 +8,4 @@ test-results/
 playwright-report/
 .superpowers/
 .playwright-mcp/
+docs/superpowers/ledgers/v5-shots/

@@ -48,7 +48,7 @@ export default function AtlasRig() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-    const playIntro = !params.has('view') && !reduced && !useStore.getState().introDone
+    const playIntro = !params.has('view') && !params.has('pose') && !reduced && !useStore.getState().introDone
     if (!playIntro) {
       useStore.getState().finishIntro()
       const b = bookmarkFromUrl(window.location.search)
