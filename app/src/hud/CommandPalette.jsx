@@ -10,6 +10,9 @@ const ICON = { landmark: RiBuilding2Line, neighborhood: RiMapPin2Line, view: RiC
 const SECTION = { landmark: 'Landmarks', neighborhood: 'Neighborhoods', view: 'Views', command: 'Commands' }
 const ORDER = ['landmark', 'neighborhood', 'view', 'command']
 
+// ⌘K on Mac, Ctrl+K on Windows/Linux; code covers non-Latin keyboard layouts.
+export const isPaletteKey = (e) => (e.metaKey || e.ctrlKey) && (e.key?.toLowerCase() === 'k' || e.code === 'KeyK')
+
 function commands() {
   const s = useStore.getState()
   const time = (t, name) => ({ id: `t:${t}`, kind: 'command', name, sub: 'Time of day', icon: 'time', run: () => s.setTimePreset(t) })
@@ -36,7 +39,7 @@ export default function CommandPalette() {
   useEffect(() => {
     const onKey = (e) => {
       const typing = ['INPUT', 'TEXTAREA'].includes(e.target?.tagName)
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); useStore.getState().setPaletteOpen(!useStore.getState().paletteOpen) }
+      if (isPaletteKey(e)) { e.preventDefault(); useStore.getState().setPaletteOpen(!useStore.getState().paletteOpen) }
       else if (e.key === '/' && !typing) { e.preventDefault(); useStore.getState().setPaletteOpen(true) }
     }
     window.addEventListener('keydown', onKey)
@@ -61,6 +64,7 @@ export default function CommandPalette() {
     else useStore.getState().startFlight(r.pose, r.name)
   }
   const onKeyDown = (e) => {
+    if (isPaletteKey(e)) { e.preventDefault(); e.stopPropagation(); close(); return }
     if (e.key === 'ArrowDown') { e.preventDefault(); setCursor((c) => Math.min(results.length - 1, c + 1)) }
     else if (e.key === 'ArrowUp') { e.preventDefault(); setCursor((c) => Math.max(0, c - 1)) }
     else if (e.key === 'Enter') { e.preventDefault(); choose(results[cursor]) }

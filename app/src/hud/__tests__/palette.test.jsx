@@ -34,4 +34,27 @@ describe('CommandPalette', () => {
     fireEvent.keyDown(screen.getByRole('combobox'), { key: 'Enter' })
     expect(useStore.getState().timePreset).toBe('NIGHT')
   })
+  it('⌘K and Ctrl+K close the palette from inside its input (G4)', () => {
+    render(<CommandPalette />)
+    fireEvent.keyDown(window, { key: 'k', metaKey: true })
+    fireEvent.keyDown(screen.getByRole('combobox'), { key: 'k', metaKey: true })
+    expect(useStore.getState().paletteOpen).toBe(false)
+    fireEvent.keyDown(window, { key: 'k', ctrlKey: true })
+    const notPrevented = fireEvent.keyDown(screen.getByRole('combobox'), { key: 'K', ctrlKey: true, shiftKey: true })
+    expect(notPrevented).toBe(false) // the browser's own Ctrl+K search never sees it
+    expect(useStore.getState().paletteOpen).toBe(false)
+  })
+  it('Ctrl+K on the page opens the palette and stops the browser default', () => {
+    render(<CommandPalette />)
+    expect(fireEvent.keyDown(window, { key: 'k', ctrlKey: true })).toBe(false)
+    expect(useStore.getState().paletteOpen).toBe(true)
+  })
+  it('plain k types into the search (review focus)', () => {
+    render(<CommandPalette />)
+    fireEvent.keyDown(window, { key: 'k', metaKey: true })
+    const input = screen.getByRole('combobox')
+    expect(fireEvent.keyDown(input, { key: 'k' })).toBe(true)
+    fireEvent.change(input, { target: { value: 'k' } })
+    expect(useStore.getState().paletteOpen).toBe(true)
+  })
 })
