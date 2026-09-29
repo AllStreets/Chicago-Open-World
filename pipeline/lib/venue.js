@@ -87,6 +87,13 @@ function lookup(table, angle) {
   return table[table.length - 1][1]
 }
 
+// Field-edge radius of one bowl ray: the field edge, at least 6 m of stand before the outer wall, and on a
+// tiny hull (rO < 12) never below half the outer radius — `rO − 6` alone goes negative and flips the ray.
+export function innerRadius(innerHits, rO) {
+  const edge = Math.max(...innerHits)
+  return Math.max(Math.min(edge, rO - 6), Math.min(edge, 0.5 * rO), 0.1)
+}
+
 // ── mesh helpers ─────────────────────────────────────────────────────────────
 const mesh = () => ({ positions: [], normals: [], uvs: [] })
 function tri(out, a, b, c, want, ua = [0, 0], ub = [0, 0], uc = [0, 0]) {
@@ -154,7 +161,7 @@ function bowl({ inner, outer, center, ref, rimAt, roofAt, frontAt, spec, N = 192
     const hO = rayHits(outer, center, d), hI = rayHits(inner, center, d)
     if (!hO.length || !hI.length) throw new Error(`venue ray ${k} misses the ${hO.length ? 'field' : 'footprint'} (center ${center.map((v) => v.toFixed(1))}, outer ${outer.length} pts, inner ${inner.length} pts)`)
     const rO = Math.max(...hO)
-    const rI = Math.min(Math.max(...hI), rO - 6)
+    const rI = innerRadius(hI, rO)
     const I = add(center, mul(d, rI)), O = add(center, mul(d, rO))
     rows.push({ I, O, H: rimAt(I), roof: roofAt(I), front: frontAt(I) })
   }

@@ -116,3 +116,19 @@ describe('venue heroes + defaults', () => {
     expect(defaultHeightFor({ building: 'grandstand' })).toBeLessThanOrEqual(7)
   })
 })
+
+import { innerRadius } from '../lib/venue.js'
+
+describe('bowl inner radius (H9)', () => {
+  it('real venues: the field edge, but at least 6 m of stand', () => {
+    expect(innerRadius([50], 100)).toBe(50)
+    expect(innerRadius([98], 100)).toBe(94)
+    expect(innerRadius([64], 166)).toBe(64) // Soldier Field along its axis: unchanged
+  })
+  it('tiny hulls never flip the ray through the centre', () => {
+    expect(innerRadius([50], 8)).toBe(4)
+    expect(innerRadius([50], 3)).toBe(1.5)
+    expect(innerRadius([2], 8)).toBe(2)
+    for (const rO of [0.5, 1, 2, 5, 6, 7, 11]) expect(innerRadius([100], rO)).toBeGreaterThan(0)
+  })
+})
