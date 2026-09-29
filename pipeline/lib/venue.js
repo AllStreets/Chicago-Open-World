@@ -2,12 +2,18 @@
 // Every piece is a raw non-indexed mesh { positions, normals, uvs } tagged with a venue façade index and a style
 // seed; the façade shader draws seats, turf, clay, paint, steel, lamps, screens and stadium walls procedurally.
 import earcut from 'earcut'
-import polygonClipping from 'polygon-clipping'
 import { drum, spire } from './crowns.js'
 import { insetRing } from './roofs.js'
 import { pointInRing } from './geom.js'
 
-export const VENUE_FACADES = { seats: 9, turf: 10, clay: 11, paint: 12, steel: 13, lamp: 14, screen: 15, wall: 16, marquee: 17, ivy: 18, arena: 16, sacred: 19, roofing: 20 }
+export const VENUE_FACADES = { seats: 9, turf: 10, clay: 11, paint: 12, steel: 13, lamp: 14, screen: 15, wall: 16, marquee: 17, ivy: 18, arena: 16, sacred: 19, roofing: 20, field: 24 }
+// Façade 24 is a painted field: the app samples layer `slot` of a canvas-painted texture array (app/src/sports/fieldTexture.js).
+export const FIELD_SLOTS = 8
+export const fieldSeed = (slot) => (slot + 0.5) / FIELD_SLOTS
+// Field-frame extents in metres. Football: u from the field centre toward the north goal (±75 covers
+// the 109.7 m field plus the margins); baseball: u from home plate toward centre field, v toward left field.
+export const FIELD_EXTENT = { football: { u0: -75, u1: 75, v0: -37.5, v1: 37.5 }, baseball: { u0: -24, u1: 132, v0: -96, v1: 96 } }
+const toFrame = (o, axis) => (p) => { const q = sub(p, o); return [+dot(q, axis).toFixed(2), +dot(q, left(axis)).toFixed(2)] }
 // Style selectors travel in _SEED; the shader reads the ranges.
 export const STYLE = {
   seats: { green: 0.1, navy: 0.35, red: 0.6, blue: 0.85 },
@@ -48,7 +54,6 @@ export function convexHull(points) {
 }
 const centroidOf = (ring) => mul(ring.reduce((s, p) => add(s, p), [0, 0]), 1 / ring.length)
 const circle = (c, r, n = 40) => Array.from({ length: n }, (_, i) => add(c, [r * Math.cos((i / n) * 2 * Math.PI), r * Math.sin((i / n) * 2 * Math.PI)]))
-const strip = (a, b, w) => { const n = mul(norm(left(sub(b, a))), w / 2); return [add(a, n), add(b, n), sub(b, n), sub(a, n)] }
 const quadAt = (c, u, v, hu, hv) => [add(add(c, mul(u, -hu)), mul(v, -hv)), add(add(c, mul(u, hu)), mul(v, -hv)), add(add(c, mul(u, hu)), mul(v, hv)), add(add(c, mul(u, -hu)), mul(v, hv))]
 
 // Slide a fixture (w wide, dpt deep, facing −d) toward the centre until its footprint sits inside the ring.
@@ -133,22 +138,6 @@ function flatMP(mp, y, o, axis) {
       tri(out, p[0], p[1], p[2], [0, 1, 0], ...uv)
     }
   }
-  return out
-}
-
-// Layers in priority order (first wins); the remainder of the field is the base surface.
-function surfaceField(fieldRing, layers, base, o, axis) {
-  const out = []
-  const field = [fieldRing]
-  let taken = null
-  for (const L of layers) {
-    let g = polygonClipping.intersection(field, L.geom)
-    if (taken) g = polygonClipping.difference(g, taken)
-    taken = taken ? polygonClipping.union(taken, L.geom) : polygonClipping.union(L.geom)
-    if (g.length) out.push({ mesh: flatMP(g, FIELD_Y, o, axis), facade: L.facade, seed: L.seed, field: true, part: L.part })
-  }
-  const rest = taken ? polygonClipping.difference(field, taken) : [field]
-  out.push({ mesh: flatMP(rest, FIELD_Y, o, axis), facade: base.facade, seed: base.seed, field: true, part: 'turf' })
   return out
 }
 
@@ -262,46 +251,16 @@ export function buildVenue(outline, spec) {
   put(B.ext, F.wall, S.wall[spec.wall ?? 'concrete'])
   put(B.roof, F.steel, S.steel[spec.steel ?? 'gray'])
 
-  // ── field ──
+  // ── field: one surface in the local field frame; the app paints the markings (D3) ──
   const fieldRing = B.fieldRing
-  const white = { facade: F.paint, seed: S.paint.white }
-  if (baseball) {
-    const home = spec.home, d = norm(spec.cf), lf = rot(d, 45), rf = rot(d, -45)
-    const mound = add(home, mul(d, 18.44))
-    const first = add(home, mul(rf, 27.43)), second = add(home, mul(d, 38.8)), third = add(home, mul(lf, 27.43))
-    const dc = centroidOf([home, first, second, third])
-    const shrink = (p) => lerp(dc, p, 0.84)
-    const apex = sub(home, mul(d, 4.24))
-    const wedge = [apex, add(apex, mul(lf, 260)), add(apex, mul(d, 368)), add(apex, mul(rf, 260))]
-    const track = polygonClipping.difference([fieldRing], [insetRing(fieldRing, 4.6)])
-    const layers = [
-      { geom: [strip(home, add(home, mul(lf, spec.walls.lf + 6)), 0.3)], ...white, part: 'line' },
-      { geom: [strip(home, add(home, mul(rf, spec.walls.rf + 6)), 0.3)], ...white, part: 'line' },
-      ...[first, second, third].map((b) => ({ geom: [quadAt(b, d, left(d), 0.45, 0.45)], ...white, part: 'base' })),
-      { geom: [quadAt(home, d, left(d), 0.35, 0.35)], ...white, part: 'plate' },
-      { geom: [circle(mound, 2.74, 28)], facade: F.clay, seed: S.clay.infield, part: 'mound' },
-      { geom: [circle(home, 4.0, 28)], facade: F.clay, seed: S.clay.infield, part: 'home' },
-      ...[first, second, third].map((b) => ({ geom: [circle(b, 3.0, 20)], facade: F.clay, seed: S.clay.infield, part: 'basecut' })),
-      { geom: [[home, first, second, third].map(shrink)], facade: F.turf, seed: S.turf.checker, part: 'infield-grass' },
-      { geom: polygonClipping.intersection([circle(mound, 29, 64)], [wedge]), facade: F.clay, seed: S.clay.infield, part: 'infield' },
-      { geom: track, facade: F.clay, seed: S.clay.track, part: 'track' },
-    ]
-    out.push(...surfaceField(fieldRing, layers, { facade: F.turf, seed: S.turf.checker }, home, d))
-  } else {
-    const c = spec.center, ax = norm(spec.axis), pr = left(ax)
-    const HL = 109.73 / 2, HW = 48.77 / 2, GL = 91.44 / 2
-    const lines = []
-    for (let i = 0; i <= 20; i++) { const s = -GL + i * 4.572; lines.push({ geom: [strip(add(add(c, mul(ax, s)), mul(pr, -HW)), add(add(c, mul(ax, s)), mul(pr, HW)), 0.3)], ...white, part: 'yard' }) }
-    const border = polygonClipping.difference([quadAt(c, ax, pr, HL + 1.8, HW + 1.8)], [quadAt(c, ax, pr, HL, HW)])
-    const zone = (s) => ({ geom: [quadAt(add(c, mul(ax, s * (GL + 4.572))), ax, pr, 4.572, HW)], facade: F.paint, seed: S.paint[spec.endZone ?? 'navy'], part: 'endzone' })
-    const layers = [
-      { geom: border, ...white, part: 'border' }, ...lines,
-      { geom: polygonClipping.difference([circle(c, 5, 40)], [circle(c, 3.4, 40)]), facade: F.paint, seed: S.paint[spec.logo ?? 'orange'], part: 'logo' },
-      zone(1), zone(-1),
-    ]
-    out.push(...surfaceField(fieldRing, layers, { facade: F.turf, seed: S.turf.bands }, c, ax))
-  }
-  out.push({ mesh: mesh(), facade: F.turf, seed: 0, fieldRing })
+  const origin = baseball ? spec.home : spec.center, fAxis = norm(baseball ? spec.cf : spec.axis)
+  out.push({ mesh: flatMP([[[...fieldRing, fieldRing[0]]]], FIELD_Y, origin, fAxis), facade: F.field, seed: fieldSeed(spec.slot ?? 0), field: true, part: 'field' })
+  const uv = toFrame(origin, fAxis)
+  const frame = { origin: origin.map((v) => +v.toFixed(2)), axis: fAxis.map((v) => +v.toFixed(5)), ...FIELD_EXTENT[baseball ? 'baseball' : 'football'], ring: fieldRing.map(uv) }
+  if (baseball) frame.grassRing = insetRing(fieldRing, 4.6).map(uv)
+  const boardInfo = []
+  let flagPole = null
+  const seats = []
 
   // ── light towers ──
   for (const L of spec.lights || []) {
@@ -325,11 +284,14 @@ export function buildVenue(outline, spec) {
     const bx = box(at, mul(d, -1), sb.w, 2.4, base, base + sb.h)
     put(bx.front, F.screen, S.screen[sb.style ?? 'video'], { part: 'board' })
     put(bx.rest, F.steel, S.steel[spec.steel ?? 'gray'], { part: 'board' })
+    const fwd = mul(d, -1)
+    boardInfo.push({ center: [+(at[0] + fwd[0] * 1.25).toFixed(2), +(base + sb.h / 2).toFixed(2), +(at[1] + fwd[1] * 1.25).toFixed(2)], normal: fwd.map((v) => +v.toFixed(4)), w: sb.w, h: sb.h, style: sb.style ?? 'video' })
     if (sb.style === 'manual') {
       const clock = box(at, mul(d, -1), 4.2, 2.6, base + sb.h, base + sb.h + 3.2)
       put(clock.front, F.screen, S.screen.manual, { part: 'board' })
       put(clock.rest, F.steel, S.steel[spec.steel ?? 'gray'], { part: 'board' })
       put(spire({ at, base: base + sb.h + 3.2, top: base + sb.h + 11, r0: 0.18, r1: 0.1, sides: 6 }), F.steel, S.steel.white, { part: 'board' })
+      flagPole = [+at[0].toFixed(2), +(base + sb.h + 11).toFixed(2), +at[1].toFixed(2)]
     }
   }
 
@@ -370,5 +332,6 @@ export function buildVenue(outline, spec) {
       }
     }
   }
+  out.push({ mesh: mesh(), facade: F.field, seed: 0, fieldRing, venue: { frame, seats, boards: boardInfo, flagPole } })
   return out
 }

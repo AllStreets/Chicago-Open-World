@@ -34,7 +34,7 @@ export function applyHero(b, spec) {
 
   if (spec.venue) {
     // a venue is often mapped as many pieces (bowl, colonnades, gates): build over their hull
-    const venueMeshes = buildVenue(convexHull(b.polygons.flatMap((p) => p.outer)), resolveVenue(spec.venue))
+    const venueMeshes = buildVenue(convexHull(b.polygons.flatMap((p) => p.outer)), { ...resolveVenue(spec.venue), slot: spec.sports?.slot ?? 0, capacity: spec.sports?.capacity })
     return { pieces: [], extraMeshes: [], venueMeshes }
   }
   if (spec.stands) {

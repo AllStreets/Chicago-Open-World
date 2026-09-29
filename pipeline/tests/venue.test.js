@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildVenue, VENUE_FACADES as F, STYLE } from '../lib/venue.js'
+import { buildVenue, VENUE_FACADES as F, STYLE, fieldSeed } from '../lib/venue.js'
 import { applyHero } from '../lib/heroes.js'
 import { defaultHeightFor } from '../lib/osm.js'
 
@@ -33,23 +33,6 @@ const byFacade = (meshes, f) => meshes.filter((m) => m.facade === f)
 
 describe('buildVenue — baseball', () => {
   const meshes = buildVenue(OUT, BASEBALL)
-  it('produces seats, turf, clay, paint, steel, lamp, screen, wall, marquee and ivy', () => {
-    for (const k of ['seats', 'turf', 'clay', 'paint', 'steel', 'lamp', 'screen', 'wall', 'marquee', 'ivy']) expect(byFacade(meshes, F[k]).length, k).toBeGreaterThan(0)
-  })
-  it('field surfaces tile the field exactly once (no overlaps, no gaps)', () => {
-    const field = meshes.filter((m) => m.field)
-    const total = field.reduce((s, m) => s + triArea(m.mesh), 0)
-    const ring = meshes.find((m) => m.fieldRing).fieldRing
-    expect(total / polyArea(ring)).toBeGreaterThan(0.995)
-    expect(total / polyArea(ring)).toBeLessThan(1.005)
-  })
-  it('puts the pitcher’s mound 18.4 m from home toward centre field', () => {
-    const mound = meshes.find((m) => m.part === 'mound')
-    const pts = xz(mound.mesh)
-    const xs = pts.map((p) => p[0]), zs = pts.map((p) => p[1])
-    const cx = (Math.min(...xs) + Math.max(...xs)) / 2, cz = (Math.min(...zs) + Math.max(...zs)) / 2
-    expect(Math.hypot(cx - (38 + d[0] * 18.44), cz - (-38 + d[1] * 18.44))).toBeLessThan(0.6)
-  })
   it('stays inside the footprint except the street marquee', () => {
     for (const m of meshes.filter((q) => q.part !== 'marquee')) for (const [x, z] of xz(m.mesh)) {
       expect(x).toBeGreaterThan(-0.5); expect(x).toBeLessThan(190.5); expect(z).toBeLessThan(0.5); expect(z).toBeGreaterThan(-190.5)
@@ -67,6 +50,42 @@ describe('buildVenue — baseball', () => {
     expect(byFacade(meshes, F.seats)[0].seed).toBe(STYLE.seats.green)
     expect(byFacade(meshes, F.wall).some((m) => m.seed === STYLE.wall['brick-steel'])).toBe(true)
   })
+  it('produces seats, the field, steel, lamps, screens, walls, the marquee and ivy', () => {
+    for (const k of ['seats', 'field', 'steel', 'lamp', 'screen', 'wall', 'marquee', 'ivy']) expect(byFacade(meshes, F[k]).length, k).toBeGreaterThan(0)
+    for (const k of ['turf', 'clay', 'paint']) expect(byFacade(meshes, F[k]).length, k).toBe(0)
+  })
+  it('the field is one surface covering the field ring exactly once', () => {
+    const field = meshes.filter((m) => m.field)
+    expect(field).toHaveLength(1)
+    expect(field[0]).toMatchObject({ facade: 24, seed: fieldSeed(0), part: 'field' })
+    const ring = meshes.find((m) => m.fieldRing).fieldRing
+    const r = triArea(field[0].mesh) / polyArea(ring)
+    expect(r).toBeGreaterThan(0.995); expect(r).toBeLessThan(1.005)
+  })
+  it('field uvs are local metres from home plate: u toward centre field, v toward left field', () => {
+    const f = meshes.find((m) => m.part === 'field').mesh, L = [d[1], -d[0]]
+    for (let i = 0, k = 0; i < f.positions.length; i += 3, k += 2) {
+      const px = f.positions[i] - 38, pz = f.positions[i + 2] + 38
+      expect(f.uvs[k]).toBeCloseTo(px * d[0] + pz * d[1], 3)
+      expect(f.uvs[k + 1]).toBeCloseTo(px * L[0] + pz * L[1], 3)
+    }
+  })
+  it('emits the venue frame with its ring and a grass ring 4.6 m inside it', () => {
+    const v = meshes.find((m) => m.venue).venue
+    expect(v.frame.origin).toEqual([38, -38])
+    expect(v.frame).toMatchObject({ u0: -24, u1: 132, v0: -96, v1: 96 })
+    expect(v.frame.ring).toHaveLength(192)
+    for (const [u, w] of v.frame.ring) { expect(u).toBeGreaterThan(-24); expect(u).toBeLessThan(132); expect(Math.abs(w)).toBeLessThan(96) }
+    expect(polyArea(v.frame.grassRing)).toBeLessThan(polyArea(v.frame.ring))
+  })
+  it('emits each board face and the flag pole for the sidecar', () => {
+    const v = meshes.find((m) => m.venue).venue
+    expect(v.boards).toHaveLength(1)
+    const b = v.boards[0]
+    expect(b).toMatchObject({ style: 'manual', w: 23, h: 8.5 })
+    expect(b.normal[0] * (38 - b.center[0]) + b.normal[1] * (-38 - b.center[2])).toBeGreaterThan(0) // faces home plate
+    expect(v.flagPole[1]).toBeGreaterThan(b.center[1] + b.h / 2 + 5)
+  })
 })
 
 describe('buildVenue — football', () => {
@@ -76,12 +95,6 @@ describe('buildVenue — football', () => {
     rim: [[-180, 28], [-90, 40], [0, 28], [90, 52], [180, 28]],
     seats: 'navy', wall: 'glass-steel', steel: 'gray', endZone: 'navy', logo: 'orange',
     colonnade: { rows: 2, spacing: 5.8, r: 1.05, h: 17, lengthFrac: 0.55, from: 3, rowGap: 4.2, podium: 2.5, style: 'limestone' },
-  })
-  it('paints yard lines and navy end zones on the turf', () => {
-    const paint = byFacade(meshes, F.paint)
-    expect(paint.some((m) => m.seed === STYLE.paint.navy)).toBe(true)
-    const white = paint.filter((m) => m.seed === STYLE.paint.white).reduce((s, m) => s + triArea(m.mesh), 0)
-    expect(white).toBeGreaterThan(21 * 0.3 * 48)
   })
   it('the west side (left of north) is the tall side', () => {
     const seats = byFacade(meshes, F.seats).flatMap((m) => xz(m.mesh).map((p, i) => [...p, ys(m.mesh)[i]]))
@@ -95,6 +108,13 @@ describe('buildVenue — football', () => {
     expect(cols.some((m) => xz(m.mesh)[0][0] < 110)).toBe(true)
     expect(cols.some((m) => xz(m.mesh)[0][0] > 110)).toBe(true)
     expect(cols[0].seed).toBe(STYLE.wall.limestone)
+  })
+  it('the football frame is centred on the field, ±75 × ±37.5 m, with no grass ring', () => {
+    const v = meshes.find((m) => m.venue).venue
+    expect(v.frame.origin).toEqual([110, -180])
+    expect(v.frame).toMatchObject({ u0: -75, u1: 75, v0: -37.5, v1: 37.5 })
+    expect(v.frame.grassRing).toBeUndefined()
+    for (const [u, w] of v.frame.ring) { expect(Math.abs(u)).toBeLessThan(75); expect(Math.abs(w)).toBeLessThan(37.5) }
   })
 })
 
@@ -114,6 +134,11 @@ describe('venue heroes + defaults', () => {
   it('untagged small stadiums and grandstands default low, not 25 m blocks', () => {
     expect(defaultHeightFor({ building: 'stadium' })).toBeLessThanOrEqual(10)
     expect(defaultHeightFor({ building: 'grandstand' })).toBeLessThanOrEqual(7)
+  })
+  it('applyHero passes the sports slot and capacity to the venue', () => {
+    const b = { id: 'v', area: 190 * 190, centroid: [95, -95], height: 24, parts: null, polygons: [{ outer: OUT, holes: [] }] }
+    const r = applyHero(b, { crowns: [], venue: { ...BASEBALL, home: undefined, homeLocal: [38, -38] }, sports: { kind: 'baseball', slot: 2, capacity: 1000 } })
+    expect(r.venueMeshes.find((m) => m.field).seed).toBe(fieldSeed(2))
   })
 })
 

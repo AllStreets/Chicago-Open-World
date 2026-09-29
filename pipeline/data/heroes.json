@@ -863,7 +863,17 @@
         "Bulls",
         "Blackhawks",
         "UC"
-      ]
+      ],
+      "sports": {
+        "kind": "arena",
+        "slot": 3,
+        "teams": [
+          "bulls",
+          "blackhawks"
+        ],
+        "capacity": 20917,
+        "source": "United Center capacity 20,917 basketball / 19,717 hockey (unitedcenter.com)"
+      }
     },
     {
       "key": "soldierfield",
@@ -981,7 +991,17 @@
       },
       "aliases": [
         "Bears"
-      ]
+      ],
+      "sports": {
+        "kind": "football",
+        "slot": 0,
+        "teams": [
+          "bears",
+          "fire"
+        ],
+        "capacity": 61500,
+        "source": "Soldier Field seating capacity 61,500 (Chicago Park District; Wikipedia 'Soldier Field')"
+      }
     },
     {
       "key": "wrigleyfield",
@@ -1092,7 +1112,16 @@
       "aliases": [
         "Cubs",
         "Wrigley"
-      ]
+      ],
+      "sports": {
+        "kind": "baseball",
+        "slot": 1,
+        "teams": [
+          "cubs"
+        ],
+        "capacity": 41649,
+        "source": "Wrigley Field capacity 41,649 (MLB.com Cubs ballpark information)"
+      }
     },
     {
       "key": "ratefield",
@@ -1191,7 +1220,16 @@
         "Comiskey Park",
         "White Sox",
         "Sox Park"
-      ]
+      ],
+      "sports": {
+        "kind": "baseball",
+        "slot": 2,
+        "teams": [
+          "whitesox"
+        ],
+        "capacity": 40615,
+        "source": "Rate Field capacity 40,615 (MLB.com White Sox ballpark information)"
+      }
     },
     {
       "key": "wintrust",
@@ -1230,7 +1268,16 @@
       "aliases": [
         "DePaul arena",
         "Sky"
-      ]
+      ],
+      "sports": {
+        "kind": "arena",
+        "slot": 4,
+        "teams": [
+          "sky"
+        ],
+        "capacity": 10387,
+        "source": "Wintrust Arena capacity 10,387 (wintrustarena.com)"
+      }
     },
     {
       "key": "centennialwheel",

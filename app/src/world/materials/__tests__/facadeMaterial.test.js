@@ -74,3 +74,11 @@ describe('patchFacadeShader', () => {
     expect(em).toMatch(/C6\.b > 1\.5\) totalEmissiveRadiance \+= C5\.rgb \* C5\.a \* band \* uNight \* uLitBoost/)
   })
 })
+
+describe('field surfaces (façade 24)', () => {
+  it('draw and glow like turf', () => {
+    const f = patchFacadeShader(std()).fragmentShader
+    expect(f).toContain('vi == 24')
+    expect(f).toMatch(/\(vi >= 10 && vi <= 12\) \|\| vi == 24/)
+  })
+})

@@ -84,6 +84,7 @@ vec3 venueAlbedo(int vi, float s, vec2 uv, vec3 wp, vec3 n, vec3 grain, vec3 roo
     vec3 a = mix(c * (0.85 + 0.3 * owHash(floor(vec2(uv.x / 0.55, wp.y / 0.42)))), c * 0.55, riser);
     return mix(a, conc * 0.8, aisle * (1.0 - smoothstep(0.3, 0.8, fwAisle)));
   }
+  if (vi == 24) return mix(vec3(0.16, 0.38, 0.12), vec3(0.2, 0.45, 0.15), 0.5) * (0.9 + 0.2 * grain.g); // painted field (Task 11 samples the texture)
   if (vi == 10) {
     vec2 q = floor(uv / 9.0);
     float band = s < 0.5 ? mod(q.x + q.y, 2.0) : mod(q.x, 2.0);
@@ -239,7 +240,7 @@ if (styled && uNight > 0.001) {                          // crown and façade ni
 if (isVenue && uNight > 0.001) {
   if (vi == 14) totalEmissiveRadiance += vec3(1.0, 0.96, 0.88) * 3.2 * uNight * uLitBoost;
   // under the floodlights: the field and stands glow as if lit for a night game
-  if (vi >= 10 && vi <= 12) totalEmissiveRadiance += diffuseColor.rgb * vec3(1.0, 0.98, 0.92) * 0.85 * uNight;
+  if ((vi >= 10 && vi <= 12) || vi == 24) totalEmissiveRadiance += diffuseColor.rgb * vec3(1.0, 0.98, 0.92) * 0.85 * uNight;
   if (vi == 9 || vi == 18) totalEmissiveRadiance += diffuseColor.rgb * 0.35 * uNight;
   if (vi == 15 && vSeed > 0.5) {
     vec2 c = floor(vMUv / vec2(0.8, 0.6));
