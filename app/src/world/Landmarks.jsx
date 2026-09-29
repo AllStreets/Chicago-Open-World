@@ -5,6 +5,7 @@ import { facadeUniforms } from './materials/facadeMaterial.js'
 import BridgeLeaves from '../bridges/BridgeLeaves.jsx'
 import BridgeLights from '../bridges/BridgeLights.jsx'
 import FountainShow from '../landmarks/FountainShow.jsx'
+import { showEmitters } from '../landmarks/jets.js'
 import CloudGate from '../landmarks/CloudGate.jsx'
 import PlazaPeople from '../landmarks/PlazaPeople.jsx'
 import { crownFace, crownWaterOn } from '../landmarks/crownFace.js'
@@ -29,7 +30,7 @@ export default function Landmarks({ manifest }) {
       {bridges && <BridgeLeaves sidecar={bridges} />}
       {bridges && <BridgeLights sidecar={bridges} />}
       {/* Tasks 9, 12, 14, 15, 16 add: BridgeLights, FountainShow, CloudGate, PlazaPeople, and the Crown face driver (they use `runtime`) */}
-      {runtime?.fountain && <FountainShow emitters={[...runtime.fountain.emitters, ...(runtime.crown?.spouts ?? [])]} crownLevels={crownLevels} />}
+      {runtime?.fountain && <FountainShow emitters={showEmitters(runtime)} crownLevels={crownLevels} />}
       {runtime?.plazas?.length > 0 && <PlazaPeople plazas={runtime.plazas} />}
       {runtime?.detached?.filter((d) => d.key === 'cloudgate').map((d) => <Suspense key={d.key} fallback={null}><CloudGate file={d.file} centre={d.centre} /></Suspense>)}
     </>

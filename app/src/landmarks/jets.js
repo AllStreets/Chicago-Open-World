@@ -23,3 +23,11 @@ export function buildParticles(emitters) {
   emitters.forEach((e, i) => { for (let j = 0; j < PARTICLES[e.kind]; j++, k++) { emitter[k] = i; seed[k] = fract(Math.sin((k + 1) * 12.9898) * 43758.5453) } })
   return { emitter, seed }
 }
+
+// The show's emitter list, built once per landmarks runtime: a fresh array per render would rebuild the particle
+// geometry and material every minute (V6 review #2).
+const emitterCache = new WeakMap()
+export function showEmitters(runtime) {
+  if (!emitterCache.has(runtime)) emitterCache.set(runtime, [...(runtime?.fountain?.emitters ?? []), ...(runtime?.crown?.spouts ?? [])])
+  return emitterCache.get(runtime)
+}

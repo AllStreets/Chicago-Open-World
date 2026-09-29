@@ -4,7 +4,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 import { useStore } from '../state/store.js'
-import { CUBE, cubeFaceFor, cubeActive } from './cubeFaces.js'
+import { CUBE, cubeFaceFor, cubeActive, renderCubeFaces } from './cubeFaces.js'
 
 export default function CloudGate({ file, centre }) {
   const { scene: glb } = useGLTF(`/world/${file}`, false, true)
@@ -28,10 +28,9 @@ export default function CloudGate({ file, centre }) {
     const faces = primed.current ? [cubeFaceFor(frame.current++)] : [0, 1, 2, 3, 4, 5]   // first sight: fill all six once
     primed.current = true
     if (faces[0] < 0) return
-    const prev = gl.getRenderTarget(), xr = gl.xr.enabled
-    gl.xr.enabled = false; bean.current.visible = false
-    for (const f of faces) { gl.setRenderTarget(rt, f); gl.render(scene, cubeCam.children[f]) }
-    gl.setRenderTarget(prev); gl.xr.enabled = xr; bean.current.visible = true
+    bean.current.visible = false
+    renderCubeFaces(gl, rt, scene, cubeCam, faces)
+    bean.current.visible = true
   })
   return geo ? <mesh ref={bean} geometry={geo} material={mat} castShadow receiveShadow /> : null
 }

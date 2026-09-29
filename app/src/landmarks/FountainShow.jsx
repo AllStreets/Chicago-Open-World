@@ -1,5 +1,5 @@
 // app/src/landmarks/FountainShow.jsx — Buckingham's jets (and the Crown Fountain spouts) as one GPU Points draw.
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useStore } from '../state/store.js'
@@ -60,7 +60,9 @@ export default function FountainShow({ emitters, crownLevels = null }) {
     return { geo, mat }
   }, [emitters])
   const cone = useRef(), centre = emitters.find((e) => e.kind === 'centre'), acc = useRef(1)
+  useEffect(() => () => { geo.dispose(); mat.dispose() }, [geo, mat]) // a new emitter set frees the old buffers
   const coneGeo = useMemo(() => new THREE.CylinderGeometry(0.15, 0.9, 1, 12, 1, true).translate(0, 0.5, 0), [])
+  useEffect(() => () => coneGeo.dispose(), [coneGeo])
   useFrame(({ clock, size, camera }, dt) => {
     mat.uniforms.uTime.value = clock.elapsedTime
     mat.uniforms.uPx.value = size.height / (2 * Math.tan(((camera.fov ?? 50) * Math.PI) / 360))

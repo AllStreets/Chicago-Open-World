@@ -95,3 +95,19 @@ describe('cutPolyline', () => {
     expect(clipSegment([50, 0], [50, 10], rect)).toBeNull()
   })
 })
+
+describe('V6 review: a named bridge that matches nothing fails the build', () => {
+  const way = (id, pts, tags = { highway: 'secondary', bridge: 'movable' }) => ({ id, tags, points: pts })
+  it('throws even when the entry has a bearing, unless it is flagged allowUnmatched', () => {
+    const e = { key: 'lost', at: { lat: 41.9, lon: -87.6 }, bearing: 90 }
+    expect(() => detectBridges([], [e])).toThrow(/lost/)
+    expect(() => detectBridges([], [{ ...e, allowUnmatched: true }])).not.toThrow()
+  })
+  it('an unclaimed movable way next to a named bridge (a drifted OSM way) is an error, not a second deck', async () => {
+    const { project } = await import('../../shared/project.js')
+    const e = { key: 'near', at: { lat: 41.9, lon: -87.6 }, bearing: 0, radius: 20 }
+    const [x, z] = project(-87.6, 41.9)
+    const mine = way(1, [[x, z - 10], [x, z + 10]]), drifted = way(2, [[x + 50, z - 10], [x + 50, z + 10]])
+    expect(() => detectBridges([mine, drifted], [e])).toThrow(/near/)
+  })
+})
