@@ -17,3 +17,11 @@ describe('quality', () => {
     expect(cycleQuality('LOW')).toBe('HIGH'); expect(cycleQuality('ULTRA')).toBe('LOW')
   })
 })
+
+describe('water reflection by quality (B10)', () => {
+  it('off at LOW, half resolution at HIGH', () => {
+    expect(QUALITY.LOW.reflection).toBe(0)
+    expect(QUALITY.HIGH.reflection).toBe(0.5)
+    expect(QUALITY.ULTRA.reflection).toBeGreaterThanOrEqual(QUALITY.HIGH.reflection)
+  })
+})
