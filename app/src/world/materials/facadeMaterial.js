@@ -25,6 +25,9 @@ export const facadeUniforms = {
   uReady: { value: 0 },
   uStylePal: { value: createStyleTexture([{ key: 'none' }]) },
   uStyleRows: { value: 1 },
+  uTime: { value: 0 },
+  uCrown: { value: new THREE.Vector4(0, 0, 0, 1) },
+  uCrownB: { value: new THREE.Vector4(1, 0, 0, 1) },
   uFieldTex: { value: turfArray() },
   uFieldFrame: { value: vec4s() },
   uVenueLight: { value: vec4s() },
@@ -78,6 +81,7 @@ uniform sampler2D uStylePal;
 uniform float uStyleRows;
 varying float vStyle;
 vec4 styleTexel(int si, int col) { return texelFetch(uStylePal, ivec2(col, si), 0); }
+vec3 styleBase(float style) { return styleTexel(int(style + 0.5), 0).rgb; }   // V6: a row's base colour
 varying float vFacade;
 varying float vSeed;
 varying vec3 vWPos;
@@ -92,6 +96,24 @@ float venueLevel(vec2 p) {
   return -1.0;
 }
 float owHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+uniform float uTime;
+uniform vec4 uCrown;
+uniform vec4 uCrownB;
+// Crown Fountain LED face (façade 27): procedural, never a real person's likeness.
+// c.x face id, c.y pucker 0..1, c.z smile 0..1.
+vec3 crownFace(vec2 uv, vec4 c) {
+  vec3 skin = mix(vec3(0.36, 0.22, 0.15), vec3(0.93, 0.76, 0.62), owHash(vec2(c.x, 1.7)));
+  vec2 p = (uv - vec2(0.5, 0.55)) * vec2(1.0, 1.55);
+  float head = step(length(p * vec2(1.0, 0.8)), 0.42);
+  vec2 e = vec2(abs(p.x) - 0.15, p.y - 0.1);
+  float eyes = step(length(e * vec2(1.0, 2.2)), 0.05);
+  float mw = mix(0.16, 0.05, c.y) + 0.04 * c.z;
+  vec2 m = vec2(p.x, p.y + 0.2 + 0.03 * c.z * (1.0 - clamp(p.x * p.x / (mw * mw), 0.0, 1.0)));
+  float mouth = step(abs(m.x), mw) * step(abs(m.y), mix(0.02, 0.05, c.y));
+  vec3 col = mix(vec3(0.02, 0.03, 0.05), skin * (0.9 + 0.1 * sin(uTime * 0.7 + c.x)), head);
+  col = mix(col, vec3(0.05), eyes * head);
+  return mix(col, vec3(0.35, 0.08, 0.08), mouth * head);
+}
 // Pointed lancet windows in 4.2 m bays, a tall lower tier and a clerestory above (sacred walls).
 float lancet(vec2 uv, float y) {
   float bx = abs(fract(uv.x / 4.2) - 0.5) * 4.2;
@@ -104,6 +126,20 @@ float lancet(vec2 uv, float y) {
 // The style selector rides in the seed (see pipeline/lib/venue.js STYLE).
 // fwRow / fwAisle: screen-space footprints, taken by the caller in uniform control flow.
 vec3 venueAlbedo(int vi, float s, vec2 uv, vec3 wp, vec3 n, vec3 grain, vec3 roofAlb, float fwRow, float fwAisle, vec4 uvGrad) {
+  if (vi == 25) {   // dressed stone and marble: colour from _STYLE, ashlar joints, faint veining
+    float joint = step(fract(wp.y / 0.9), 0.03) + step(fract(uv.x / 1.8), 0.015);
+    float vein = smoothstep(0.55, 0.6, owHash(floor(uv * 3.0))) * 0.05;
+    return styleBase(vStyle) * (0.92 + 0.12 * grain.r) * (1.0 - 0.14 * min(joint, 1.0)) + vein;
+  }
+  if (vi == 26) {   // open steel grid deck / lattice: bars over the dark gap below
+    vec2 g = abs(fract(wp.xz / 0.12) - 0.5);
+    return mix(vec3(0.05, 0.06, 0.07), styleBase(vStyle), step(0.36, max(g.x, g.y)));
+  }
+  if (vi == 27) return styleBase(vStyle);                          // lamp glass, lenses, lit skylights
+  if (vi == 28) return crownFace(uv, s < 0.5 ? uCrown : uCrownB);  // Crown Fountain towers
+  if (vi == 29) return styleBase(vStyle) * (0.85 + 0.3 * grain.g); // bronze, Cor-Ten, stainless
+  if ((vi == 12 || vi == 13) && vStyle > 0.5) return styleBase(vStyle) * (0.94 + 0.08 * grain.r);
+  if (vi == 18 && vStyle > 0.5) return mix(styleBase(vStyle) * 0.6, styleBase(vStyle), owHash(floor(vec2(uv.x, wp.y) * 3.0))) * (0.85 + 0.3 * grain.g);
   if (vi == 9) {
     vec3 c = s < 0.25 ? vec3(0.10, 0.27, 0.17) : s < 0.5 ? vec3(0.10, 0.14, 0.30) : s < 0.75 ? vec3(0.48, 0.09, 0.09) : vec3(0.16, 0.30, 0.52);
     float row = fract(wp.y / 0.42);
@@ -263,11 +299,16 @@ if (styled && !isRoof && !isParapet) roughnessFactor = mix(S1.a, 0.06, win * 0.9
 if (isVenue && vi == 21) roughnessFactor = 0.05;
 if (isVenue && vi == 22) roughnessFactor = 0.1;
 if (isVenue && vi == 23) roughnessFactor = 0.4;
+if (isVenue && vi == 29) roughnessFactor = 0.35;
+if (isVenue && vi == 26) roughnessFactor = 0.55;
+if (isVenue && vi == 27) roughnessFactor = 0.2;
 `
 const FRAG_METAL = /* glsl */ `
 metalnessFactor = mix(metalnessFactor, 0.9, win * 0.85);
 if (styled && !isRoof && !isParapet) metalnessFactor = mix(S2.a, 0.9, win * 0.85);
 if (isVenue && vi == 21) metalnessFactor = 1.0;
+if (isVenue && vi == 29) metalnessFactor = 0.85;
+if (isVenue && vi == 26) metalnessFactor = 0.6;
 `
 const FRAG_EMISSIVE = /* glsl */ `
 if (styled && uNight > 0.001) {                          // crown and façade night lighting (F9)
@@ -279,6 +320,8 @@ if (styled && uNight > 0.001) {                          // crown and façade ni
 float lv = venueLevel(vWPos.xz);
 float lvL = lv < 0.0 ? 1.0 : lv;   // legacy venue light, until the sports clock registers the venue
 float lvA = max(lv, 0.0);          // architectural light: registered venues only
+if (isVenue && vi == 28) totalEmissiveRadiance += diffuseColor.rgb * (0.55 + 1.3 * uNight) * uLitBoost;
+if (isVenue && vi == 27) totalEmissiveRadiance += diffuseColor.rgb * (0.25 + 3.5 * uNight) * uLitBoost;
 if (isVenue && uNight > 0.001) {
   if (vi == 14) totalEmissiveRadiance += vec3(1.0, 0.96, 0.88) * 3.2 * uNight * uLitBoost * lvL;
   // under the floodlights: the field and stands glow as if lit for a night game
@@ -352,7 +395,7 @@ export function patchFacadeShader(shader) {
 export function createFacadeMaterial() {
   const m = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.86, metalness: 0.02 })
   m.onBeforeCompile = patchFacadeShader
-  m.customProgramCacheKey = () => 'facade-v9'
+  m.customProgramCacheKey = () => 'facade-v10'
   return m
 }
 
