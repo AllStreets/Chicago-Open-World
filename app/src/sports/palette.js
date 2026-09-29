@@ -2,12 +2,12 @@
 import { useStore } from '../state/store.js'
 import { useSports } from './sportsStore.js'
 import { teamByKey } from '../../../shared/teams.js'
-import { venueFocusPose } from './venueFocus.js'
+import { clearedVenuePose } from '../lib/poseClearance.js'
 import { tonightsGame, stateLabel, gameLabel } from './tonight.js'
 import { whenChicago } from './chicagoTime.js'
 
 export function goToVenue(venue) {
-  useStore.getState().startFlight(venueFocusPose(venue), venue.name)
+  useStore.getState().startFlight(clearedVenuePose(venue), venue.name)
   useSports.getState().openCard(venue.key)
 }
 const openPanel = () => useStore.getState().setGamesOpen(true)
