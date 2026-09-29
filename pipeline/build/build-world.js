@@ -18,12 +18,13 @@ import { shapePieces } from '../lib/shapes.js'
 import { applyHero, findByOsm, matchesOsm } from '../lib/heroes.js'
 import { VENUE_FACADES, STYLE, convexHull } from '../lib/venue.js'
 import { venueRecord, encodeAnchors, plazaAnchors } from '../lib/sportsSites.js'
+import { detectBridges, buildBridge, makeRibbonCutter, bridgeSidecar } from '../lib/bridges.js'
 import { shapeSacred } from '../lib/sacred.js'
 import { horizonBoxes } from '../lib/horizon.js'
 import { venueZones, filterTrees, assertNoVenueTrees, outsideZones, cutZones } from '../lib/trees.js'
 import { createBlock, addTileToBlock, blockLayers, blockSidecar } from '../lib/blocks.js'
 import { bAcc, appendBuilding, appendLayer, asLayer } from '../lib/layers.js'
-import { createStyleRegistry, assignHeroStyles, meshStyle, writeStylePalettePng, addMaterialStyles } from '../lib/styles.js'
+import { createStyleRegistry, assignHeroStyles, meshStyle, writeStylePalettePng, addMaterialStyles, styleIndex } from '../lib/styles.js'
 import { applyOsmLooks } from '../lib/osmLook.js'
 import { lakePolygons, landMinusWater, joinLines, lakeSide } from '../lib/lake.js'
 import { bakeShore, SHORE } from '../lib/shore.js'
@@ -161,6 +162,17 @@ async function main() {
   const water = osmPolys(uniq(chunks('water'))).filter((p) => keepWater(p.tags))
   const roads = uniq(chunks('roads')).filter((e) => e.geometry && roadHalfWidth(e.tags || {}))
   const rail = uniq(chunks('rail')).filter((e) => e.geometry)
+  // ── Bridges: OSM movable ways → named Chicago bascules; their ribbons give way to one leaf deck ──
+  const bridgeData = loadJson(join(ROOT, 'data', 'bridges.json'))
+  const skipWays = new Set(bridgeData.skipWays ?? [])
+  const wayRecs = [...roads, ...rail].filter((e) => !skipWays.has(e.id)).map((e) => ({ id: e.id, tags: e.tags || {}, points: e.geometry.map((p) => project(p.lon, p.lat)) }))
+  const bridges = detectBridges(wayRecs, bridgeData.bridges)
+  const deckY = GROUND_Y.roads + 0.02
+  const builtBridges = bridges.map((b) => buildBridge(b, { deckY }))
+  const bridgeSide = bridgeSidecar(bridges, builtBridges, bridgeData.liftOrder)
+  const cutRibbon = makeRibbonCutter(bridges)
+  const sIdx = (k) => (k ? styleIndex(k) : 0)
+  log(`bridges: ${bridges.length} (${bridges.filter((b) => !b.generic).length} named), leaves ${bridgeSide.leaves.length}`)
   const treeNodes = uniq(chunks('trees')).map((n) => project(n.lon, n.lat))
   // Synthetic trees only where OSM hasn't mapped the park's real trees (Millennium Park is mapped tree by tree)
   const realTreeIdx = buildGridIndex(treeNodes, 100, (p) => p)
@@ -269,8 +281,9 @@ async function main() {
   rmSync(join(OUT, 'tiles'), { recursive: true, force: true })
   mkdirSync(join(OUT, 'tiles'), { recursive: true })
   const T = new Map()
-  const tile = (k) => { if (!T.has(k)) T.set(k, { b: [], roads: acc(), walks: acc(), roadsLod1: acc(), rail: acc(), trees: [], props: [] }); return T.get(k) }
+  const tile = (k) => { if (!T.has(k)) T.set(k, { b: [], roads: acc(), walks: acc(), roadsLod1: acc(), rail: acc(), trees: [], props: [], bridges: [] }); return T.get(k) }
   for (const b of buildings) tile(tileKeyFor(b.centroid)).b.push(b)
+  bridges.forEach((br, i) => tile(tileKeyFor(br.centre)).bridges.push({ br, built: builtBridges[i], leafIds: bridgeSide.bridges[i].leaves }))
   // tiles that hold only water or park (the middle of Monroe Harbor) must exist too, or the lake shows a hole
   const [wx0, wz0] = project(WORLD_BBOX.w, WORLD_BBOX.n), [wx1, wz1] = project(WORLD_BBOX.e, WORLD_BBOX.s)
   for (const p of [...water, ...parks, ...beaches, ...pitches]) {
@@ -278,8 +291,9 @@ async function main() {
     if (bb.minX < bb.maxX && bb.minZ < bb.maxZ) for (const k of tileKeysForBBox(bb)) tile(k)
   }
   for (const e of roads) {
-    const pts = e.geometry.map((p) => project(p.lon, p.lat)), hw = roadHalfWidth(e.tags)
-    for (const [k, pieces] of splitLineWithContext(pts)) for (const { line: l, before, after } of pieces) {
+    const hw = roadHalfWidth(e.tags)
+    // V6: a ribbon never runs over a bascule span — the leaf deck is the one deck there
+    for (const pts of cutRibbon({ id: e.id, points: e.geometry.map((p) => project(p.lon, p.lat)) })) for (const [k, pieces] of splitLineWithContext(pts)) for (const { line: l, before, after } of pieces) {
       const t = tile(k), ends = { before, after }
       append(t.roads, bufferPolyline(l, hw, GROUND_Y.roads, ends)); append(t.roadsLod1, bufferPolyline(l, hw, GROUND_Y.roads, ends))
       if (!['motorway', 'motorway_link', 'service'].includes(e.tags.highway)) append(t.walks, bufferPolyline(l, hw + 3, GROUND_Y.sidewalks, ends))
@@ -287,9 +301,9 @@ async function main() {
   }
   for (const e of rail) {
     if (transit.wayIds.has(e.id)) continue // CTA and Metra tracks are drawn by the transit layers
-    const t = e.tags || {}, pts = e.geometry.map((p) => project(p.lon, p.lat))
+    const t = e.tags || {}
     if ((t.tunnel && t.tunnel !== 'no') || parseInt(t.layer ?? '0', 10) < 0) continue
-    for (const [k, pieces] of splitLineWithContext(pts)) for (const { line: l, before, after } of pieces) {
+    for (const pts of cutRibbon({ id: e.id, points: e.geometry.map((p) => project(p.lon, p.lat)) })) for (const [k, pieces] of splitLineWithContext(pts)) for (const { line: l, before, after } of pieces) {
       append(tile(k).rail, bufferPolyline(l, t.railway === 'rail' ? 2.4 : 1.8, GROUND_Y.rail, { before, after }))
     }
   }
@@ -329,16 +343,30 @@ async function main() {
       if (top > 15) for (const pr of roofProps(b, b.pieces)) t.props.push(pr)
       meta.push({ id: b.id, name: b.name, address: b.address, stories: b.stories, year: b.year, height: Math.round(top * 10) / 10, hero: b.hero ?? null })
     })
+    const LV = { ...bAcc(), leaf: [] }
+    for (const { br, built, leafIds } of t.bridges) {
+      const idx = meta.length
+      meta.push({ id: `bridge:${br.key}`, name: br.name, address: null, stories: null, year: br.year ?? null, height: 0, hero: null, bridge: br.key })
+      for (const m of built.fixed) { appendBuilding(L0, m.mesh, m.facade, m.seed, idx, sIdx(m.style)); appendBuilding(L1, m.mesh, m.facade, m.seed, idx, sIdx(m.style)) }
+      built.leaves.forEach((lf, j) => {
+        for (const m of lf.meshes) {
+          appendBuilding(LV, m.mesh, m.facade, m.seed, idx, sIdx(m.style))
+          for (let q = 0; q < m.mesh.positions.length / 3; q++) LV.leaf.push(leafIds[j] + 1)
+          appendBuilding(L1, m.mesh, m.facade, m.seed, idx, sIdx(m.style)) // far tiles show the leaves closed
+        }
+      })
+    }
     const parksM = flatMesh(clipPolysToTile(polysFor('parks', bounds), bounds), GROUND_Y.parks)
     const beachesM = flatMesh(clipPolysToTile(polysFor('beaches', bounds), bounds), GROUND_Y.beaches)
     const pitchesM = flatMesh(clipPolysToTile(polysFor('pitches', bounds), bounds), GROUND_Y.pitches)
     const waterM = waterLayer(clipPolysToTile(polysFor('water', bounds), bounds), GROUND_Y.water)
-    const hasContent = L0.positions.length || t.roads.positions.length || parksM.positions.length || waterM.positions.length || transit.tiles.has(key)
+    const hasContent = L0.positions.length || LV.positions.length || t.roads.positions.length || parksM.positions.length || waterM.positions.length || transit.tiles.has(key)
     if (!hasContent) continue
     const ground0 = mergeGroundLayers({ roads: t.roads, sidewalks: t.walks, parks: parksM, pitches: pitchesM, beaches: beachesM, rail: t.rail })
     const ground1 = mergeGroundLayers({ roads: t.roadsLod1, parks: parksM, pitches: pitchesM, beaches: beachesM })
     const tr = transit.tiles.get(key) ?? {}
-    await writeTileGlb(join(OUT, 'tiles', `${key}.glb`), { buildings: asLayer(L0), ground: ground0, water: waterM, transit: tr.transit, ties: tr.ties, stations: tr.stations, glow: tr.glow })
+    const asLeafLayer = (a) => { const l = asLayer(a); l.extra.LEAF = new Float32Array(a.leaf); return l }
+    await writeTileGlb(join(OUT, 'tiles', `${key}.glb`), { buildings: asLayer(L0), leaves: LV.positions.length ? asLeafLayer(LV) : null, ground: ground0, water: waterM, transit: tr.transit, ties: tr.ties, stations: tr.stations, glow: tr.glow })
     await writeTileGlb(join(OUT, 'tiles', `${key}.lod1.glb`), { buildings: asLayer(L1), ground: ground1, water: waterM, glow: tr.glowLod })
     // accumulate the tile's far-detail content into its 2 km block
     const bk = blockKeyFor(key)
@@ -350,6 +378,7 @@ async function main() {
     if (++n % 50 === 0) log(`tiles written: ${n}`)
   }
   log(`tiles: ${tiles.length}`)
+  writeFileSync(join(OUT, 'bridges.json'), JSON.stringify(bridgeSide))
   assertNoVenueTrees([...T].map(([k, t]) => [k, t.trees]), zones)
   log('venue tree check: 0 trees inside any venue')
   rmSync(join(OUT, 'blocks'), { recursive: true, force: true })
@@ -449,12 +478,15 @@ async function main() {
       { name: 'CTA GTFS route colours', id: 'cta-gtfs' },
     ],
     skyline: { missing: sky.missing, wrongHeight: sky.wrongHeight },
-    landmarks: buildings.filter((b) => b.hero).map((b) => ({ key: b.hero, name: heroes.find((h) => h.key === b.hero)?.name ?? b.name, aliases: heroes.find((h) => h.key === b.hero)?.aliases ?? [], x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(b.venueTop ?? 0, ...b.pieces.map((p) => p.top), ...(b.extraMeshes || []).flatMap((m) => m.positions.filter((_, i) => i % 3 === 1)))) })),
+    landmarks: [
+      ...buildings.filter((b) => b.hero).map((b) => ({ key: b.hero, name: heroes.find((h) => h.key === b.hero)?.name ?? b.name, aliases: heroes.find((h) => h.key === b.hero)?.aliases ?? [], x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(b.venueTop ?? 0, ...b.pieces.map((p) => p.top), ...(b.extraMeshes || []).flatMap((m) => m.positions.filter((_, i) => i % 3 === 1)))) })),
+      ...bridges.filter((b) => !b.generic).map((b) => ({ key: `bridge-${b.key}`, name: b.name, aliases: b.aliases, x: Math.round(b.centre[0]), z: Math.round(b.centre[1]), top: 8, beacon: [Math.round(b.centre[0]), 14, Math.round(b.centre[1])] })),
+    ],
     tallest: buildings.filter((b) => !b.hero && b.name && b.pieces.length && Math.max(...b.pieces.map((p) => p.top)) > 150).map((b) => ({ key: b.id, name: b.name, x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(...b.pieces.map((p) => p.top))) })),
     tiles, blocks: blockList, land: 'ground/land.glb', lake: 'ground/lake.glb', landMask: 'land.json', transit: 'transit.json', trains: 'trains.glb', styles: 'styles.json', stylePalette: 'style-palette.png',
     shore: { file: 'water/shore.png', ...shore.grid, maxDist: SHORE.maxDist },
     heightfield: { file: 'heightfield.png', ...hf.grid, scale: HEIGHTFIELD.scale }, minimap: { file: 'minimap.png', bounds: mmBounds, size: 2048 },
-    venues: 'venues.json', schedules: existsSync(join(ROOT, 'data', 'schedules.json')) ? 'schedules.json' : null,
+    venues: 'venues.json', bridges: 'bridges.json', schedules: existsSync(join(ROOT, 'data', 'schedules.json')) ? 'schedules.json' : null,
   }, null, 1))
   log('manifest written')
   const dirBytes = (d) => readdirSync(d, { withFileTypes: true }).reduce((sum, e) => sum + (e.isDirectory() ? dirBytes(join(d, e.name)) : statSync(join(d, e.name)).size), 0)

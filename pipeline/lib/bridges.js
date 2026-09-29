@@ -277,3 +277,35 @@ export function buildBridge(b, { deckY }) {
   fixed.push({ mesh: glass, facade: F.signal, seed: 0.5, style: 'lantern-warm', part: 'lantern' })
   return { fixed, leaves: buildLeaves(b, deckY), lights: bridgeLights(b, deckY) }
 }
+
+// ── World integration ────────────────────────────────────────────────────────
+export const spanRect = (b) => ({ c: b.centre, u: b.axis, hl: b.span / 2 + (DECK.tailFrac * b.span) / 2 + 0.6, hw: b.width / 2 + 1.5 })
+
+function runsAlong(points, r) {
+  for (let i = 0; i < points.length - 1; i++) {
+    if (!clipSegment(points[i], points[i + 1], r)) continue
+    if (Math.abs(dot2(norm2(sub2(points[i + 1], points[i])), r.u)) > 0.8) return true
+  }
+  return false
+}
+
+export function makeRibbonCutter(bridges) {
+  const rects = bridges.map((b) => ({ r: spanRect(b), ids: new Set(b.wayIds) }))
+  return (way) => {
+    let lines = [way.points]
+    for (const { r, ids } of rects) lines = lines.flatMap((l) => (ids.has(way.id) || runsAlong(l, r) ? cutPolyline(l, r) : [l]))
+    return lines
+  }
+}
+
+const r1 = (x) => Math.round(x * 10) / 10, r3 = (x) => Math.round(x * 1000) / 1000
+export function bridgeSidecar(bridges, built, liftOrder) {
+  const leaves = [], lights = [], out = []
+  bridges.forEach((b, i) => {
+    const ids = built[i].leaves.map((l) => { leaves.push({ bridge: b.key, pivot: l.pivot.map(r3), k: l.k.map(r3) }); return leaves.length - 1 })
+    for (const L of built[i].lights) lights.push({ p: L.p.map(r1), kind: L.kind, ...(L.leaf != null ? { leaf: ids[L.leaf] } : {}) })
+    out.push({ key: b.key, name: b.name, street: b.street ?? null, branch: b.branch ?? null, year: b.year ?? null, liftable: b.liftable, centre: b.centre.map(r1), axis: b.axis.map(r3), span: b.span, leaves: ids, source: b.source ?? null })
+  })
+  const ok = new Set(bridges.filter((b) => b.liftable).map((b) => b.key))
+  return { version: 1, bridges: out, leaves, lights, liftOrder: liftOrder.filter((k) => ok.has(k)) }
+}

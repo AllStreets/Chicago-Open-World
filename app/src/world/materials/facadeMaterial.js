@@ -82,6 +82,7 @@ uniform float uStyleRows;
 varying float vStyle;
 vec4 styleTexel(int si, int col) { return texelFetch(uStylePal, ivec2(col, si), 0); }
 vec3 styleBase(float style) { return styleTexel(int(style + 0.5), 0).rgb; }   // V6: a row's base colour
+float gFwXZ;   // world-xz pixel footprint, set in main before any branch (fine patterns filter against it)
 varying float vFacade;
 varying float vSeed;
 varying vec3 vWPos;
@@ -133,7 +134,9 @@ vec3 venueAlbedo(int vi, float s, vec2 uv, vec3 wp, vec3 n, vec3 grain, vec3 roo
   }
   if (vi == 26) {   // open steel grid deck / lattice: bars over the dark gap below
     vec2 g = abs(fract(wp.xz / 0.12) - 0.5);
-    return mix(vec3(0.05, 0.06, 0.07), styleBase(vStyle), step(0.36, max(g.x, g.y)));
+    vec3 gap = vec3(0.05, 0.06, 0.07), bar = styleBase(vStyle);
+    vec3 grid = mix(gap, bar, step(0.36, max(g.x, g.y)));
+    return mix(grid, mix(gap, bar, 0.48), smoothstep(0.04, 0.12, gFwXZ)); // bars cover 48 %: under a pixel, draw the average
   }
   if (vi == 27) return styleBase(vStyle);                          // lamp glass, lenses, lit skylights
   if (vi == 28) return crownFace(uv, s < 0.5 ? uCrown : uCrownB);  // Crown Fountain towers
@@ -256,6 +259,7 @@ vec3 alb = isRoof ? roofAlb : (isParapet ? coping : wallAlb);
 win = (isRoof || isParapet) ? 0.0 : win;
 float fwRow = fwidth(vWPos.y / 0.42), fwAisle = fwidth(vMUv.x / 17.0) * 17.0;   // before any branch
 vec4 uvGrad = vec4(dFdx(vMUv), dFdy(vMUv));
+gFwXZ = length(fwidth(vWPos.xz));
 int si = int(vStyle + 0.5);
 si = float(si) < uStyleRows ? si : 0;                   // stale tiles vs palette: unstyled, never garbage
 bool styled = si > 0;

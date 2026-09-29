@@ -24,3 +24,14 @@ describe('V6 façade surfaces', () => {
     expect(s.fragmentShader).toMatch(/vi == 27\) totalEmissiveRadiance/)
   })
 })
+
+describe('grid deck anti-aliasing', () => {
+  it('the 12 cm steel grid fades to its average once a cell is under a pixel (no moiré), derivative taken before any branch', () => {
+    const f = patchFacadeShader(std()).fragmentShader
+    const body = f.slice(f.indexOf('void main()'))
+    expect(f).toContain('float gFwXZ;')
+    expect(body.indexOf('gFwXZ = length(fwidth(vWPos.xz));')).toBeGreaterThan(0)
+    expect(body.indexOf('gFwXZ = length(fwidth(vWPos.xz));')).toBeLessThan(body.indexOf('if (isVenue)'))
+    expect(f).toMatch(/smoothstep\([^)]*gFwXZ/)
+  })
+})

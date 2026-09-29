@@ -38,7 +38,7 @@ export default function TileContent({ id, file, meta, lod, mats, version, onRead
       if (TRANSIT_LAYERS.includes(layer)) { o.visible = false; return } // drawn by the transit pools
       o.receiveShadow = true
       o.castShadow = false
-      if (layer === 'buildings') { o.material = buildingMaterial; o.castShadow = lod === 'lod0'; o.layers.enable(REFLECT_LAYER) }
+      if (layer === 'buildings' || layer === 'leaves') { o.material = buildingMaterial; o.castShadow = lod === 'lod0' && layer === 'buildings'; o.layers.enable(REFLECT_LAYER) } // V6: bascule leaves (Task 8 swaps in the leaf material)
       else if (layer === 'ground') o.material = groundMaterial
       else if (layer === 'water') { o.material = waterMaterial; o.receiveShadow = false }
       else o.material = mats.land

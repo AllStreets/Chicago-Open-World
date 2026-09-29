@@ -24,7 +24,7 @@ export const BOOKMARKS = {
   // ── V6 — landmarks and bridges (positions from OSM ways/buildings in pipeline/cache/world) ──
   bridges: { position: [180, 60, -540], target: [-420, 4, -612] },         // main stem looking west: Wabash → LaSalle
   dusable: { position: [385, 32, -680], target: [287, 5, -757] },          // DuSable Bridge, OSM centre (287, −757)
-  southbranch: { position: [-760, 80, -160], target: [-850, 4, 330] },     // Randolph → Jackson bascules
+  southbranch: { position: [-768, 60, 650], target: [-856, 4, 230] },      // over the river between Van Buren and Congress, looking north up the bascules
   wells: { position: [-450, 35, -540], target: [-511, 6, -611] },          // Wells St double deck (L on top)
   buckingham: { position: [800, 55, 600], target: [711, 8, 693] },         // manifest (711, 692)
   cloudgate: { position: [398, 30, -46], target: [374, 5, -73] },           // manifest (374, −73)
