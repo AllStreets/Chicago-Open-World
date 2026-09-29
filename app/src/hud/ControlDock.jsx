@@ -1,6 +1,6 @@
 // app/src/hud/ControlDock.jsx — on-screen buttons for everything the keyboard does.
 import './ControlDock.css'
-import { RiAddLine, RiSubtractLine, RiArrowGoBackLine, RiArrowGoForwardLine, RiArrowUpSLine, RiArrowDownSLine, RiHome5Line, RiQuestionLine, RiArrowLeftSLine, RiArrowRightSLine, RiSearchLine, RiTrainLine, RiVolumeUpLine, RiVolumeMuteLine, RiTrophyLine } from 'react-icons/ri'
+import { RiAddLine, RiSubtractLine, RiArrowGoBackLine, RiArrowGoForwardLine, RiArrowUpSLine, RiArrowDownSLine, RiHome5Line, RiQuestionLine, RiArrowLeftSLine, RiArrowRightSLine, RiSearchLine, RiTrainLine, RiVolumeUpLine, RiVolumeMuteLine, RiTrophyLine, RiShip2Line } from 'react-icons/ri'
 import { useSports } from '../sports/sportsStore.js'
 import { useSoundStore } from '../audio/soundStore.js'
 import { useStore } from '../state/store.js'
@@ -60,6 +60,9 @@ export default function ControlDock() {
         <Btn label="Games — tonight's game and scores" onClick={() => useStore.getState().setGamesOpen(!useStore.getState().gamesOpen)} wide>
           <RiTrophyLine /><span>Games</span>{live && <span className="chip chip-live">LIVE</span>}
         </Btn>
+      </div>
+      <div className="dock-row">
+        <Btn label="Raise the river bridges (B)" onClick={() => useStore.getState().startBridgeLift()} wide><RiShip2Line /><span>Bridges</span></Btn>
       </div>
       <div className="dock-row">
         <Btn label="Home view (H)" onClick={() => cam('home')}><RiHome5Line /></Btn>

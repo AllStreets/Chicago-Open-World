@@ -35,3 +35,12 @@ describe('grid deck anti-aliasing', () => {
     expect(f).toMatch(/smoothstep\([^)]*gFwXZ/)
   })
 })
+
+describe('bascule leaves rotate in object space', () => {
+  it('the world-space trunnion pivot and axis are brought into the (quantized) mesh space before rotating', () => {
+    const s = patchFacadeShader(std())
+    expect(s.vertexShader).toContain('inverse(modelMatrix)')
+    expect(s.vertexShader).toMatch(/lp\.xyz = \(lInv \* vec4\(lp\.xyz, 1\.0\)\)\.xyz/)
+    expect(s.vertexShader).toMatch(/lk\.xyz = normalize\(mat3\(lInv\) \* lk\.xyz\)/)
+  })
+})

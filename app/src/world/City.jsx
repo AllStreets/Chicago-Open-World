@@ -6,6 +6,7 @@ import { useStore } from '../state/store.js'
 import SafeLoad from './SafeLoad.jsx'
 
 export const buildingMaterial = createFacadeMaterial()
+export const leafMaterial = createFacadeMaterial({ leaf: true }) // V6: bascule leaves rotate about their trunnions
 
 function Tile({ file }) {
   const { scene } = useGLTF(`/world/${file}`, false, false)

@@ -25,6 +25,7 @@ export const facadeUniforms = {
   uReady: { value: 0 },
   uStylePal: { value: createStyleTexture([{ key: 'none' }]) },
   uStyleRows: { value: 1 },
+  uLeafTex: { value: (() => { const t = new THREE.DataTexture(new Float32Array(256 * 8), 512, 1, THREE.RGBAFormat, THREE.FloatType); t.needsUpdate = true; return t })() },
   uTime: { value: 0 },
   uCrown: { value: new THREE.Vector4(0, 0, 0, 1) },
   uCrownB: { value: new THREE.Vector4(1, 0, 0, 1) },
@@ -381,9 +382,38 @@ if (!isRoof && !isParapet && !isVenue && uNight > 0.001) {
 }
 `
 
+const VERT_LEAF_HEAD = /* glsl */ `
+#ifdef USE_LEAF
+attribute float _leaf;
+uniform sampler2D uLeafTex;
+vec3 leafRotate(vec3 v, vec3 k, float a) { return v * cos(a) + cross(k, v) * sin(a) + k * dot(k, v) * (1.0 - cos(a)); }
+#endif
+`
+const VERT_LEAF_NORMAL = /* glsl */ `
+#ifdef USE_LEAF
+int li = int(_leaf + 0.5) - 1;
+vec4 lp = vec4(0.0), lk = vec4(0.0);
+if (li >= 0) {
+  lp = texelFetch(uLeafTex, ivec2(li * 2, 0), 0); lk = texelFetch(uLeafTex, ivec2(li * 2 + 1, 0), 0);
+  // the pivot and axis are world metres; tile meshes are quantized (a node offset/scale), so rotate in object space
+  mat4 lInv = inverse(modelMatrix);
+  lp.xyz = (lInv * vec4(lp.xyz, 1.0)).xyz;
+  lk.xyz = normalize(mat3(lInv) * lk.xyz);
+  objectNormal = leafRotate(objectNormal, lk.xyz, lp.w);
+}
+#endif
+`
+const VERT_LEAF_POS = /* glsl */ `
+#ifdef USE_LEAF
+if (li >= 0) transformed = lp.xyz + leafRotate(transformed - lp.xyz, lk.xyz, lp.w);
+#endif
+`
+
 export function patchFacadeShader(shader) {
   let v = shader.vertexShader, f = shader.fragmentShader
-  v = v.replace(need(v, '#include <common>'), `#include <common>\n${VERT_HEAD}`)
+  v = v.replace(need(v, '#include <common>'), `#include <common>\n${VERT_HEAD}${VERT_LEAF_HEAD}`)
+  v = v.replace(need(v, '#include <beginnormal_vertex>'), `#include <beginnormal_vertex>\n${VERT_LEAF_NORMAL}`)
+  v = v.replace(need(v, '#include <begin_vertex>'), `#include <begin_vertex>\n${VERT_LEAF_POS}`)
   v = v.replace(need(v, '#include <worldpos_vertex>'), `#include <worldpos_vertex>\n${VERT_BODY}`)
   f = f.replace(need(f, '#include <common>'), `#include <common>\n${FRAG_HEAD}`)
   f = f.replace(need(f, '#include <map_fragment>'), `#include <map_fragment>\n${FRAG_MAP}`)
@@ -396,10 +426,12 @@ export function patchFacadeShader(shader) {
   return shader
 }
 
-export function createFacadeMaterial() {
+export function createFacadeMaterial({ leaf = false } = {}) {
   const m = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.86, metalness: 0.02 })
+  if (leaf) m.defines = { USE_LEAF: '' }
   m.onBeforeCompile = patchFacadeShader
-  m.customProgramCacheKey = () => 'facade-v10'
+  const key = 'facade-v10' // V6 Task 3's key; only the -leaf suffix is new here
+  m.customProgramCacheKey = () => (leaf ? `${key}-leaf` : key)
   return m
 }
 

@@ -17,7 +17,7 @@ const ORDER = ['game', 'landmark', 'transit', 'neighborhood', 'view', 'command']
 // ⌘K on Mac, Ctrl+K on Windows/Linux; code covers non-Latin keyboard layouts.
 export const isPaletteKey = (e) => (e.metaKey || e.ctrlKey) && (e.key?.toLowerCase() === 'k' || e.code === 'KeyK')
 
-function commands() {
+export function commands() {
   const s = useStore.getState()
   const time = (t, name) => ({ id: `t:${t}`, kind: 'command', name, sub: 'Time of day', icon: 'time', run: () => s.setTimePreset(t) })
   return [
@@ -29,6 +29,7 @@ function commands() {
     { id: 'c:home', kind: 'command', name: 'Home view', sub: 'H', run: () => s.camCommand('home') },
     { id: 'c:north', kind: 'command', name: 'Face north', sub: 'N', run: () => s.camCommand('north') },
     { id: 'tr:toggle', kind: 'command', name: 'Transit lines on / off', sub: 'T', run: () => s.toggleTransit() },
+    { id: 'x:bridges', kind: 'command', name: 'Raise the river bridges', sub: 'B · a boat-run bridge lift', run: () => s.startBridgeLift() },
     { id: 'snd:toggle', kind: 'command', name: 'Sound on / off', sub: 'Train rumble · off by default', run: () => useSoundStore.getState().toggleSound() },
     { id: 'c:help', kind: 'command', name: 'Show controls & help', sub: '?', run: () => s.setHelpOpen(true) },
   ]

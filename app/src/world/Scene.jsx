@@ -23,6 +23,7 @@ import Trains from '../transit/Trains.jsx'
 import SportsClock from '../sports/SportsClock.jsx'
 import SportsLife from '../sports/SportsLife.jsx'
 import StationHits from '../transit/StationHits.jsx'
+import Landmarks from './Landmarks.jsx'
 import TrainAudio from '../transit/TrainAudio.jsx'
 import { followNearest } from '../transit/actions.js'
 
@@ -80,6 +81,7 @@ export default function Scene() {
   
       {manifest && <Land file={manifest.land} version={manifest.version} />}
       {manifest && <TileStreamer manifest={manifest} />}
+      {manifest && <Landmarks manifest={manifest} />}
       <TransitLayer />
       <StationHits />
       <TrainAudio />
