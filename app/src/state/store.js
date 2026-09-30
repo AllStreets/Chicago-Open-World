@@ -73,6 +73,7 @@ export const useStore = create((set) => ({
   setPlacesOn: (placesOn) => set({ placesOn }),
   tour: null,
   setTour: (tour) => set({ tour }),
+  lineAlerts: {}, // line id → { severity, headlines } from CTA alerts (P4)
   readout: { streets: 'STATE & MADISON', altitude: 0, heading: 0 },
   load: { total: 0, done: 0, keys: [], error: null, ready: false },
   setTimePreset: (timePreset) => set({ timePreset }),

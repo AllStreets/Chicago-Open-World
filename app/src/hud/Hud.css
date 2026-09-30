@@ -92,3 +92,6 @@
 .tl-chip.on { opacity: 1; border-color: rgba(255, 255, 255, 0.7); }
 .tl-more { background: none; border: 0; padding: 2px 4px; cursor: pointer; color: var(--text-faint); font: 500 10px var(--font-ui); letter-spacing: 0.08em; text-transform: uppercase; margin-left: 4px; }
 .tl-more:hover, .tl-more:focus-visible { color: var(--text); }
+/* a line with a CTA service alert (P4): an amber ring on its swatch, an alert icon in the full list */
+.tl-chip.alert { box-shadow: 0 0 0 2px #ffb547; }
+.tl-alert { margin-left: auto; color: #ffb547; font-size: 13px; }

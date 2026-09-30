@@ -15,6 +15,10 @@ export const glowUniforms = {
   uBaseHalf: { value: GLOW_DEFAULTS.baseHalfM },
   uLineOn: { value: new Float32Array(MAX_LINES).fill(1) },
   uGhost: { value: 0 }, // Scan (Phase 5) raises this to show subway track
+  uLineGain: { value: new Float32Array(MAX_LINES).fill(1) },  // P4: WORK brightens the useful lines
+  uLinePulse: { value: new Float32Array(MAX_LINES).fill(0) }, // P4: CTA alerts make a line breathe
+  uTime: { value: 0 },
+  uPulseAnim: { value: 1 },                                    // LOW: 0 → a steady +20 % instead
 }
 export const structureUniforms = { uNight: facadeUniforms.uNight, uAccent: { value: 1 } }
 
@@ -40,6 +44,10 @@ uniform float uMinPx;
 uniform float uBaseHalf;
 uniform float uLineOn[${MAX_LINES}];
 uniform float uGhost;
+uniform float uLineGain[${MAX_LINES}];
+uniform float uLinePulse[${MAX_LINES}];
+uniform float uTime;
+uniform float uPulseAnim;
 varying float vGlowSide;
 varying float vGlowOn;
 ${GLOW_GLSL}`)
@@ -58,7 +66,9 @@ ${GLOW_GLSL}`)
   float owHw = owGlowHalfWidth(owDist, uTanHalfFov, uViewportH, uMinPx, uBaseHalf);
   transformed += owAcross * (_lane * 2.0 * owHw + _side * owHw);
   vGlowSide = _side;
-  vGlowOn = uLineOn[int(_line + 0.5)] * mix(1.0, uGhost, _ghost) * _intensity;
+  int owL = int(_line + 0.5);
+  float owPulse = uLinePulse[owL] * (uPulseAnim > 0.5 ? 0.5 * (0.5 + 0.5 * sin(6.2832 * 0.6 * uTime)) : 0.4);
+  vGlowOn = uLineOn[owL] * uLineGain[owL] * (1.0 + owPulse) * mix(1.0, uGhost, _ghost) * _intensity;
 }`)
   shader.fragmentShader = f
     .replace(need(f, '#include <common>', 'glow'), `#include <common>
@@ -114,7 +124,7 @@ export const GLOW_BLENDING = THREE.AdditiveBlending
 export function createGlowMaterial() {
   const m = new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false, side: THREE.DoubleSide, toneMapped: false, blending: GLOW_BLENDING })
   m.onBeforeCompile = (s) => { patchGlowShader(s) }
-  m.customProgramCacheKey = () => 'ow-transit-glow-v1'
+  m.customProgramCacheKey = () => 'ow-transit-glow-v2' // P4: line gain and alert pulse
   return m
 }
 

@@ -6,6 +6,8 @@ import { useStore } from '../state/store.js'
 import { QUALITY } from '../lib/quality.js'
 import { getTransitPools } from './pools.js'
 import { glowUniforms, structureUniforms, setLineMask } from './transitMaterials.js'
+import { setLineIndex } from './lineEmphasis.js'
+import { useLineAlerts } from './lineAlerts.js'
 
 export default function TransitLayer() {
   const pools = getTransitPools()
@@ -14,9 +16,13 @@ export default function TransitLayer() {
   const hidden = useStore((s) => s.hiddenLines)
   const lines = useStore((s) => s.transit?.lines)
   useEffect(() => { setLineMask(lines ?? [], hidden) }, [lines, hidden])
+  useEffect(() => { setLineIndex(lines ?? []) }, [lines])
+  useEffect(() => { glowUniforms.uPulseAnim.value = quality === 'LOW' ? 0 : 1 }, [quality]) // LOW: a steady brightening, no animation
+  useLineAlerts()
   useEffect(() => { structureUniforms.uAccent.value = on ? 1 : 0; pools.glow.mesh.visible = on }, [on, pools])
   useEffect(() => { if (new URLSearchParams(window.location.search).has('stats')) window.__transitPools = pools }, [pools])
-  useFrame(({ camera, size, gl }) => {
+  useFrame(({ camera, size, gl, clock }) => {
+    glowUniforms.uTime.value = clock.elapsedTime
     glowUniforms.uViewportH.value = size.height * gl.getPixelRatio()
     glowUniforms.uTanHalfFov.value = Math.tan(((camera.fov ?? 42) * Math.PI) / 360)
   })
