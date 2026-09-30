@@ -1,0 +1,520 @@
+[
+  {
+    "id": "loop",
+    "name": "The Loop",
+    "pri_neigh": "Loop",
+    "character": "Chicago's downtown, ringed by the elevated L that gives it its name. Canyons of historic and modern towers, the theatre district on State and Randolph, and Millennium Park at its lakefront edge.",
+    "vibe": [
+      "downtown",
+      "architecture",
+      "theatre"
+    ],
+    "sources": [
+      {
+        "label": "Wikipedia — Chicago Loop",
+        "url": "https://en.wikipedia.org/wiki/Chicago_Loop",
+        "asOf": "2026-09"
+      }
+    ],
+    "rent": null
+  },
+  {
+    "id": "river-north",
+    "name": "River North",
+    "pri_neigh": "River North",
+    "character": "A short walk from Streeterville, River North turns from a gallery district by day into one of Chicago's prime nightlife zones by night — dense with restaurants, rooftop bars and clubs.",
+    "vibe": [
+      "nightlife",
+      "galleries",
+      "upscale"
+    ],
+    "sources": [
+      {
+        "label": "Wikipedia — River North",
+        "url": "https://en.wikipedia.org/wiki/River_North,_Chicago",
+        "asOf": "2026-09"
+      },
+      {
+        "label": "CHI ATLAS neighbourhood profiles",
+        "url": "https://github.com/AllStreets",
+        "asOf": "2026-09"
+      }
+    ],
+    "chiId": "river-north",
+    "rent": {
+      "oneBr": 2800,
+      "source": "CHI ATLAS neighbourhood data (avgRent — a single indicative average, shown as 1BR)",
+      "asOf": "2026-09"
+    }
+  },
+  {
+    "id": "streeterville",
+    "name": "Streeterville",
+    "pri_neigh": "Streeterville",
+    "character": "Tucked between the Magnificent Mile and Lake Michigan, Streeterville is one of Chicago's most walkable neighbourhoods: high-rises with lake views, world-class dining and Navy Pier steps away.",
+    "vibe": [
+      "upscale",
+      "lakefront",
+      "walkable"
+    ],
+    "sources": [
+      {
+        "label": "Wikipedia — Streeterville",
+        "url": "https://en.wikipedia.org/wiki/Streeterville,_Chicago",
+        "asOf": "2026-09"
+      },
+      {
+        "label": "CHI ATLAS neighbourhood profiles",
+        "url": "https://github.com/AllStreets",
+        "asOf": "2026-09"
+      }
+    ],
+    "chiId": "streeterville",
+    "rent": {
+      "oneBr": 3200,
+      "source": "CHI ATLAS neighbourhood data (avgRent — a single indicative average, shown as 1BR)",
+      "asOf": "2026-09"
+    }
+  },
+  {
+    "id": "gold-coast",
+    "name": "Gold Coast",
+    "pri_neigh": "Gold Coast",
+    "character": "Mansion-lined streets between the lake and Clark Street, anchored by the Astor Street District. Oak Street's designer shopping, Rush Street dining and Oak Street Beach make it the city's most polished lakefront address.",
+    "vibe": [
+      "historic",
+      "upscale",
+      "lakefront"
+    ],
+    "sources": [
+      {
+        "label": "Wikipedia — Gold Coast Historic District",
+        "url": "https://en.wikipedia.org/wiki/Gold_Coast_Historic_District",
+        "asOf": "2026-09"
+      },
+      {
+        "label": "CHI ATLAS neighbourhood profiles",
+        "url": "https://github.com/AllStreets",
+        "asOf": "2026-09"
+      }
+    ],
+    "chiId": "gold-coast",
+    "rent": {
+      "oneBr": 3100,
+      "source": "CHI ATLAS neighbourhood data (avgRent — a single indicative average, shown as 1BR)",
+      "asOf": "2026-09"
+    }
+  },
+  {
+    "id": "old-town",
+    "name": "Old Town",
+    "pri_neigh": "Old Town",
+    "character": "Best known as the home of The Second City, Old Town pairs historic cottages and gaslit side streets with a lively entertainment strip along Wells Street.",
+    "vibe": [
+      "entertainment",
+      "historic",
+      "nightlife"
+    ],
+    "sources": [
+      {
+        "label": "Wikipedia — Old Town",
+        "url": "https://en.wikipedia.org/wiki/Old_Town,_Chicago",
+        "asOf": "2026-09"
+      },
+      {
+        "label": "CHI ATLAS neighbourhood profiles",
+        "url": "https://github.com/AllStreets",
+        "asOf": "2026-09"
+      }
+    ],
+    "chiId": "old-town",
+    "rent": {
+      "oneBr": 2600,
+      "source": "CHI ATLAS neighbourhood data (avgRent — a single indicative average, shown as 1BR)",
+      "asOf": "2026-09"
+    }
+  },
+  {
+    "id": "lincoln-park",
+    "name": "Lincoln Park",
+    "pri_neigh": "Lincoln Park",
+    "character": "Named for the 1,208-acre park on its doorstep: tree-lined streets, a busy bar scene around DePaul, and the free Lincoln Park Zoo.",
+    "vibe": [
+      "green",
+      "family",
+      "bar scene"
+    ],
+    "sources": [
+      {
+        "label": "Wikipedia — Lincoln Park",
+        "url": "https://en.wikipedia.org/wiki/Lincoln_Park,_Chicago",
+        "asOf": "2026-09"
+      },
+      {
+        "label": "CHI ATLAS neighbourhood profiles",
+        "url": "https://github.com/AllStreets",
+        "asOf": "2026-09"
+      }
+    ],
+    "chiId": "lincoln-park",
+    "rent": {
+      "oneBr": 2400,
+      "source": "CHI ATLAS neighbourhood data (avgRent — a single indicative average, shown as 1BR)",
+      "asOf": "2026-09"
+    }
+  },
+  {
+    "id": "sheffield-depaul",
+    "name": "Sheffield & DePaul",
+    "pri_neigh": "Sheffield & DePaul",
+    "character": "The blocks around DePaul University's campus: student bars on Sheffield and Halsted, brownstones, and the Brown, Purple and Red lines stopping at Fullerton.",
+    "vibe": [
+      "college",
+      "bar scene",
+      "residential"
+    ],
+    "sources": [
+      {
+        "label": "Wikipedia — DePaul University",
+        "url": "https://en.wikipedia.org/wiki/DePaul_University",
+        "asOf": "2026-09"
+      }
+    ],
+    "rent": null
+  },
+  {
+    "id": "lake-view",
+    "name": "Lakeview",
+    "pri_neigh": "Lake View",
+    "character": "A big, lively North Side neighbourhood of greystones and three-flats, running from the lakefront parks west past Southport's shops and restaurants.",
+    "vibe": [
+      "residential",
+      "lakefront",
+      "lively"
+    ],
+    "sources": [
+      {
+        "label": "Wikipedia — Lakeview",
+        "url": "https://en.wikipedia.org/wiki/Lakeview,_Chicago",
+        "asOf": "2026-09"
+      }
+    ],
+    "rent": null
+  },
+  {
+    "id": "wrigleyville",
+    "name": "Wrigleyville",
+    "pri_neigh": "Wrigleyville",
+    "character": "The blocks around Wrigley Field, where game days fill Clark Street's sports bars and rooftop bleachers look straight into the ballpark.",
+    "vibe": [
+      "baseball",
+      "bar scene",
+      "game days"
+    ],
+    "sources": [
+      {
+        "label": "Wikipedia — Wrigleyville",
+        "url": "https://en.wikipedia.org/wiki/Wrigleyville,_Chicago",
+        "asOf": "2026-09"
+      }
+    ],
+    "rent": null
+  },
+  {
+    "id": "boystown",
+    "name": "Northalsted",
+    "pri_neigh": "Boystown",
+    "character": "Northalsted — long known as Boystown — is the first officially recognised gay village in the United States, its Halsted Street lined with bars, cabarets and the rainbow pylons of the Legacy Walk.",
+    "vibe": [
+      "inclusive",
+      "nightlife",
+      "community"
+    ],
+    "sources": [
+      {
+        "label": "Wikipedia — Northalsted",
+        "url": "https://en.wikipedia.org/wiki/Northalsted",
+        "asOf": "2026-09"
+      }
+    ],
+    "rent": null
+  },
+  {
+    "id": "wicker-park",
+    "name": "Wicker Park",
+    "pri_neigh": "Wicker Park",
+    "character": "Chicago's creative heartbeat: dive bars beside upscale dining, vintage boutiques beside design studios, all around the six-corner crossing of Milwaukee, North and Damen.",
+    "vibe": [
+      "artsy",
+      "indie",
+      "nightlife"
+    ],
+    "sources": [
+      {
+        "label": "Wikipedia — Wicker Park",
+        "url": "https://en.wikipedia.org/wiki/Wicker_Park,_Chicago",
+        "asOf": "2026-09"
+      },
+      {
+        "label": "CHI ATLAS neighbourhood profiles",
+        "url": "https://github.com/AllStreets",
+        "asOf": "2026-09"
+      }
+    ],
+    "chiId": "wicker-park",
+    "rent": {
+      "oneBr": 2100,
+      "source": "CHI ATLAS neighbourhood data (avgRent — a single indicative average, shown as 1BR)",
+      "asOf": "2026-09"
+    }
+  },
+  {
+    "id": "bucktown",
+    "name": "Bucktown",
+    "pri_neigh": "Bucktown",
+    "character": "Just north of Wicker Park, with the same creative energy and a more settled feel — brunch spots, independent boutiques and the 606 elevated trail.",
+    "vibe": [
+      "residential",
+      "artsy",
+      "families"
+    ],
+    "sources": [
+      {
+        "label": "Wikipedia — Bucktown",
+        "url": "https://en.wikipedia.org/wiki/Bucktown,_Chicago",
+        "asOf": "2026-09"
+      },
+      {
+        "label": "CHI ATLAS neighbourhood profiles",
+        "url": "https://github.com/AllStreets",
+        "asOf": "2026-09"
+      }
+    ],
+    "chiId": "bucktown",
+    "rent": {
+      "oneBr": 2300,
+      "source": "CHI ATLAS neighbourhood data (avgRent — a single indicative average, shown as 1BR)",
+      "asOf": "2026-09"
+    }
+  },
+  {
+    "id": "ukrainian-village",
+    "name": "Ukrainian Village",
+    "pri_neigh": "Ukrainian Village",
+    "character": "Onion-domed churches, well-kept worker cottages and a quiet grid of tree-lined streets, with Chicago Avenue's bars and restaurants along its edge.",
+    "vibe": [
+      "historic",
+      "residential",
+      "quiet"
+    ],
+    "sources": [
+      {
+        "label": "Wikipedia — Ukrainian Village",
+        "url": "https://en.wikipedia.org/wiki/Ukrainian_Village,_Chicago",
+        "asOf": "2026-09"
+      }
+    ],
+    "rent": null
+  },
+  {
+    "id": "west-town",
+    "name": "West Town",
+    "pri_neigh": "West Town",
+    "character": "A broad stretch of former industrial blocks and brick flats between the river and Wicker Park, now full of restaurants along Grand, Chicago and Division.",
+    "vibe": [
+      "mixed",
+      "foodie",
+      "residential"
+    ],
+    "sources": [
+      {
+        "label": "Wikipedia — West Town",
+        "url": "https://en.wikipedia.org/wiki/West_Town,_Chicago",
+        "asOf": "2026-09"
+      }
+    ],
+    "rent": null
+  },
+  {
+    "id": "west-loop",
+    "name": "West Loop",
+    "pri_neigh": "West Loop",
+    "character": "Restaurant Row and Fulton Market: the old meatpacking district reborn as a dining and tech corridor, with James Beard–winning kitchens beside Google's Chicago offices.",
+    "vibe": [
+      "foodie",
+      "tech",
+      "trendy"
+    ],
+    "sources": [
+      {
+        "label": "Wikipedia — West Loop",
+        "url": "https://en.wikipedia.org/wiki/West_Loop,_Chicago",
+        "asOf": "2026-09"
+      },
+      {
+        "label": "CHI ATLAS neighbourhood profiles",
+        "url": "https://github.com/AllStreets",
+        "asOf": "2026-09"
+      }
+    ],
+    "chiId": "west-loop",
+    "rent": {
+      "oneBr": 2900,
+      "source": "CHI ATLAS neighbourhood data (avgRent — a single indicative average, shown as 1BR)",
+      "asOf": "2026-09"
+    }
+  },
+  {
+    "id": "greektown",
+    "name": "Greektown",
+    "pri_neigh": "Greektown",
+    "character": "A few lively blocks of Halsted Street just west of the expressway, lined with Greek tavernas and bakeries and the National Hellenic Museum.",
+    "vibe": [
+      "foodie",
+      "heritage",
+      "compact"
+    ],
+    "sources": [
+      {
+        "label": "Wikipedia — Greektown",
+        "url": "https://en.wikipedia.org/wiki/Greektown,_Chicago",
+        "asOf": "2026-09"
+      }
+    ],
+    "rent": null
+  },
+  {
+    "id": "little-italy",
+    "name": "Little Italy & UIC",
+    "pri_neigh": "Little Italy, UIC",
+    "character": "Taylor Street's Italian restaurants and lemonade stands beside the University of Illinois Chicago campus and the Illinois Medical District.",
+    "vibe": [
+      "heritage",
+      "college",
+      "foodie"
+    ],
+    "sources": [
+      {
+        "label": "Wikipedia — Little Italy",
+        "url": "https://en.wikipedia.org/wiki/Little_Italy,_Chicago",
+        "asOf": "2026-09"
+      }
+    ],
+    "rent": null
+  },
+  {
+    "id": "south-loop",
+    "name": "South Loop",
+    "pri_neigh": "Near South Side",
+    "character": "Just south of the Loop, condo towers for young professionals sit beside Museum Campus, Soldier Field and easy lakefront access.",
+    "vibe": [
+      "professional",
+      "museums",
+      "mixed"
+    ],
+    "sources": [
+      {
+        "label": "Wikipedia — South Loop",
+        "url": "https://en.wikipedia.org/wiki/South_Loop,_Chicago",
+        "asOf": "2026-09"
+      },
+      {
+        "label": "CHI ATLAS neighbourhood profiles",
+        "url": "https://github.com/AllStreets",
+        "asOf": "2026-09"
+      }
+    ],
+    "chiId": "south-loop",
+    "rent": {
+      "oneBr": 2000,
+      "source": "CHI ATLAS neighbourhood data (avgRent — a single indicative average, shown as 1BR)",
+      "asOf": "2026-09"
+    }
+  },
+  {
+    "id": "chinatown",
+    "name": "Chinatown",
+    "pri_neigh": "Chinatown",
+    "character": "Chicago's Chinatown, through the gate on Wentworth: dim sum, bakeries and markets, and Ping Tom Park's pagoda on the river.",
+    "vibe": [
+      "foodie",
+      "heritage",
+      "walkable"
+    ],
+    "sources": [
+      {
+        "label": "Wikipedia — Chinatown",
+        "url": "https://en.wikipedia.org/wiki/Chinatown,_Chicago",
+        "asOf": "2026-09"
+      }
+    ],
+    "rent": null
+  },
+  {
+    "id": "pilsen",
+    "name": "Pilsen",
+    "pri_neigh": "Lower West Side",
+    "character": "Chicago's Mexican-American heart: murals on nearly every block of 18th Street, an exceptional food scene, and the National Museum of Mexican Art.",
+    "vibe": [
+      "artistic",
+      "cultural",
+      "authentic"
+    ],
+    "sources": [
+      {
+        "label": "Wikipedia — Pilsen",
+        "url": "https://en.wikipedia.org/wiki/Pilsen,_Chicago",
+        "asOf": "2026-09"
+      },
+      {
+        "label": "CHI ATLAS neighbourhood profiles",
+        "url": "https://github.com/AllStreets",
+        "asOf": "2026-09"
+      }
+    ],
+    "chiId": "pilsen",
+    "rent": {
+      "oneBr": 1600,
+      "source": "CHI ATLAS neighbourhood data (avgRent — a single indicative average, shown as 1BR)",
+      "asOf": "2026-09"
+    }
+  },
+  {
+    "id": "bridgeport",
+    "name": "Bridgeport",
+    "pri_neigh": "Bridgeport",
+    "character": "A long-rooted South Side neighbourhood of bungalows and corner taverns, home to five Chicago mayors, the Rate Field ballpark and a growing arts scene.",
+    "vibe": [
+      "historic",
+      "residential",
+      "baseball"
+    ],
+    "sources": [
+      {
+        "label": "Wikipedia — Bridgeport",
+        "url": "https://en.wikipedia.org/wiki/Bridgeport,_Chicago",
+        "asOf": "2026-09"
+      }
+    ],
+    "rent": null
+  },
+  {
+    "id": "bronzeville",
+    "name": "Bronzeville",
+    "pri_neigh": "Douglas",
+    "character": "The historic heart of Black Chicago — the \"Black Metropolis\" of the Great Migration — with landmark greystones, the IIT campus and the lakefront a short walk east.",
+    "vibe": [
+      "historic",
+      "cultural",
+      "residential"
+    ],
+    "sources": [
+      {
+        "label": "Wikipedia — Bronzeville",
+        "url": "https://en.wikipedia.org/wiki/Bronzeville,_Chicago",
+        "asOf": "2026-09"
+      }
+    ],
+    "rent": null
+  }
+]

@@ -41,6 +41,11 @@ const FILTERS = {
 // Transit (V3): route relations with their member tracks + stop nodes; stations and platforms.
 const QUERIES = {
   routes: (bb) => `[out:json][timeout:180];relation["type"="route"]["route"~"^(subway|light_rail|train)$"]${bb}->.r;.r out body;way(r.r)${bb};out geom;node(r.r)${bb};out;`,
+  // Places (P4 · I-4.1): named amenities, tourism, shops and leisure — centres and tags only (lib/pois.js sorts them)
+  pois: (bb) => `[out:json][timeout:180];(${['node', 'way', 'relation'].flatMap((t) => [
+    `${t}[name][amenity~"^(restaurant|fast_food|food_court|bar|pub|biergarten|nightclub|cafe|ice_cream|theatre|cinema|arts_centre|music_venue|events_venue|library|marketplace|pharmacy|bank|hospital|clinic|post_office|community_centre)$"]`,
+    `${t}[name][tourism~"^(museum|gallery|attraction|hotel|viewpoint)$"]`, `${t}[name][shop]`, `${t}[name][leisure~"^(park|playground|sports_centre|fitness_centre|marina)$"]`,
+  ]).map((x) => x + bb + ';').join('')});out center tags;`,
   stations: (bb) => `[out:json][timeout:180];(node["railway"="station"]${bb};way["railway"="station"]${bb};node["public_transport"="station"]${bb};way["railway"="platform"]${bb};way["public_transport"="platform"]["train"="yes"]${bb};way["public_transport"="platform"]["subway"="yes"]${bb};);out geom;`,
 }
 
@@ -53,4 +58,4 @@ export function overpassQuery(kind, { s, w, n, e }) {
 }
 
 // chunk grid per kind for the world fetch (nx × ny sub-boxes)
-export const FETCH_KINDS = { allbuildings: [6, 8], parts: [2, 3], water: [2, 3], parks: [2, 3], roads: [3, 4], trees: [2, 3], rail: [2, 3], stadiums: [1, 1], shore: [2, 3], coast: [1, 2], routes: [1, 1], stations: [1, 1] }
+export const FETCH_KINDS = { allbuildings: [6, 8], parts: [2, 3], water: [2, 3], parks: [2, 3], roads: [3, 4], trees: [2, 3], rail: [2, 3], stadiums: [1, 1], shore: [2, 3], coast: [1, 2], routes: [1, 1], stations: [1, 1], pois: [3, 4] }

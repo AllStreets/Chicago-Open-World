@@ -54,4 +54,7 @@ for (let page = 0, offset = 0; ; page++, offset += 5000) {
   if (JSON.parse(readFileSync(join(CACHE, name))).data.length < 5000) break
 }
 if (!existsSync(join(CACHE, 'city-boundary.json'))) save('city-boundary.json', await getJson(cityBoundaryUrl()))
+// neighbourhood boundaries for the LIVE lens (P4): City of Chicago y6yq-dbs2, kept as plain GeoJSON
+const HOODS = join(CACHE, '..', 'neighborhoods-y6yq.geojson')
+if (!existsSync(HOODS)) writeFileSync(HOODS, JSON.stringify(await getJson('https://data.cityofchicago.org/resource/y6yq-dbs2.geojson?$limit=500')))
 console.log('world fetch done')

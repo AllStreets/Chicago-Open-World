@@ -11282,6 +11282,63 @@
   },
   "size": 2048
  },
+ "neighborhoods": "neighborhoods.json",
+ "pois": {
+  "index": "pois-index.json",
+  "count": 6901,
+  "categories": [
+   {
+    "id": "food",
+    "label": "Food",
+    "icon": "RiRestaurantLine"
+   },
+   {
+    "id": "drinks",
+    "label": "Bars",
+    "icon": "RiGoblet2Line"
+   },
+   {
+    "id": "coffee",
+    "label": "Coffee",
+    "icon": "RiCupLine"
+   },
+   {
+    "id": "nightlife",
+    "label": "Nightlife",
+    "icon": "RiMoonLine"
+   },
+   {
+    "id": "venues",
+    "label": "Venues",
+    "icon": "RiMusic2Line"
+   },
+   {
+    "id": "culture",
+    "label": "Culture",
+    "icon": "RiBankLine"
+   },
+   {
+    "id": "shops",
+    "label": "Shops",
+    "icon": "RiShoppingBag3Line"
+   },
+   {
+    "id": "outdoors",
+    "label": "Outdoors",
+    "icon": "RiLeafLine"
+   },
+   {
+    "id": "hotels",
+    "label": "Hotels",
+    "icon": "RiHotelLine"
+   },
+   {
+    "id": "services",
+    "label": "Services",
+    "icon": "RiFirstAidKitLine"
+   }
+  ]
+ },
  "venues": "venues.json",
  "bridges": "bridges.json",
  "landmarkRuntime": "landmarks.json",

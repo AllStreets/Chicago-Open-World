@@ -26,6 +26,8 @@ import { venueZones, filterTrees, assertNoVenueTrees, outsideZones, cutZones } f
 import { createBlock, addTileToBlock, blockLayers, blockSidecar } from '../lib/blocks.js'
 import { bAcc, appendBuilding, appendLayer, asLayer } from '../lib/layers.js'
 import { preloadStatue } from '../lib/statues.js'
+import { poiRecord, dedupePois, anchorPoi, POI_CATEGORIES, POI_CAT_IDS } from '../lib/pois.js'
+import { buildNeighborhoods } from '../lib/zones.js'
 import { loadBlenderMesh } from '../lib/blenderMesh.js'
 import { setSeahorseMesh } from '../lib/landmarks.js'
 import { createStyleRegistry, assignHeroStyles, meshStyle, writeStylePalettePng, addMaterialStyles, styleIndex, partStyle } from '../lib/styles.js'
@@ -340,15 +342,26 @@ async function main() {
   const polysFor = (name, bounds) => polyIndexes[name].rect({ minX: bounds.minX - 6000, maxX: bounds.maxX + 6000, minZ: bounds.minZ - 6000, maxZ: bounds.maxZ + 6000 })
     .map((i) => i.p).filter((p) => p.bbox.maxX > bounds.minX && p.bbox.minX < bounds.maxX && p.bbox.maxZ > bounds.minZ && p.bbox.minZ < bounds.maxZ)
 
+  // ── Places (P4 · I-4.1): named OSM amenities, one per venue, pinned on the roof they belong to ──────────
+  const inWorld = (r) => r.lat >= WORLD_BBOX.s && r.lat <= WORLD_BBOX.n && r.lon >= WORLD_BBOX.w && r.lon <= WORLD_BBOX.e
+  const poiRecs = dedupePois(uniq(chunks('pois')).map(poiRecord).filter((r) => r && inWorld(r)).map((r) => { const [x, z] = project(r.lon, r.lat); return { ...r, x, z } }))
+  const poisByTile = new Map()
+  for (const r of poiRecs) { const k = tileKeyFor([r.x, r.z]); if (!poisByTile.has(k)) poisByTile.set(k, []); poisByTile.get(k).push(r) }
+  const poiIndex = []
+  log(`places: ${poiRecs.length} (${POI_CATEGORIES.map((c) => `${c.id} ${poiRecs.filter((r) => r.cat === c.id).length}`).join(', ')})`)
+  const r1 = (v) => Math.round(v * 10) / 10
+  const addrOf = (t) => [t['addr:housenumber'], t['addr:street']].filter(Boolean).join(' ') || null
+
   const tiles = []
   const blocks = new Map()
   const blockGlow = new Map()
   let n = 0
   for (const [key, t] of T) {
     const bounds = tileBounds(key)
-    const L0 = bAcc(), L1 = bAcc(), meta = []
+    const L0 = bAcc(), L1 = bAcc(), meta = [], tops = []
     t.b.forEach((b, i) => {
       const top = Math.max(0, ...b.pieces.map((p) => p.top), b.venueTop ?? 0)
+      tops[i] = top
       const family = b.facadeOverride ? (VENUE_FACADES[b.facadeOverride] ?? FACADE_FAMILIES.indexOf(b.facadeOverride)) : classifyFacade({ height: top, year: b.year ?? 0, area: b.area, type: b.tags?.building })
       const seed = b.seedOverride ?? hashSeed(b.id)
       const parapets = b.noParapet || b.sculptReplaces ? [] : b.pieces.map(parapetPiece).filter(Boolean)
@@ -394,7 +407,16 @@ async function main() {
     if (!blocks.has(bk)) blocks.set(bk, createBlock())
     if (tr.glowLod?.positions.length) { if (!blockGlow.has(bk)) blockGlow.set(bk, []); blockGlow.get(bk).push(tr.glowLod) }
     addTileToBlock(blocks.get(bk), key, { buildings: L1, ground: ground1, water: waterM, count: meta.length })
-    writeFileSync(join(OUT, 'tiles', `${key}.json`), JSON.stringify({ buildings: meta, trees: t.trees, props: t.props }))
+    // the tile's places, anchored against its own buildings (a 3 m margin catches entrance nodes)
+    const cand = t.b.map((b, i) => ({ polygons: b.polygons, top: tops[i], bldg: i, bb: b.bbox }))
+    const index = { query: (x, z) => cand.filter((c) => !c.bb || (x >= c.bb.minX - 3 && x <= c.bb.maxX + 3 && z >= c.bb.minZ - 3 && z <= c.bb.maxZ + 3)) }
+    const pois = (poisByTile.get(key) ?? []).map((r) => {
+      const a = anchorPoi(r, index), c = POI_CAT_IDS.indexOf(r.cat), addr = addrOf(r.tags)
+      const tg = Object.fromEntries(['cuisine', 'opening_hours', 'website'].filter((k) => r.tags[k]).map((k) => [k, r.tags[k]]))
+      poiIndex.push([r.id, r.name, c, Math.round(a.x), Math.round(a.z), key])
+      return { id: r.id, n: r.name, c, x: r1(a.x), y: r1(a.y), z: r1(a.z), b: a.bldg, ...(addr ? { a: addr } : {}), ...(Object.keys(tg).length ? { t: tg } : {}) }
+    })
+    writeFileSync(join(OUT, 'tiles', `${key}.json`), JSON.stringify({ buildings: meta, trees: t.trees, props: t.props, ...(pois.length ? { pois } : {}) }))
     tiles.push({ key, block: bk, bounds, lod0: `tiles/${key}.glb`, lod1: `tiles/${key}.lod1.glb`, meta: `tiles/${key}.json`, buildings: t.b.length, maxHeight: Math.max(0, ...meta.map((m) => m.height)) })
     if (++n % 50 === 0) log(`tiles written: ${n}`)
   }
@@ -485,6 +507,19 @@ async function main() {
 
   const [r0x, r0z] = project(RING0_BBOX.w, RING0_BBOX.n), [r1x, r1z] = project(RING0_BBOX.e, RING0_BBOX.s)
   writeFileSync(join(OUT, 'transit.json'), JSON.stringify(transit.json))
+  // ── Neighbourhoods (P4 · I-4.3): official boundaries + curated profiles, measured for their feel ─────────
+  const hoodFile = join(ROOT, 'cache', 'neighborhoods-y6yq.geojson')
+  let hoods = null
+  if (existsSync(hoodFile)) {
+    const major = /^(motorway|trunk|primary|secondary)(_link)?$/
+    hoods = buildNeighborhoods({
+      features: loadJson(hoodFile).features, curated: loadJson(join(ROOT, 'data', 'neighborhoods.curated.json')), project,
+      pois: poiRecs, stations: transit.json.stations, parks: greens.map((g) => g.outer),
+      roads: roads.filter((e) => major.test(e.tags?.highway ?? '')).map((e) => e.geometry.map((p) => project(p.lon, p.lat))),
+    })
+    writeFileSync(join(OUT, 'neighborhoods.json'), JSON.stringify(hoods))
+    log(`neighborhoods: ${hoods.zones.length} zones`)
+  } else log('neighborhoods: no boundary cache (run fetch:world) — LIVE lens has no zones')
   await writeTrainsGlb(join(OUT, 'trains.glb'), loadCatalog())
   writeFileSync(join(OUT, 'manifest.json'), JSON.stringify({
     version: MANIFEST_VERSION, ...manifestStamp(), origin: ORIGIN, tileSize: TILE_SIZE, bbox: WORLD_BBOX,
@@ -507,8 +542,11 @@ async function main() {
     tiles, blocks: blockList, land: 'ground/land.glb', lake: 'ground/lake.glb', landMask: 'land.json', transit: 'transit.json', trains: 'trains.glb', styles: 'styles.json', stylePalette: 'style-palette.png',
     shore: { file: 'water/shore.png', ...shore.grid, maxDist: SHORE.maxDist },
     heightfield: { file: 'heightfield.png', ...hf.grid, scale: HEIGHTFIELD.scale }, minimap: { file: 'minimap.png', bounds: mmBounds, size: 2048 },
+    neighborhoods: hoods ? 'neighborhoods.json' : null,
+    pois: poiIndex.length ? { index: 'pois-index.json', count: poiIndex.length, categories: POI_CATEGORIES } : null,
     venues: 'venues.json', bridges: 'bridges.json', landmarkRuntime: 'landmarks.json', schedules: existsSync(join(ROOT, 'data', 'schedules.json')) ? 'schedules.json' : null,
   }, null, 1))
+  if (poiIndex.length) { writeFileSync(join(OUT, 'pois-index.json'), JSON.stringify(poiIndex)); log(`pois-index.json: ${(statSync(join(OUT, 'pois-index.json')).size / 1e6).toFixed(2)} MB`) }
   log('manifest written')
   const dirBytes = (d) => readdirSync(d, { withFileTypes: true }).reduce((sum, e) => sum + (e.isDirectory() ? dirBytes(join(d, e.name)) : statSync(join(d, e.name)).size), 0)
   const worldBytes = dirBytes(OUT)

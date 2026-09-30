@@ -1,0 +1,143 @@
+[
+  {
+    "id": "river",
+    "name": "Architecture on the River",
+    "time": null,
+    "stops": [
+      {
+        "landmark": "wrigleybldg",
+        "title": "The Wrigley Building",
+        "text": "The gleaming white terra-cotta clock tower at the river's edge, finished in 1924. Floodlit every night since it opened, it was modelled on the Giralda tower of Seville's cathedral.",
+        "dwell": 9
+      },
+      {
+        "landmark": "tribune",
+        "title": "Tribune Tower",
+        "text": "The 1925 winner of the most famous design competition in skyscraper history: a Gothic crown of flying buttresses. Look down at the base, where more than 120 stones from world landmarks are set into the walls.",
+        "dwell": 9
+      },
+      {
+        "landmark": "trump",
+        "title": "Trump International Hotel & Tower",
+        "text": "A steel-and-glass tower whose setbacks line up with its neighbours — the Wrigley Building's cornice, Marina City's roofline and 330 North Wabash.",
+        "dwell": 9
+      },
+      {
+        "landmark": "marina1",
+        "title": "Marina City",
+        "text": "Bertrand Goldberg's 1964 corn cobs: sixteen petal balconies a floor, and nineteen floors of parking spiralling up beneath the apartments. A city within a city, with a marina at the river's edge.",
+        "dwell": 9
+      },
+      {
+        "landmark": "mart",
+        "title": "The Merchandise Mart",
+        "text": "When it opened in 1930 it was the largest building in the world by floor area. After dark, Art on the Mart projects moving artwork across its river façade.",
+        "dwell": 9
+      },
+      {
+        "landmark": "110wacker",
+        "title": "110 North Wacker",
+        "text": "The newest tower on the bend of the river, its fins and curving base following the water where the main stem meets the South Branch.",
+        "dwell": 9
+      },
+      {
+        "landmark": "willis",
+        "title": "Willis Tower",
+        "text": "Nine bundled tubes of black aluminium and bronze glass, the tallest building in the Western Hemisphere from 1973 to 1998. The Skydeck's glass Ledge hangs 1,353 feet over Wacker Drive.",
+        "dwell": 9
+      }
+    ]
+  },
+  {
+    "id": "lakefront",
+    "name": "Museum Campus & the Lakefront",
+    "time": null,
+    "stops": [
+      {
+        "landmark": "buckingham",
+        "title": "Buckingham Fountain",
+        "text": "Chicago's front door on the lake since 1927: pink Georgia marble, four pairs of bronze sea horses for the four lake states, and a centre jet that climbs 150 feet in the water shows.",
+        "dwell": 9
+      },
+      {
+        "landmark": "fieldmuseum",
+        "title": "The Field Museum",
+        "text": "The natural-history museum at the head of Museum Campus, home to SUE, the most complete Tyrannosaurus rex ever found.",
+        "dwell": 9
+      },
+      {
+        "landmark": "shedd",
+        "title": "Shedd Aquarium",
+        "text": "A 1930 Beaux-Arts temple for 32,000 animals, from beluga whales to sea otters. Its Oceanarium looks straight out over Lake Michigan.",
+        "dwell": 9
+      },
+      {
+        "landmark": "adler",
+        "title": "Adler Planetarium",
+        "text": "The first planetarium in the Western Hemisphere, opened in 1930 at the tip of the peninsula. Its lawn gives the widest unobstructed view of the skyline in the city.",
+        "dwell": 9
+      },
+      {
+        "landmark": "soldierfield",
+        "title": "Soldier Field",
+        "text": "The Bears' home since 1971, its 1924 Doric colonnades wrapped around a modern bowl — a war memorial first, a stadium second.",
+        "dwell": 9
+      },
+      {
+        "landmark": "northerlyisland",
+        "title": "Northerly Island",
+        "text": "A former airstrip turned lakefront prairie, with walking paths, a lagoon and the summer concert pavilion under its white tent.",
+        "dwell": 9
+      },
+      {
+        "landmark": "twelfthbeach",
+        "title": "12th Street Beach",
+        "text": "A small, quiet beach tucked behind the planetarium, facing open water — one of the calmest swims on the lakefront.",
+        "dwell": 9
+      }
+    ]
+  },
+  {
+    "id": "rivernorth-night",
+    "name": "A Night in River North",
+    "time": "NIGHT",
+    "stops": [
+      {
+        "landmark": "mart",
+        "title": "Art on the Mart",
+        "text": "After dark the Mart's river façade becomes one of the largest permanent digital art projections in the world, 2.5 acres of moving light.",
+        "dwell": 9
+      },
+      {
+        "landmark": "marina1",
+        "title": "Marina City at night",
+        "text": "The corn cobs lit from within, their petal balconies stacked like the scales of a pine cone above the river.",
+        "dwell": 9
+      },
+      {
+        "landmark": "wrigleybldg",
+        "title": "The Wrigley Building",
+        "text": "Floodlit white every night since 1921 — the brightest wall on the river.",
+        "dwell": 9
+      },
+      {
+        "landmark": "hancock",
+        "title": "875 North Michigan",
+        "text": "The tapering black tower with its X-bracing and twin antennas; its crown lights change colour with the seasons and the city's teams.",
+        "dwell": 9
+      },
+      {
+        "landmark": "centennialwheel",
+        "title": "The Centennial Wheel",
+        "text": "Navy Pier's 200-foot wheel, lit in shifting colours over the lake and the pier's summer fireworks.",
+        "dwell": 9
+      },
+      {
+        "landmark": "chicagotheatre",
+        "title": "The Chicago Theatre",
+        "text": "The six-storey C-H-I-C-A-G-O sign and its marquee of chasing bulbs, lighting State Street since 1921.",
+        "dwell": 9
+      }
+    ]
+  }
+]
