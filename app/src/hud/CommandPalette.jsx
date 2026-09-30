@@ -27,6 +27,7 @@ export function commands() {
     { id: 'c:orbit', kind: 'command', name: 'Orbit around here', sub: 'O', run: () => s.setCameraMode('ORBIT') },
     { id: 'c:home', kind: 'command', name: 'Home view', sub: 'H', run: () => s.camCommand('home') },
     { id: 'c:north', kind: 'command', name: 'Face north', sub: 'N', run: () => s.camCommand('north') },
+    { id: 'c:perf', kind: 'command', name: 'Performance stats: on / off', sub: 'Draw calls, triangles, frame rate', run: () => s.setPerfOn(!useStore.getState().perfOn) },
     { id: 'c:help', kind: 'command', name: 'Show controls & help', sub: '?', run: () => s.setHelpOpen(true) },
     ...featureCommands(),
   ]

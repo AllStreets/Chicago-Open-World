@@ -26,6 +26,7 @@ import StationHits from '../transit/StationHits.jsx'
 import Landmarks from './Landmarks.jsx'
 import TrainAudio from '../transit/TrainAudio.jsx'
 import { followNearest } from '../transit/actions.js'
+import PerfProbe from './PerfProbe.jsx'
 
 export default function Scene() {
   const [manifest, setManifest] = useState(null)
@@ -71,6 +72,8 @@ export default function Scene() {
   const gl = useThree((s) => s.gl)
   const threeScene = useThree((s) => s.scene)
   const threeCamera = useThree((s) => s.camera)
+  // test-only ?perf turns the exact draw probe on (it owns renderer.info while on, so ?stats specs that read it stay unaffected)
+  useEffect(() => { if (new URLSearchParams(window.location.search).has('perf')) useStore.getState().setPerfOn(true) }, [])
   useEffect(() => { if (new URLSearchParams(window.location.search).has('stats')) { window.__gl = gl; window.__store = useStore; window.__clearanceAt = clearanceAt; window.__scene = threeScene; window.__camera = threeCamera } }, [gl, threeScene, threeCamera])
 
   return (
@@ -90,6 +93,7 @@ export default function Scene() {
       <AtlasRig />
       <PostFX />
       <PerfWatch />
+      <PerfProbe />
       <SportsClock />
       <SportsLife />
     </>

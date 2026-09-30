@@ -18,6 +18,7 @@ import { hudScale, hudCompact } from '../lib/hudScale.js'
 import TransitLegend from './TransitLegend.jsx'
 import { useFeatureKeys } from './useFeatureKeys.js'
 import Toast from './Toast.jsx'
+import PerfOverlay from './PerfOverlay.jsx'
 
 export default function Hud() {
   useFeatureKeys()
@@ -46,6 +47,7 @@ export default function Hud() {
       <Minimap manifest={manifest} />
       <ControlDock />
       <FlightChip />
+      <PerfOverlay />
       <FollowChip />
       <Toast />
       <CommandPalette />

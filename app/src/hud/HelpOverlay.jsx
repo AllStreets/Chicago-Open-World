@@ -13,7 +13,7 @@ const GROUPS = [
     ['Click', 'a train, a station or a ballpark for its card'],
     ['⌘K', '“Follow a train” rides along (any key stops) · “Go to Clark/Lake” · type “tonight” for tonight’s game'],
   ]],
-  ['Time and quality', [['1 – 5', 'live Chicago time, dawn, day, dusk, night'], ['Quality', 'button on the right if things feel slow · Low also turns off water reflections']]],
+  ['Time and quality', [['1 – 5', 'live Chicago time, dawn, day, dusk, night'], ['Quality', 'button on the right if things feel slow · Low also turns off water reflections'], ['Stats', '⌘K “performance” shows draw calls and frame rate']]],
 ]
 
 export default function HelpOverlay() {

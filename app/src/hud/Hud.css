@@ -86,3 +86,4 @@
   overflow-y: auto; pointer-events: none; scrollbar-width: thin; }
 .hud-left-stack > * { pointer-events: auto; position: static !important; inset: auto !important; transform: none !important; width: 100% !important; max-width: 100%; max-height: none !important; flex-shrink: 0; }
 .hud-root[data-compact="true"] .hud-left-stack { top: 196px; bottom: 16px; } /* the wordmark wraps taller when compact */
+.perf-chip { position: absolute; top: 96px; right: 16px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; }
