@@ -1,6 +1,7 @@
 // app/src/lib/paletteSources.js — every feature's ⌘K entries in one place (G3). V3/V4 transit and V5 games feed in here;
 // V6 landmarks arrive through manifest.landmarks (kind 'landmark').
 import { useStore } from '../state/store.js'
+import { POI_CATEGORIES } from '../data/poiCategories.js'
 import { transitPlaces } from '../transit/palette.js'
 import { gamePlaces } from '../sports/palette.js'
 import { useSports } from '../sports/sportsStore.js'
@@ -26,5 +27,15 @@ export function lensCommands() {
   return [
     ...LENS_NAMES.map(([id, name, sub]) => ({ id: `lens:${id}`, kind: 'guide', name: `Lens: ${name}`, sub, aliases: [name, `${name} lens`], run: () => { if (s().lens !== id) s().setLens(id) } })),
     { id: 'lens:close', kind: 'guide', name: 'Close lens', sub: 'Esc', aliases: ['close guide'], run: () => { if (s().lens) s().setLens(s().lens) } },
+  ]
+}
+
+// Places (P4): the pins on or off, or just one category
+export function placeCommands() {
+  const s = () => useStore.getState()
+  return [
+    { id: 'places:show', kind: 'guide', name: 'Show places', sub: 'P · restaurants, bars, venues and more', aliases: ['places', 'pins'], run: () => s().setPlacesOn(true) },
+    { id: 'places:hide', kind: 'guide', name: 'Hide places', sub: 'P', aliases: ['places off'], run: () => s().setPlacesOn(false) },
+    ...POI_CATEGORIES.map((c) => ({ id: `places:only:${c.id}`, kind: 'guide', name: `Show only: ${c.label}`, sub: 'Places', aliases: [c.label, c.id], run: () => { s().setPoiCats([c.id]); s().setPlacesOn(true) } })),
   ]
 }

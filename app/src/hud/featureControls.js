@@ -1,7 +1,7 @@
 // app/src/hud/featureControls.js — every city-life feature and every way to reach it (backlog G3).
 // The dock row, the keyboard, ⌘K, the help card and the hint bar all read this list, so a control can never be added
 // in one place and forgotten in another. The adapters (use/isOn/toggle/available) are the only lines naming feature state.
-import { RiTrainLine, RiTrophyLine, RiVolumeUpLine, RiVolumeMuteLine, RiShip2Line, RiDropLine } from 'react-icons/ri'
+import { RiTrainLine, RiTrophyLine, RiVolumeUpLine, RiVolumeMuteLine, RiShip2Line, RiDropLine, RiMapPin2Line } from 'react-icons/ri'
 import { useStore } from '../state/store.js'
 import { useSoundStore } from '../audio/soundStore.js'
 import { FOUNTAIN_SCHEDULE } from '../landmarks/fountainSchedule.js'
@@ -37,6 +37,8 @@ export const FEATURE_CONTROLS = [
     use: () => useStore((s) => previewOn(s.fountainPreview)),
     isOn: () => previewOn(useStore.getState().fountainPreview),
     toggle: () => { const s = useStore.getState(); if (previewOn(s.fountainPreview)) s.stopFountainPreview(); else s.startFountainPreview() }, ...always },
+  { id: 'places', label: 'Places', key: 'KeyP', keyLabel: 'P', icon: RiMapPin2Line, hint: 'places',
+    help: 'pins for restaurants, bars, venues and more, on the roofs they belong to (always on in the Visit lens)', ...storeFlag('placesOn', 'setPlacesOn'), ...always },
 ]
 
 export const featureById = (id) => FEATURE_CONTROLS.find((c) => c.id === id)

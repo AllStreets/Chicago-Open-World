@@ -6,11 +6,14 @@ import { useSports } from '../sports/sportsStore.js'
 import { useStore } from '../state/store.js'
 import { buildPlaces, searchPlaces } from '../lib/places.js'
 import { BOOKMARKS } from '../lib/bookmarks.js'
-import { featurePlaces, featureCommands, lensCommands } from '../lib/paletteSources.js'
+import { featurePlaces, featureCommands, lensCommands, placeCommands } from '../lib/paletteSources.js'
+import { buildPlaceRows } from '../lib/poiFilter.js'
+import { worldUrl } from '../lib/manifest.js'
+import { buildingPose } from './cards/BuildingCard.jsx'
 
-const ICON = { landmark: RiBuilding2Line, neighborhood: RiMapPin2Line, view: RiCameraLensLine, command: RiCommandLine, time: RiSunLine, transit: RiTrainLine, game: RiTrophyLine, guide: RiCompass3Line }
-const SECTION = { landmark: 'Landmarks', neighborhood: 'Neighborhoods', view: 'Views', command: 'Commands', transit: 'Transit', game: 'Games', guide: 'Guide' }
-const ORDER = ['landmark', 'guide', 'transit', 'game', 'neighborhood', 'view', 'command']
+const ICON = { landmark: RiBuilding2Line, neighborhood: RiMapPin2Line, view: RiCameraLensLine, command: RiCommandLine, time: RiSunLine, transit: RiTrainLine, game: RiTrophyLine, guide: RiCompass3Line, place: RiMapPin2Line }
+const SECTION = { landmark: 'Landmarks', neighborhood: 'Neighborhoods', view: 'Views', command: 'Commands', transit: 'Transit', game: 'Games', guide: 'Guide', place: 'Places' }
+const ORDER = ['landmark', 'guide', 'place', 'transit', 'game', 'neighborhood', 'view', 'command']
 
 // ⌘K on Mac, Ctrl+K on Windows/Linux; code covers non-Latin keyboard layouts.
 export const isPaletteKey = (e) => (e.metaKey || e.ctrlKey) && (e.key?.toLowerCase() === 'k' || e.code === 'KeyK')
@@ -30,6 +33,7 @@ export function commands() {
     { id: 'c:help', kind: 'command', name: 'Show controls & help', sub: '?', run: () => s.setHelpOpen(true) },
     ...featureCommands(),
     ...lensCommands(),
+    ...placeCommands(),
   ]
 }
 
@@ -54,10 +58,20 @@ export default function CommandPalette() {
 
   const transit = useStore((s) => s.transit)
   const venues = useSports((s) => s.venues)
+  // every place by name (pois-index.json), fetched the first time the palette opens
+  const [placeRows, setPlaceRows] = useState([])
+  useEffect(() => {
+    if (!open || placeRows.length || !manifest?.pois?.index) return
+    const flyTo = (p) => { const s = useStore.getState(); s.startFlight(buildingPose({ x: p.x, z: p.z, heightM: 20 }), p.name); s.select({ kind: 'poi', id: p.id, data: { id: p.id, n: p.name, c: p.c, x: p.x, z: p.z } }) }
+    fetch(worldUrl(manifest.pois.index, manifest.version))
+      .then((r) => r.json())
+      .then((ix) => setPlaceRows(buildPlaceRows(ix).map((p) => ({ ...p, run: () => flyTo(p) }))))
+      .catch(() => {})
+  }, [open, manifest, placeRows.length])
   // feature entries are read when the palette opens (and when their data first arrives), not on every store change
-  const all = useMemo(() => [...buildPlaces(manifest, BOOKMARKS), ...featurePlaces(useStore.getState()), ...commands()], [manifest, transit, open, venues])
+  const all = useMemo(() => [...buildPlaces(manifest, BOOKMARKS), ...featurePlaces(useStore.getState()), ...commands(), ...placeRows], [manifest, transit, open, venues, placeRows])
   const results = useMemo(() => {
-    const found = q.trim() ? searchPlaces(q, all) : [...searchPlaces('', all.filter((p) => p.kind !== 'command' && p.kind !== 'guide')), ...all.filter((p) => p.kind === 'guide').slice(0, 3), ...all.filter((p) => p.kind === 'command').slice(0, 5)]
+    const found = q.trim() ? searchPlaces(q, all) : [...searchPlaces('', all.filter((p) => p.kind !== 'command' && p.kind !== 'guide' && p.kind !== 'place')), ...all.filter((p) => p.kind === 'guide').slice(0, 3), ...all.filter((p) => p.kind === 'command').slice(0, 5)]
     const grouped = ORDER.flatMap((k) => found.filter((r) => r.kind === k))
     return q.trim() ? found.slice(0, 40) : grouped.slice(0, 40)
   }, [q, all])

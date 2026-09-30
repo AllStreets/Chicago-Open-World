@@ -8,6 +8,7 @@ const manifest = { landmarks: [{ key: 'wrigleyfield', name: 'Wrigley Field', x: 
 import { vi } from 'vitest'
 vi.mock('../../lib/paletteSources.js', () => ({
   lensCommands: () => [],
+  placeCommands: () => [],
   featurePlaces: () => [
     { id: 'st:clark', kind: 'transit', name: 'Clark/Lake', sub: 'Station · Blue Brown Green Orange Pink Purple', pose: { position: [0, 120, 300], target: [0, 10, 0] } },
     { id: 'g:cubs', kind: 'game', name: "Go to tonight's game", sub: 'Cubs · Wrigley Field', pose: { position: [-2000, 200, -7000], target: [-2279, 10, -7372] } },

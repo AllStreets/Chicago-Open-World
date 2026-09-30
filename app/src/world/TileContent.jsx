@@ -10,6 +10,7 @@ import { worldUrl } from '../lib/manifest.js'
 import { disposeObject } from './dispose.js'
 import { waterMaterial, REFLECT_LAYER } from './materials/waterSurface.js'
 import { TRANSIT_LAYERS, addTileLayer, removeTileLayer } from '../transit/pools.js'
+import { registerTilePois, unregisterTilePois } from './poiRegistry.js'
 
 export const groundMaterial = createGroundMaterial()
 
@@ -64,6 +65,8 @@ export default function TileContent({ id, file, meta, lod, mats, version, onRead
     return () => { alive = false }
   }, [meta, lod, version])
   useEffect(() => { retain(url); return () => release(url, scene) }, [scene, url])
+  // this tile's places join the pins while it is shown at full detail (P4)
+  useEffect(() => { if (!side?.pois?.length) return undefined; registerTilePois(id, side.pois); return () => unregisterTilePois(id) }, [side, id])
   return (
     <>
       <primitive object={obj} />

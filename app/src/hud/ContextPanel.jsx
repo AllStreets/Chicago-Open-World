@@ -6,12 +6,13 @@ import { RiCloseLine } from 'react-icons/ri'
 import { useStore } from '../state/store.js'
 import { LENSES } from './LensRail.jsx'
 import BuildingCard from './cards/BuildingCard.jsx'
+import PoiCard from './cards/PoiCard.jsx'
 import './ContextPanel.css'
 
 const TRANSIT_KINDS = ['station', 'train'] // the transit card shows these
 
 // Card bodies register here as later tasks add them: kind → component({ selection })
-export const CARDS = { building: BuildingCard, landmark: BuildingCard }
+export const CARDS = { building: BuildingCard, landmark: BuildingCard, poi: PoiCard }
 // Lens panels likewise: lens id → component
 export const PANELS = {}
 

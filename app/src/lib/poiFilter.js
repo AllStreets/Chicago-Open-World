@@ -37,5 +37,5 @@ export function mergeLivePlaces(tilePois, live, { project, anchor, inWorld = () 
 // ⌘K rows for pois-index.json entries [id, name, catIdx, x, z, tileKey]
 export function buildPlaceRows(index, catIds = POI_CAT_IDS) {
   const label = (i) => POI_CATEGORIES.find((c) => c.id === catIds[i])?.label ?? 'Place'
-  return (index ?? []).map(([id, name, c, x, z, tile]) => ({ id: `p:${id}`, kind: 'place', name, sub: label(c), x, z, tile }))
+  return (index ?? []).map(([id, name, c, x, z, tile]) => ({ id: `p:${id}`, kind: 'place', name, sub: label(c), c, x, z, tile }))
 }

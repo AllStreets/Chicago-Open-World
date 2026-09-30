@@ -7,6 +7,8 @@ import * as THREE from 'three'
 import { computeBoundsTree, disposeBoundsTree, acceleratedRaycast } from 'three-mesh-bvh'
 import { useStore } from '../state/store.js'
 import { bldgIndexFromHit, buildingInfo, tooltipLines } from '../lib/picking.js'
+import { pickPin } from './PoiPins.jsx'
+import { POI_CATEGORIES } from '../data/poiCategories.js'
 
 THREE.BufferGeometry.prototype.computeBoundsTree = computeBoundsTree
 THREE.BufferGeometry.prototype.disposeBoundsTree = disposeBoundsTree
@@ -64,6 +66,8 @@ export default function Picker() {
       const now = performance.now()
       if (now - last < HOVER_MS) return
       last = now
+      const pin = pickPin(e.clientX, e.clientY) // a place pin wins over the building behind it
+      if (pin) { useStore.getState().setHover({ x: e.clientX, y: e.clientY, lines: [pin.n, [POI_CATEGORIES[pin.c]?.label, pin.a].filter(Boolean).join(' · ')], poiId: pin.id }); el.style.cursor = 'pointer'; return }
       const p = pick(e)
       if (!p) { clear(); return }
       useStore.getState().setHover({ x: e.clientX, y: e.clientY, lines: tooltipLines(p.info) })
@@ -73,6 +77,8 @@ export default function Picker() {
     const onUp = (e) => {
       const d = down; down = null
       if (!d || e.button !== 0 || Math.hypot(e.clientX - d.x, e.clientY - d.y) > 4 || performance.now() - d.t > 400) return // a drag, not a click
+      const pin = pickPin(e.clientX, e.clientY)
+      if (pin) { useStore.getState().select({ kind: 'poi', id: pin.id, data: pin }); return }
       const p = pick(e)
       if (!p) return
       const { info, hit } = p, tileId = hit.object.userData.tileId, before = useStore.getState().selection
