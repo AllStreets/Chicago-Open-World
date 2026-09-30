@@ -23,7 +23,7 @@ export function boatRunAt(date, order) {
   const c = chicagoClock(date), start = BOAT_RUNS.starts[c.weekday]
   const season = BOAT_RUNS.spring.includes(c.month) ? 'spring' : BOAT_RUNS.fall.includes(c.month) ? 'fall' : null
   if (!season || !start) return null
-  const elapsed = (c.hour - start[0]) * 3600 + (c.minute - start[1]) * 60 + c.second
+  const elapsed = (c.hour - start[0]) * 3600 + (c.minute - start[1]) * 60 + c.second + date.getMilliseconds() / 1000
   if (elapsed < 0 || elapsed > runDuration(order.length)) return null
   return { season, elapsed, order: season === 'spring' ? order : [...order].reverse() }
 }

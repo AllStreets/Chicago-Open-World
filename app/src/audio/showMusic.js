@@ -13,7 +13,7 @@ export function createShowMusic(ctx, score, { bells = false } = {}) {
   out.connect(panner).connect(ctx.destination)
   const beatLen = 60 / score.bpm
   let nextBeat = null, level = 0
-  const played = []
+  const played = new Set() // which voices have sounded (bounded: one entry per voice kind)
 
   function env(g, t, attack, peak, release) {
     g.gain.setValueAtTime(0.0001, t)
@@ -32,16 +32,16 @@ export function createShowMusic(ctx, score, { bells = false } = {}) {
   const pad = (chord, t, st) => {
     const bar = beatLen * score.beatsPerBar
     for (const n of chord.slice(1)) for (const d of [-7, 7]) voice('sawtooth', midiToHz(n), t, bar, 0.025 * (0.6 + 0.4 * st.intensity), { attack: 0.5, release: 0.8, detune: d, filter: 700 + 1600 * st.intensity })
-    played.push('pad')
+    played.add('pad')
   }
-  const bass = (chord, t, st) => { voice('triangle', midiToHz(chord[0] - 12), t, beatLen * 1.8, 0.16 * (0.7 + 0.3 * st.intensity), { attack: 0.02, release: 0.4 }); played.push('bass') }
+  const bass = (chord, t, st) => { voice('triangle', midiToHz(chord[0] - 12), t, beatLen * 1.8, 0.16 * (0.7 + 0.3 * st.intensity), { attack: 0.02, release: 0.4 }); played.add('bass') }
   const arp = (chord, t, st, beatInBar) => {
     const steps = st.intensity > 0.6 ? 2 : 1
     for (let k = 0; k < steps; k++) {
       const n = chord[1 + ((beatInBar * steps + k) % (chord.length - 1))] + 12
       voice('triangle', midiToHz(n), t + (k * beatLen) / steps, beatLen / steps, 0.05 * st.intensity, { attack: 0.005, release: 0.18 })
     }
-    played.push('arp')
+    played.add('arp')
   }
   const MELODY = [[3, 2], [2, 1], [1, 1]] // chord-tone index, beats: a half note and two quarters, every bar
   const melody = (chord, t, st, beatInBar) => {
@@ -50,10 +50,10 @@ export function createShowMusic(ctx, score, { bells = false } = {}) {
       if (at === beatInBar) voice('sine', midiToHz(chord[Math.min(idx, chord.length - 1)] + 24), t, beatLen * beats, 0.06 * (0.4 + 0.6 * st.intensity), { attack: 0.04, release: 0.35 })
       at += beats
     }
-    played.push('melody')
+    played.add('melody')
   }
-  const bell = (t) => { for (const [hz, a] of [[1760, 0.05], [4400, 0.015]]) voice('sine', hz, t, 0.05, a, { attack: 0.002, release: 0.25 }); played.push('bell') }
-  const horn = (t) => { for (const hz of [98, 146.8]) voice('sawtooth', hz, t, 2.4, 0.09, { attack: 0.15, release: 0.6, filter: 520 }); played.push('horn') }
+  const bell = (t) => { for (const [hz, a] of [[1760, 0.05], [4400, 0.015]]) voice('sine', hz, t, 0.05, a, { attack: 0.002, release: 0.25 }); played.add('bell') }
+  const horn = (t) => { for (const hz of [98, 146.8]) voice('sawtooth', hz, t, 2.4, 0.09, { attack: 0.15, release: 0.6, filter: 520 }); played.add('horn') }
 
   function playBeat(i, when) {
     const st = scoreAt(score, i * beatLen), chord = st.chord
@@ -69,7 +69,8 @@ export function createShowMusic(ctx, score, { bells = false } = {}) {
     out, played,
     // schedule every beat that falls in [showT, showT + LOOKAHEAD_S) and has not been scheduled yet
     tick(showT) {
-      const first = Math.ceil(showT / beatLen - 1e-9)
+      // the first tick lands a few ms into the show: a beat that began within the lookahead still plays (the horn, the opening chord)
+      const floor = Math.floor(showT / beatLen + 1e-9), first = showT - floor * beatLen < LOOKAHEAD_S ? floor : floor + 1
       if (nextBeat == null || first > nextBeat + 1 || first < nextBeat - 1) nextBeat = first // a jump: start from here
       while (nextBeat * beatLen < showT + LOOKAHEAD_S) {
         const when = ctx.currentTime + Math.max(0, nextBeat * beatLen - showT)

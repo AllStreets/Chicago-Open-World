@@ -27,7 +27,7 @@ describe('show music engine', () => {
   it('the bridge score opens with the ship horn and rings the gate bells', () => {
     const { ctx, started } = fakeCtx(), m = createShowMusic(ctx, SCORES.bridge, { bells: true })
     m.tick(0)
-    expect(m.played).toContain('horn'); expect(m.played).toContain('bell')
+    expect(m.played.has('horn')).toBe(true); expect(m.played.has('bell')).toBe(true)
   })
   it('jumping ahead (a preview started mid-show, or a dropped tab) does not replay the skipped beats', () => {
     const { ctx, started } = fakeCtx(), m = createShowMusic(ctx, SCORES.fountain)

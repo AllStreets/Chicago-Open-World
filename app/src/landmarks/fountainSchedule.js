@@ -30,6 +30,6 @@ export function fountainShow(date, { dark = false, previewStart = null } = {}) {
   const c = chicagoClock(date), md = c.month * 100 + c.day
   if (md < S.season.from[0] * 100 + S.season.from[1] || md > S.season.to[0] * 100 + S.season.to[1]) return OFF('season')
   if (c.hour < S.open || c.hour >= S.close) return OFF('hours')
-  if (c.hour <= S.lastShowHour && c.minute < S.showMinutes) return show(c.minute + c.second / 60, dark, 'show')
+  if (c.hour <= S.lastShowHour && c.minute < S.showMinutes) return show(c.minute + (c.second + date.getMilliseconds() / 1000) / 60, dark, 'show') // ms: the music and jets run on this clock
   return { state: 'display', reason: 'display', levels: DISPLAY, colour: null }
 }
