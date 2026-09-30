@@ -3,7 +3,8 @@ import { chicagoClock } from '../lib/chicagoTime.js'
 
 export const MAX_LIFT_DEG = 75
 export const LIFT = { raiseS: 90, holdS: 240, lowerS: 90, staggerS: 150 }
-export const LIFT_DEMO = { raiseS: 25, holdS: 30, lowerS: 25, staggerS: 6 }
+export const LIFT_DEMO = { raiseS: 14, holdS: 40, lowerS: 14, staggerS: 2.5 } // the B button: every bridge moving within half a minute
+export const STOP_LOWER_S = 6 // pressing B again: every leaf down within seconds
 // Spring runs bring sailboats in from the lake to the boatyards, fall runs take them back out.
 export const BOAT_RUNS = { spring: [4, 5, 6], fall: [9, 10, 11], starts: { 3: [9, 30], 6: [8, 0] }, source: 'https://www.chicagoloopbridges.com/ (CDOT boat-run lift schedule)' }
 
@@ -28,10 +29,10 @@ export function boatRunAt(date, order) {
   return { season, elapsed, order: season === 'spring' ? order : [...order].reverse() }
 }
 
-// manualStop: the person pressed B again mid-lift — every leaf eases down from where it was over one lowerS.
+// manualStop: the person pressed B again mid-lift — every leaf eases down from where it was within STOP_LOWER_S.
 export function liftState({ now, manualStart = null, manualStop = null, order }) {
   if (manualStart != null && manualStop != null) {
-    const k = (now - manualStop) / 1000 / LIFT_DEMO.lowerS
+    const k = (now - manualStop) / 1000 / STOP_LOWER_S
     if (k >= 1) return { source: 'manual', done: true, angles: {}, T: LIFT_DEMO }
     const from = liftPlan(order, (manualStop - manualStart) / 1000, LIFT_DEMO), e = ease(Math.max(0, k))
     return { source: 'manual', done: false, angles: Object.fromEntries(order.map((b) => [b, from[b] * (1 - e)])), T: LIFT_DEMO }

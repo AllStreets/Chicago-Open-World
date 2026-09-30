@@ -28,3 +28,16 @@ describe('glow width', () => {
     expect(GLOW_GLSL).toContain('0.200 + 0.800 * clamp(night, 0.0, 1.0)')
   })
 })
+
+import { glowDepthPull } from '../glowWidth.js'
+import { patchGlowShader } from '../transitMaterials.js'
+describe('glow depth pull (user fixes: the neon lines were cut into dashes)', () => {
+  it('pulls the ribbon toward the camera by 12 % of the distance, at most 120 m', () => {
+    expect(glowDepthPull(100)).toBeCloseTo(12); expect(glowDepthPull(2000)).toBe(120); expect(glowDepthPull(0)).toBe(0)
+  })
+  it('the glow shader applies the same pull', () => {
+    expect(GLOW_GLSL).toContain('owGlowPull')
+    const s = patchGlowShader({ uniforms: {}, vertexShader: '#include <common>\n#include <begin_vertex>', fragmentShader: '#include <common>\n#include <opaque_fragment>' })
+    expect(s.vertexShader).toContain('owGlowPull(owDist)')
+  })
+})

@@ -41,3 +41,9 @@ export function buildPlaceRows(index, catIds = POI_CAT_IDS) {
   const label = (i) => POI_CATEGORIES.find((c) => c.id === catIds[i])?.label ?? 'Place'
   return (index ?? []).map(([id, name, c, x, z, tile]) => ({ id: `p:${id}`, kind: 'place', name, sub: label(c), c, x, z, tile }))
 }
+
+// Where the pins gather: a third of the way from the camera toward what it looks at — so the buildings in front of you
+// get their pins even when the view runs far down a street (the camera target alone can be a kilometre away).
+export function pinFocus([cx, , cz], [tx, , tz]) {
+  return [Math.round(cx + (tx - cx) * 0.35), Math.round(cz + (tz - cz) * 0.35)]
+}

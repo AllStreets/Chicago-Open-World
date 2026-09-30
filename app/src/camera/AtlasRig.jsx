@@ -191,9 +191,10 @@ export default function AtlasRig() {
       const def = tourById(tr.id)
       if (!def) { useStore.getState().setTour(null); return }
       if (tourPosesRef.current.id !== tr.id) tourPosesRef.current = { id: tr.id, poses: tourPoses(def, useStore.getState().manifest) }
+      if (tr.from === undefined) { useStore.getState().setTour({ ...tr, from: pose(c) }); return } // the tour flies in from here
       if (tr.playing) tourClock.t += dt
       if (Math.abs(tourClock.t - tr.t) > 0.25) useStore.getState().setTour({ ...tr, t: tourClock.t })
-      const at = tourAt(def, tourPosesRef.current.poses, tourClock.t)
+      const at = tourAt(def, tourPosesRef.current.poses, tourClock.t, tr.from)
       const p = liftAboveRoofs(at.pose, clearanceAt)
       c.setLookAt(...p.position, ...p.target, false)
       if (at.done) useStore.getState().setTour({ ...useStore.getState().tour, playing: false }) // hold the last stop until Exit

@@ -16,3 +16,13 @@ describe('POI filter chips', () => {
     expect(useStore.getState().poiCats.length).toBe(10)
   })
 })
+
+describe('POI colours (user fixes)', () => {
+  it('every category has its own colour, and each chip carries it', async () => {
+    const { POI_CATEGORIES } = await import('../../data/poiCategories.js')
+    expect(new Set(POI_CATEGORIES.map((c) => c.color)).size).toBe(POI_CATEGORIES.length)
+    render(<PoiFilters />)
+    const bars = screen.getByRole('button', { name: 'Bars' })
+    expect(bars.style.getPropertyValue('--cat')).toBe('#ffc23d')
+  })
+})

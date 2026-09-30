@@ -1,7 +1,7 @@
 // Deferred minors from the V4–V6 reviews, each pinned.
 import { describe, it, expect, vi } from 'vitest'
 import * as THREE from 'three'
-import { liftState, LIFT_DEMO, MAX_LIFT_DEG } from '../lift.js'
+import { liftState, LIFT_DEMO, MAX_LIFT_DEG, STOP_LOWER_S } from '../lift.js'
 import { patchFacadeShader } from '../../world/materials/facadeMaterial.js'
 import { createRumble } from '../../audio/rumble.js'
 
@@ -14,7 +14,7 @@ describe('deferred review minors', () => {
     expect(up).toBeGreaterThan(0.5)
     expect(at(stop + 1000).angles.a).toBeGreaterThan(0)           // no snap to 0
     expect(at(stop + 1000).angles.a).toBeLessThanOrEqual(up + 1e-9)
-    expect(at(stop + LIFT_DEMO.lowerS * 1000 + 10)).toMatchObject({ done: true, angles: {} })
+    expect(at(stop + STOP_LOWER_S * 1000 + 10)).toMatchObject({ done: true, angles: {} })
     for (let t = stop; t < stop + 30000; t += 997) expect(at(t).angles.a ?? 0).toBeLessThanOrEqual((MAX_LIFT_DEG * Math.PI) / 180 + 1e-9)
   })
   it('V6 #5: styleBase never reads outside the loaded palette (stone grey, not black)', () => {
@@ -28,7 +28,9 @@ describe('deferred review minors', () => {
     const ctx = { sampleRate: 8000, currentTime: 0, destination: node(), createBuffer: (c, n) => ({ getChannelData: () => new Float32Array(n) }), createBufferSource: node, createBiquadFilter: node, createOscillator: node, createGain: () => { const g = node(); gains.push(g); return g } }
     createRumble(ctx).set(0.8, 2)
     const targets = gains.map((g) => g.gain.setTargetAtTime.mock.calls.map((c) => c[0]))
-    // clack base (level·0.15) and LFO depth (level·0.15) both set: the gain swings 0 … 2A instead of ±A
-    expect(targets.filter((t) => t.length && Math.abs(t[0] - 0.12) < 1e-9).length).toBeGreaterThanOrEqual(2)
+    // clack base (level·0.14) with an LFO of half that depth (user fixes: a full-depth pulse gated the sound on and off
+    // and made a followed train sound choppy): the rail joints still pulse, the clatter never cuts out
+    expect(targets.some((t) => t.length && Math.abs(t[0] - 0.112) < 1e-9)).toBe(true)
+    expect(targets.some((t) => t.length && Math.abs(t[0] - 0.056) < 1e-9)).toBe(true)
   })
 })

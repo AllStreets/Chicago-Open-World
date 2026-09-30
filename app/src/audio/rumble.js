@@ -15,7 +15,7 @@ export function createRumble(ctx) {
   const band = ctx.createBiquadFilter(); band.type = 'bandpass'; band.frequency.value = 900; band.Q.value = 3
   const gain = ctx.createGain(); gain.gain.value = 0
   const clack = ctx.createGain(); clack.gain.value = 0
-  const lfo = ctx.createOscillator(); lfo.type = 'square'; lfo.frequency.value = 1
+  const lfo = ctx.createOscillator(); lfo.type = 'sine'; lfo.frequency.value = 1
   const lfoGain = ctx.createGain(); lfoGain.gain.value = 0
   src.connect(low).connect(gain).connect(ctx.destination)
   src.connect(band).connect(clack).connect(ctx.destination)
@@ -25,8 +25,10 @@ export function createRumble(ctx) {
     set(level, hz) {
       const t = ctx.currentTime
       gain.gain.setTargetAtTime(level * 0.6, t, 0.25)
-      clack.gain.setTargetAtTime(level * 0.15, t, 0.25) // base under the square LFO: the gain swings 0…2A, a pulse per rail joint
-      lfoGain.gain.setTargetAtTime(level * 0.15, t, 0.25)
+      // the clatter breathes with each rail joint (a sine at half depth over a steady base) — a full-depth square gate
+      // switched the sound on and off and made a followed train sound choppy
+      clack.gain.setTargetAtTime(level * 0.14, t, 0.25)
+      lfoGain.gain.setTargetAtTime(level * 0.07, t, 0.25)
       lfo.frequency.setTargetAtTime(Math.max(0.1, hz), t, 0.25)
     },
     stop() {

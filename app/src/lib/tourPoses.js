@@ -46,5 +46,6 @@ export function startTour(id, store) {
   tourClock.t = 0
   s.clearFlight?.(); s.stopFollow?.()
   if (def.time) s.setTimePreset(def.time)
-  s.setTour({ id, t: 0, playing: true })
+  s.setTour({ id, t: 0, playing: true }) // `from` (the camera now) is filled in by the camera rig
+  if (typeof document !== 'undefined') document.activeElement?.blur?.() // Space pauses the tour — it must not re-press the button that started it
 }

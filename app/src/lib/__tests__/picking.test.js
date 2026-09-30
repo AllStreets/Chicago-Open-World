@@ -35,3 +35,15 @@ describe('picking', () => {
     expect(buildingInfo({ buildings: [] }, 3)).toBeNull()
   })
 })
+
+describe('landmark names on hover (user fixes)', () => {
+  const meta = { buildings: [{ id: 'w1', name: null, address: '333 West 35th Street', stories: 6, year: 1989, height: 40, hero: 'ratefield' }] }
+  const landmarks = [{ key: 'ratefield', name: 'Rate Field', kind: 'venue', kindLine: 'Ballpark · home of the White Sox' }]
+  it('a hero building takes its landmark name', () => {
+    expect(buildingInfo(meta, 0, landmarks).name).toBe('Rate Field')
+  })
+  it('a venue shows name, address and what it is — no stories line', () => {
+    const lines = tooltipLines(buildingInfo(meta, 0, landmarks))
+    expect(lines).toEqual(['Rate Field', '333 West 35th Street', 'Ballpark · home of the White Sox'])
+  })
+})

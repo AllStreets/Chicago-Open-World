@@ -12,7 +12,10 @@ export function buildingPose({ x, z, heightM = 20 }) {
 
 export default function BuildingCard({ selection }) {
   const d = selection.data ?? {}
-  const facts = [d.stories && (d.storiesEstimated ? `~${d.stories} floors` : `${d.stories} floors`), d.year ? `built ${d.year}` : null, d.heightM ? `${Math.round(d.heightM)} m` : null].filter(Boolean)
+  const venue = d.kind && d.kind !== 'tower' // a stadium, museum or fountain says what it is, not how many floors
+  const facts = venue
+    ? [d.kindLine, d.year ? `built ${d.year}` : null].filter(Boolean)
+    : [d.stories && (d.storiesEstimated ? `~${d.stories} floors` : `${d.stories} floors`), d.year ? `built ${d.year}` : null, d.heightM ? `${Math.round(d.heightM)} m` : null].filter(Boolean)
   return (
     <>
       {/* a building with no name in the map data leads with its address */}

@@ -10,9 +10,9 @@ import { SCORES } from '../audio/score.js'
 import { fountainShow } from './fountainSchedule.js'
 import { facadeUniforms } from '../world/materials/facadeMaterial.js'
 import { liveLift } from '../bridges/BridgeLeaves.jsx'
-import { liftShowTime, nearestMoving } from './showClock.js'
+import { liftShowTime, nearestMoving, fountainMusicRange } from './showClock.js'
 
-const HEAR_FOUNTAIN_M = 2500, HEAR_BRIDGE_M = 3000
+const HEAR_BRIDGE_M = 3000
 const SOUND_OFF = 'Sound is off — press M (or the Sound button) to hear the music'
 
 export default function ShowMusic({ fountainCentre, bridges }) {
@@ -32,8 +32,9 @@ export default function ShowMusic({ fountainCentre, bridges }) {
     const cam = [camera.position.x, camera.position.z], now = Date.now()
     // Buckingham: the schedule (an Intl clock) is read four times a second; the show time runs on between reads
     const f = fState.current
-    if (clock.elapsedTime - f.at > 0.25) { f.at = clock.elapsedTime; f.s = fountainShow(new Date(now), { dark: facadeUniforms.uNight.value > 0.35, previewStart: useStore.getState().fountainPreview }); f.base = f.s.minute * 60 }
-    const fShow = f.s?.state === 'show' && fountainCentre && Math.hypot(cam[0] - fountainCentre[0], cam[1] - fountainCentre[1]) < HEAR_FOUNTAIN_M
+    if (clock.elapsedTime - f.at > 0.25) { f.at = clock.elapsedTime; f.s = fountainShow(new Date(now), { dark: facadeUniforms.uNight.value > 0.35, previewStart: useStore.getState().fountainPreview, stoppedAt: useStore.getState().fountainStoppedAt }); f.base = f.s.minute * 60 }
+    // a show you started plays across downtown; the hourly scheduled show is heard only near the fountain
+    const fShow = f.s?.state === 'show' && fountainCentre && Math.hypot(cam[0] - fountainCentre[0], cam[1] - fountainCentre[1]) < fountainMusicRange(f.s.reason)
     if (fShow) {
       fm.current ??= createShowMusic(ctx, SCORES.fountain)
       fm.current.setPosition([fountainCentre[0], 10, fountainCentre[1]]); fm.current.setLevel(0.9)

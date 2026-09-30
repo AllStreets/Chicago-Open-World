@@ -65,6 +65,7 @@ ${GLOW_GLSL}`)
   owAcross = owLen > 1e-4 ? owAcross / owLen : vec3(0.0, 1.0, 0.0);
   float owHw = owGlowHalfWidth(owDist, uTanHalfFov, uViewportH, uMinPx, uBaseHalf);
   transformed += owAcross * (_lane * 2.0 * owHw + _side * owHw);
+  transformed += (owToCam / max(owDist, 1e-3)) * owGlowPull(owDist); // drawn a little toward the camera: low roofs no longer cut the line
   vGlowSide = _side;
   int owL = int(_line + 0.5);
   float owPulse = uLinePulse[owL] * (uPulseAnim > 0.5 ? 0.5 * (0.5 + 0.5 * sin(6.2832 * 0.6 * uTime)) : 0.4);
@@ -124,7 +125,7 @@ export const GLOW_BLENDING = THREE.AdditiveBlending
 export function createGlowMaterial() {
   const m = new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false, side: THREE.DoubleSide, toneMapped: false, blending: GLOW_BLENDING })
   m.onBeforeCompile = (s) => { patchGlowShader(s) }
-  m.customProgramCacheKey = () => 'ow-transit-glow-v2' // P4: line gain and alert pulse
+  m.customProgramCacheKey = () => 'ow-transit-glow-v3' // P4: line gain and alert pulse
   return m
 }
 

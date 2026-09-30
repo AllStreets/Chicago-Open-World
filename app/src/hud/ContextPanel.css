@@ -28,3 +28,18 @@
 .tb-controls { display: flex; align-items: center; gap: 6px; }
 .tb-scrub { flex: 1; accent-color: var(--accent); }
 .tour-resume { position: absolute; left: 50%; bottom: 72px; transform: translateX(-50%); display: inline-flex; gap: 6px; align-items: center; }
+/* place categories wear their colour (user fixes): a dot on every chip, a tinted fill when on */
+.poi-chip::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--cat); flex: none; }
+.poi-chip.active { background: color-mix(in srgb, var(--cat) 26%, rgba(9, 14, 26, 0.85)); border-color: var(--cat); color: var(--text); box-shadow: none; }
+/* the place card (user fixes) */
+.poi-card { display: flex; flex-direction: column; gap: 7px; border-left: 3px solid var(--cat); padding-left: 10px; margin-left: -4px; }
+.pc-head { display: flex; gap: 10px; align-items: center; }
+.pc-icon { display: grid; place-items: center; width: 34px; height: 34px; flex: none; border-radius: 50%; background: color-mix(in srgb, var(--cat) 24%, rgba(9, 14, 26, 0.9)); box-shadow: 0 0 0 1.5px var(--cat); color: #fff; font-size: 17px; }
+.pc-kind { margin: 2px 0 0; color: var(--cat); font: 600 10px var(--font-ui); letter-spacing: 0.08em; text-transform: uppercase; }
+.pc-row { display: flex; gap: 6px; align-items: flex-start; }
+.pc-row svg { flex: none; margin-top: 2px; color: var(--text-faint); }
+.pc-web { background: var(--cat); border-color: var(--cat); color: #0b0f18; text-decoration: none; display: inline-flex; gap: 6px; align-items: center; }
+.pc-web:hover { filter: brightness(1.1); color: #0b0f18; }
+.pc-host { font-weight: 500; text-transform: none; letter-spacing: 0; opacity: 0.75; }
+.poi-card a.hud-pill { text-decoration: none; display: inline-flex; gap: 6px; align-items: center; }
+.tb-keys { margin: 2px 0 0; color: var(--text-faint); font: 400 10px var(--font-ui); }

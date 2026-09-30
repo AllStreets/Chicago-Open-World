@@ -57,7 +57,7 @@ export default function Picker() {
       const idx = bldgIndexFromHit(hit)
       if (idx == null) return null
       const meta = sidecar(hit.object.userData.metaUrl)
-      const info = meta ? buildingInfo(meta, idx) : null
+      const info = meta ? buildingInfo(meta, idx, useStore.getState().manifest?.landmarks) : null
       return info ? { hit, info } : null
     }
     const clear = () => { if (useStore.getState().hover) useStore.getState().setHover(null); el.style.cursor = '' }

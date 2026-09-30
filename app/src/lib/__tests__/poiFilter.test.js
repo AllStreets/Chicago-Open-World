@@ -35,3 +35,13 @@ describe('mergeLivePlaces', () => {
     expect(mergeLivePlaces(pois, { places: [{ name: 'X' }, { lat: 1 }] }, { project, anchor })).toHaveLength(3)
   })
 })
+
+import { pinFocus } from '../poiFilter.js'
+describe('pin focus (user fixes: P showed nothing nearby)', () => {
+  it('centres the pins between the camera and where it looks, nearer the camera', () => {
+    expect(pinFocus([0, 140, 0], [1000, 0, 0])).toEqual([350, 0])
+  })
+  it('with the camera straight above its target, focuses on the target', () => {
+    expect(pinFocus([500, 400, 500], [500, 0, 500])).toEqual([500, 500])
+  })
+})

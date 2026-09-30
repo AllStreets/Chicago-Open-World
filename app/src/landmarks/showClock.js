@@ -24,3 +24,7 @@ export function nearestMoving(bridges, angles, cam) {
   }
   return best
 }
+
+// How far the fountain's music carries: a show someone started, across downtown; the hourly scheduled show, only
+// near the fountain itself (as in life) — otherwise the music would play for 20 minutes of every hour.
+export const fountainMusicRange = (reason) => (reason === 'preview' ? 2500 : 450)

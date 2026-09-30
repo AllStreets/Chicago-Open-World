@@ -1,6 +1,21 @@
 // pipeline/lib/landmarkRuntime.js — what the app needs at runtime from the landmark builders (landmarks.json).
 import { project } from '../../shared/project.js'
 import { ringCentroid } from './geom.js'
+import { TEAMS } from '../../shared/teams.js'
+
+// What a landmark is, in a few words, for the hover tooltip and cards (user fixes): venues name their home teams,
+// other landmarks their type; towers need none (their floors and year say it).
+const VENUE_WORD = { baseball: 'Ballpark', football: 'Stadium', arena: 'Arena', soccer: 'Stadium' }
+const TYPE_WORD = { museum: 'Museum', fountain: 'Fountain', wheel: 'Ferris wheel', bean: 'Sculpture', theatreSign: 'Theatre', castellated: 'Historic landmark', pavilion: 'Pavilion', lighthouse: 'Lighthouse', beachHouse: 'Beach house', pagoda: 'Pagoda', gate: 'Gate', boardwalkArches: 'Pavilion', ribbonRink: 'Park', canopy: 'Concert pavilion', statues: 'Statue', murals: 'Murals', riverwalk: 'Riverwalk', crownFountain: 'Fountain', lurie: 'Garden', bpBridge: 'Bridge', artInstitute: 'Museum', picasso: 'Sculpture', flamingo: 'Sculpture', culturalCenter: 'Cultural center', unionStation: 'Station', martRiverFace: 'Landmark', headhouse: 'Landmark', ballroom: 'Ballroom', lionHouse: 'Zoo', glasshouse: 'Conservatory' }
+const and = (xs) => (xs.length < 2 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs.at(-1)}`)
+export function landmarkKind(hero, isTower) {
+  if (hero.sports) {
+    const teams = (hero.sports.teams ?? []).map((k) => TEAMS.find((t) => t.key === k)?.name).filter(Boolean).map((n) => `the ${n}`)
+    return { kind: 'venue', kindLine: `${VENUE_WORD[hero.sports.kind] ?? 'Stadium'}${teams.length ? ` · home of ${and(teams)}` : ''}` }
+  }
+  if (hero.landmark?.type) return { kind: 'landmark', kindLine: TYPE_WORD[hero.landmark.type] ?? 'Landmark' }
+  return isTower ? { kind: 'tower', kindLine: null } : { kind: 'landmark', kindLine: 'Landmark' }
+}
 export function collectRuntime(entries) {
   const out = { version: 1, plazas: [], detached: [] }
   for (const { key, runtime, detached } of entries) {
@@ -26,7 +41,7 @@ export function landmarkEntry(b, hero) {
   const [cx, cz] = tallest ? ringCentroid(tallest.outer) : b.centroid
   const [bx, bz] = hero.beacon ? project(hero.beacon.lon, hero.beacon.lat) : [cx, cz]
   const r = (x) => Math.round(x) + 0 // + 0 turns −0 into 0
-  return { key: hero.key, name: hero.name, aliases: hero.aliases ?? [], x: r(cx), z: r(cz), top, beacon: [r(bx), r(hero.beacon?.y ?? top + 6), r(bz)] }
+  return { key: hero.key, name: hero.name, aliases: hero.aliases ?? [], x: r(cx), z: r(cz), top, beacon: [r(bx), r(hero.beacon?.y ?? top + 6), r(bz)], ...landmarkKind(hero, Boolean(tallest) || b.pieces.length > 0) }
 }
 
 export function validateLandmarkRegistry(heroes, keys = V6_LANDMARKS) {

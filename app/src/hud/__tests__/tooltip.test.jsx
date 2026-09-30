@@ -23,3 +23,12 @@ describe('building card', () => {
     expect(screen.getByText(/57 floors · built 1979 · 234 m/)).toBeInTheDocument()
   })
 })
+
+describe('venue card (user fixes)', () => {
+  it('a ballpark card shows what it is, not its floors', () => {
+    render(<BuildingCard selection={{ kind: 'landmark', id: 'ratefield', data: { name: 'Rate Field', address: '333 West 35th Street', stories: 6, year: 1989, heightM: 40, kind: 'venue', kindLine: 'Ballpark · home of the White Sox' } }} />)
+    expect(screen.getByText('Rate Field')).toHaveClass('hud-title')
+    expect(screen.getByText(/Ballpark · home of the White Sox/)).toBeInTheDocument()
+    expect(screen.queryByText(/floors/)).toBeNull()
+  })
+})

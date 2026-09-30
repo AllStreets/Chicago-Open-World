@@ -68,7 +68,9 @@
     -486,
     72,
     5793
-   ]
+   ],
+   "kind": "venue",
+   "kindLine": "Ballpark · home of the White Sox"
   },
   {
    "key": "crownhall",
@@ -84,7 +86,9 @@
     47,
     14,
     5424
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "pingtom",
@@ -101,7 +105,9 @@
     -581,
     21,
     2772
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Pagoda"
   },
   {
    "key": "chinatowngate",
@@ -117,7 +123,9 @@
     -347,
     17,
     3268
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Gate"
   },
   {
    "key": "wintrust",
@@ -133,7 +141,9 @@
     538,
     37,
     3150
-   ]
+   ],
+   "kind": "venue",
+   "kindLine": "Arena · home of the Sky"
   },
   {
    "key": "fieldmuseum",
@@ -149,7 +159,9 @@
     900,
     32,
     1757
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Museum"
   },
   {
    "key": "nema",
@@ -164,7 +176,9 @@
     389,
     287,
     1649
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "1000m",
@@ -177,7 +191,9 @@
     272,
     251,
     1344
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "soldierfield",
@@ -193,7 +209,9 @@
     854,
     62,
     2194
-   ]
+   ],
+   "kind": "venue",
+   "kindLine": "Stadium · home of the Bears and the Fire"
   },
   {
    "key": "shedd",
@@ -208,7 +226,9 @@
     1142,
     43,
     1602
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Museum"
   },
   {
    "key": "adler",
@@ -223,7 +243,9 @@
     1762,
     37,
     1740
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Museum"
   },
   {
    "key": "unitedcenter",
@@ -240,7 +262,9 @@
     -3847,
     45,
     150
-   ]
+   ],
+   "kind": "venue",
+   "kindLine": "Arena · home of the Bulls and the Blackhawks"
   },
   {
    "key": "mart",
@@ -256,7 +280,9 @@
     -625,
     110,
     -671
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Landmark"
   },
   {
    "key": "cbot",
@@ -272,7 +298,9 @@
     -368,
     190,
     488
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "franklin",
@@ -288,7 +316,9 @@
     -572,
     313,
     184
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "monadnock",
@@ -303,7 +333,9 @@
     -142,
     66,
     499
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "rookery",
@@ -318,7 +350,9 @@
     -331,
     61,
     327
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "marquette",
@@ -333,7 +367,9 @@
     -159,
     71,
     248
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "110wacker",
@@ -346,7 +382,9 @@
     -797,
     254,
     -179
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "311wacker",
@@ -359,7 +397,9 @@
     -641,
     299,
     507
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "oldstpats",
@@ -375,7 +415,9 @@
     -1402,
     61,
     288
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "unionstation",
@@ -392,7 +434,9 @@
     -995,
     40,
     373
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Station"
   },
   {
    "key": "chase",
@@ -408,7 +452,9 @@
     -191,
     265,
     58
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "marina2",
@@ -424,7 +470,9 @@
     -54,
     185,
     -686
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "willis",
@@ -439,7 +487,9 @@
     -667,
     533,
     349
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "salesforce",
@@ -454,7 +504,9 @@
     -815,
     261,
     -596
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "marina1",
@@ -470,7 +522,9 @@
     -108,
     185,
     -658
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "aon",
@@ -486,7 +540,9 @@
     522,
     352,
     -361
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "twopru",
@@ -502,7 +558,9 @@
     425,
     309,
     -376
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "trump",
@@ -517,7 +575,9 @@
     117,
     429,
     -772
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "aqua",
@@ -532,7 +592,9 @@
     638,
     268,
     -498
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "chicagotheatre",
@@ -547,7 +609,9 @@
     50,
     31,
     -374
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Theatre"
   },
   {
    "key": "pritzker",
@@ -563,7 +627,9 @@
     494,
     42,
     -165
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Pavilion"
   },
   {
    "key": "cloudgate",
@@ -579,7 +645,9 @@
     372,
     18,
     -70
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Sculpture"
   },
   {
    "key": "palmerhouse",
@@ -594,7 +662,9 @@
     84,
     105,
     211
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "carbidecarbon",
@@ -612,7 +682,9 @@
     235,
     159,
     -509
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "crain",
@@ -629,7 +701,9 @@
     232,
     183,
     -300
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "stregis",
@@ -645,7 +719,9 @@
     839,
     369,
     -582
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "artinstitute",
@@ -663,7 +739,9 @@
     308,
     14,
     300
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Museum"
   },
   {
    "key": "culturalcenter",
@@ -680,7 +758,9 @@
     237,
     40,
     -205
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Cultural center"
   },
   {
    "key": "newberry",
@@ -695,7 +775,9 @@
     -233,
     44,
     -2007
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "onechicago",
@@ -710,7 +792,9 @@
     -77,
     302,
     -1574
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "900michigan",
@@ -723,7 +807,9 @@
     243,
     271,
     -1950
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "hancock",
@@ -740,7 +826,9 @@
     384,
     463,
     -1865
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "watertower",
@@ -755,7 +843,9 @@
     455,
     267,
     -1757
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "holyname",
@@ -770,7 +860,9 @@
     -7,
     78,
     -1550
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "historicwatertower",
@@ -785,7 +877,9 @@
     282,
     61,
     -1682
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Historic landmark"
   },
   {
    "key": "tribune",
@@ -800,7 +894,9 @@
     344,
     147,
     -928
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "lakepoint",
@@ -815,7 +911,9 @@
     1289,
     204,
     -1052
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "oakstbeach",
@@ -830,7 +928,9 @@
     490,
     10,
     -2198
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Beach house"
   },
   {
    "key": "400lsd",
@@ -846,7 +946,9 @@
     1075,
     265,
     -872
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "wrigleybldg",
@@ -861,7 +963,9 @@
     250,
     140,
     -830
-   ]
+   ],
+   "kind": "tower",
+   "kindLine": null
   },
   {
    "key": "grandballroom",
@@ -878,7 +982,9 @@
     2261,
     42,
     -1085
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Ballroom"
   },
   {
    "key": "centennialwheel",
@@ -894,7 +1000,9 @@
     1690,
     66,
     -1074
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Ferris wheel"
   },
   {
    "key": "navypier",
@@ -911,7 +1019,9 @@
     1520,
     44,
     -1078
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Landmark"
   },
   {
    "key": "northavebeach",
@@ -927,7 +1037,9 @@
     303,
     20,
     -3494
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Beach house"
   },
   {
    "key": "conservatory",
@@ -943,7 +1055,9 @@
     -652,
     24,
     -4695
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Conservatory"
   },
   {
    "key": "lincolnparkzoo",
@@ -960,7 +1074,9 @@
     -453,
     24,
     -4340
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Zoo"
   },
   {
    "key": "wrigleyfield",
@@ -976,7 +1092,9 @@
     -2299,
     59,
     -7349
-   ]
+   ],
+   "kind": "venue",
+   "kindLine": "Ballpark · home of the Cubs"
   },
   {
    "key": "buckingham",
@@ -992,7 +1110,9 @@
     711,
     56,
     692
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Fountain"
   },
   {
    "key": "crownfountain",
@@ -1008,7 +1128,9 @@
     340,
     22,
     60
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Fountain"
   },
   {
    "key": "lurie",
@@ -1024,7 +1146,9 @@
     506,
     12,
     66
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Garden"
   },
   {
    "key": "bpbridge",
@@ -1040,7 +1164,9 @@
     645,
     14,
     -116
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Bridge"
   },
   {
    "key": "picasso",
@@ -1056,7 +1182,9 @@
     -186,
     22,
     -202
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Sculpture"
   },
   {
    "key": "flamingo",
@@ -1072,7 +1200,9 @@
     -167,
     23,
     303
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Sculpture"
   },
   {
    "key": "maggiedaley",
@@ -1089,7 +1219,9 @@
     725,
     12,
     -152
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Park"
   },
   {
    "key": "natureboardwalk",
@@ -1106,7 +1238,9 @@
     -499,
     16,
     -3956
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Pavilion"
   },
   {
    "key": "lincolnstatues",
@@ -1123,7 +1257,9 @@
     -271,
     12,
     -3261
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Statue"
   },
   {
    "key": "grantstatue",
@@ -1139,7 +1275,9 @@
     -324,
     18,
     -3754
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Statue"
   },
   {
    "key": "goethestatue",
@@ -1154,7 +1292,9 @@
     -721,
     16,
     -5113
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Statue"
   },
   {
    "key": "northerlyisland",
@@ -1171,7 +1311,9 @@
     1626,
     32,
     2097
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Concert pavilion"
   },
   {
    "key": "harborlighthouse",
@@ -1187,7 +1329,9 @@
     3049,
     24,
     -823
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Lighthouse"
   },
   {
    "key": "twelfthbeach",
@@ -1202,7 +1346,9 @@
     1701,
     10,
     1975
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Beach house"
   },
   {
    "key": "pilsenmurals",
@@ -1219,7 +1365,9 @@
     -2337,
     14,
     2702
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Murals"
   },
   {
    "key": "riverwalk",
@@ -1235,7 +1383,9 @@
     -330,
     10,
     -565
-   ]
+   ],
+   "kind": "landmark",
+   "kindLine": "Riverwalk"
   },
   {
    "key": "bridge-franklin-orleans",

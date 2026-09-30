@@ -47,3 +47,16 @@ describe('tour stops look past their neighbours (P4 Task 6 evaluation)', () => {
     expect(open.position[0]).toBeGreaterThan(0); expect(open.position[2]).toBeGreaterThan(0) // no obstruction: the default south-east view
   })
 })
+
+describe('tours fly in from where you are (user fixes: "tours don\'t work")', () => {
+  const from = { position: [-5000, 600, 3000], target: [-5000, 0, 2500] }
+  it('with a start pose, the tour opens by flying to stop 1 instead of cutting to it', () => {
+    const s = tourAt(tour, poses, 0.5, from)
+    expect(s.phase).toBe('fly'); expect(s.stopIndex).toBe(0)
+    expect(s.pose.position[0]).toBeLessThan(-1000) // still near where the camera was
+  })
+  it('the lead-in flight adds to the length and the card still ends on the last stop', () => {
+    expect(tourDuration(tour, poses, from)).toBeGreaterThan(tourDuration(tour, poses))
+    expect(tourAt(tour, poses, tourDuration(tour, poses, from) - 0.01, from).card.title).toBe('B')
+  })
+})

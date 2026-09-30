@@ -13,8 +13,9 @@ export default function TourBar() {
   const tour = useStore((s) => s.tour), manifest = useStore((s) => s.manifest), resume = useStore((s) => s.tourResume)
   const def = tour ? tourById(tour.id) : null
   const poses = useMemo(() => (def ? tourPoses(def, manifest) : []), [def, manifest])
-  const total = def ? tourDuration(def, poses) : 0, starts = def ? stopStarts(def, poses) : []
-  const at = def ? tourAt(def, poses, tour.t) : null
+  const from = tour?.from ?? null
+  const total = def ? tourDuration(def, poses, from) : 0, starts = def ? stopStarts(def, poses, from) : []
+  const at = def ? tourAt(def, poses, tour.t, from) : null
   useEffect(() => {
     const onKey = (e) => {
       const s = useStore.getState()
@@ -22,7 +23,7 @@ export default function TourBar() {
       if (e.code === 'Space') { e.preventDefault(); s.setTour({ ...s.tour, playing: !s.tour.playing }) }
       else if (e.code === 'Escape') s.setTour(null)
       else if (e.code === 'Comma' || e.code === 'Period') {
-        const d = tourById(s.tour.id), st = stopStarts(d, tourPoses(d, s.manifest)), cur = tourAt(d, tourPoses(d, s.manifest), s.tour.t).stopIndex
+        const d = tourById(s.tour.id), P = tourPoses(d, s.manifest), st = stopStarts(d, P, s.tour.from ?? null), cur = tourAt(d, P, s.tour.t, s.tour.from ?? null).stopIndex
         const next = Math.min(st.length - 1, Math.max(0, cur + (e.code === 'Period' ? 1 : -1)))
         seekTour(st[next])
       }
@@ -43,6 +44,7 @@ export default function TourBar() {
         <span className="hud-label">{def.name} · {at.stopIndex + 1} / {def.stops.length}</span>
         <span className="tb-title">{at.card.title}</span>
         <p className="tb-text">{at.card.text}</p>
+        <p className="tb-keys">Space pauses · , and . step between stops · arrow keys take back the camera · Esc ends the tour</p>
       </div>
       <div className="tb-controls">
         <button type="button" className="tl-mini" aria-label="Previous stop" onClick={() => step(-1)}><RiSkipBackLine /></button>

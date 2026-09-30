@@ -12,6 +12,7 @@ import VisitPanel from './panels/VisitPanel.jsx'
 import './ContextPanel.css'
 
 const TRANSIT_KINDS = ['station', 'train'] // the transit card shows these
+const KIND_LABEL = { building: 'Building', landmark: 'Landmark', poi: 'Place', neighborhood: 'Neighborhood', office: 'Office' }
 
 // Card bodies register here as later tasks add them: kind → component({ selection })
 export const CARDS = { building: BuildingCard, landmark: LandmarkCard, poi: PoiCard }
@@ -50,7 +51,7 @@ export default function ContextPanel() {
   return (
     <aside className="hud-panel context-panel" role="dialog" aria-label={card ? (card.data?.name ?? card.kind) : `${L.label} lens`}>
       <div className="cp-top">
-        <span className="hud-label">{card ? card.kind : `${L.label} lens`}</span>
+        <span className="hud-label">{card ? (KIND_LABEL[card.kind] ?? card.kind) : `${L.label} lens`}</span>
         <button type="button" className="tl-mini" aria-label="Close" onClick={() => (card ? s.clearSelection() : s.setLens(lens))}><RiCloseLine /></button>
       </div>
       {card ? <Card selection={card} /> : Panel ? <Panel /> : <p className="cp-sub">{L.help}</p>}
