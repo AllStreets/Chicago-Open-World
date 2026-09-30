@@ -14,7 +14,7 @@ const GROUPS = [
     ['⌘K', '“Follow a train” rides along (any key stops) · “Go to Clark/Lake” · type “tonight” for tonight’s game'],
   ]],
   ['Guide', [['Lenses', 'the tabs at the top — Visit, Live, Work (also ⌘K “Lens: Visit”)'], ['Hover', 'a building for its name and year; click it for its card'], ['Esc', 'close the card, then the lens'], ['Tours', 'in the Visit lens or ⌘K “Tour:” — Space pauses, , and . step between stops, any arrow key takes back the camera']]],
-  ['Time and quality', [['1 – 5', 'live Chicago time, dawn, day, dusk, night'], ['Quality', 'button on the right if things feel slow · Low also turns off water reflections'], ['Stats', '⌘K “performance” shows draw calls and frame rate']]],
+  ['Time and quality', [['1 – 7', 'live Chicago time, dawn, day, dusk, night, a sunny summer day, a snowy Christmas (snow falling, the lake frozen)'], ['Quality', 'button on the right if things feel slow · Low also turns off water reflections'], ['Stats', '⌘K “performance” shows draw calls and frame rate']]],
 ]
 
 export default function HelpOverlay() {

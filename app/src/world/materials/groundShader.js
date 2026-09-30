@@ -19,6 +19,7 @@ export const groundUniforms = {
   uNight: facadeUniforms.uNight, // shared with the façades so street light follows the sky
   uLayerRank: { value: LAYER_RANK },
   uLayerBias: { value: 4e-6 },
+  uSnow: { value: 0 }, // user fixes: snow on the parks, walks and beaches; streets stay slushy grey
 }
 
 const need = (src, m) => { if (!src.includes(m)) throw new Error(`ground shader: missing ${m}`); return m }
@@ -33,12 +34,16 @@ uniform sampler2DArray uGround;
 uniform float uSize[6];
 uniform vec3 uTint[6];
 uniform float uNight;
+uniform float uSnow;
 varying float vLayer;
 varying vec2 vGUv;`)
   f = f.replace(need(f, '#include <map_fragment>'), `#include <map_fragment>
 int li = int(vLayer + 0.5);
 vec3 gcol = texture(uGround, vec3(vGUv / uSize[li], float(li))).rgb * uTint[li];
-diffuseColor.rgb *= gcol;`)
+diffuseColor.rgb *= gcol;
+// asphalt 0 · sidewalk 1 · grass 2 · pitch 3 · sand 4 · gravel 5: streets are ploughed to a slushy grey
+float snowK = uSnow * (li == 0 ? 0.3 : 0.9);
+diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.88, 0.9, 0.95) * (0.93 + 0.07 * gcol.g), snowK);`)
   f = f.replace(need(f, '#include <emissivemap_fragment>'), `#include <emissivemap_fragment>
 if (li == 0) totalEmissiveRadiance += vec3(1.0, 0.68, 0.36) * uNight * 0.07; // sodium street light`)
   shader.vertexShader = v; shader.fragmentShader = f
@@ -49,7 +54,7 @@ if (li == 0) totalEmissiveRadiance += vec3(1.0, 0.68, 0.36) * uNight * 0.07; // 
 export function createGroundMaterial() {
   const m = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.92, metalness: 0, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 })
   m.onBeforeCompile = patchGroundShader
-  m.customProgramCacheKey = () => 'ground-v2'
+  m.customProgramCacheKey = () => 'ground-v3'
   return m
 }
 

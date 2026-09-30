@@ -5,4 +5,4 @@
 .lens-btn:hover, .lens-btn:focus-visible { color: var(--text); background: rgba(var(--accent-rgb), 0.08); outline: none; }
 .lens-btn.on { color: #04121a; background: var(--accent); box-shadow: var(--glow-accent); }
 /* compact layouts: the time pills reach the centre, so the strip steps under them on the right */
-.hud-root[data-compact="true"] .lens-rail { top: 96px; left: auto; right: 16px; transform: none; }
+.hud-root[data-compact="true"] .lens-rail { top: 128px; left: auto; right: 16px; transform: none; }

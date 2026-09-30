@@ -22,7 +22,7 @@ export function commands() {
   const s = useStore.getState()
   const time = (t, name) => ({ id: `t:${t}`, kind: 'command', name, sub: 'Time of day', icon: 'time', run: () => s.setTimePreset(t) })
   return [
-    time('LIVE', 'Live Chicago time'), time('DAWN', 'Dawn'), time('DAY', 'Day'), time('DUSK', 'Dusk'), time('NIGHT', 'Night'),
+    time('LIVE', 'Live Chicago time'), time('DAWN', 'Dawn'), time('DAY', 'Day'), time('DUSK', 'Dusk'), time('NIGHT', 'Night'), time('SUNNY', 'Sunny summer day'), { ...time('SNOW', 'Snowy Christmas'), aliases: ['snow', 'christmas', 'winter', 'frozen lake'] },
     { id: 'q:LOW', kind: 'command', name: 'Quality: Low', sub: 'Faster on older laptops', run: () => s.setQuality('LOW') },
     { id: 'q:HIGH', kind: 'command', name: 'Quality: High', sub: 'Balanced', run: () => s.setQuality('HIGH') },
     { id: 'q:ULTRA', kind: 'command', name: 'Quality: Ultra', sub: 'Sharpest shadows', run: () => s.setQuality('ULTRA') },

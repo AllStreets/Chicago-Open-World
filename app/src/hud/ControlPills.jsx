@@ -3,13 +3,14 @@ import { useStore } from '../state/store.js'
 import { sunForPreset } from '../lib/sun.js'
 import { phaseFor } from '../lib/skyPalette.js'
 import { cycleQuality } from '../lib/quality.js'
+import { PRESETS } from '../lib/atmosphere.js'
 
 function livePhase() {
   const s = sunForPreset('LIVE', new Date())
   return phaseFor((s.altitude * 180) / Math.PI, s.direction[0])
 }
 
-const TIMES = ['LIVE', 'DAWN', 'DAY', 'DUSK', 'NIGHT']
+const TIMES = PRESETS // user fixes: + SUNNY (a clear midsummer day) and SNOW (Christmas Eve, snowing)
 const MODES = ['FLY', 'ORBIT']
 const QUALITIES = ['LOW', 'HIGH', 'ULTRA']
 
@@ -26,7 +27,7 @@ export default function ControlPills() {
   useEffect(() => {
     const onKey = (e) => {
       if (['INPUT', 'TEXTAREA'].includes(e.target?.tagName)) return
-      const n = { Digit1: 0, Digit2: 1, Digit3: 2, Digit4: 3, Digit5: 4 }[e.code]
+      const n = { Digit1: 0, Digit2: 1, Digit3: 2, Digit4: 3, Digit5: 4, Digit6: 5, Digit7: 6 }[e.code]
       if (n !== undefined) setTime(TIMES[n])
       if (e.code === 'KeyO') setMode(useStore.getState().cameraMode === 'ORBIT' ? 'FLY' : 'ORBIT')
     }
@@ -42,7 +43,13 @@ export default function ControlPills() {
         ))}
       </div>
       <div className="pill-row small">
-        {TIMES.map((t) => (
+        {TIMES.slice(0, 5).map((t) => (
+          <button key={t} type="button" className={`hud-pill ${time === t ? 'active' : ''}`} onClick={() => setTime(t)}>{t === 'LIVE' ? `LIVE · ${phase}` : t}</button>
+        ))}
+      </div>
+      {/* user fixes: two seasonal views on their own row (a clear summer day, a snowy Christmas) */}
+      <div className="pill-row small seasons" aria-label="Seasons">
+        {TIMES.slice(5).map((t) => (
           <button key={t} type="button" className={`hud-pill ${time === t ? 'active' : ''}`} onClick={() => setTime(t)}>{t === 'LIVE' ? `LIVE · ${phase}` : t}</button>
         ))}
       </div>

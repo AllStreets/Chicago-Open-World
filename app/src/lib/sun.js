@@ -11,6 +11,9 @@ function presetDate(preset, now) {
     case 'DAY': return new Date(t.solarNoon.getTime() - 90 * MIN)
     case 'DUSK': return new Date(t.sunset.getTime() - 12 * MIN)
     case 'NIGHT': return new Date(t.sunset.getTime() + 120 * MIN)
+    // user fixes: a midsummer early afternoon (1 pm CDT, July 15) and Christmas Eve at dusk (4:20 pm CST, sunset ≈ 4:26)
+    case 'SUNNY': return new Date(Date.UTC(now.getFullYear(), 6, 15, 18, 0))
+    case 'SNOW': return new Date(Date.UTC(now.getFullYear(), 11, 24, 22, 20))
     default: return now
   }
 }
