@@ -71,4 +71,10 @@ describe('compact legend (V8 polish)', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Expand legend' }))
     expect(screen.getByText('Metra')).toBeInTheDocument()
   })
+  it('"+ 1 Metra" is a button that opens the full list', () => {
+    useStore.setState({ ...useStore.getInitialState(), transit: { lines: [{ id: 'red', name: 'Red Line', operator: 'cta', colour: '#c60c30' }, { id: 'bnsf', name: 'BNSF', operator: 'metra', colour: '#1f5aa6' }], routes: [], stations: [] }, transitOn: true })
+    render(<TransitLegend />)
+    fireEvent.click(screen.getByRole('button', { name: /\+ 1 Metra/ }))
+    expect(screen.getByRole('button', { name: /BNSF/ })).toBeInTheDocument()
+  })
 })

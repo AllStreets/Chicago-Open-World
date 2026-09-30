@@ -32,17 +32,17 @@ export function boatRunAt(date, order) {
 export function liftState({ now, manualStart = null, manualStop = null, order }) {
   if (manualStart != null && manualStop != null) {
     const k = (now - manualStop) / 1000 / LIFT_DEMO.lowerS
-    if (k >= 1) return { source: 'manual', done: true, angles: {} }
+    if (k >= 1) return { source: 'manual', done: true, angles: {}, T: LIFT_DEMO }
     const from = liftPlan(order, (manualStop - manualStart) / 1000, LIFT_DEMO), e = ease(Math.max(0, k))
-    return { source: 'manual', done: false, angles: Object.fromEntries(order.map((b) => [b, from[b] * (1 - e)])) }
+    return { source: 'manual', done: false, angles: Object.fromEntries(order.map((b) => [b, from[b] * (1 - e)])), T: LIFT_DEMO }
   }
   if (manualStart != null) {
     const elapsed = (now - manualStart) / 1000
     const done = elapsed > runDuration(order.length, LIFT_DEMO)
-    return { source: 'manual', done, angles: done ? {} : liftPlan(order, elapsed, LIFT_DEMO) }
+    return { source: 'manual', done, angles: done ? {} : liftPlan(order, elapsed, LIFT_DEMO), T: LIFT_DEMO }
   }
   const run = boatRunAt(new Date(now), order)
-  return { source: run ? run.season : 'idle', done: false, angles: run ? liftPlan(run.order, run.elapsed) : {}, elapsed: run ? run.elapsed : null, order: run?.order ?? null }
+  return { source: run ? run.season : 'idle', done: false, angles: run ? liftPlan(run.order, run.elapsed) : {}, elapsed: run ? run.elapsed : null, order: run?.order ?? null, T: LIFT }
 }
 
 // Rodrigues rotation of p about the unit axis k through pivot (mirrors the USE_LEAF vertex shader).

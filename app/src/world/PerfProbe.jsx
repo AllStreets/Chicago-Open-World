@@ -14,7 +14,7 @@ export default function PerfProbe() {
     if (!on) return undefined
     probe.start()
     if (new URLSearchParams(window.location.search).has('stats')) window.__census = () => censusScene(scene, camera)
-    return () => { probe.stop(); window.__perf = undefined }
+    return () => { probe.stop(); window.__perf = undefined; delete window.__census; useStore.getState().setPerf(null) }
   }, [on, probe, scene, camera])
   // priority 1000: after EffectComposer (priority 1) has rendered every pass of this frame
   useFrame((_, dt) => {

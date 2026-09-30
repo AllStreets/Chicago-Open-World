@@ -6,7 +6,7 @@ export function createDrawProbe(info, window = 60) {
   const push = (a, v) => { a.push(v); if (a.length > window) a.shift() }
   const avg = (a) => (a.length ? a.reduce((s, v) => s + v, 0) / a.length : 0)
   return {
-    start() { info.autoReset = false; info.reset() },
+    start() { calls.length = tris.length = dts.length = 0; info.autoReset = false; info.reset() },
     stop() { info.autoReset = true },
     frame() {
       const c = info.render.calls, t = info.render.triangles
@@ -17,7 +17,7 @@ export function createDrawProbe(info, window = 60) {
     tick(dt) { push(dts, dt) },
     stats() {
       const mdt = avg(dts)
-      return { calls: Math.round(avg(calls)), maxCalls: Math.max(0, ...calls), triangles: Math.round(avg(tris)), fps: mdt ? Math.round(1 / mdt) : 0, frames: calls.length }
+      return { calls: Math.round(avg(calls)), maxCalls: Math.max(0, ...calls), triangles: Math.round(avg(tris)), maxTriangles: Math.max(0, ...tris), fps: mdt ? Math.round(1 / mdt) : 0, frames: calls.length }
     },
   }
 }

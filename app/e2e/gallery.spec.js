@@ -19,7 +19,8 @@ for (const it of items) {
     await page.addInitScript(() => { try { localStorage.setItem('chi-ow-help-seen', '1') } catch {} })
     await page.goto(`/?view=${it.view}&time=${it.time}`)
     await page.waitForFunction(() => window.__worldReady === true, null, { timeout: 90_000 })
-    await page.waitForTimeout(5000) // textures, sky tween, loading fade (V1's camera-rest wait replaces this if present)
+    await page.waitForFunction(() => window.__camRest === true && window.__skyRest === true && window.__tilesIdle === true && window.__hudReady === true, null, { timeout: 60_000 })
+    await page.waitForTimeout(1000) // the loading veil's last fade
     await page.screenshot({ path: out })
   })
 }

@@ -16,6 +16,10 @@ import { VIEW_ORDER, VIEW_NAMES } from '../lib/views.js'
 import { followStep, shouldExitFollow } from '../transit/followCam.js'
 import { getTrains, getSim } from '../transit/simStore.js'
 import { ensureClear } from '../lib/poseClearance.js'
+import { FEATURE_CONTROLS } from '../hud/featureControls.js'
+
+// keys that leave a flight running: the time-of-day brackets, help, and every city-life toggle
+const KEEP_FLIGHT = ['BracketLeft', 'BracketRight', 'KeyH', ...FEATURE_CONTROLS.map((c) => c.key)]
 
 const GLIDE_MPS = 140
 const BOOST = 3
@@ -85,7 +89,7 @@ export default function AtlasRig() {
       else if (e.code === 'KeyN') s.camCommand('north')
       else if (e.key === '?') s.setHelpOpen(!s.helpOpen)
       else if (e.code === 'Escape') { s.setHelpOpen(false); s.clearFlight() }
-      if (flightRun.current && !['BracketLeft', 'BracketRight', 'KeyH', 'KeyB', 'KeyJ'].includes(e.code)) s.clearFlight() // any other key takes back control
+      if (flightRun.current && !KEEP_FLIGHT.includes(e.code)) s.clearFlight() // any other key takes back control
     }
     const up = (e) => keys.current.delete(e.code)
     const blur = () => keys.current.clear()

@@ -70,6 +70,7 @@ export default function FountainShow({ emitters, crownLevels = null }) {
     acc.current += dt
     if (acc.current >= 0.5) { // the schedule (an Intl clock) twice a second; the show time runs on between reads
       acc.current = 0
+      useStore.getState().expireFountainPreview(Date.now())
       show.current = { s: fountainShow(new Date(), { dark: facadeUniforms.uNight.value > 0.35, previewStart: useStore.getState().fountainPreview }), at: clock.elapsedTime }
     }
     const { s, at } = show.current

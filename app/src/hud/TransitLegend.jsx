@@ -25,7 +25,7 @@ export default function TransitLegend() {
             <button key={l.id} type="button" className={`tl-chip${hidden.includes(l.id) ? '' : ' on'}`} aria-label={l.name} title={l.name}
               aria-pressed={!hidden.includes(l.id)} onClick={() => toggleLine(l.id)} style={{ background: l.colour }} />
           ))}
-          {groups[1][1].length > 0 && <span className="tl-more">+ {groups[1][1].length} Metra</span>}
+          {groups[1][1].length > 0 && <button type="button" className="tl-more" onClick={() => setOpen(true)}>+ {groups[1][1].length} Metra</button>}
         </div>
       )}
       {open && groups.map(([title, lines]) => lines.length > 0 && (

@@ -12,7 +12,7 @@ export function gatePoints(b) {
   return out
 }
 // The i-th bridge in the lift order warns 8 s before its leaves start, and keeps flashing while they are up.
-export const gateActive = (i, elapsedS, angle) => angle > 0.001 || (elapsedS >= i * LIFT_DEMO.staggerS - 8 && elapsedS < i * LIFT_DEMO.staggerS + 1)
+export const gateActive = (i, elapsedS, angle, T = LIFT_DEMO) => angle > 0.001 || (elapsedS >= i * T.staggerS - 8 && elapsedS < i * T.staggerS + 1)
 
 // The music comes from the raised bridge nearest the camera.
 export function nearestMoving(bridges, angles, cam) {

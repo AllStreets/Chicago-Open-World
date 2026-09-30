@@ -342,13 +342,12 @@ Everything is reachable with the keyboard, the mouse and the on-screen dock — 
 | `T` · Transit button | CTA and Metra lines on/off; the legend switches single lines |
 | Click a train / station | its card — run, next stop, arrivals; "Follow this train" rides along (any key stops) |
 | `⌘K` "Follow a … train" · "Go to …" · "Show … Line" | transit from the search |
-| Sound button | train rumble and crowd cheers, off until you turn it on |
-| Games button · `⌘K` "tonight" | tonight's game, scores and the next game at every venue |
+| `M` · Sound button | music for the fountain and bridge shows, crowd cheers and passing trains — off until you turn it on |
+| `G` · Games button · `⌘K` "tonight" | tonight's game, scores and the next game at every venue |
 | `B` · Bridges button | raise the river bridges — a boat-run lift with gate bells, flashers and music |
 | `J` · Fountain button | Buckingham Fountain water show — jets dance to music, lit in colour after dusk |
-| `T` · `G` · `M` | Transit · Games · Sound on/off (also dock buttons and ⌘K) |
-| ⌘K "Follow a … train" | ride along with a train — any key stops |
 | `?` · `Esc` | help card · close / stop a flight |
+| `⌘K` "performance" | draw calls, triangles and frame rate (a diagnostic chip) |
 | Control dock & minimap | the same moves as buttons; click the minimap to fly |
 
 ## Under the hood

@@ -1,5 +1,5 @@
 // app/src/bridges/BridgeLights.jsx — every bridge lamp, nav light and gate flasher as one additive Points draw.
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { facadeUniforms } from '../world/materials/facadeMaterial.js'
@@ -28,6 +28,7 @@ export default function BridgeLights({ sidecar }) {
     })
     return { geo, mat }
   }, [sidecar, gates])
+  useEffect(() => () => { geo.dispose(); mat.dispose() }, [geo, mat])
   const last = useRef(null)
   useFrame(({ clock }) => {
     const col = geo.attributes.aColor.array
@@ -45,7 +46,7 @@ export default function BridgeLights({ sidecar }) {
     const order = liveLift.order ?? [], el = liveLift.elapsed
     sidecar.bridges.forEach((b, i) => {
       const idx = order.indexOf(b.key), angle = liveLift.angles[b.key] ?? 0
-      const active = idx >= 0 && el != null && gateActive(idx, el, angle)
+      const active = idx >= 0 && el != null && gateActive(idx, el, angle, liveLift.T ?? undefined)
       const [l, r] = gateFlash(angle, active || angle > 0.001, clock.elapsedTime)
       const base = (sidecar.lights.length + i * 4) * 3
       for (let k = 0; k < 4; k++) { const on = k % 2 ? r : l; col.set(on ? GATE_RED : [0, 0, 0], base + k * 3) }

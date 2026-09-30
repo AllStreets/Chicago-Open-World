@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { FOUNTAIN_SCHEDULE } from '../landmarks/fountainSchedule.js'
 
 export const useStore = create((set) => ({
   timePreset: 'LIVE',
@@ -15,6 +16,8 @@ export const useStore = create((set) => ({
   fountainPreview: null,
   startFountainPreview: () => set({ fountainPreview: Date.now() }),
   stopFountainPreview: () => set({ fountainPreview: null }),
+  // a preview runs one show; afterwards the Fountain button goes dark by itself
+  expireFountainPreview: (now) => set((s) => (s.fountainPreview != null && now - s.fountainPreview > FOUNTAIN_SCHEDULE.showMinutes * 60000 ? { fountainPreview: null } : {})),
   bridgeLift: null,
   startBridgeLift: () => set({ bridgeLift: { startedAt: Date.now(), id: Math.random() } }),
   stopBridgeLift: () => set({ bridgeLift: null }),
