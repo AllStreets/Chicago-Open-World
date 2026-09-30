@@ -7,7 +7,7 @@ export default function TransitLegend() {
   const transit = useStore((s) => s.transit)
   const on = useStore((s) => s.transitOn)
   const hidden = useStore((s) => s.hiddenLines)
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false) // compact by default: a swatch strip, so the legend never covers the city
   if (!transit || !on) return null
   const { toggleLine, setHiddenLines } = useStore.getState()
   const groups = [['CTA L', transit.lines.filter((l) => l.operator === 'cta')], ['Metra', transit.lines.filter((l) => l.operator === 'metra')]]
@@ -19,6 +19,15 @@ export default function TransitLegend() {
         <button type="button" className="tl-mini" onClick={() => setHiddenLines(transit.lines.map((l) => l.id))}>None</button>
         <button type="button" className="tl-mini" aria-label={open ? 'Collapse legend' : 'Expand legend'} onClick={() => setOpen(!open)}>{open ? <RiArrowDownSLine /> : <RiArrowUpSLine />}</button>
       </div>
+      {!open && (
+        <div className="tl-strip">
+          {groups[0][1].map((l) => (
+            <button key={l.id} type="button" className={`tl-chip${hidden.includes(l.id) ? '' : ' on'}`} aria-label={l.name} title={l.name}
+              aria-pressed={!hidden.includes(l.id)} onClick={() => toggleLine(l.id)} style={{ background: l.colour }} />
+          ))}
+          {groups[1][1].length > 0 && <span className="tl-more">+ {groups[1][1].length} Metra</span>}
+        </div>
+      )}
       {open && groups.map(([title, lines]) => lines.length > 0 && (
         <section key={title}>
           <h3 className="hud-label tl-group">{title}</h3>

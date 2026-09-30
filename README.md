@@ -4,9 +4,10 @@
 
 **THE CITY, AT FULL SCALE**
 
-<img alt="phase" src="https://img.shields.io/badge/phase-vision_pass_V7-45d8ff?style=for-the-badge&labelColor=030509"/>
+<img alt="phase" src="https://img.shields.io/badge/phase-vision_pass_complete-45d8ff?style=for-the-badge&labelColor=030509"/>
 <img alt="buildings" src="https://img.shields.io/badge/real_buildings-105,971-ff3b53?style=for-the-badge&labelColor=030509"/>
 <img alt="landmarks" src="https://img.shields.io/badge/landmarks-86-45d8ff?style=for-the-badge&labelColor=030509"/>
+<img alt="draw calls" src="https://img.shields.io/badge/draw_calls-≤900-ff3b53?style=for-the-badge&labelColor=030509"/>
 <img alt="skyline" src="https://img.shields.io/badge/top_50_skyline-verified-ff3b53?style=for-the-badge&labelColor=030509"/>
 <a href="LICENSE"><img alt="license" src="https://img.shields.io/badge/license-MIT-45d8ff?style=for-the-badge&labelColor=030509"/></a>
 <br/>
@@ -277,9 +278,36 @@ Game days come from the real ESPN schedules of all seven Chicago teams, fetched 
 </tr>
 </table>
 
-### Next · Vision pass — *one lake, living transit, game nights*
+### Vision pass · complete — *the bridges, the budget, the whole city at once*
 
-Planned in [the master plan](docs/superpowers/plans/2026-09-29-vision-master-plan.md): a single continuous lake and river, CTA lines in their true colours with a restrained neon glow and accurate trains running on them, stadiums with crowds and game nights (and the W flag when the Cubs win), detailed bridges and landmarks, and each tower in its real colours. Its images will be added here as each milestone lands.
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/v6-bridges-before-dusk.png" alt="The river bridges before the detail work" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v8-bridges-dusk.png" alt="V8 — the detailed bascule bridges down the river at dusk" width="100%"/></td>
+</tr>
+<tr>
+<td><em>"The bridges are starting to look good" — the moment in the build log that started the bridge work.</em></td>
+<td><em>The Chicago-type bascules down the river canyon at dusk: trunnion leaves, tender houses, lanterns — one deck per crossing.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/v8-bridge-lift-dusk.png" alt="V8 — the DuSable Bridge raised during a boat-run lift" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v8-wide-streeterville-dusk.png" alt="V8 — the wide Streeterville view at dusk" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Press B: the boat-run lift raises bridge after bridge to its own music, with gate bells and flashing gates.</em></td>
+<td><em>The widest lakefront view — about 580 draw calls and 3.3 M triangles, well inside the 900-call budget.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/v8-loop-night.png" alt="V8 — the Loop at night" width="100%"/></td>
+<td></td>
+</tr>
+<tr>
+<td><em>The Loop at night: lit crowns, glowing L lines, trains and ballparks in one frame.</em></td>
+<td></td>
+</tr>
+</table>
+
+The vision pass is complete — see the sections above; Phase 3 (Blender hero refinement) is next.
 
 ## Quickstart
 
@@ -350,7 +378,7 @@ npm run e2e --prefix app          # hero-view screenshot baselines (Playwright)
 - [x] **1 · Foundation** — real footprints and heights, land, river, lake, sky, Atlas camera, HUD shell
 - [x] **2 · Beauty pass** — generated façades, lit windows, living sky, rooftops, parks & trees, the L, post-processing, minimap, intro flight
 - [x] **2.5 · Expanded city** — Wrigleyville → 35th St, verified top-50 skyline, 41 landmarks, stadiums, sacred buildings, civic icons, horizon fill, streaming, human-first controls
-- [ ] **Vision pass** — ✅ V1 unified lake & river, camera clearance · ✅ V2 true building colours · ✅ V3 CTA lines · ✅ V4 trains · ✅ V5 stadium game nights · ✅ V6 bridges & landmarks · ✅ V7 controls · V8 perf, gallery
+- [x] **Vision pass** — one lake & river, CTA and Metra in true colours with a restrained glow and running trains, stadium game nights & crowds, detailed bridges & landmarks with music-and-light shows, true building colours, camera clearance, ≤ 900 draw calls
 - [ ] **3 · Heroes** — Blender refinement of the procedural landmarks (Aqua's waves, Marina City's petals, …)
 - [ ] **4 · Guide** — VISIT / LIVE / WORK lenses: places (bars, restaurants, venues), neighbourhoods, jobs, tours
 - [ ] **5 · Alive** — live L trains and weather via the CHI ATLAS API, Scan mode

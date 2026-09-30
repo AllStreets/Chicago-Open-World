@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
+import TransitLegend from '../TransitLegend.jsx'
 import { render, screen, fireEvent, act } from '@testing-library/react'
 import Hud from '../Hud.jsx'
 import { useStore } from '../../state/store.js'
@@ -29,6 +30,7 @@ describe('transit HUD', () => {
     expect(useStore.getState().hiddenLines).toEqual(['red'])
     fireEvent.click(screen.getByRole('button', { name: 'None' })); expect(useStore.getState().hiddenLines).toEqual(['red', 'up-n'])
     fireEvent.click(screen.getByRole('button', { name: 'All' })); expect(useStore.getState().hiddenLines).toEqual([])
+    fireEvent.click(screen.getByRole('button', { name: 'Expand legend' })) // compact by default since V8
     expect(screen.getByText('Metra')).toBeInTheDocument()
   })
   it('T toggles transit, but not while typing', () => {
@@ -56,5 +58,17 @@ describe('transit HUD', () => {
     act(() => useStore.getState().setHelpOpen(true))
     expect(screen.getByText(/CTA and Metra lines, their glow/)).toBeInTheDocument()
     expect(document.querySelector('.hud-hints').textContent).toMatch(/T\s*transit/)
+  })
+})
+
+describe('compact legend (V8 polish)', () => {
+  it('starts collapsed as a swatch strip; the swatches still switch lines; expand shows the full list', () => {
+    useStore.setState({ ...useStore.getInitialState(), transit: { lines: [{ id: 'red', name: 'Red Line', operator: 'cta', colour: '#c60c30' }, { id: 'bnsf', name: 'BNSF', operator: 'metra', colour: '#1f5aa6' }], routes: [], stations: [] }, transitOn: true })
+    render(<TransitLegend />)
+    expect(screen.queryByText('Metra')).toBeNull()                       // collapsed: no group lists
+    fireEvent.click(screen.getByRole('button', { name: 'Red Line' }))
+    expect(useStore.getState().hiddenLines).toEqual(['red'])
+    fireEvent.click(screen.getByRole('button', { name: 'Expand legend' }))
+    expect(screen.getByText('Metra')).toBeInTheDocument()
   })
 })

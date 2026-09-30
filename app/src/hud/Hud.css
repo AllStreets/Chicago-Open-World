@@ -87,3 +87,7 @@
 .hud-left-stack > * { pointer-events: auto; position: static !important; inset: auto !important; transform: none !important; width: 100% !important; max-width: 100%; max-height: none !important; flex-shrink: 0; }
 .hud-root[data-compact="true"] .hud-left-stack { top: 196px; bottom: 16px; } /* the wordmark wraps taller when compact */
 .perf-chip { position: absolute; top: 96px; right: 16px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; }
+.tl-strip { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding: 2px 2px 0; }
+.tl-chip { width: 16px; height: 16px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.25); cursor: pointer; padding: 0; opacity: 0.3; }
+.tl-chip.on { opacity: 1; border-color: rgba(255, 255, 255, 0.7); }
+.tl-more { color: var(--text-faint); font: 500 10px var(--font-ui); letter-spacing: 0.08em; text-transform: uppercase; margin-left: 4px; }
