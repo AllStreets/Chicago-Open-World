@@ -1,0 +1,6 @@
+/* app/src/hud/LensRail.css — the lens tab strip, top centre */
+.lens-rail { position: absolute; top: 16px; left: 50%; transform: translateX(-50%); display: flex; gap: 2px; padding: 4px; border-radius: 999px; animation: hud-rise 0.6s 0.15s ease both; }
+.lens-btn { appearance: none; display: inline-flex; align-items: center; gap: 6px; border: 0; background: none; color: var(--text-muted); font: 600 11px var(--font-ui); letter-spacing: 0.1em; text-transform: uppercase; padding: 7px 14px; border-radius: 999px; cursor: pointer; transition: color 0.15s, background 0.15s, box-shadow 0.15s; }
+.lens-btn svg { font-size: 14px; }
+.lens-btn:hover, .lens-btn:focus-visible { color: var(--text); background: rgba(var(--accent-rgb), 0.08); outline: none; }
+.lens-btn.on { color: #04121a; background: var(--accent); box-shadow: var(--glow-accent); }

@@ -29,7 +29,7 @@ export default function StationHits() {
     if (e.delta > 4 || !stationClickWins(e.intersections ?? [])) return
     e.stopPropagation()
     const st = stations[e.instanceId]
-    if (st) useStore.getState().select({ type: 'station', id: st.id })
+    if (st) useStore.getState().select({ kind: 'station', id: st.id })
   }
   return <primitive object={mesh} onClick={onClick} />
 }

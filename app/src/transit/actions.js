@@ -44,5 +44,5 @@ export function showLine(id) {
 export function goToStation(st) {
   const s = useStore.getState()
   s.startFlight(poseForPlace({ x: st.x, z: st.z, top: Math.max(40, (st.y ?? 0) + 30) }), st.name)
-  s.select({ type: 'station', id: st.id })
+  s.select({ kind: 'station', id: st.id })
 }

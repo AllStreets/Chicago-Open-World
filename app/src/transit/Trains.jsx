@@ -96,7 +96,7 @@ export default function Trains({ file, version }) {
     if (ev.delta > 4) return // a drag, not a click
     ev.stopPropagation()
     const it = hits.current[ev.instanceId]
-    if (it) useStore.getState().select({ type: 'train', id: it.trainId })
+    if (it) useStore.getState().select({ kind: 'train', id: it.trainId })
   }
   const shadows = QUALITY[quality].shadows
   return (

@@ -7,6 +7,7 @@ import { useStore } from '../../state/store.js'
 const manifest = { landmarks: [{ key: 'wrigleyfield', name: 'Wrigley Field', x: -2279, z: -7372, top: 24 }, { key: 'willis', name: 'Willis Tower', x: -670, z: 350, top: 527 }], tallest: [] }
 import { vi } from 'vitest'
 vi.mock('../../lib/paletteSources.js', () => ({
+  lensCommands: () => [],
   featurePlaces: () => [
     { id: 'st:clark', kind: 'transit', name: 'Clark/Lake', sub: 'Station · Blue Brown Green Orange Pink Purple', pose: { position: [0, 120, 300], target: [0, 10, 0] } },
     { id: 'g:cubs', kind: 'game', name: "Go to tonight's game", sub: 'Cubs · Wrigley Field', pose: { position: [-2000, 200, -7000], target: [-2279, 10, -7372] } },

@@ -13,7 +13,7 @@ describe('transit cards', () => {
   })
   afterEach(() => vi.useRealTimers())
   it('a station card lists simulated arrivals and flies there', () => {
-    useStore.getState().select({ type: 'station', id: 'st-a' })
+    useStore.getState().select({ kind: 'station', id: 'st-a' })
     render(<TransitCard />)
     const card = screen.getByRole('dialog', { name: 'A' })
     expect(card).toHaveTextContent('Arrivals'); expect(card).toHaveTextContent('SIMULATED')
@@ -25,7 +25,7 @@ describe('transit cards', () => {
   })
   it('a train card: line, run, destination, next stop; Follow rides along', () => {
     const t = getSim().trainsAt(Date.now()).find((x) => x.line === 'red' && x.nextStop)
-    useStore.getState().select({ type: 'train', id: t.id })
+    useStore.getState().select({ kind: 'train', id: t.id })
     const { rerender } = render(<TransitCard />)
     expect(screen.getByRole('dialog')).toHaveTextContent(`Run ${t.rn}`)
     expect(screen.getByText('To Loop')).toBeInTheDocument(); expect(screen.getByText(/Next stop (A|B)/)).toBeInTheDocument()
@@ -35,7 +35,7 @@ describe('transit cards', () => {
     expect(screen.getByRole('button', { name: 'Stop following' })).toBeInTheDocument()
   })
   it('a train that has gone says so', () => {
-    useStore.getState().select({ type: 'train', id: 'svc-r1:1999-01-01:0' })
+    useStore.getState().select({ kind: 'train', id: 'svc-r1:1999-01-01:0' })
     render(<TransitCard />)
     expect(screen.getByText('This train has left the map')).toBeInTheDocument()
   })

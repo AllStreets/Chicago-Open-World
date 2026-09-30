@@ -1,0 +1,5 @@
+/* app/src/hud/ContextPanel.css — the guide card */
+.context-panel { padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }
+.cp-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.cp-sub { margin: 0; color: var(--text-muted); font: 400 12px var(--font-ui); }
+.cp-facts { margin: 0; color: var(--text-faint); font: 500 10px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }

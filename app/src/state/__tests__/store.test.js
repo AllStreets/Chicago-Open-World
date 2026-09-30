@@ -59,3 +59,19 @@ describe('games panel flag (V7 contract)', () => {
     expect(useStore.getState().gamesOpen).toBe(true)
   })
 })
+
+describe('guide state (P4)', () => {
+  beforeEach(() => useStore.setState(useStore.getInitialState()))
+  it('lens, selection and office transitions', () => {
+    const s = useStore.getState()
+    s.setLens('WORK'); expect(useStore.getState().lens).toBe('WORK')
+    s.setLens('WORK'); expect(useStore.getState().lens).toBeNull()
+    s.select({ kind: 'poi', id: 'n1' }); expect(useStore.getState().selection.id).toBe('n1')
+    s.clearSelection(); expect(useStore.getState().selection).toBeNull()
+    s.setOffice({ x: -700, z: 400, label: '233 S WACKER' }); expect(useStore.getState().office.label).toBe('233 S WACKER')
+  })
+  it('places are off by default, every category on, no tour', () => {
+    const g = useStore.getState()
+    expect(g.placesOn).toBe(false); expect(g.poiCats).toBe('all'); expect(g.tour).toBeNull()
+  })
+})

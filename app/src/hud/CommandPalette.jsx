@@ -1,16 +1,16 @@
 // app/src/hud/CommandPalette.jsx — ⌘K: search every place and command, then fly there.
 import './CommandPalette.css'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { RiSearchLine, RiBuilding2Line, RiMapPin2Line, RiCameraLensLine, RiSunLine, RiCommandLine, RiTrainLine, RiTrophyLine } from 'react-icons/ri'
+import { RiSearchLine, RiBuilding2Line, RiMapPin2Line, RiCameraLensLine, RiSunLine, RiCommandLine, RiTrainLine, RiTrophyLine, RiCompass3Line } from 'react-icons/ri'
 import { useSports } from '../sports/sportsStore.js'
 import { useStore } from '../state/store.js'
 import { buildPlaces, searchPlaces } from '../lib/places.js'
 import { BOOKMARKS } from '../lib/bookmarks.js'
-import { featurePlaces, featureCommands } from '../lib/paletteSources.js'
+import { featurePlaces, featureCommands, lensCommands } from '../lib/paletteSources.js'
 
-const ICON = { landmark: RiBuilding2Line, neighborhood: RiMapPin2Line, view: RiCameraLensLine, command: RiCommandLine, time: RiSunLine, transit: RiTrainLine, game: RiTrophyLine }
-const SECTION = { landmark: 'Landmarks', neighborhood: 'Neighborhoods', view: 'Views', command: 'Commands', transit: 'Transit', game: 'Games' }
-const ORDER = ['landmark', 'transit', 'game', 'neighborhood', 'view', 'command']
+const ICON = { landmark: RiBuilding2Line, neighborhood: RiMapPin2Line, view: RiCameraLensLine, command: RiCommandLine, time: RiSunLine, transit: RiTrainLine, game: RiTrophyLine, guide: RiCompass3Line }
+const SECTION = { landmark: 'Landmarks', neighborhood: 'Neighborhoods', view: 'Views', command: 'Commands', transit: 'Transit', game: 'Games', guide: 'Guide' }
+const ORDER = ['landmark', 'guide', 'transit', 'game', 'neighborhood', 'view', 'command']
 
 // ⌘K on Mac, Ctrl+K on Windows/Linux; code covers non-Latin keyboard layouts.
 export const isPaletteKey = (e) => (e.metaKey || e.ctrlKey) && (e.key?.toLowerCase() === 'k' || e.code === 'KeyK')
@@ -29,6 +29,7 @@ export function commands() {
     { id: 'c:perf', kind: 'command', name: 'Performance stats: on / off', sub: 'Draw calls, triangles, frame rate', run: () => s.setPerfOn(!useStore.getState().perfOn) },
     { id: 'c:help', kind: 'command', name: 'Show controls & help', sub: '?', run: () => s.setHelpOpen(true) },
     ...featureCommands(),
+    ...lensCommands(),
   ]
 }
 
@@ -56,7 +57,7 @@ export default function CommandPalette() {
   // feature entries are read when the palette opens (and when their data first arrives), not on every store change
   const all = useMemo(() => [...buildPlaces(manifest, BOOKMARKS), ...featurePlaces(useStore.getState()), ...commands()], [manifest, transit, open, venues])
   const results = useMemo(() => {
-    const found = q.trim() ? searchPlaces(q, all) : [...searchPlaces('', all.filter((p) => p.kind !== 'command')), ...all.filter((p) => p.kind === 'command').slice(0, 5)]
+    const found = q.trim() ? searchPlaces(q, all) : [...searchPlaces('', all.filter((p) => p.kind !== 'command' && p.kind !== 'guide')), ...all.filter((p) => p.kind === 'guide').slice(0, 3), ...all.filter((p) => p.kind === 'command').slice(0, 5)]
     const grouped = ORDER.flatMap((k) => found.filter((r) => r.kind === k))
     return q.trim() ? found.slice(0, 40) : grouped.slice(0, 40)
   }, [q, all])

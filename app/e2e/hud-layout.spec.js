@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test'
 import { mkdirSync } from 'node:fs'
 
 const SIZES = [[1440, 900], [1280, 720], [1024, 640], [800, 600], [600, 900]]
-const REGIONS = ['.hud-wordmark', '.hud-controls', '.dock', '.mm', '.hud-hints', '.hud-left-stack', '.perf-chip', '.flight-chip']
+const REGIONS = ['.hud-wordmark', '.lens-rail', '.hud-controls', '.dock', '.mm', '.hud-hints', '.hud-left-stack', '.perf-chip', '.flight-chip']
 const LABEL = process.env.EVAL_LABEL
 
 for (const [w, h] of SIZES) {

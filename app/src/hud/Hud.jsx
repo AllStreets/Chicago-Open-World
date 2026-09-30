@@ -19,6 +19,8 @@ import TransitLegend from './TransitLegend.jsx'
 import { useFeatureKeys } from './useFeatureKeys.js'
 import Toast from './Toast.jsx'
 import PerfOverlay from './PerfOverlay.jsx'
+import LensRail from './LensRail.jsx'
+import ContextPanel from './ContextPanel.jsx'
 
 export default function Hud() {
   useFeatureKeys()
@@ -37,11 +39,13 @@ export default function Hud() {
       <WordmarkBlock />
       {/* one scrollable column for every side panel (V7): cards first, then the games list and the line legend */}
       <div className="hud-left-stack">
+        <ContextPanel />
         <TransitCard />
         <VenueCard />
         <GamesPanel />
         <TransitLegend />
       </div>
+      <LensRail />
       <ControlPills />
       <HintBar layoutW={size[0] / scale} />
       <Minimap manifest={manifest} />

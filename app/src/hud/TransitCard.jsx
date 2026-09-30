@@ -18,7 +18,7 @@ export default function TransitCard() {
     return () => clearInterval(id)
   }, [sel])
   const sim = getSim()
-  if (!sel || !transit || !sim) return null
+  if (!sel || !transit || !sim || (sel.kind !== 'station' && sel.kind !== 'train')) return null // other kinds: the context panel (P4)
   const lineOf = (id) => transit.lines.find((l) => l.id === id)
   const s = useStore.getState()
   const head = (title, kicker) => (
@@ -32,7 +32,7 @@ export default function TransitCard() {
     </div>
   )
 
-  if (sel.type === 'station') {
+  if (sel.kind === 'station') {
     const st = transit.stations.find((x) => x.id === sel.id)
     if (!st) return null
     const arrivals = sim.arrivalsAt(st.id, now, 30)

@@ -32,7 +32,7 @@ describe('transit in ⌘K', () => {
     expect(useStore.getState().flight.label).toBe('red line')
     expect(lineFramePose(TRANSIT, 'red').target).toEqual([0, 0, 0])
     places.find((p) => p.name === 'Go to A').run()
-    expect(useStore.getState().flight.label).toBe('A'); expect(useStore.getState().selection).toEqual({ type: 'station', id: 'st-a' })
+    expect(useStore.getState().flight.label).toBe('A'); expect(useStore.getState().selection).toEqual({ kind: 'station', id: 'st-a' })
   })
   it('the palette shows a Transit group and follows a train on Enter', () => {
     at('2026-09-30T08:15:00-05:00')
