@@ -105,3 +105,13 @@ describe('free-flight clearance (G2)', () => {
     expect(dy).toBeGreaterThan(3)
   })
 })
+
+describe('WORLD_BOUNDS reach the offshore landmarks (P3)', () => {
+  it('the camera can look at the Chicago Harbor Lighthouse on the outer breakwater', async () => {
+    const { WORLD_BOUNDS, clampCamera } = await import('../cameraMath.js')
+    const lighthouse = [3049, 9, -823]
+    const r = clampCamera([2900, 70, -680], lighthouse, WORLD_BOUNDS)
+    const t = r.target ?? r[1]
+    expect(t[0]).toBeCloseTo(3049, 0)
+  })
+})

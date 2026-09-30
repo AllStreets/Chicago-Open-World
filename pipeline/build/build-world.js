@@ -25,6 +25,9 @@ import { horizonBoxes } from '../lib/horizon.js'
 import { venueZones, filterTrees, assertNoVenueTrees, outsideZones, cutZones } from '../lib/trees.js'
 import { createBlock, addTileToBlock, blockLayers, blockSidecar } from '../lib/blocks.js'
 import { bAcc, appendBuilding, appendLayer, asLayer } from '../lib/layers.js'
+import { preloadStatue } from '../lib/statues.js'
+import { loadBlenderMesh } from '../lib/blenderMesh.js'
+import { setSeahorseMesh } from '../lib/landmarks.js'
 import { createStyleRegistry, assignHeroStyles, meshStyle, writeStylePalettePng, addMaterialStyles, styleIndex, partStyle } from '../lib/styles.js'
 import { applyOsmLooks } from '../lib/osmLook.js'
 import { lakePolygons, landMinusWater, joinLines, lakeSide } from '../lib/lake.js'
@@ -106,6 +109,9 @@ async function main() {
   const heroes = existsSync(join(ROOT, 'data', 'heroes.json')) ? loadJson(join(ROOT, 'data', 'heroes.json')).heroes : []
   validateLandmarkRegistry(heroes)
   const heroFor = new Map()
+  const seahorse = await loadBlenderMesh(join(ROOT, 'heroes', 'out', 'seahorse.glb'), { at: [0, 0], maxTris: 6000 })
+  setSeahorseMesh(seahorse); log(`seahorse unit: ${seahorse ? 'Blender export (used if it fits the slot)' : 'procedural'}`)
+  for (const s of heroes.flatMap((h) => [h.statue, ...(h.landmark?.type === 'statues' ? h.landmark.items : [])]).filter(Boolean)) { s.preloaded = await preloadStatue(s); log(`statue ${s.kind}: ${s.preloaded ? 'Blender export' : 'procedural stand-in'}`) }
   // monuments that OSM maps as fountains/artworks rather than buildings get a stand-in footprint
   for (const h of heroes.filter((x) => x.match.synthetic)) {
     const c = project(h.match.lon, h.match.lat), r = h.match.radius ?? 20
@@ -136,8 +142,9 @@ async function main() {
   for (const b of buildings) if (!heroFor.has(b) && /\b(screen|scoreboard)\b/i.test(b.name ?? '')) { b.facadeOverride = 'screen'; b.seedOverride = STYLE.screen.video }
   for (const b of buildings) {
     const h = heroFor.get(b)
-    if (h) { const r = applyHero(b, h); b.pieces = r.pieces; b.extraMeshes = r.extraMeshes; b.venueMeshes = r.venueMeshes; b.clearPolys = r.clear; b.detached = r.detached; b.runtime = r.runtime; b.venueTop = (r.venueMeshes || []).reduce((t, v) => { for (let k = 1; k < v.mesh.positions.length; k += 3) t = Math.max(t, v.mesh.positions[k]); return t }, 0); b.venueTop = Math.max(b.venueTop, ...(r.detached ?? []).flatMap((d) => d.mesh.positions.filter((_, k) => k % 3 === 1))); b.hero = h.key; b.crownTop = Math.max(0, ...r.extraMeshes.flatMap((m) => m.positions.filter((_, i) => i % 3 === 1)), ...(h.spireCounts ? r.pieces.map((q) => q.top) : [])) }
+    if (h) { const r = applyHero(b, h); b.pieces = r.pieces; b.extraMeshes = r.extraMeshes; b.venueMeshes = r.venueMeshes; b.clearPolys = r.clear; b.sculptReplaces = r.sculptReplaces; b.detached = r.detached; b.runtime = r.runtime; b.venueTop = (r.venueMeshes || []).reduce((t, v) => { for (let k = 1; k < v.mesh.positions.length; k += 3) t = Math.max(t, v.mesh.positions[k]); return t }, 0); b.venueTop = Math.max(b.venueTop, ...(r.detached ?? []).flatMap((d) => d.mesh.positions.filter((_, k) => k % 3 === 1))); b.hero = h.key; b.heroSacred = Boolean(h.sacred); b.crownTop = Math.max(0, ...r.extraMeshes.map((m) => m.positions.reduce((t, y, i) => (i % 3 === 1 && y > t ? y : t), 0)), ...(h.spireCounts ? r.pieces.map((q) => q.top) : [])) }
     else b.pieces = shapePieces(b)
+    if (h && (h.sculpt || h.bodyTopM)) { const tw = b.pieces.reduce((a, p) => (p.top > a.top ? p : a), { top: 0 }), bb = tw.outer ? ringBBox(tw.outer) : null; log(`hero ${h.key}: ${b.pieces.length} pieces, tower top ${tw.top.toFixed(1)} m, ${bb ? `${(bb.maxX - bb.minX).toFixed(1)} × ${(bb.maxZ - bb.minZ).toFixed(1)} m` : 'no ring'}, crown top ${b.crownTop.toFixed(1)} m; pieces ${b.pieces.map((q) => { const bb = ringBBox(q.outer); return `${q.base ?? 0}–${q.top.toFixed(0)}:${(bb.maxX - bb.minX).toFixed(0)}×${(bb.maxZ - bb.minZ).toFixed(0)}` }).join(' ')}`) }
   }
   log(`heroes applied: ${heroFor.size}`)
   const landmarkRuntime = collectRuntime(buildings.filter((b) => b.hero && (b.runtime || b.detached)).map((b) => ({ key: b.hero, runtime: b.runtime, detached: b.detached })))
@@ -263,7 +270,7 @@ async function main() {
   const sacredOverrides = loadJson(join(ROOT, 'data', 'sacred.json')).overrides
   let sacredShaped = 0, sacredTinted = 0
   for (const b of buildings) {
-    if (b.hero) continue
+    if (b.hero && !b.heroSacred) continue // a church registered as a landmark (P2) keeps its sacred shaping (H5)
     const r = shapeSacred(b, { front: nearestRoad(b.centroid), override: sacredOverrides[b.id] ?? sacredOverrides[String(b.osmId)] })
     if (!r) continue
     b.facadeOverride = r.facade; b.seedOverride = r.seed; b.noParapet = true
@@ -344,15 +351,15 @@ async function main() {
       const top = Math.max(0, ...b.pieces.map((p) => p.top), b.venueTop ?? 0)
       const family = b.facadeOverride ? (VENUE_FACADES[b.facadeOverride] ?? FACADE_FAMILIES.indexOf(b.facadeOverride)) : classifyFacade({ height: top, year: b.year ?? 0, area: b.area, type: b.tags?.building })
       const seed = b.seedOverride ?? hashSeed(b.id)
-      const parapets = b.noParapet ? [] : b.pieces.map(parapetPiece).filter(Boolean)
+      const parapets = b.noParapet || b.sculptReplaces ? [] : b.pieces.map(parapetPiece).filter(Boolean)
       const st = meshStyle(b)
-      for (const pc of b.pieces) appendBuilding(L0, extrudeBuilding(pc), family, seed, i, st)
+      if (!b.sculptReplaces) for (const pc of b.pieces) appendBuilding(L0, extrudeBuilding(pc), family, seed, i, st) // a sculpted hero draws its own close-range body
       for (const pc of parapets) appendBuilding(L0, extrudeBuilding(pc), PARAPET_FACADE, seed, i, st)
-      const crownStyle = (m) => (m.facade != null ? meshStyle(b, 'crown') : st) // own-surface crowns skip the wall recolour
+      const crownStyle = (m) => (m.style ? styleIndex(m.style) : m.facade != null ? meshStyle(b, 'crown') : st) // own-surface crowns skip the wall recolour; sculpted detail names its material row
       for (const m of b.extraMeshes || []) appendBuilding(L0, m, m.facade ?? family, m.seed ?? seed, i, crownStyle(m))
       for (const v of b.venueMeshes || []) { const vs = partStyle(b, v); appendBuilding(L0, v.mesh, v.facade, v.seed, i, vs); appendBuilding(L1, v.mesh, v.facade, v.seed, i, vs) }
       // LOD1: heroes and part-buildings keep their shape (they are the skyline); plain footprints simplify
-      if (keepsShapeAtDistance(b)) { for (const pc of b.pieces) appendBuilding(L1, extrudeBuilding(pc), family, seed, i, st); for (const m of b.extraMeshes || []) appendBuilding(L1, m, m.facade ?? family, m.seed ?? seed, i, crownStyle(m)) }
+      if (keepsShapeAtDistance(b)) { for (const pc of b.pieces) appendBuilding(L1, extrudeBuilding(pc), family, seed, i, st); for (const m of b.extraMeshes || []) if (!m.lod0Only) appendBuilding(L1, m, m.facade ?? family, m.seed ?? seed, i, crownStyle(m)) }
       else if (b.area >= 80) for (const pc of lod1Pieces(b)) appendBuilding(L1, extrudeBuilding(pc), family, seed, i, st)
       if (top > 15) for (const pr of roofProps(b, b.pieces)) t.props.push(pr)
       meta.push({ id: b.id, name: b.name, address: b.address, stories: b.stories, year: b.year, height: Math.round(top * 10) / 10, hero: b.hero ?? null })

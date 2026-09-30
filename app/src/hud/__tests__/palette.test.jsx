@@ -70,3 +70,26 @@ describe('CommandPalette', () => {
     expect(useSports.getState().cardVenue).toBe('wrigleyfield')
   })
 })
+
+describe('P2 landmarks in search (P3 Task 10)', () => {
+  it('finds P2 landmarks by the names people use', async () => {
+    const { buildPlaces, searchPlaces } = await import('../../lib/places.js')
+    const manifest = { landmarks: [
+      { key: 'pingtom', name: 'Ping Tom Memorial Park', aliases: ['pagoda', 'Ping Tom'], x: 0, z: 3500, top: 12 },
+      { key: 'harborlighthouse', name: 'Chicago Harbor Lighthouse', aliases: ['lighthouse'], x: 3000, z: -800, top: 15 },
+      { key: 'carbidecarbon', name: 'Carbide & Carbon Building', aliases: ['Hard Rock Hotel', 'St. Jane'], x: 250, z: -500, top: 153 },
+    ], tallest: [] }
+    const places = buildPlaces(manifest, {})
+    expect(searchPlaces('pagoda', places)[0].name).toBe('Ping Tom Memorial Park')
+    expect(searchPlaces('lighthouse', places)[0].name).toBe('Chicago Harbor Lighthouse')
+    expect(searchPlaces('carbide', places)[0].name).toBe('Carbide & Carbon Building')
+  })
+  it('the help card tells people they can search by nickname', async () => {
+    const { render, screen } = await import('@testing-library/react')
+    const { default: HelpOverlay } = await import('../HelpOverlay.jsx')
+    const { useStore } = await import('../../state/store.js')
+    useStore.setState({ helpOpen: true })
+    render(<HelpOverlay />)
+    expect(screen.getByText(/the Bean, the pagoda, the lighthouse/)).toBeInTheDocument()
+  })
+})

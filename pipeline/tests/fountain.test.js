@@ -34,6 +34,13 @@ describe('Buckingham Fountain (E1)', () => {
     const top = Math.max(...p.map((q) => q[1])); expect(top).toBeGreaterThan(3.5); expect(top).toBeLessThan(5.2)
     expect(p.some((q) => Math.hypot(q[0] - SEAHORSE_MOUTH[0], q[1] - SEAHORSE_MOUTH[1], q[2]) < 0.4)).toBe(true)
   })
+  it('the seahorse rears (P3): the mouth is the high point forward of the chest, and it stands on its rock', () => {
+    const p = pts(seahorseUnit())
+    expect(SEAHORSE_MOUTH[1]).toBeGreaterThan(2.8)                       // head up, not drooping to the water
+    const nearRock = p.filter((q) => q[1] < 1.3 && Math.hypot(q[0], q[2]) < 1.7).length
+    expect(nearRock / p.length).toBeGreaterThan(0.1)                     // the figure sits on the rock at the origin
+    expect(Math.min(...p.map((q) => q[0]))).toBeGreaterThan(-3.2)
+  })
   it('emitters: a 46 m centre jet, eight seahorse jets arcing inward, ring and lower-basin jets', () => {
     const e = fountainEmitters([0, 0])
     const c = e.filter((x) => x.kind === 'centre'); expect(c).toHaveLength(1)
@@ -47,5 +54,20 @@ describe('Buckingham Fountain (E1)', () => {
     const r = fountain().runtime
     expect(r.fountain.emitters.length).toBe(49)
     expect(r.plazas[0].avoid[0].r).toBeGreaterThan(FOUNTAIN.poolR)
+  })
+})
+
+import { setSeahorseMesh } from '../lib/landmarks.js'
+describe('Blender seahorse unit (P3 Task 6)', () => {
+  it('the fountain uses a pre-loaded Blender unit that fits the slot, and the stand-in otherwise', () => {
+    const u = seahorseUnit()
+    const fit = { positions: u.positions.slice(), normals: u.normals.slice(), uvs: u.uvs.slice() }
+    for (let i = 0; i < 3; i++) fit.positions.push(...u.positions.slice(0, 9)) // a different mesh, same extent
+    setSeahorseMesh(fit)
+    const tris = (m) => m.mesh.positions.length / 9
+    expect(tris(fountain().meshes.find((m) => m.part === 'seahorse'))).toBe(fit.positions.length / 9)
+    setSeahorseMesh({ positions: [0, 0, 0, 40, 0, 0, 0, 1, 0], normals: [0, 0, 1, 0, 0, 1, 0, 0, 1], uvs: [0, 0, 0, 0, 0, 0] }) // wrong size
+    expect(tris(fountain().meshes.find((m) => m.part === 'seahorse'))).toBe(u.positions.length / 9)
+    setSeahorseMesh(null)
   })
 })

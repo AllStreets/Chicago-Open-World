@@ -167,3 +167,79 @@ export function stepdome({ ring, base, steps = [], domeRise, step = 4 }) {
   liftedTop(out, r, h, step)
   return out
 }
+
+// ── Phase 3 crowns (I-3.3) ───────────────────────────────────────────────────
+// A corner pavilion (900 N Michigan): a w × d box from base to top, capped by a four-sided pyramid lantern.
+export function pavilion({ at, base, top, w, d, roofH, bearingDeg = 0 }) {
+  const out = mesh(), r = (bearingDeg * Math.PI) / 180, c = Math.cos(r), s = Math.sin(r)
+  const P = ([x, z], y) => [at[0] + x * c - z * s, y, at[1] + x * s + z * c]
+  const ring = [[-w / 2, -d / 2], [w / 2, -d / 2], [w / 2, d / 2], [-w / 2, d / 2]]
+  const center = [at[0], (base + top) / 2, at[1]], apex = [at[0], top + roofH, at[1]]
+  for (let i = 0; i < 4; i++) {
+    const a = ring[i], b = ring[(i + 1) % 4]
+    tri(out, P(a, base), P(b, base), P(b, top), center); tri(out, P(a, base), P(b, top), P(a, top), center)
+    tri(out, P(a, top), P(b, top), apex, [at[0], top, at[1]])
+  }
+  return out
+}
+
+// A tube swept along a polyline (square section), each face turned away from the centreline.
+function sweep(out, path, r) {
+  const ring = (i) => {
+    const p = path[i], q = path[Math.min(i + 1, path.length - 1)], o = path[Math.max(i - 1, 0)]
+    const t = [q[0] - o[0], q[1] - o[1], q[2] - o[2]], tl = Math.hypot(...t) || 1
+    const T = t.map((k) => k / tl), up = Math.abs(T[1]) > 0.9 ? [1, 0, 0] : [0, 1, 0]
+    let a = [T[1] * up[2] - T[2] * up[1], T[2] * up[0] - T[0] * up[2], T[0] * up[1] - T[1] * up[0]]
+    const al = Math.hypot(...a); a = a.map((k) => k / al)
+    const b = [T[1] * a[2] - T[2] * a[1], T[2] * a[0] - T[0] * a[2], T[0] * a[1] - T[1] * a[0]]
+    return [[1, 0], [0, 1], [-1, 0], [0, -1]].map(([u, v]) => [p[0] + r * (u * a[0] + v * b[0]), p[1] + r * (u * a[1] + v * b[1]), p[2] + r * (u * a[2] + v * b[2])])
+  }
+  for (let i = 0; i < path.length - 1; i++) {
+    const A = ring(i), B = ring(i + 1), mid = path[i].map((k, j) => (k + path[i + 1][j]) / 2)
+    for (let k = 0; k < 4; k++) { const k1 = (k + 1) % 4; tri(out, A[k], A[k1], B[k1], mid); tri(out, A[k], B[k1], B[k], mid) }
+  }
+}
+
+// The Tribune's Gothic crown: an octagonal lantern ringed by `piers` corner piers, each tipped with a pinnacle and
+// tied to the lantern wall by a flying buttress that arcs up and in.
+export function gothicCrown({ at, base, top, rLantern, rPier, piers = 8, pierH, pinnacleH }) {
+  const lantern = frustum({ at, base, top: top - 4, r0: rLantern, r1: rLantern, sides: 8, cap: true })
+  const cap = frustum({ at, base: top - 4, top, r0: rLantern * 0.82, r1: rLantern * 0.62, sides: 8, cap: true })
+  lantern.positions.push(...cap.positions); lantern.normals.push(...cap.normals); lantern.uvs.push(...cap.uvs)
+  const pierMesh = mesh(), pinnacles = mesh(), buttresses = mesh(), arcs = []
+  for (let i = 0; i < piers; i++) {
+    const th = ((i + 0.5) / piers) * Math.PI * 2, dir = [Math.cos(th), Math.sin(th)]
+    const p = [at[0] + dir[0] * rPier, at[1] + dir[1] * rPier], pierTop = base + pierH
+    const pm = frustum({ at: p, base, top: pierTop, r0: 1.1, r1: 1.1, sides: 4, cap: true })
+    pierMesh.positions.push(...pm.positions); pierMesh.normals.push(...pm.normals); pierMesh.uvs.push(...pm.uvs)
+    const pn = frustum({ at: p, base: pierTop, top: pierTop + pinnacleH, r0: 0.9, r1: 0, sides: 6, cap: false })
+    pinnacles.positions.push(...pn.positions); pinnacles.normals.push(...pn.normals); pinnacles.uvs.push(...pn.uvs)
+    // the arc: from just under the pinnacle to the lantern wall higher up, bowed upward
+    const from = [p[0], pierTop - 1, p[1]], to = [at[0] + dir[0] * rLantern, Math.min(top - 5, pierTop + 4), at[1] + dir[1] * rLantern]
+    const ctrl = [(from[0] + to[0]) / 2, Math.max(from[1], to[1]) + 1.5, (from[2] + to[2]) / 2]
+    const path = Array.from({ length: 11 }, (_, k) => { const t = k / 10, u = 1 - t; return [0, 1, 2].map((j) => u * u * from[j] + 2 * u * t * ctrl[j] + t * t * to[j]) })
+    sweep(buttresses, path, 0.45)
+    arcs.push({ from, to })
+  }
+  return { lantern, piers: pierMesh, buttresses, pinnacles, arcs }
+}
+
+// A fluted Doric column (Soldier Field, P2): a tapering shaft cut with `flutes` shallow channels, then the echinus
+// (a flared cushion) and a square abacus on top.
+export function doricColumn({ at, base, top, r, flutes = 20 }) {
+  const out = mesh(), h = top - base, capH = 0.08 * h, shaftTop = top - capH, n = flutes * 2
+  const ring = (y, rr) => Array.from({ length: n }, (_, i) => { const t = (i / n) * Math.PI * 2, k = i % 2 ? 0.93 : 1; return [at[0] + rr * k * Math.cos(t), y, at[1] + rr * k * Math.sin(t)] })
+  const A = ring(base, r), B = ring(shaftTop, r * 0.84)
+  for (let i = 0; i < n; i++) {
+    const j = (i + 1) % n, mid = [at[0], (base + shaftTop) / 2, at[1]]
+    tri(out, A[i], A[j], B[j], mid); tri(out, A[i], B[j], B[i], mid)
+  }
+  const ech = frustum({ at, base: shaftTop, top: shaftTop + capH * 0.55, r0: r * 0.84, r1: r * 1.18, sides: 16, cap: false })
+  out.positions.push(...ech.positions); out.normals.push(...ech.normals); out.uvs.push(...ech.uvs)
+  const a = r * 1.25, y0 = shaftTop + capH * 0.55, c = [at[0], (y0 + top) / 2, at[1]]
+  const X = [at[0] - a, at[0] + a], Z = [at[1] - a, at[1] + a], v = (i, y, k) => [X[i], y, Z[k]]
+  for (const [p, q, s2, t] of [[v(0, y0, 0), v(1, y0, 0), v(1, top, 0), v(0, top, 0)], [v(1, y0, 1), v(0, y0, 1), v(0, top, 1), v(1, top, 1)],
+    [v(0, y0, 1), v(0, y0, 0), v(0, top, 0), v(0, top, 1)], [v(1, y0, 0), v(1, y0, 1), v(1, top, 1), v(1, top, 0)], [v(0, top, 0), v(1, top, 0), v(1, top, 1), v(0, top, 1)],
+    [v(0, y0, 0), v(0, y0, 1), v(1, y0, 1), v(1, y0, 0)]]) { tri(out, p, q, s2, c); tri(out, p, s2, t, c) }
+  return out
+}

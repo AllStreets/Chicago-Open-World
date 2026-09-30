@@ -206,6 +206,132 @@
       "base": "#b8d0cc",
       "finish": "glass",
       "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory (glass palm house)"
+    },
+    {
+      "key": "aqua-slab-concrete",
+      "base": "#eeede8",
+      "finish": "concrete",
+      "source": "https://en.wikipedia.org/wiki/Aqua_(Chicago) (white concrete balcony slabs; photo-matched)"
+    },
+    {
+      "key": "marina-concrete",
+      "base": "#dcdad3",
+      "finish": "concrete",
+      "source": "https://en.wikipedia.org/wiki/Marina_City (exposed concrete, painted off-white; photo-matched)"
+    },
+    {
+      "key": "ceres-aluminium",
+      "base": "#b9bdbf",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Chicago_Board_of_Trade_Building (cast aluminium Ceres; photo-matched)"
+    },
+    {
+      "key": "lighthouse-white",
+      "base": "#f1efe8",
+      "finish": "concrete",
+      "source": "https://en.wikipedia.org/wiki/Chicago_Harbor_Light (white tower; photo-matched)"
+    },
+    {
+      "key": "lighthouse-red",
+      "base": "#a8322b",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Chicago_Harbor_Light (red lantern roof; photo-matched)"
+    },
+    {
+      "key": "lighthouse-lamp",
+      "base": "#fff3d0",
+      "finish": "glass",
+      "source": "https://en.wikipedia.org/wiki/Chicago_Harbor_Light (lantern glass)"
+    },
+    {
+      "key": "beachhouse-white",
+      "base": "#f2f1ec",
+      "finish": "concrete",
+      "source": "https://en.wikipedia.org/wiki/North_Avenue_Beach (white hull; photo-matched)"
+    },
+    {
+      "key": "beachhouse-blue",
+      "base": "#3d6fa8",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/North_Avenue_Beach (blue decks and funnels; photo-matched)"
+    },
+    {
+      "key": "porthole-glow",
+      "base": "#ffe6b0",
+      "finish": "glass",
+      "source": "photo-matched, North Avenue Beach House portholes"
+    },
+    {
+      "key": "pagoda-red",
+      "base": "#a8302a",
+      "finish": "concrete",
+      "source": "https://en.wikipedia.org/wiki/Ping_Tom_Memorial_Park (red columns and walls; photo-matched)"
+    },
+    {
+      "key": "pagoda-green-tile",
+      "base": "#2e6e55",
+      "finish": "terracotta",
+      "source": "https://en.wikipedia.org/wiki/Ping_Tom_Memorial_Park (green glazed tile; photo-matched)"
+    },
+    {
+      "key": "gate-red",
+      "base": "#b0312a",
+      "finish": "concrete",
+      "source": "https://en.wikipedia.org/wiki/Chinatown,_Chicago (gate; photo-matched)"
+    },
+    {
+      "key": "gate-gold",
+      "base": "#c9a34a",
+      "finish": "metal",
+      "source": "photo-matched, gilded finials"
+    },
+    {
+      "key": "gold-leaf",
+      "base": "#c9a445",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Carbide_%26_Carbon_Building (gold-leaf crown)"
+    },
+    {
+      "key": "boardwalk-wood",
+      "base": "#b88a58",
+      "finish": "concrete",
+      "source": "https://studiogang.com/project/nature-boardwalk-at-lincoln-park-zoo (laminated wood; photo-matched)"
+    },
+    {
+      "key": "rink-ice",
+      "base": "#dcebf2",
+      "finish": "glass",
+      "source": "https://en.wikipedia.org/wiki/Maggie_Daley_Park (ice ribbon)"
+    },
+    {
+      "key": "canopy-fabric",
+      "base": "#f3f1ea",
+      "finish": "concrete",
+      "source": "https://en.wikipedia.org/wiki/Huntington_Bank_Pavilion (white tensile membrane; photo-matched)"
+    },
+    {
+      "key": "canopy-mast",
+      "base": "#c9ccce",
+      "finish": "metal",
+      "source": "photo-matched, pavilion masts"
+    },
+    {
+      "key": "doric-limestone",
+      "base": "#d6ccb6",
+      "finish": "limestone",
+      "source": "https://en.wikipedia.org/wiki/Soldier_Field (Doric colonnades)"
+    },
+    {
+      "key": "statue-bronze",
+      "base": "#4f5a4a",
+      "finish": "metal",
+      "source": "photo-matched, patinated bronze statues (Lincoln Park)"
+    },
+    {
+      "key": "plinth-granite",
+      "base": "#8f8b84",
+      "finish": "granite",
+      "source": "photo-matched, granite pedestals (Lincoln Park)"
     }
   ]
 }

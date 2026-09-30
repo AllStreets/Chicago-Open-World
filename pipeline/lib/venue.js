@@ -2,7 +2,7 @@
 // Every piece is a raw non-indexed mesh { positions, normals, uvs } tagged with a venue façade index and a style
 // seed; the façade shader draws seats, turf, clay, paint, steel, lamps, screens and stadium walls procedurally.
 import earcut from 'earcut'
-import { drum, spire } from './crowns.js'
+import { drum, spire, doricColumn } from './crowns.js'
 import { insetRing } from './roofs.js'
 import { pointInRing } from './geom.js'
 import { shuffled } from './sportsSites.js'
@@ -363,7 +363,7 @@ export function buildVenue(outline, spec) {
         const off = edge - C.from - j * C.rowGap
         for (let a = -L / 2; a <= L / 2 + 1e-6; a += C.spacing) {
           const at = add(add(c, mul(pr, s * off)), mul(ax, a))
-          put(drum({ at, base: C.podium, top: C.podium + C.h, r: C.r, sides: 12 }), F.wall, style, { part: 'column' })
+          put(C.doric ? doricColumn({ at, base: C.podium, top: C.podium + C.h, r: C.r }) : drum({ at, base: C.podium, top: C.podium + C.h, r: C.r, sides: 12 }), F.wall, style, { part: 'column' }) // P3: fluted Doric
         }
       }
     }

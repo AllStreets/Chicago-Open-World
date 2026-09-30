@@ -49,11 +49,11 @@ import { fileURLToPath } from 'node:url'
 
 describe('heroes.json looks (F1, F7)', () => {
   const heroes = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'data', 'heroes.json'), 'utf8')).heroes
-  it('the 41 V2 heroes carry a valid, sourced look; V6 civic landmarks colour through their material rows', () => {
+  it('the 41 V2 heroes and 6 P2 buildings carry a valid, sourced look; landmarks colour through their material rows', () => {
     const looked = heroes.filter((h) => h.look)
-    expect(looked).toHaveLength(41)
+    expect(looked).toHaveLength(41 + 6) // P3: Rookery, Monadnock, Marquette, Carbide & Carbon, Palmer House, Newberry
     expect(looked.flatMap((h) => validateLook(h.look, h.key))).toEqual([])
-    for (const h of heroes.filter((x) => !x.look)) expect(h.landmark?.type, h.key).toBeTruthy() // V6: styled per mesh (styles.json)
+    for (const h of heroes.filter((x) => !x.look)) expect(h.landmark?.type ?? (h.sacred && 'sacred'), h.key).toBeTruthy() // V6: styled per mesh; P3 churches keep sacred shaping
   })
   it('the named targets read as specified (B.6)', () => {
     const L = Object.fromEntries(heroes.map((h) => [h.key, h.look]))

@@ -17,6 +17,7 @@ const vec4s = () => Array.from({ length: FIELD_LAYERS }, () => new THREE.Vector4
 
 export const facadeUniforms = {
   uAlbedo: { value: greyArray() },
+  uMural: { value: greyArray() }, // P3: the Pilsen mural layers (façade ids 30–33)
   uWin: { value: greyArray() },
   uRoof: { value: greyTex() },
   uTile: { value: Array.from({ length: 8 }, () => new THREE.Vector4(18, 15.2, 4, 4)) },
@@ -75,6 +76,7 @@ vMUv = uv;
 const FRAG_HEAD = /* glsl */ `
 uniform sampler2DArray uAlbedo;
 uniform sampler2DArray uWin;
+uniform sampler2DArray uMural;
 uniform sampler2D uRoof;
 uniform vec4 uTile[8];
 uniform float uNight;
@@ -146,6 +148,7 @@ vec3 venueAlbedo(int vi, float s, vec2 uv, vec3 wp, vec3 n, vec3 grain, vec3 roo
   if (vi == 27) return styleBase(vStyle);                          // lamp glass, lenses, lit skylights
   if (vi == 28) return crownFace(uv, s < 0.5 ? uCrown : uCrownB);  // Crown Fountain towers
   if (vi == 29) return styleBase(vStyle) * (0.85 + 0.3 * grain.g); // bronze, Cor-Ten, stainless
+  if (vi >= 30 && vi <= 33) return textureGrad(uMural, vec3(fract(uv.x), 1.0 - fract(uv.y), float(vi - 30)), uvGrad.xy, uvGrad.zw).rgb; // Pilsen murals (repeat along the wall)
   if ((vi == 12 || vi == 13) && vStyle > 0.5) return styleBase(vStyle) * (0.94 + 0.08 * grain.r);
   if (vi == 18 && vStyle > 0.5) return mix(styleBase(vStyle) * 0.6, styleBase(vStyle), owHash(floor(vec2(uv.x, wp.y) * 3.0))) * (0.85 + 0.3 * grain.g);
   if (vi == 9) {
@@ -435,7 +438,7 @@ export function createFacadeMaterial({ leaf = false } = {}) {
   const m = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.86, metalness: 0.02 })
   if (leaf) m.defines = { USE_LEAF: '' }
   m.onBeforeCompile = patchFacadeShader
-  const key = 'facade-v10' // V6 Task 3's key; only the -leaf suffix is new here
+  const key = 'facade-v11' // P3: mural layers (V6 Task 3 was v10); only the -leaf suffix is new here
   m.customProgramCacheKey = () => (leaf ? `${key}-leaf` : key)
   return m
 }
@@ -449,6 +452,8 @@ export async function loadFacadeTextures() {
     loadLayerArray(list.map((f) => `/textures/${f.albedo}`), size),
     loadLayerArray(list.map((f) => `/textures/${f.win}`), size, { srgb: false, fallback: 0 }), // missing mask = no windows
   ])
+  // the mural layers load on their own too: a missing mural is a grey wall, never a stalled city
+  loadLayerArray([0, 1, 2, 3].map((k) => `/textures/murals/mural-${k}.jpg`), 1024).then((t) => { facadeUniforms.uMural.value = t }).catch(() => {})
   // roof gravel loads on its own so it can never hold up the façades
   new THREE.TextureLoader().loadAsync('/textures/ground/gravel.jpg').then((roof) => {
     roof.wrapS = roof.wrapT = THREE.RepeatWrapping; roof.colorSpace = THREE.SRGBColorSpace; roof.anisotropy = 8

@@ -1,8 +1,9 @@
 // app/src/lib/cameraMath.js — pure camera limits + keyboard glide.
 export const MIN_ALT = 30
 export const MAX_DIST = 6000
-// World rectangle for the camera target: the expanded city (Addison → 35th, Western → lake) minus a margin.
-export const WORLD_BOUNDS = { minX: -5375, maxX: 2526, minZ: -7572, maxZ: 6023 }
+// World rectangle for the camera target: the expanded city (Addison → 35th, Western → lake) minus a margin; to the
+// east it reaches past the harbour to the Chicago Harbor Lighthouse on the outer breakwater (x ≈ 3050, P3).
+export const WORLD_BOUNDS = { minX: -5375, maxX: 3150, minZ: -7572, maxZ: 6023 }
 
 export function clampCamera(position, target, bounds) {
   let [tx, ty, tz] = target

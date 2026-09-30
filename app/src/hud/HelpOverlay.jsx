@@ -6,7 +6,7 @@ import { FEATURE_CONTROLS } from './featureControls.js'
 const GROUPS = [
   ['Move around', [['↑ ↓ ← →', 'or W A S D — glide over the city'], ['Shift', '+ W A S D to go faster'], ['R / F', 'or Page Up / Down — rise and descend'], ['Scroll', 'or + / − — zoom in and out']]],
   ['Look around', [['Drag', 'with the mouse to turn and tilt'], ['Shift + arrows', 'or Q / E — turn and tilt'], ['N', 'face north'], ['O', 'slowly orbit where you are']]],
-  ['Search and fly', [['⌘K', 'or / — find any landmark, neighborhood or view'], ['Double-click', 'anywhere to fly there'], ['[ ]', 'previous / next view'], ['H', 'back home'], ['Minimap', 'click to fly']]],
+  ['Search and fly', [['⌘K', 'or / — find any landmark by name or nickname (the Bean, the pagoda, the lighthouse), a neighborhood or a view'], ['Double-click', 'anywhere to fly there'], ['[ ]', 'previous / next view'], ['H', 'back home'], ['Minimap', 'click to fly']]],
   ['City life', [
     ...FEATURE_CONTROLS.map((c) => [c.keyLabel, `${c.label} button — ${c.help}`]),
     ['Legend', 'click a transit line to hide or show it; All / None'],

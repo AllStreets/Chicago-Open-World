@@ -8,6 +8,8 @@ import { drum, spire, pyramid } from './crowns.js'
 import { add2, mul2, left, bearing, sub3, at3, mesh, tri, merge, tube, disc, ringAround, revolve, place, slab, norm3, gridSurface } from './meshkit.js'
 import { LANDMARK_FACADES } from './facadeIds.js'
 import { CIVIC } from './civic.js'
+import { P2_BUILDERS } from './p2landmarks.js'
+import { swapModel } from './swapModel.js'
 export { LANDMARK_FACADES }
 const F = LANDMARK_FACADES
 const hullOf = (b) => convexHull(b.polygons.flatMap((p) => p.outer))
@@ -89,25 +91,39 @@ export const FOUNTAIN = {
   jets: { centre: 46, seahorse: 6, ring: 3.5, lower: 2.5 },
 }
 const MARBLE = 'georgia-pink-marble'
-export const SEAHORSE_MOUTH = [2.3, 1.68, 0]
+export const SEAHORSE_MOUTH = [1.85, 3.15, 0]
 
-// One bronze seahorse rearing from a rock: S-curved body, arched neck, muzzle, coiled fishtail, webbed forefins, crest.
+// The rearing pose (P3), shared with the Blender unit (pipeline/heroes/scripts/seahorse.py): the fishtail coils on the
+// back of the rock, the horse's chest rises forward over it, the neck arches up to the poll and the head reaches
+// out to the mouth, which spouts the jet. +X forward, y up, the rock at the origin.
+const bez = (a, b, c, d, t) => a.map((_, k) => (1 - t) ** 3 * a[k] + 3 * (1 - t) ** 2 * t * b[k] + 3 * (1 - t) * t * t * c[k] + t ** 3 * d[k])
+export const SEAHORSE_POSE = {
+  body: (t) => bez([-0.6, 1.2, 0], [0.1, 1.55, 0], [0.75, 2.4, 0], [0.8, 3.5, 0], t), // haunch → chest → poll
+  bodyR: (t) => 0.5 * Math.sin(Math.PI * Math.min(1, 0.25 + 0.9 * t)) + 0.16,
+  tail: (k) => { const a = k * 0.16; return [-0.6 - 1.25 * Math.sin(Math.min(a, 1.4)) - 0.45 * Math.sin(a), 0.5 * (1 - k / 48) * Math.sin(a * 0.5), 1.2 - 0.32 * (1 - Math.cos(a))] },
+  shoulder: 0.62,
+}
+
+// The Blender-refined unit (heroes/out/seahorse.glb), pre-loaded by the build; used only when it fits (swapModel).
+let seahorseBlender = null
+export function setSeahorseMesh(m) { seahorseBlender = m }
+const xExtent = (m) => { let lo = Infinity, hi = -Infinity; for (let i = 0; i < m.positions.length; i += 3) { lo = Math.min(lo, m.positions[i]); hi = Math.max(hi, m.positions[i]) } return hi - lo }
+
+// One bronze seahorse rearing from its rock: horse forequarters with webbed forefins, maned arched neck, coiled fishtail.
 export function seahorseUnit() {
-  const m = mesh()
-  const spine = Array.from({ length: 15 }, (_, i) => { const t = i / 14; return [-2.2 + 3.4 * t, 1.0 + 2.6 * Math.sin(t * Math.PI * 0.85), 0] })
-  const radius = (t) => 0.55 * Math.sin(Math.PI * Math.min(1, 0.15 + t)) + 0.12
-  for (let i = 0; i < 14; i++) tube(m, spine[i], spine[i + 1], radius(i / 14), 8)
-  tube(m, spine[14], SEAHORSE_MOUTH, 0.32, 8)
-  let prev = spine[0]
-  for (let k = 1; k <= 10; k++) {
-    const a = k * 0.6, r = 0.9 * (1 - k / 12), p = [-2.2 - 0.6 * Math.sin(a), 1.0 - 0.36 * (1 - Math.cos(a)), r * Math.sin(a * 0.5)]
-    tube(m, prev, p, 0.22 * (1 - k / 12) + 0.05, 6); prev = p
+  const m = mesh(), S = SEAHORSE_POSE
+  const spine = Array.from({ length: 15 }, (_, i) => S.body(i / 14))
+  for (let i = 0; i < 14; i++) tube(m, spine[i], spine[i + 1], S.bodyR(i / 14), 8)
+  tube(m, spine[14], SEAHORSE_MOUTH, 0.3, 8)
+  let prev = S.tail(0)
+  for (let k = 3; k <= 39; k += 3) { const p = S.tail(k); tube(m, prev, p, 0.3 * (1 - k / 40) + 0.05, 6); prev = p }
+  const sh = S.body(S.shoulder)
+  for (const z of [-0.4, 0.4]) {
+    const knee = [sh[0] + 0.5, sh[1] - 0.35, z * 1.3], hoof = [sh[0] + 0.95, sh[1] - 1.15, z * 1.5]
+    tube(m, [sh[0], sh[1] - 0.15, z], knee, 0.16, 6); tube(m, knee, hoof, 0.12, 6)
+    slab(m, [hoof[0] + 0.2, hoof[2]], [1, 0], 0.7, 0.08, hoof[1] - 0.05, hoof[1] + 0.4)
   }
-  for (const z of [-0.45, 0.45]) {
-    const hip = [spine[9][0], spine[9][1] - 0.2, z], hoof = [hip[0] + 1.0, hip[1] - 1.1, z * 1.4]
-    tube(m, hip, hoof, 0.16, 6); slab(m, [hoof[0] + 0.2, hoof[2]], [1, 0], 0.7, 0.08, hoof[1] - 0.05, hoof[1] + 0.45)
-  }
-  for (let i = 6; i < 13; i++) slab(m, [spine[i][0], 0], [1, 0], 0.35, 0.06, spine[i][1] + radius(i / 14) * 0.8, spine[i][1] + radius(i / 14) + 0.35)
+  for (let i = 7; i < 14; i++) slab(m, [spine[i][0] - 0.15, 0], [1, 0], 0.3, 0.06, spine[i][1] + 0.1, spine[i][1] + 0.45) // the mane
   const rock = revolve([0, 0], [[1.6, 0], [1.4, 0.7], [0.9, 1.1], [0, 1.2]], { sides: 10, lobes: 5, depth: 0.18 })
   return merge(rock, m)
 }
@@ -145,7 +161,8 @@ function fountain(b) {
   push(revolve(c, [[2.4, Fq.basins[0].water], [1.6, 2.3], [1.4, Fq.basins[1].base]], { sides: 24 }), F.stone, MARBLE, 'pedestal')
   push(revolve(c, [[1.3, Fq.basins[1].water], [0.8, 5.6], [0.7, Fq.basins[2].base]], { sides: 24 }), F.stone, MARBLE, 'pedestal')
   push(revolve(c, [[0.9, Fq.basins[2].water], [0.5, 9.6], [0.7, 10.1], [0.25, Fq.crownTop], [0, Fq.crownTop]], { sides: 16 }), F.stone, MARBLE, 'crown')
-  const unit = seahorseUnit()
+  const proc = seahorseUnit()
+  const unit = swapModel({ mesh: proc, lengthM: xExtent(proc) }, seahorseBlender, { minTris: 500, maxTris: 6000 }).mesh
   for (const s of seahorseSpots(c)) push(place(unit, { at: s.at, y: Fq.poolWater - 0.2, yawDeg: s.yawDeg }), F.bronze, 'seahorse-bronze', 'seahorse')
   return {
     replace: true, pieces: [], meshes, clear: [ringAround(c, 58)],
@@ -270,7 +287,7 @@ function pavilion(b, spec) {
   ] }
 }
 
-const BUILDERS = { wheel, bean, fountain, theatreSign, museum, castellated, pavilion, ...CIVIC }
+const BUILDERS = { wheel, bean, fountain, theatreSign, museum, castellated, pavilion, ...CIVIC, ...P2_BUILDERS }
 export function buildLandmark(b, spec) {
   const f = BUILDERS[spec.type]
   if (!f) throw new Error(`unknown landmark type: ${spec.type}`)

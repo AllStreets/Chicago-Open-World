@@ -63,7 +63,7 @@ describe('patchFacadeShader', () => {
   })
   it('program cache key changes with the new shader', async () => {
     const { createFacadeMaterial } = await import('../facadeMaterial.js')
-    expect(createFacadeMaterial().customProgramCacheKey()).toBe('facade-v10')
+    expect(createFacadeMaterial().customProgramCacheKey()).toBe('facade-v11')
   })
   it('crown night light: flood reflects off the wall, lantern glows, both only at night inside the band', () => {
     const f = patchFacadeShader(std()).fragmentShader

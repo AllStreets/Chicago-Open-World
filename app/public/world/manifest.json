@@ -87,6 +87,39 @@
    ]
   },
   {
+   "key": "pingtom",
+   "name": "Ping Tom Memorial Park",
+   "aliases": [
+    "pagoda",
+    "Ping Tom",
+    "Ping Tom pagoda"
+   ],
+   "x": -581,
+   "z": 2772,
+   "top": 15,
+   "beacon": [
+    -581,
+    21,
+    2772
+   ]
+  },
+  {
+   "key": "chinatowngate",
+   "name": "Chinatown Gate",
+   "aliases": [
+    "Chinatown",
+    "Wentworth gate"
+   ],
+   "x": -347,
+   "z": 3268,
+   "top": 11,
+   "beacon": [
+    -347,
+    17,
+    3268
+   ]
+  },
+  {
    "key": "wintrust",
    "name": "Wintrust Arena",
    "aliases": [
@@ -150,7 +183,8 @@
    "key": "soldierfield",
    "name": "Soldier Field",
    "aliases": [
-    "Bears"
+    "Bears",
+    "Soldier Field colonnades"
    ],
    "x": 854,
    "z": 2194,
@@ -257,6 +291,51 @@
    ]
   },
   {
+   "key": "monadnock",
+   "name": "Monadnock Building",
+   "aliases": [
+    "Monadnock"
+   ],
+   "x": -142,
+   "z": 499,
+   "top": 60,
+   "beacon": [
+    -142,
+    66,
+    499
+   ]
+  },
+  {
+   "key": "rookery",
+   "name": "The Rookery",
+   "aliases": [
+    "Rookery Building"
+   ],
+   "x": -331,
+   "z": 327,
+   "top": 55,
+   "beacon": [
+    -331,
+    61,
+    327
+   ]
+  },
+  {
+   "key": "marquette",
+   "name": "Marquette Building",
+   "aliases": [
+    "Marquette"
+   ],
+   "x": -159,
+   "z": 248,
+   "top": 65,
+   "beacon": [
+    -159,
+    71,
+    248
+   ]
+  },
+  {
    "key": "110wacker",
    "name": "110 North Wacker",
    "aliases": [],
@@ -280,6 +359,22 @@
     -657,
     299,
     507
+   ]
+  },
+  {
+   "key": "oldstpats",
+   "name": "Old St. Patrick's Church",
+   "aliases": [
+    "Old St. Pat's",
+    "Old Saint Patrick's"
+   ],
+   "x": -1382,
+   "z": 287,
+   "top": 55,
+   "beacon": [
+    -1382,
+    61,
+    287
    ]
   },
   {
@@ -487,6 +582,39 @@
    ]
   },
   {
+   "key": "palmerhouse",
+   "name": "Palmer House",
+   "aliases": [
+    "Palmer House Hilton"
+   ],
+   "x": 72,
+   "z": 190,
+   "top": 99,
+   "beacon": [
+    72,
+    105,
+    190
+   ]
+  },
+  {
+   "key": "carbidecarbon",
+   "name": "Carbide & Carbon Building",
+   "aliases": [
+    "Carbide and Carbon",
+    "Pendry Chicago",
+    "St. Jane",
+    "Hard Rock Hotel"
+   ],
+   "x": 235,
+   "z": -499,
+   "top": 153,
+   "beacon": [
+    235,
+    159,
+    -499
+   ]
+  },
+  {
    "key": "crain",
    "name": "Crain Communications Building (150 N Michigan)",
    "aliases": [
@@ -555,6 +683,21 @@
    ]
   },
   {
+   "key": "newberry",
+   "name": "Newberry Library",
+   "aliases": [
+    "The Newberry"
+   ],
+   "x": -233,
+   "z": -2007,
+   "top": 38,
+   "beacon": [
+    -233,
+    44,
+    -2007
+   ]
+  },
+  {
    "key": "onechicago",
    "name": "One Chicago",
    "aliases": [
@@ -615,6 +758,21 @@
    ]
   },
   {
+   "key": "holyname",
+   "name": "Holy Name Cathedral",
+   "aliases": [
+    "Holy Name"
+   ],
+   "x": 25,
+   "z": -1550,
+   "top": 72,
+   "beacon": [
+    25,
+    78,
+    -1550
+   ]
+  },
+  {
    "key": "historicwatertower",
    "name": "Chicago Water Tower",
    "aliases": [
@@ -657,6 +815,21 @@
     1289,
     204,
     -1052
+   ]
+  },
+  {
+   "key": "oakstbeach",
+   "name": "Oak Street Beach",
+   "aliases": [
+    "Oak Street Beach Café"
+   ],
+   "x": 490,
+   "z": -2198,
+   "top": 4,
+   "beacon": [
+    490,
+    10,
+    -2198
    ]
   },
   {
@@ -738,6 +911,22 @@
     1520,
     44,
     -1078
+   ]
+  },
+  {
+   "key": "northavebeach",
+   "name": "North Avenue Beach House",
+   "aliases": [
+    "North Avenue Beach",
+    "beach house"
+   ],
+   "x": 303,
+   "z": -3494,
+   "top": 14,
+   "beacon": [
+    303,
+    20,
+    -3494
    ]
   },
   {
@@ -883,6 +1072,153 @@
     -167,
     23,
     303
+   ]
+  },
+  {
+   "key": "maggiedaley",
+   "name": "Maggie Daley Park",
+   "aliases": [
+    "skating ribbon",
+    "ice ribbon",
+    "Maggie Daley"
+   ],
+   "x": 725,
+   "z": -152,
+   "top": 0,
+   "beacon": [
+    725,
+    12,
+    -152
+   ]
+  },
+  {
+   "key": "natureboardwalk",
+   "name": "Nature Boardwalk pavilion",
+   "aliases": [
+    "Nature Boardwalk",
+    "South Pond",
+    "Studio Gang pavilion"
+   ],
+   "x": -499,
+   "z": -3956,
+   "top": 7,
+   "beacon": [
+    -499,
+    16,
+    -3956
+   ]
+  },
+  {
+   "key": "lincolnstatues",
+   "name": "Standing Lincoln",
+   "aliases": [
+    "Lincoln statue",
+    "Abraham Lincoln: The Man",
+    "Lincoln Park statues"
+   ],
+   "x": -271,
+   "z": -3261,
+   "top": 6,
+   "beacon": [
+    -271,
+    12,
+    -3261
+   ]
+  },
+  {
+   "key": "grantstatue",
+   "name": "General Grant Memorial",
+   "aliases": [
+    "Grant statue",
+    "Ulysses S. Grant Memorial"
+   ],
+   "x": -324,
+   "z": -3754,
+   "top": 12,
+   "beacon": [
+    -324,
+    18,
+    -3754
+   ]
+  },
+  {
+   "key": "goethestatue",
+   "name": "Goethe Monument",
+   "aliases": [
+    "Goethe statue"
+   ],
+   "x": -721,
+   "z": -5113,
+   "top": 11,
+   "beacon": [
+    -721,
+    16,
+    -5113
+   ]
+  },
+  {
+   "key": "northerlyisland",
+   "name": "Huntington Bank Pavilion",
+   "aliases": [
+    "Northerly Island",
+    "Northerly Island pavilion",
+    "Charter One Pavilion"
+   ],
+   "x": 1626,
+   "z": 2097,
+   "top": 26,
+   "beacon": [
+    1626,
+    32,
+    2097
+   ]
+  },
+  {
+   "key": "harborlighthouse",
+   "name": "Chicago Harbor Lighthouse",
+   "aliases": [
+    "lighthouse",
+    "Chicago Harbor Light"
+   ],
+   "x": 3049,
+   "z": -823,
+   "top": 17,
+   "beacon": [
+    3049,
+    24,
+    -823
+   ]
+  },
+  {
+   "key": "twelfthbeach",
+   "name": "12th Street Beach",
+   "aliases": [
+    "Twelfth Street Beach"
+   ],
+   "x": 1701,
+   "z": 1975,
+   "top": 4,
+   "beacon": [
+    1701,
+    10,
+    1975
+   ]
+  },
+  {
+   "key": "pilsenmurals",
+   "name": "Pilsen murals",
+   "aliases": [
+    "18th Street murals",
+    "Pilsen",
+    "murals"
+   ],
+   "x": -2337,
+   "z": 2702,
+   "top": 12,
+   "beacon": [
+    -2337,
+    14,
+    2702
    ]
   },
   {
@@ -3681,7 +4017,7 @@
    "lod0": "tiles/-5_5.glb",
    "lod1": "tiles/-5_5.lod1.glb",
    "meta": "tiles/-5_5.json",
-   "buildings": 737,
+   "buildings": 738,
    "maxHeight": 54
   },
   {
@@ -4642,7 +4978,7 @@
    "lod1": "tiles/-1_1.lod1.glb",
    "meta": "tiles/-1_1.json",
    "buildings": 90,
-   "maxHeight": 184
+   "maxHeight": 157
   },
   {
    "key": "-1_3",
@@ -4866,7 +5202,7 @@
    "lod0": "tiles/3_3.glb",
    "lod1": "tiles/3_3.lod1.glb",
    "meta": "tiles/3_3.json",
-   "buildings": 22,
+   "buildings": 23,
    "maxHeight": 31.1
   },
   {
@@ -4881,8 +5217,8 @@
    "lod0": "tiles/3_4.glb",
    "lod1": "tiles/3_4.lod1.glb",
    "meta": "tiles/3_4.json",
-   "buildings": 28,
-   "maxHeight": 9
+   "buildings": 29,
+   "maxHeight": 25.5
   },
   {
    "key": "3_5",
@@ -5466,7 +5802,7 @@
    "lod0": "tiles/1_-1.glb",
    "lod1": "tiles/1_-1.lod1.glb",
    "meta": "tiles/1_-1.json",
-   "buildings": 59,
+   "buildings": 60,
    "maxHeight": 346
   },
   {
@@ -6966,7 +7302,7 @@
    "lod0": "tiles/-1_-7.glb",
    "lod1": "tiles/-1_-7.lod1.glb",
    "meta": "tiles/-1_-7.json",
-   "buildings": 125,
+   "buildings": 126,
    "maxHeight": 163.4
   },
   {
@@ -6996,7 +7332,7 @@
    "lod0": "tiles/-1_-8.glb",
    "lod1": "tiles/-1_-8.lod1.glb",
    "meta": "tiles/-1_-8.json",
-   "buildings": 11,
+   "buildings": 13,
    "maxHeight": 167.2
   },
   {
@@ -7731,7 +8067,7 @@
    "lod0": "tiles/-2_-11.glb",
    "lod1": "tiles/-2_-11.lod1.glb",
    "meta": "tiles/-2_-11.json",
-   "buildings": 22,
+   "buildings": 23,
    "maxHeight": 148.2
   },
   {
@@ -8273,6 +8609,21 @@
    "meta": "tiles/-2_-14.json",
    "buildings": 7,
    "maxHeight": 9
+  },
+  {
+   "key": "6_-2",
+   "block": "1_-1",
+   "bounds": {
+    "minX": 3000,
+    "maxX": 3500,
+    "minZ": -1000,
+    "maxZ": -500
+   },
+   "lod0": "tiles/6_-2.glb",
+   "lod1": "tiles/6_-2.lod1.glb",
+   "meta": "tiles/6_-2.json",
+   "buildings": 1,
+   "maxHeight": 16.6
   },
   {
    "key": "3_6",

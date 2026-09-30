@@ -93,3 +93,19 @@ describe('typed OSM refs (H3)', () => {
     expect(() => parseOsmRef('x12')).toThrow(/bad OSM ref/)
   })
 })
+
+import { applyHero as applyHeroP3 } from '../lib/heroes.js'
+describe('Phase 3 crowns on the tower (bodyTopM)', () => {
+  it('caps every piece above bodyTopM and puts the crown on the widest of them', () => {
+    const sq = (x, z, w, d) => [[x, z], [x + w, z], [x + w, z + d], [x, z + d]]
+    const b = { polygons: [{ outer: sq(0, 0, 60, 40), holes: [] }], centroid: [30, 20], area: 2400, height: 184,
+      parts: null, pieces: null }
+    const spec = { key: 't', bodyTopM: 152, crowns: [{ type: 'pyramid', on: 'tower', base: 152, top: 175 }] }
+    // stand-in for shapePieces: a wide tower to 167 and a narrow full-height sliver to 184
+    const r = applyHeroP3({ ...b, polygons: [{ outer: sq(0, 0, 41, 20), holes: [] }, { outer: sq(3, 3, 35, 13), holes: [] }], parts: [
+      { outer: sq(0, 0, 41, 20), holes: [], base: 0, top: 167 }, { outer: sq(3, 3, 35, 13), holes: [], base: 0, top: 184 }] }, spec)
+    expect(Math.max(...r.pieces.map((p) => p.top))).toBeLessThanOrEqual(152)
+    const xs = r.extraMeshes[0].positions.filter((_, i) => i % 3 === 0)
+    expect(Math.max(...xs) - Math.min(...xs)).toBeCloseTo(41, 0)
+  })
+})

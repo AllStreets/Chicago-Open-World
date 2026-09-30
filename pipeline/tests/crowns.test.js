@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { spire, antenna, pyramid, sloped, drum, vault, stepdome } from '../lib/crowns.js'
+import { spire, antenna, pyramid, sloped, drum, vault, stepdome, pavilion, gothicCrown } from '../lib/crowns.js'
 const ys = (m) => m.positions.filter((_, i) => i % 3 === 1)
 const sq = (x, z, s) => [[x, z], [x + s, z], [x + s, z - s], [x, z - s]]
 function frontFacing(m) {
@@ -103,5 +103,26 @@ describe('curved tops are gridded', () => {
         expect(L).toBeLessThan(5 * Math.SQRT2 + 1e-6)
       }
     }
+  })
+})
+
+describe('Phase 3 crowns', () => {
+  it('pavilion: box body then pyramid cap, outward faces', () => {
+    const m = pavilion({ at: [0, 0], base: 240, top: 252, w: 9, d: 9, roofH: 13 })
+    expect(Math.min(...ys(m))).toBe(240); expect(Math.max(...ys(m))).toBeCloseTo(265)
+    expect(frontFacing(m)).toBe(true)
+  })
+  it('gothicCrown: 8 buttress arcs from pier tops to the lantern wall', () => {
+    const g = gothicCrown({ at: [0, 0], base: 118, top: 141, rLantern: 8, rPier: 14, piers: 8, pierH: 12, pinnacleH: 6 })
+    expect(g.arcs).toHaveLength(8)
+    for (const a of g.arcs) {
+      expect(Math.hypot(a.from[0], a.from[2])).toBeCloseTo(14, 0)
+      expect(Math.hypot(a.to[0], a.to[2])).toBeCloseTo(8, 0)
+      expect(a.to[1]).toBeGreaterThan(a.from[1])
+    }
+    for (const part of ['lantern', 'piers', 'buttresses', 'pinnacles']) expect(frontFacing(g[part])).toBe(true)
+    const all = ['lantern', 'piers', 'buttresses', 'pinnacles'].reduce((n, k) => n + g[k].positions.length / 9, 0)
+    expect(all).toBeLessThanOrEqual(20000)
+    expect(Math.max(...ys(g.lantern), ...ys(g.pinnacles))).toBeLessThanOrEqual(141 + 0.01)
   })
 })

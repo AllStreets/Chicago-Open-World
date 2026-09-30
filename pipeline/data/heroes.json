@@ -416,7 +416,23 @@
         "osmId": 31064552
       },
       "facade": "precast-concrete",
-      "crowns": []
+      "crowns": [
+        {
+          "type": "pavilions",
+          "on": "tower",
+          "base": 240,
+          "top": 252,
+          "w": 9,
+          "roofH": 13,
+          "inset": 1,
+          "note": "four corner pavilions with pyramidal glass lanterns; heights read from the KPF elevation and photographs (total 265 m)",
+          "source": [
+            "https://www.kpf.com/project/900-north-michigan-avenue",
+            "https://en.wikipedia.org/wiki/900_North_Michigan"
+          ]
+        }
+      ],
+      "bodyTopM": 240
     },
     {
       "key": "chase",
@@ -492,7 +508,20 @@
       "crowns": [],
       "aliases": [
         "Aqua Tower"
-      ]
+      ],
+      "sculpt": "aqua",
+      "sculptParams": {
+        "floors": 82,
+        "podiumM": 12,
+        "minDepth": 0.3,
+        "maxDepth": 3.7,
+        "thickness": 0.4,
+        "note": "balconies project up to 12 ft (3.7 m); they start on the podium roof (12 m, the OSM podium part)",
+        "source": [
+          "https://en.wikipedia.org/wiki/Aqua_(Chicago)",
+          "https://studiogang.com/project/aqua-tower"
+        ]
+      }
     },
     {
       "key": "400lsd",
@@ -616,7 +645,21 @@
       "aliases": [
         "Marina City",
         "corn cobs"
-      ]
+      ],
+      "sculpt": "marina",
+      "sculptParams": {
+        "floors": 65,
+        "parkingLevels": 19,
+        "aptFrom": 21,
+        "aptTo": 60,
+        "petals": 16,
+        "petalDepthM": 3.2,
+        "note": "parking on floors 1–19 as a continuous spiral ramp, laundry/storage on 20, apartments 21–60, roof deck above; 16 petal balconies per floor; petal depth read from photographs",
+        "source": [
+          "https://en.wikipedia.org/wiki/Marina_City",
+          "https://www.architecture.org/online-resources/buildings-of-chicago/marina-city"
+        ]
+      }
     },
     {
       "key": "marina2",
@@ -640,7 +683,21 @@
       "aliases": [
         "Marina City",
         "corn cobs"
-      ]
+      ],
+      "sculpt": "marina",
+      "sculptParams": {
+        "floors": 65,
+        "parkingLevels": 19,
+        "aptFrom": 21,
+        "aptTo": 60,
+        "petals": 16,
+        "petalDepthM": 3.2,
+        "note": "parking on floors 1–19 as a continuous spiral ramp, laundry/storage on 20, apartments 21–60, roof deck above; 16 petal balconies per floor; petal depth read from photographs",
+        "source": [
+          "https://en.wikipedia.org/wiki/Marina_City",
+          "https://www.architecture.org/online-resources/buildings-of-chicago/marina-city"
+        ]
+      }
     },
     {
       "key": "lakepoint",
@@ -733,10 +790,28 @@
         "osmId": 150407241
       },
       "facade": "loop-limestone",
-      "crowns": [],
+      "crowns": [
+        {
+          "type": "gothic",
+          "on": "tower",
+          "base": 118,
+          "top": 141,
+          "rLantern": 7.5,
+          "rPier": 12.5,
+          "piers": 8,
+          "pierH": 12,
+          "pinnacleH": 6,
+          "note": "octagonal Gothic lantern ringed by eight flying buttresses (Hood & Howells, after Rouen's Butter Tower); 141 m total",
+          "source": [
+            "https://en.wikipedia.org/wiki/Tribune_Tower",
+            "https://sah-archipedia.org/buildings/IL-01-031-0089"
+          ]
+        }
+      ],
       "aliases": [
         "Tribune Tower"
-      ]
+      ],
+      "bodyTopM": 118
     },
     {
       "key": "mart",
@@ -794,11 +869,35 @@
         "osmId": 28951633
       },
       "facade": "loop-limestone",
-      "crowns": [],
+      "crowns": [
+        {
+          "type": "pyramid",
+          "on": "tower",
+          "base": 152,
+          "top": 174.7,
+          "note": "steep hipped pyramid roof carrying Ceres (9.4 m); 184 m to the top of the statue; roof proportions read from photographs",
+          "source": [
+            "https://en.wikipedia.org/wiki/Chicago_Board_of_Trade_Building"
+          ]
+        }
+      ],
       "aliases": [
         "Board of Trade",
         "CBOT"
-      ]
+      ],
+      "bodyTopM": 152,
+      "statue": {
+        "kind": "ceres",
+        "file": "heroes/out/ceres.glb",
+        "heightM": 9.4,
+        "topM": 184.1,
+        "style": "ceres-aluminium",
+        "note": "John Storrs, 1930: a faceless Art Deco Ceres in cast aluminium holding a sheaf of wheat and a bag of corn",
+        "source": [
+          "https://en.wikipedia.org/wiki/Chicago_Board_of_Trade_Building",
+          "https://en.wikipedia.org/wiki/John_Storrs"
+        ]
+      }
     },
     {
       "key": "crain",
@@ -990,7 +1089,8 @@
           "from": 4,
           "rowGap": 4.4,
           "podium": 3,
-          "style": "limestone"
+          "style": "limestone",
+          "doric": true
         },
         "boards": [
           {
@@ -1029,7 +1129,8 @@
         "rimLightsSource": "Light banks run along the east and west upper-deck canopy edges (2003 renovation); spacing from aerial imagery"
       },
       "aliases": [
-        "Bears"
+        "Bears",
+        "Soldier Field colonnades"
       ],
       "sports": {
         "kind": "football",
@@ -2131,6 +2232,788 @@
         "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory",
         "OpenStreetMap way 23986733"
       ]
+    },
+    {
+      "key": "maggiedaley",
+      "name": "Maggie Daley Park",
+      "aliases": [
+        "skating ribbon",
+        "ice ribbon",
+        "Maggie Daley"
+      ],
+      "match": {
+        "synthetic": true,
+        "lat": 41.8834,
+        "lon": -87.6191,
+        "radius": 70
+      },
+      "landmark": {
+        "type": "ribbonRink",
+        "widthM": 5,
+        "path": [
+          {
+            "lat": 41.8834,
+            "lon": -87.618212
+          },
+          {
+            "lat": 41.883306,
+            "lon": -87.618258
+          },
+          {
+            "lat": 41.883222,
+            "lon": -87.618332
+          },
+          {
+            "lat": 41.883156,
+            "lon": -87.618429
+          },
+          {
+            "lat": 41.883114,
+            "lon": -87.618542
+          },
+          {
+            "lat": 41.883095,
+            "lon": -87.618666
+          },
+          {
+            "lat": 41.883096,
+            "lon": -87.618794
+          },
+          {
+            "lat": 41.88311,
+            "lon": -87.618919
+          },
+          {
+            "lat": 41.883128,
+            "lon": -87.619038
+          },
+          {
+            "lat": 41.883143,
+            "lon": -87.619145
+          },
+          {
+            "lat": 41.883148,
+            "lon": -87.619239
+          },
+          {
+            "lat": 41.883143,
+            "lon": -87.61932
+          },
+          {
+            "lat": 41.883128,
+            "lon": -87.619388
+          },
+          {
+            "lat": 41.88311,
+            "lon": -87.619444
+          },
+          {
+            "lat": 41.883096,
+            "lon": -87.619492
+          },
+          {
+            "lat": 41.883095,
+            "lon": -87.619534
+          },
+          {
+            "lat": 41.883114,
+            "lon": -87.619571
+          },
+          {
+            "lat": 41.883156,
+            "lon": -87.619607
+          },
+          {
+            "lat": 41.883222,
+            "lon": -87.619643
+          },
+          {
+            "lat": 41.883306,
+            "lon": -87.619677
+          },
+          {
+            "lat": 41.8834,
+            "lon": -87.619709
+          },
+          {
+            "lat": 41.883494,
+            "lon": -87.619736
+          },
+          {
+            "lat": 41.883578,
+            "lon": -87.619755
+          },
+          {
+            "lat": 41.883644,
+            "lon": -87.619762
+          },
+          {
+            "lat": 41.883686,
+            "lon": -87.619753
+          },
+          {
+            "lat": 41.883705,
+            "lon": -87.619724
+          },
+          {
+            "lat": 41.883704,
+            "lon": -87.619674
+          },
+          {
+            "lat": 41.88369,
+            "lon": -87.619599
+          },
+          {
+            "lat": 41.883672,
+            "lon": -87.6195
+          },
+          {
+            "lat": 41.883657,
+            "lon": -87.619379
+          },
+          {
+            "lat": 41.883652,
+            "lon": -87.619239
+          },
+          {
+            "lat": 41.883657,
+            "lon": -87.619086
+          },
+          {
+            "lat": 41.883672,
+            "lon": -87.618926
+          },
+          {
+            "lat": 41.88369,
+            "lon": -87.618765
+          },
+          {
+            "lat": 41.883704,
+            "lon": -87.618613
+          },
+          {
+            "lat": 41.883705,
+            "lon": -87.618476
+          },
+          {
+            "lat": 41.883686,
+            "lon": -87.618361
+          },
+          {
+            "lat": 41.883644,
+            "lon": -87.618274
+          },
+          {
+            "lat": 41.883578,
+            "lon": -87.61822
+          },
+          {
+            "lat": 41.883494,
+            "lon": -87.618199
+          },
+          {
+            "lat": 41.8834,
+            "lon": -87.618212
+          }
+        ]
+      },
+      "beacon": {
+        "lat": 41.8834,
+        "lon": -87.6191,
+        "y": 12
+      },
+      "source": "https://en.wikipedia.org/wiki/Maggie_Daley_Park",
+      "p2": true
+    },
+    {
+      "key": "natureboardwalk",
+      "name": "Nature Boardwalk pavilion",
+      "aliases": [
+        "Nature Boardwalk",
+        "South Pond",
+        "Studio Gang pavilion"
+      ],
+      "match": {
+        "synthetic": true,
+        "lat": 41.91765,
+        "lon": -87.63385,
+        "radius": 14
+      },
+      "landmark": {
+        "type": "boardwalkArches",
+        "count": 12,
+        "spanM": 11,
+        "heightM": 7,
+        "bearingDeg": 20
+      },
+      "beacon": {
+        "lat": 41.91765,
+        "lon": -87.63385,
+        "y": 16
+      },
+      "source": "https://studiogang.com/project/nature-boardwalk-at-lincoln-park-zoo",
+      "p2": true
+    },
+    {
+      "key": "rookery",
+      "name": "The Rookery",
+      "aliases": [
+        "Rookery Building"
+      ],
+      "match": {
+        "osmId": "w73706154",
+        "osmType": "way"
+      },
+      "look": {
+        "material": "red granite base, red pressed brick and terra cotta above",
+        "finish": "terracotta",
+        "base": "#8e4b3b",
+        "glass": "#2d2f33",
+        "mullion": "#7c3f31",
+        "spandrel": "#9b5b46",
+        "source": "https://en.wikipedia.org/wiki/Rookery_Building"
+      },
+      "source": "https://en.wikipedia.org/wiki/Rookery_Building",
+      "p2": true
+    },
+    {
+      "key": "monadnock",
+      "name": "Monadnock Building",
+      "aliases": [
+        "Monadnock"
+      ],
+      "match": {
+        "osmId": "w73671128",
+        "osmType": "way"
+      },
+      "look": {
+        "material": "dark purple-brown load-bearing brick, flared base and parapet",
+        "finish": "terracotta",
+        "base": "#5a3a34",
+        "glass": "#2b2d31",
+        "mullion": "#4d312c",
+        "spandrel": "#5f3f38",
+        "source": "https://en.wikipedia.org/wiki/Monadnock_Building"
+      },
+      "source": "https://en.wikipedia.org/wiki/Monadnock_Building",
+      "p2": true
+    },
+    {
+      "key": "marquette",
+      "name": "Marquette Building",
+      "aliases": [
+        "Marquette"
+      ],
+      "match": {
+        "osmId": "w124865455",
+        "osmType": "way"
+      },
+      "look": {
+        "material": "brown-red terra cotta and brick, Chicago windows",
+        "finish": "terracotta",
+        "base": "#a3785f",
+        "glass": "#2e3034",
+        "mullion": "#946a52",
+        "spandrel": "#a87e64",
+        "source": "https://en.wikipedia.org/wiki/Marquette_Building_(Chicago)"
+      },
+      "source": "https://en.wikipedia.org/wiki/Marquette_Building_(Chicago)",
+      "p2": true
+    },
+    {
+      "key": "carbidecarbon",
+      "name": "Carbide & Carbon Building",
+      "aliases": [
+        "Carbide and Carbon",
+        "Pendry Chicago",
+        "St. Jane",
+        "Hard Rock Hotel"
+      ],
+      "match": {
+        "osmId": "w148544831",
+        "osmType": "way"
+      },
+      "look": {
+        "material": "black polished granite base, dark green terra cotta shaft, gold-leaf crown",
+        "finish": "terracotta",
+        "base": "#1f3a2d",
+        "glass": "#1c2226",
+        "mullion": "#2a4a3a",
+        "spandrel": "#1b3328",
+        "source": "https://en.wikipedia.org/wiki/Carbide_%26_Carbon_Building"
+      },
+      "bodyTopM": 137,
+      "crowns": [
+        {
+          "type": "spire",
+          "on": "tower",
+          "base": 137,
+          "top": 153,
+          "r0": 4.2,
+          "sides": 8,
+          "style": "gold-leaf",
+          "facade": "paint",
+          "note": "gold-leaf spire (said to evoke a champagne bottle); 153 m total",
+          "source": "https://en.wikipedia.org/wiki/Carbide_%26_Carbon_Building"
+        }
+      ],
+      "source": "https://en.wikipedia.org/wiki/Carbide_%26_Carbon_Building",
+      "p2": true
+    },
+    {
+      "key": "palmerhouse",
+      "name": "Palmer House",
+      "aliases": [
+        "Palmer House Hilton"
+      ],
+      "match": {
+        "osmId": "w147489619",
+        "osmType": "way"
+      },
+      "look": {
+        "material": "limestone and buff brick, arched base",
+        "finish": "limestone",
+        "base": "#bba486",
+        "glass": "#2c2f33",
+        "mullion": "#a8927a",
+        "spandrel": "#b59f82",
+        "source": "https://en.wikipedia.org/wiki/Palmer_House"
+      },
+      "source": "https://en.wikipedia.org/wiki/Palmer_House",
+      "p2": true
+    },
+    {
+      "key": "oldstpats",
+      "name": "Old St. Patrick's Church",
+      "aliases": [
+        "Old St. Pat's",
+        "Old Saint Patrick's"
+      ],
+      "match": {
+        "osmId": "w148682635",
+        "osmType": "way"
+      },
+      "sacred": true,
+      "source": "https://en.wikipedia.org/wiki/Old_St._Patrick%27s_Church_(Chicago)",
+      "p2": true
+    },
+    {
+      "key": "holyname",
+      "name": "Holy Name Cathedral",
+      "aliases": [
+        "Holy Name"
+      ],
+      "match": {
+        "osmId": "w75684994",
+        "osmType": "way"
+      },
+      "sacred": true,
+      "source": "https://en.wikipedia.org/wiki/Holy_Name_Cathedral,_Chicago",
+      "p2": true
+    },
+    {
+      "key": "newberry",
+      "name": "Newberry Library",
+      "aliases": [
+        "The Newberry"
+      ],
+      "match": {
+        "osmId": "w144015996",
+        "osmType": "way"
+      },
+      "look": {
+        "material": "pink Connecticut granite, Spanish Romanesque",
+        "finish": "granite",
+        "base": "#a57666",
+        "glass": "#2c2e32",
+        "mullion": "#93685a",
+        "spandrel": "#a0725f",
+        "source": "https://en.wikipedia.org/wiki/Newberry_Library"
+      },
+      "source": "https://en.wikipedia.org/wiki/Newberry_Library",
+      "p2": true
+    },
+    {
+      "key": "lincolnstatues",
+      "name": "Standing Lincoln",
+      "aliases": [
+        "Lincoln statue",
+        "Abraham Lincoln: The Man",
+        "Lincoln Park statues"
+      ],
+      "match": {
+        "synthetic": true,
+        "lat": 41.91139,
+        "lon": -87.63111,
+        "radius": 8
+      },
+      "landmark": {
+        "type": "statues",
+        "items": [
+          {
+            "kind": "lincoln",
+            "heightM": 3.7,
+            "plinthH": 1.8,
+            "plinthW": 3.2,
+            "bearingDeg": 270,
+            "file": "heroes/out/statue_lincoln.glb",
+            "source": "https://en.wikipedia.org/wiki/Abraham_Lincoln:_The_Man"
+          }
+        ]
+      },
+      "beacon": {
+        "lat": 41.91139,
+        "lon": -87.63111,
+        "y": 12
+      },
+      "source": "https://en.wikipedia.org/wiki/Abraham_Lincoln:_The_Man",
+      "p2": true,
+      "note": "coordinates per Wikipedia (41°54′41″N 87°37′52″W), east of the Chicago History Museum"
+    },
+    {
+      "key": "grantstatue",
+      "name": "General Grant Memorial",
+      "aliases": [
+        "Grant statue",
+        "Ulysses S. Grant Memorial"
+      ],
+      "match": {
+        "synthetic": true,
+        "lat": 41.91583,
+        "lon": -87.63174,
+        "radius": 10
+      },
+      "landmark": {
+        "type": "statues",
+        "items": [
+          {
+            "kind": "grant",
+            "heightM": 5.5,
+            "plinthH": 6,
+            "plinthW": 7,
+            "bearingDeg": 90,
+            "file": "heroes/out/statue_grant.glb",
+            "source": "https://en.wikipedia.org/wiki/General_Grant_National_Memorial_(Chicago)"
+          }
+        ]
+      },
+      "beacon": {
+        "lat": 41.91583,
+        "lon": -87.63174,
+        "y": 18
+      },
+      "source": "https://en.wikipedia.org/wiki/Ulysses_S._Grant_Memorial_(Chicago)",
+      "p2": true
+    },
+    {
+      "key": "goethestatue",
+      "name": "Goethe Monument",
+      "aliases": [
+        "Goethe statue"
+      ],
+      "match": {
+        "synthetic": true,
+        "lat": 41.92806,
+        "lon": -87.63653,
+        "radius": 8
+      },
+      "landmark": {
+        "type": "statues",
+        "items": [
+          {
+            "kind": "goethe",
+            "heightM": 7.6,
+            "plinthH": 3,
+            "plinthW": 4,
+            "bearingDeg": 90,
+            "file": "heroes/out/statue_goethe.glb",
+            "source": "https://en.wikipedia.org/wiki/Goethe_Monument_(Chicago)"
+          }
+        ]
+      },
+      "beacon": {
+        "lat": 41.92806,
+        "lon": -87.63653,
+        "y": 16
+      },
+      "source": "https://en.wikipedia.org/wiki/Goethe_Monument_(Chicago)",
+      "p2": true
+    },
+    {
+      "key": "northavebeach",
+      "name": "North Avenue Beach House",
+      "aliases": [
+        "North Avenue Beach",
+        "beach house"
+      ],
+      "match": {
+        "osmId": "w417380833",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "beachHouse",
+        "style": "ship"
+      },
+      "source": "https://en.wikipedia.org/wiki/North_Avenue_Beach",
+      "p2": true
+    },
+    {
+      "key": "oakstbeach",
+      "name": "Oak Street Beach",
+      "aliases": [
+        "Oak Street Beach Café"
+      ],
+      "match": {
+        "osmId": "w220408416",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "beachHouse",
+        "style": "small"
+      },
+      "source": "https://en.wikipedia.org/wiki/Oak_Street_Beach",
+      "p2": true
+    },
+    {
+      "key": "northerlyisland",
+      "name": "Huntington Bank Pavilion",
+      "aliases": [
+        "Northerly Island",
+        "Northerly Island pavilion",
+        "Charter One Pavilion"
+      ],
+      "match": {
+        "synthetic": true,
+        "lat": 41.86315,
+        "lon": -87.60825,
+        "radius": 36
+      },
+      "landmark": {
+        "type": "canopy",
+        "w": 70,
+        "d": 56,
+        "peakH": 24,
+        "masts": 4,
+        "bearingDeg": 90
+      },
+      "beacon": {
+        "lat": 41.86315,
+        "lon": -87.60825,
+        "y": 32
+      },
+      "source": "https://en.wikipedia.org/wiki/Huntington_Bank_Pavilion",
+      "p2": true
+    },
+    {
+      "key": "harborlighthouse",
+      "name": "Chicago Harbor Lighthouse",
+      "aliases": [
+        "lighthouse",
+        "Chicago Harbor Light"
+      ],
+      "match": {
+        "synthetic": true,
+        "lat": 41.88944,
+        "lon": -87.59111,
+        "radius": 8
+      },
+      "offshore": true,
+      "landmark": {
+        "type": "lighthouse",
+        "base": 2,
+        "breakwater": {
+          "bearingDeg": 0,
+          "aheadM": 260,
+          "behindM": 60,
+          "widthM": 9,
+          "note": "the outer harbour breakwater the light stands on (runs north–south); its extent is read from aerial photographs"
+        }
+      },
+      "beacon": {
+        "lat": 41.88944,
+        "lon": -87.59111,
+        "y": 24
+      },
+      "source": "https://en.wikipedia.org/wiki/Chicago_Harbor_Light",
+      "p2": true
+    },
+    {
+      "key": "twelfthbeach",
+      "name": "12th Street Beach",
+      "aliases": [
+        "Twelfth Street Beach"
+      ],
+      "match": {
+        "synthetic": true,
+        "lat": 41.86425,
+        "lon": -87.60735,
+        "radius": 9
+      },
+      "landmark": {
+        "type": "beachHouse",
+        "style": "small"
+      },
+      "beacon": {
+        "lat": 41.86425,
+        "lon": -87.60735,
+        "y": 10
+      },
+      "source": "https://en.wikipedia.org/wiki/12th_Street_Beach",
+      "p2": true
+    },
+    {
+      "key": "pingtom",
+      "name": "Ping Tom Memorial Park",
+      "aliases": [
+        "pagoda",
+        "Ping Tom",
+        "Ping Tom pagoda"
+      ],
+      "match": {
+        "osmId": "w257172750",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "pagoda",
+        "tiers": 4,
+        "baseW": 8,
+        "tierH": 3.2
+      },
+      "source": "https://en.wikipedia.org/wiki/Ping_Tom_Memorial_Park",
+      "p2": true
+    },
+    {
+      "key": "chinatowngate",
+      "name": "Chinatown Gate",
+      "aliases": [
+        "Chinatown",
+        "Wentworth gate"
+      ],
+      "match": {
+        "osmId": "w867019724",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "gate",
+        "spanM": 18,
+        "heightM": 11,
+        "bearingDeg": 0
+      },
+      "source": "https://en.wikipedia.org/wiki/Chinatown,_Chicago",
+      "p2": true
+    },
+    {
+      "key": "pilsenmurals",
+      "name": "Pilsen murals",
+      "aliases": [
+        "18th Street murals",
+        "Pilsen",
+        "murals"
+      ],
+      "match": {
+        "synthetic": true,
+        "lat": 41.8577,
+        "lon": -87.656,
+        "radius": 2
+      },
+      "landmark": {
+        "type": "murals",
+        "walls": [
+          {
+            "a": {
+              "lat": 41.857735,
+              "lon": -87.656563
+            },
+            "b": {
+              "lat": 41.857728,
+              "lon": -87.657011
+            },
+            "base": 0.7,
+            "top": 7.5,
+            "layer": 0,
+            "out": [
+              0,
+              1
+            ]
+          },
+          {
+            "a": {
+              "lat": 41.857827,
+              "lon": -87.658727
+            },
+            "b": {
+              "lat": 41.857832,
+              "lon": -87.658298
+            },
+            "base": 0.7,
+            "top": 7.5,
+            "layer": 1,
+            "out": [
+              0,
+              1
+            ]
+          },
+          {
+            "a": {
+              "lat": 41.857782,
+              "lon": -87.661846
+            },
+            "b": {
+              "lat": 41.857787,
+              "lon": -87.661445
+            },
+            "base": 0.7,
+            "top": 7,
+            "layer": 2,
+            "out": [
+              0,
+              1
+            ]
+          },
+          {
+            "a": {
+              "lat": 41.857646,
+              "lon": -87.653083
+            },
+            "b": {
+              "lat": 41.857648,
+              "lon": -87.652712
+            },
+            "base": 0.7,
+            "top": 7,
+            "layer": 3,
+            "out": [
+              0,
+              -1
+            ]
+          },
+          {
+            "a": {
+              "lat": 41.857773,
+              "lon": -87.653328
+            },
+            "b": {
+              "lat": 41.857773,
+              "lon": -87.653692
+            },
+            "base": 0.7,
+            "top": 12,
+            "layer": 0,
+            "out": [
+              0,
+              1
+            ]
+          }
+        ],
+        "note": "original abstract designs in the neighbourhood palette (no existing mural is reproduced), on real street walls of 18th Street"
+      },
+      "beacon": {
+        "lat": 41.8577,
+        "lon": -87.656,
+        "y": 14
+      },
+      "source": "https://en.wikipedia.org/wiki/Pilsen,_Chicago",
+      "p2": true
     }
   ]
 }
