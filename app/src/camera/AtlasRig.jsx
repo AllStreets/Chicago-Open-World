@@ -17,6 +17,11 @@ import { followStep, shouldExitFollow } from '../transit/followCam.js'
 import { getTrains, getSim } from '../transit/simStore.js'
 import { ensureClear } from '../lib/poseClearance.js'
 import { FEATURE_CONTROLS } from '../hud/featureControls.js'
+import { tourById, tourPoses, tourClock } from '../lib/tourPoses.js'
+import { tourAt } from '../lib/tour.js'
+
+// keys that move the camera: during a tour they hand control back (and offer to resume)
+const MOVE_KEYS = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyW', 'KeyA', 'KeyS', 'KeyD', 'KeyQ', 'KeyE', 'KeyR', 'KeyF', 'PageUp', 'PageDown', 'Equal', 'Minus']
 
 // keys that leave a flight running: the time-of-day brackets, help, and every city-life toggle
 const KEEP_FLIGHT = ['BracketLeft', 'BracketRight', 'KeyH', ...FEATURE_CONTROLS.map((c) => c.key)]
@@ -36,6 +41,7 @@ const pose = (c) => { c.getTarget(tmpT); c.getPosition(tmpP); return { position:
 export default function AtlasRig() {
   const ref = useRef()
   const keys = useRef(new Set())
+  const tourPosesRef = useRef({ id: null, poses: [] })
   const lastReadout = useRef(0)
   const flightRun = useRef(null)
   const introStart = useRef(null)
@@ -80,6 +86,7 @@ export default function AtlasRig() {
       if (typing(e) || e.metaKey || e.ctrlKey) return
       const st0 = useStore.getState()
       if (st0.follow && shouldExitFollow(e)) { st0.stopFollow(); return } // any key takes back control
+      if (st0.tour && MOVE_KEYS.includes(e.code)) { useStore.setState({ tourResume: { ...st0.tour, t: tourClock.t } }); st0.setTour(null) } // a movement key takes back the camera
       keys.current.add(e.code)
       if (e.code.startsWith('Arrow') || e.code === 'PageUp' || e.code === 'PageDown') e.preventDefault()
       const s = useStore.getState()
@@ -177,6 +184,22 @@ export default function AtlasRig() {
       const r = st.transitOn ? followStep(fw, getTrains(), undefined, (id) => getSim()?.trainById(id, Date.now())) : { ended: null }
       if (r.ended !== undefined) st.stopFollow(r.ended) // transit switched off: stop quietly
       else { const cp = ensureClear(r.pose); c.setLookAt(...cp.position, ...cp.target, true); publishReadout(c, now); window.__camRest = false; return } // smoothed by camera-controls
+    }
+    // a guided tour drives the camera: its own clock, pushed to the store a few times a second for the tour bar
+    const tr = useStore.getState().tour
+    if (tr) {
+      const def = tourById(tr.id)
+      if (!def) { useStore.getState().setTour(null); return }
+      if (tourPosesRef.current.id !== tr.id) tourPosesRef.current = { id: tr.id, poses: tourPoses(def, useStore.getState().manifest) }
+      if (tr.playing) tourClock.t += dt
+      if (Math.abs(tourClock.t - tr.t) > 0.25) useStore.getState().setTour({ ...tr, t: tourClock.t })
+      const at = tourAt(def, tourPosesRef.current.poses, tourClock.t)
+      const p = liftAboveRoofs(at.pose, clearanceAt)
+      c.setLookAt(...p.position, ...p.target, false)
+      if (at.done) useStore.getState().setTour({ ...useStore.getState().tour, playing: false }) // hold the last stop until Exit
+      publishReadout(c, now)
+      window.__camRest = false
+      return
     }
     const f = flightRun.current
     if (f) {

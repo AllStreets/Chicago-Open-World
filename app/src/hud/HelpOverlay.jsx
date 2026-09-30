@@ -13,7 +13,7 @@ const GROUPS = [
     ['Click', 'a train, a station or a ballpark for its card'],
     ['⌘K', '“Follow a train” rides along (any key stops) · “Go to Clark/Lake” · type “tonight” for tonight’s game'],
   ]],
-  ['Guide', [['Lenses', 'the tabs at the top — Visit, Live, Work (also ⌘K “Lens: Visit”)'], ['Hover', 'a building for its name and year; click it for its card'], ['Esc', 'close the card, then the lens']]],
+  ['Guide', [['Lenses', 'the tabs at the top — Visit, Live, Work (also ⌘K “Lens: Visit”)'], ['Hover', 'a building for its name and year; click it for its card'], ['Esc', 'close the card, then the lens'], ['Tours', 'in the Visit lens or ⌘K “Tour:” — Space pauses, , and . step between stops, any arrow key takes back the camera']]],
   ['Time and quality', [['1 – 5', 'live Chicago time, dawn, day, dusk, night'], ['Quality', 'button on the right if things feel slow · Low also turns off water reflections'], ['Stats', '⌘K “performance” shows draw calls and frame rate']]],
 ]
 

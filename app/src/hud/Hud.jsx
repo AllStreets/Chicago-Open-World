@@ -22,6 +22,7 @@ import PerfOverlay from './PerfOverlay.jsx'
 import LensRail from './LensRail.jsx'
 import ContextPanel from './ContextPanel.jsx'
 import BuildingTooltip from './BuildingTooltip.jsx'
+import TourBar from './TourBar.jsx'
 
 export default function Hud() {
   useFeatureKeys()
@@ -56,6 +57,7 @@ export default function Hud() {
       <FollowChip />
       <Toast />
       <BuildingTooltip />
+      <TourBar />
       <CommandPalette />
       <HelpOverlay />
       <LoadingScreen />

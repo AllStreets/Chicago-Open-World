@@ -19,3 +19,31 @@ describe('tour playback', () => {
     for (let t = 0; t < tourDuration(tour, poses); t += 0.25) { const p = tourAt(tour, poses, t).progress; expect(p).toBeGreaterThanOrEqual(last); last = p }
   })
 })
+
+import { tourStopPose } from '../tourPoses.js'
+import { pinBudget } from '../poiFilter.js'
+describe('tour framing and pin budget (P4 Task 6 evaluation)', () => {
+  it('frames a stop close enough to read the landmark: within 1.8× its height (min 220 m), looking at its upper half', () => {
+    const p = tourStopPose({ x: 0, z: 0, top: 141 })
+    const d = Math.hypot(p.position[0], p.position[2])
+    expect(d).toBeLessThanOrEqual(Math.max(220, 141 * 1.8) + 1); expect(d).toBeGreaterThanOrEqual(180)
+    expect(p.target[1]).toBeGreaterThan(141 * 0.4)
+  })
+  it('shows fewer pins the higher the camera (a wide view stays readable), never fewer than 60', () => {
+    expect(pinBudget(150, 3000)).toBeGreaterThan(pinBudget(320, 3000))
+    expect(pinBudget(320, 3000)).toBeLessThanOrEqual(200)
+    expect(pinBudget(5000, 3000)).toBe(60)
+    expect(pinBudget(10, 800)).toBe(800)
+  })
+})
+
+describe('tour stops look past their neighbours (P4 Task 6 evaluation)', () => {
+  it('picks the approach whose sightline crosses the fewest roofs', () => {
+    // a 200 m wall of towers south-east of the landmark (where the default view comes from)
+    const roofs = (x, z) => (x > 40 && x < 200 && z > 40 && z < 200 ? 180 : 0)
+    const p = tourStopPose({ x: 0, z: 0, top: 141 }, roofs)
+    expect(p.position[0] > 40 && p.position[2] > 40).toBe(false)
+    const open = tourStopPose({ x: 0, z: 0, top: 141 }, () => 0)
+    expect(open.position[0]).toBeGreaterThan(0); expect(open.position[2]).toBeGreaterThan(0) // no obstruction: the default south-east view
+  })
+})

@@ -3,6 +3,8 @@
 import { POI_CATEGORIES, POI_CAT_IDS } from '../data/poiCategories.js'
 
 export const MAX_PINS = { LOW: 800, HIGH: 3000, ULTRA: 4000 }
+// fewer pins the higher the camera: a wide view shows the nearest few dozen, a street view all of them
+export const pinBudget = (altitude, cap) => Math.min(cap, Math.max(60, Math.round(60000 / Math.max(1, altitude))))
 const catsOf = (cats, catIds) => (cats === 'all' ? catIds : cats ?? catIds)
 
 export function filterPois(pois, { cats = 'all', target = [0, 0], max = MAX_PINS.HIGH, catIds = POI_CAT_IDS }) {

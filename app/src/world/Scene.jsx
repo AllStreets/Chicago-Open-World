@@ -8,6 +8,8 @@ import { sunForPreset } from '../lib/sun.js'
 import TileStreamer from './TileStreamer.jsx'
 import Picker from './Picker.jsx'
 import PoiPins from './PoiPins.jsx'
+import Beacons from './Beacons.jsx'
+import WorldLabels from './WorldLabels.jsx'
 import Land from './Land.jsx'
 import { loadFacadeTextures, loadStylePalette } from './materials/facadeMaterial.js'
 import { loadGroundTextures } from './materials/groundShader.js'
@@ -91,6 +93,8 @@ export default function Scene() {
       <StationHits />
       <Picker />
       <PoiPins />
+      <Beacons />
+      <WorldLabels />
       <TrainAudio />
         {manifest?.trains && <SafeLoad><Suspense fallback={null}><Trains file={manifest.trains} version={manifest.version} /></Suspense></SafeLoad>}
   

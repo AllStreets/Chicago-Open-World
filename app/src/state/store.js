@@ -73,6 +73,7 @@ export const useStore = create((set) => ({
   setPlacesOn: (placesOn) => set({ placesOn }),
   tour: null,
   setTour: (tour) => set({ tour }),
+  tourResume: null, // the tour a movement key interrupted, offered back for 10 s
   lineAlerts: {}, // line id → { severity, headlines } from CTA alerts (P4)
   hover: null,    // { x, y, lines } — the building under the pointer (P4)
   setHover: (hover) => set({ hover }),

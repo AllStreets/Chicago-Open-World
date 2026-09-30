@@ -41,3 +41,15 @@ describe('landmark registry (E9)', () => {
     expect(withBeacon.beacon).toEqual([0, 50, 0])
   })
 })
+
+describe('landmark entries aim at the tower (P4 Task 6 evaluation)', () => {
+  it('x, z and the default beacon sit over the tallest piece, not the whole site', () => {
+    const b = { centroid: [0, 0], venueTop: 0, pieces: [
+      { outer: [[-50, -40], [50, -40], [50, 40], [-50, 40]], top: 23 },          // the podium, the whole site
+      { outer: [[20, 10], [40, 10], [40, 30], [20, 30]], top: 141 },            // the tower in one corner
+    ] }
+    const e = landmarkEntry(b, { key: 'tribune', name: 'Tribune Tower' })
+    expect([e.x, e.z]).toEqual([30, 20])
+    expect(e.beacon[0]).toBe(30); expect(e.beacon[2]).toBe(20)
+  })
+})

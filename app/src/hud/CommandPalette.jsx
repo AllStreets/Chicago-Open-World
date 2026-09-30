@@ -6,7 +6,7 @@ import { useSports } from '../sports/sportsStore.js'
 import { useStore } from '../state/store.js'
 import { buildPlaces, searchPlaces } from '../lib/places.js'
 import { BOOKMARKS } from '../lib/bookmarks.js'
-import { featurePlaces, featureCommands, lensCommands, placeCommands } from '../lib/paletteSources.js'
+import { featurePlaces, featureCommands, lensCommands, placeCommands, tourCommands } from '../lib/paletteSources.js'
 import { buildPlaceRows } from '../lib/poiFilter.js'
 import { worldUrl } from '../lib/manifest.js'
 import { buildingPose } from './cards/BuildingCard.jsx'
@@ -34,6 +34,7 @@ export function commands() {
     ...featureCommands(),
     ...lensCommands(),
     ...placeCommands(),
+    ...tourCommands(),
   ]
 }
 

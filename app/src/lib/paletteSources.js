@@ -2,6 +2,7 @@
 // V6 landmarks arrive through manifest.landmarks (kind 'landmark').
 import { useStore } from '../state/store.js'
 import { POI_CATEGORIES } from '../data/poiCategories.js'
+import { TOURS, startTour } from './tourPoses.js'
 import { transitPlaces } from '../transit/palette.js'
 import { gamePlaces } from '../sports/palette.js'
 import { useSports } from '../sports/sportsStore.js'
@@ -38,4 +39,9 @@ export function placeCommands() {
     { id: 'places:hide', kind: 'guide', name: 'Hide places', sub: 'P', aliases: ['places off'], run: () => s().setPlacesOn(false) },
     ...POI_CATEGORIES.map((c) => ({ id: `places:only:${c.id}`, kind: 'guide', name: `Show only: ${c.label}`, sub: 'Places', aliases: [c.label, c.id], run: () => { s().setPoiCats([c.id]); s().setPlacesOn(true) } })),
   ]
+}
+
+// Tours (P4): each of the three guided tours, from ⌘K
+export function tourCommands() {
+  return TOURS.map((t) => ({ id: `tour:${t.id}`, kind: 'guide', name: `Tour: ${t.name}`, sub: `${t.stops.length} stops · Space pauses, , and . step, Esc exits`, aliases: ['tour', t.name], run: () => startTour(t.id, useStore) }))
 }

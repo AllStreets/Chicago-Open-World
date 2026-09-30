@@ -7,10 +7,10 @@ import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
-import * as Ri from 'react-icons/ri'
+import { poiIcon } from '../data/poiIcons.js'
 import { useStore } from '../state/store.js'
 import { POI_CATEGORIES } from '../data/poiCategories.js'
-import { filterPois, MAX_PINS } from '../lib/poiFilter.js'
+import { filterPois, MAX_PINS, pinBudget } from '../lib/poiFilter.js'
 import { allTilePois, usePoiVersion } from './poiRegistry.js'
 import { loadLivePlaces } from './livePlaces.js'
 
@@ -24,7 +24,7 @@ function glyphAtlas() {
   tex.colorSpace = THREE.SRGBColorSpace
   const ctx = canvas.getContext('2d')
   POI_CATEGORIES.forEach(({ icon }, i) => {
-    const svg = renderToStaticMarkup(createElement(Ri[icon] ?? Ri.RiMapPin2Line, { size: 40, color: '#eaf6ff' }))
+    const svg = renderToStaticMarkup(createElement(poiIcon(icon), { size: 40, color: '#eaf6ff' }))
     const img = new Image()
     img.onload = () => { ctx.drawImage(img, i * CELL + 12, 12, 40, 40); tex.needsUpdate = true }
     img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
@@ -72,7 +72,8 @@ export default function PoiPins({ max: maxProp } = {}) {
   const readout = useStore((s) => s.readout), hotId = useStore((s) => s.hover?.poiId)
   const version = usePoiVersion()
   const { gl, camera, size } = useThree()
-  const cap = maxProp ?? MAX_PINS[quality] ?? MAX_PINS.HIGH
+  const alt = Math.round((readout.altitude ?? 300) / 50) * 50
+  const cap = maxProp ?? pinBudget(alt, MAX_PINS[quality] ?? MAX_PINS.HIGH)
   const atlas = useMemo(() => glyphAtlas(), [])
   const mesh = useMemo(() => {
     const g = new THREE.InstancedBufferGeometry()

@@ -7,3 +7,24 @@
 .building-tooltip { position: absolute; z-index: 30; pointer-events: none; padding: 7px 10px; max-width: 260px; }
 .bt-name { font: 500 13px var(--font-ui); color: var(--text); }
 .bt-line { font: 400 11px var(--font-ui); color: var(--text-muted); }
+.cp-tip { margin: 0; color: var(--text-muted); font: 400 12px var(--font-ui); }
+.cp-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.lm-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; vertical-align: middle; }
+.lens-panel { display: flex; flex-direction: column; gap: 4px; max-height: 52vh; overflow-y: auto; }
+.lens-panel h3 { margin: 8px 0 2px; }
+.lp-row { appearance: none; display: flex; align-items: center; gap: 6px; text-align: left; border: 0; background: none; color: var(--text); font: 400 12px var(--font-ui); padding: 5px 4px; border-radius: 6px; cursor: pointer; }
+.lp-row:hover, .lp-row:focus-visible { background: rgba(var(--accent-rgb), 0.08); outline: none; }
+.lp-sub { color: var(--text-faint); font: 400 11px var(--font-ui); margin-left: auto; }
+.lp-beyond { margin: 0 0 0 4px; }
+.poi-filters { display: flex; flex-wrap: wrap; gap: 4px; }
+.poi-chip { padding: 3px 8px; font-size: 9px; display: inline-flex; align-items: center; gap: 4px; }
+.world-labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 2; }
+.world-label { position: absolute; left: 0; top: 0; pointer-events: auto; border: 1px solid var(--border); background: rgba(9, 14, 26, 0.72); color: var(--text); font: 500 11px var(--font-ui); letter-spacing: 0.02em; padding: 3px 8px 3px 18px; border-radius: 999px; white-space: nowrap; cursor: pointer; }
+.world-label::before { content: ''; position: absolute; left: 7px; top: 50%; width: 6px; height: 6px; margin-top: -3px; border-radius: 50%; background: var(--dot); box-shadow: 0 0 6px var(--dot); }
+.world-label:hover { border-color: var(--border-strong); }
+.tour-bar { position: absolute; left: 50%; bottom: 72px; transform: translateX(-50%); width: min(560px, 70vw); padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+.tb-title { font: 500 15px var(--font-ui); color: var(--text); display: block; margin-top: 2px; }
+.tb-text { margin: 4px 0 0; color: var(--text-muted); font: 400 12px var(--font-ui); line-height: 1.45; }
+.tb-controls { display: flex; align-items: center; gap: 6px; }
+.tb-scrub { flex: 1; accent-color: var(--accent); }
+.tour-resume { position: absolute; left: 50%; bottom: 72px; transform: translateX(-50%); display: inline-flex; gap: 6px; align-items: center; }
