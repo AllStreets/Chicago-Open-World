@@ -8,14 +8,16 @@ import { useStore } from '../../state/store.js'
 
 describe('feature keys', () => {
   beforeEach(() => useStore.setState({ ...useStore.getInitialState(), transit: { lines: [], routes: [], stations: [] } }))
-  it('maps T, G, M, B, J by physical key; ignores chords', () => {
+  it('maps T, G, M, B, J, P and X by physical key; ignores chords', () => {
     expect(featureForKey({ code: 'KeyT', target: document.body }).id).toBe('transit')
     expect(featureForKey({ code: 'KeyG', target: document.body }).id).toBe('games')
     expect(featureForKey({ code: 'KeyM', target: document.body }).id).toBe('sound')
     expect(featureForKey({ code: 'KeyB', target: document.body }).id).toBe('bridges')
     expect(featureForKey({ code: 'KeyJ', target: document.body }).id).toBe('fountain')
+    expect(featureForKey({ code: 'KeyX', target: document.body }).id).toBe('fireworks')
+    expect(featureForKey({ code: 'KeyZ', target: document.body })).toBeNull()
     expect(featureForKey({ code: 'KeyT', metaKey: true, target: document.body })).toBeNull()
-    expect(featureForKey({ code: 'KeyX', target: document.body })).toBeNull()
+    expect(featureForKey({ code: 'KeyP', target: document.body }).id).toBe('places')   // user fixes: P and B
   })
   it('typing in an input never toggles a feature', () => {
     const input = document.createElement('input')

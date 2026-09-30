@@ -7,6 +7,8 @@ import SafeLoad from './SafeLoad.jsx'
 import { sunForPreset } from '../lib/sun.js'
 import TileStreamer from './TileStreamer.jsx'
 import Picker from './Picker.jsx'
+import SeasonRig from './SeasonRig.jsx'
+import Fireworks from '../landmarks/Fireworks.jsx'
 import PoiPins from './PoiPins.jsx'
 import Beacons from './Beacons.jsx'
 import WorldLabels from './WorldLabels.jsx'
@@ -92,6 +94,8 @@ export default function Scene() {
       <TransitLayer />
       <StationHits />
       <Picker />
+      <SeasonRig />
+      <Fireworks />
       <PoiPins />
       <Beacons />
       <WorldLabels />

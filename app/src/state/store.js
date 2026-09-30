@@ -14,8 +14,18 @@ export const useStore = create((set) => ({
   helpOpen: false,
   setHelpOpen: (helpOpen) => set({ helpOpen }),
   fountainPreview: null,
-  startFountainPreview: () => set({ fountainPreview: Date.now() }),
+  startFountainPreview: () => set({ fountainPreview: Date.now(), fountainStoppedAt: null }),
   stopFountainPreview: () => set({ fountainPreview: null }),
+  // stop whatever show is running (a preview or the scheduled one): back to the plain display until the next show
+  fountainStoppedAt: null,
+  stopFountain: () => set({ fountainPreview: null, fountainStoppedAt: Date.now() }),
+  // Navy Pier fireworks (user request): a show started with X, a stop of a scheduled one, and whether one is on now
+  fireworksPreview: null,
+  fireworksStoppedAt: null,
+  fireworksLive: false,
+  startFireworks: () => set({ fireworksPreview: Date.now(), fireworksStoppedAt: null }),
+  stopFireworks: () => set({ fireworksPreview: null, fireworksStoppedAt: Date.now() }),
+  fountainLive: false, // a show is running now (FountainShow keeps this current, so the button lights for scheduled shows too)
   // a preview runs one show; afterwards the Fountain button goes dark by itself
   expireFountainPreview: (now) => set((s) => (s.fountainPreview != null && now - s.fountainPreview > FOUNTAIN_SCHEDULE.showMinutes * 60000 ? { fountainPreview: null } : {})),
   bridgeLift: null,

@@ -22,12 +22,15 @@ export const facadeUniforms = {
   uRoof: { value: greyTex() },
   uTile: { value: Array.from({ length: 8 }, () => new THREE.Vector4(18, 15.2, 4, 4)) },
   uNight: { value: 0 },
+  uSnow: { value: 0 }, // user fixes: the SNOW view whitens every roof
   uLitBoost: { value: 1 },
   uReady: { value: 0 },
   uStylePal: { value: createStyleTexture([{ key: 'none' }]) },
   uStyleRows: { value: 1 },
   uShowGlow: { value: new THREE.Vector4(0, 0, 0, 0) }, // rgb + strength: Buckingham's show light on its pools
   uShowAt: { value: new THREE.Vector3(0, 0, 0) },       // x, z, radius (0 = nowhere)
+  uFlash: { value: new THREE.Vector4(0, 0, 0, 0) },     // rgb + intensity: the fireworks' light on the towers facing them
+  uFlashAt: { value: new THREE.Vector3(0, 0, 0) },      // where the bursts are
   uLeafTex: { value: (() => { const t = new THREE.DataTexture(new Float32Array(256 * 8), 512, 1, THREE.RGBAFormat, THREE.FloatType); t.needsUpdate = true; return t })() },
   uTime: { value: 0 },
   uCrown: { value: new THREE.Vector4(0, 0, 0, 1) },
@@ -80,11 +83,14 @@ uniform sampler2DArray uMural;
 uniform sampler2D uRoof;
 uniform vec4 uTile[8];
 uniform float uNight;
+uniform float uSnow;
 uniform float uLitBoost;
 uniform float uReady;
 uniform sampler2D uStylePal;
 uniform float uStyleRows;
 uniform vec4 uShowGlow;
+uniform vec4 uFlash;
+uniform vec3 uFlashAt;
 uniform vec3 uShowAt;
 varying float vStyle;
 vec4 styleTexel(int si, int col) { return texelFetch(uStylePal, ivec2(col, si), 0); }
@@ -263,6 +269,8 @@ vec3 roofAlb = rk < 0.4 ? gravel * 0.85
   : rk < 0.9 ? mix(vec3(0.84, 0.85, 0.83), vec3(0.62, 0.63, 0.62), seams) * (0.9 + 0.1 * gravel.r)
   : mix(vec3(0.27, 0.42, 0.2), vec3(0.36, 0.5, 0.26), gravel.g);
 vec3 coping = vec3(0.58, 0.56, 0.52) * (0.9 + 0.2 * gravel.r);
+// snow lies on every roof in the SNOW view (a little grit shows through)
+roofAlb = mix(roofAlb, vec3(0.9, 0.92, 0.96) * (0.94 + 0.06 * gravel.r), uSnow * 0.93);
 vec3 alb = isRoof ? roofAlb : (isParapet ? coping : wallAlb);
 win = (isRoof || isParapet) ? 0.0 : win;
 float fwRow = fwidth(vWPos.y / 0.42), fwAisle = fwidth(vMUv.x / 17.0) * 17.0;   // before any branch
@@ -333,6 +341,11 @@ float lv = venueLevel(vWPos.xz);
 float lvL = lv < 0.0 ? 1.0 : lv;   // legacy venue light, until the sports clock registers the venue
 float lvA = max(lv, 0.0);          // architectural light: registered venues only
 if (isVenue && vi == 28) totalEmissiveRadiance += diffuseColor.rgb * (0.55 + 1.3 * uNight) * uLitBoost;
+// fireworks: each burst lights the walls that face it, fading over about a kilometre
+if (uFlash.w > 0.001) {
+  vec3 toF = uFlashAt - vWPos; float fd = length(toF);
+  totalEmissiveRadiance += diffuseColor.rgb * uFlash.rgb * uFlash.w * 0.55 * max(dot(normalize(vWNormal), toF / fd), 0.15) * (500.0 * 500.0) / (fd * fd + 500.0 * 500.0);
+}
 if (isVenue && vi == 27) totalEmissiveRadiance += diffuseColor.rgb * (0.25 + 3.5 * uNight) * uLitBoost;
 if (isVenue && uNight > 0.001) {
   if (vi == 14) totalEmissiveRadiance += vec3(1.0, 0.96, 0.88) * 3.2 * uNight * uLitBoost * lvL;
@@ -438,7 +451,7 @@ export function createFacadeMaterial({ leaf = false } = {}) {
   const m = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.86, metalness: 0.02 })
   if (leaf) m.defines = { USE_LEAF: '' }
   m.onBeforeCompile = patchFacadeShader
-  const key = 'facade-v11' // P3: mural layers (V6 Task 3 was v10); only the -leaf suffix is new here
+  const key = 'facade-v13' // P3: mural layers (V6 Task 3 was v10); only the -leaf suffix is new here
   m.customProgramCacheKey = () => (leaf ? `${key}-leaf` : key)
   return m
 }

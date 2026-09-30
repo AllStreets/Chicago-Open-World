@@ -23,6 +23,23 @@ export const SCORES = {
       { name: 'finale', from: 1080, intensity: 1 },
     ],
   },
+  // Navy Pier fireworks (user request) — a bright C-major anthem: a hush for the first shells, a theme, a build with
+  // salvos, a breath under the gold willows, and the full finale barrage.
+  fireworks: {
+    id: 'fireworks', bpm: 116, beatsPerBar: 4,
+    chords: [
+      [48, 55, 60, 64], [43, 55, 59, 62], [45, 57, 60, 64], [41, 53, 57, 60], // C  G  Am F
+      [48, 55, 60, 64], [41, 53, 57, 60], [43, 55, 59, 62], [48, 55, 60, 67], // C  F  G  C
+    ],
+    sections: [
+      { name: 'opening', from: 0, intensity: 0.45 },
+      { name: 'theme', from: 60, intensity: 0.62 },
+      { name: 'build', from: 300, intensity: 0.8 },
+      { name: 'breath', from: 600, intensity: 0.45 },
+      { name: 'reprise', from: 660, intensity: 0.85 },
+      { name: 'finale', from: 735, intensity: 1 },
+    ],
+  },
   // The boat run — a processional in B-flat: a fanfare as the first bridge rises, a march while the leaves climb one
   // after another, and a cadence as they come down.
   bridge: {

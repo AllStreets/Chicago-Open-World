@@ -29,6 +29,9 @@ export const waterUniforms = {
   uSunDir: { value: new THREE.Vector3(0, 1, 0) },
   uSunColor: { value: new THREE.Color('#ffffff') },
   uFar: { value: new THREE.Vector2(2600, 17000) },
+  uFlash: { value: new THREE.Vector4(0, 0, 0, 0) }, // the fireworks' light on the lake (rgb + intensity)
+  uFlashAt: { value: new THREE.Vector3(0, 0, 0) },
+  uIce: { value: 0 }, // user fixes: the SNOW view freezes the lake from the shore out, and the river in floes
 }
 
 export const WATER_VERTEX = /* glsl */ `
@@ -58,6 +61,9 @@ uniform float uGreen;
 uniform float uNight;
 uniform vec4 uShoreRect;
 uniform vec2 uFar;
+uniform float uIce;
+uniform vec4 uFlash;
+uniform vec3 uFlashAt;
 uniform vec3 uDeep;
 uniform vec3 uShallow;
 uniform vec3 uFoam;
@@ -103,6 +109,18 @@ void main() {
   vec3 col = mix(body, refl, fres) + uSunColor * spec * 1.2;
   float foam = (1.0 - smoothstep(0.0, 0.04, shoreD)) * (0.35 + 0.35 * calm) * inBand;
   col = mix(col, uFoam, foam);
+  // ice: pale blue-white plates with dark cracks, reaching ~2 km out from the lakeshore; the river in broken floes
+  if (uIce > 0.001) {
+    vec4 nz = texture2D(uNormals, vWorld.xz / 380.0) + texture2D(uNormals, vWorld.xz / 97.0 + 0.37);
+    float crack = smoothstep(0.035, 0.0, abs(nz.x - nz.z));
+    float plate = 0.5 + 0.5 * nz.y - 0.5;
+    vec3 ice = mix(vec3(0.78, 0.85, 0.92), vec3(0.9, 0.93, 0.97), plate) * (1.0 - 0.35 * crack);
+    ice *= mix(vec3(1.0), vec3(0.16, 0.18, 0.24), uNight); // ice is lit, not glowing: it darkens with the sky
+    float reach = mix(1.0 - smoothstep(0.55, 0.95, shoreD), step(0.45, nz.y * 0.5 + 0.25 + 0.2 * nz.w), isRiver);
+    col = mix(col, ice, uIce * reach);
+  }
+  // fireworks: the bursts shimmer on the water below them, strongest at a grazing view (fresnel)
+  if (uFlash.w > 0.001) { float fd = length(uFlashAt.xz - vWorld.xz); col += uFlash.rgb * uFlash.w * (0.02 + 0.14 * fres) * (320.0 * 320.0) / (fd * fd + 320.0 * 320.0); }
   col = mix(col, uHorizon, smoothstep(uFar.x, uFar.y, dist));
   gl_FragColor = vec4(col, 1.0);
   #include <tonemapping_fragment>
