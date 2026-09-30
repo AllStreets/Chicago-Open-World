@@ -4,9 +4,9 @@
 
 **THE CITY, AT FULL SCALE**
 
-<img alt="phase" src="https://img.shields.io/badge/phase-vision_pass_complete-45d8ff?style=for-the-badge&labelColor=030509"/>
+<img alt="phase" src="https://img.shields.io/badge/phase-3_heroes_complete-45d8ff?style=for-the-badge&labelColor=030509"/>
 <img alt="buildings" src="https://img.shields.io/badge/real_buildings-105,971-ff3b53?style=for-the-badge&labelColor=030509"/>
-<img alt="landmarks" src="https://img.shields.io/badge/landmarks-86-45d8ff?style=for-the-badge&labelColor=030509"/>
+<img alt="landmarks" src="https://img.shields.io/badge/landmarks-107-45d8ff?style=for-the-badge&labelColor=030509"/>
 <img alt="draw calls" src="https://img.shields.io/badge/draw_calls-≤900-ff3b53?style=for-the-badge&labelColor=030509"/>
 <img alt="skyline" src="https://img.shields.io/badge/top_50_skyline-verified-ff3b53?style=for-the-badge&labelColor=030509"/>
 <a href="LICENSE"><img alt="license" src="https://img.shields.io/badge/license-MIT-45d8ff?style=for-the-badge&labelColor=030509"/></a>
@@ -307,7 +307,38 @@ Game days come from the real ESPN schedules of all seven Chicago teams, fetched 
 </tr>
 </table>
 
-The vision pass is complete — see the sections above; Phase 3 (Blender hero refinement) is next.
+The vision pass is complete — see the sections above.
+
+### Phase 3 · Heroes
+
+The recognisable towers got their sculptural signatures, and twenty more landmarks joined the map — figures modelled in Blender (headless, from checked-in scripts), everything else parametric, and every Blender piece backed by a procedural stand-in so the city builds without it.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/p3-marina-day.png" alt="Phase 3 — Marina City's petal balconies and parking spiral" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/p3-cbot-day.png" alt="Phase 3 — the Board of Trade's pyramid and Ceres" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Marina City: sixteen petal balconies a floor over forty apartment floors, nineteen parking levels as one open spiral ramp.</em></td>
+<td><em>The Board of Trade closes LaSalle Street: its steep pyramid, and John Storrs' faceless aluminium Ceres at 184 m.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/p3-seahorses-day.png" alt="Phase 3 — Buckingham Fountain's rearing sea horses" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/p3-lighthouse-dusk.png" alt="Phase 3 — the Chicago Harbor Lighthouse on its breakwater at dusk" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Buckingham's eight sea horses, re-posed to rear from their rocks, spouting from the mouth.</em></td>
+<td><em>The Chicago Harbor Light on the outer breakwater, lamp lit at dusk — search "lighthouse" to fly there.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/p3-tribune-dusk.png" alt="Phase 3 — the Tribune Tower's Gothic crown at dusk" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/p3-pingtom-day.png" alt="Phase 3 — the Ping Tom Park pagoda on the river" width="100%"/></td>
+</tr>
+<tr>
+<td><em>The Tribune's octagonal Gothic crown with its eight flying buttresses and pinnacles.</em></td>
+<td><em>Ping Tom Park's pagoda on the South Branch — one of twenty P2 landmarks, from the Rookery to the Chinatown Gate and the Pilsen murals.</em></td>
+</tr>
+</table>
 
 ## Quickstart
 
@@ -378,7 +409,7 @@ npm run e2e --prefix app          # hero-view screenshot baselines (Playwright)
 - [x] **2 · Beauty pass** — generated façades, lit windows, living sky, rooftops, parks & trees, the L, post-processing, minimap, intro flight
 - [x] **2.5 · Expanded city** — Wrigleyville → 35th St, verified top-50 skyline, 41 landmarks, stadiums, sacred buildings, civic icons, horizon fill, streaming, human-first controls
 - [x] **Vision pass** — one lake & river, CTA and Metra in true colours with a restrained glow and running trains, stadium game nights & crowds, detailed bridges & landmarks with music-and-light shows, true building colours, camera clearance, ≤ 900 draw calls
-- [ ] **3 · Heroes** — Blender refinement of the procedural landmarks (Aqua's waves, Marina City's petals, …)
+- [x] **3 · Heroes** — Aqua's waves, Marina City's petals and spiral, the 900 N Michigan / CBOT / Tribune / Carbide crowns, Blender Ceres, sea horses and Lincoln Park statues, 20 P2 landmarks
 - [ ] **4 · Guide** — VISIT / LIVE / WORK lenses: places (bars, restaurants, venues), neighbourhoods, jobs, tours
 - [ ] **5 · Alive** — live L trains and weather via the CHI ATLAS API, Scan mode
 - [ ] **6 · Further rings** — streaming the rest of the city

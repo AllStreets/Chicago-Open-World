@@ -192,11 +192,11 @@ Origin tags: `[S1]`, `[S2]`, `[derived]` (needed to deliver an S1/S2 item).
 ## I. Later phases (revised per Addendum A and this backlog)
 
 **Phase 3 — Heroes refinement**
-- [ ] **I-3.1** `[S2]` — Aqua's undulating balconies (waves). Acceptance: reference comparison.
-- [ ] **I-3.2** `[S2]` — Marina City's petal balconies and the parking spiral. Acceptance: reference comparison.
-- [ ] **I-3.3** `[S2]` — Crowns: 900 N Michigan (four pavilions), CBOT (pyramid and Ceres), Tribune (Gothic buttresses). Acceptance: reference comparisons.
-- [ ] **I-3.4** `[derived]` — Decide between Blender MCP and procedural for each hero; refine only, never recreate. Acceptance: the plan lists the method per hero.
-- [ ] **I-3.5** `[S1]` — The P2 landmarks from E8. Acceptance: scheduled and shipped.
+- [x] **I-3.1** `[S2]` — Aqua's undulating balconies (waves). Acceptance: reference comparison.
+- [x] **I-3.2** `[S2]` — Marina City's petal balconies and the parking spiral. Acceptance: reference comparison.
+- [x] **I-3.3** `[S2]` — Crowns: 900 N Michigan (four pavilions), CBOT (pyramid and Ceres), Tribune (Gothic buttresses). Acceptance: reference comparisons.
+- [x] **I-3.4** `[derived]` — Decide between Blender MCP and procedural for each hero; refine only, never recreate. Acceptance: the plan lists the method per hero.
+- [x] **I-3.5** `[S1]` — The P2 landmarks from E8. Acceptance: scheduled and shipped.
 
 **Phase 4 — Guide lenses**
 - [ ] **I-4.1** `[S2]` — Places/POI layer: bars, restaurants, venues "and everything" (CHI API places + OSM amenities), shown as rooftop-anchored pins. Acceptance: the VISIT lens shows the pins, and the pins can be filtered.
