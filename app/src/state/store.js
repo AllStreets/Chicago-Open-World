@@ -74,6 +74,8 @@ export const useStore = create((set) => ({
   tour: null,
   setTour: (tour) => set({ tour }),
   lineAlerts: {}, // line id → { severity, headlines } from CTA alerts (P4)
+  hover: null,    // { x, y, lines } — the building under the pointer (P4)
+  setHover: (hover) => set({ hover }),
   readout: { streets: 'STATE & MADISON', altitude: 0, heading: 0 },
   load: { total: 0, done: 0, keys: [], error: null, ready: false },
   setTimePreset: (timePreset) => set({ timePreset }),

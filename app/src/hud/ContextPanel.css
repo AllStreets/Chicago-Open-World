@@ -3,3 +3,7 @@
 .cp-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .cp-sub { margin: 0; color: var(--text-muted); font: 400 12px var(--font-ui); }
 .cp-facts { margin: 0; color: var(--text-faint); font: 500 10px var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+.nearest-l { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.building-tooltip { position: absolute; z-index: 30; pointer-events: none; padding: 7px 10px; max-width: 260px; }
+.bt-name { font: 500 13px var(--font-ui); color: var(--text); }
+.bt-line { font: 400 11px var(--font-ui); color: var(--text-muted); }

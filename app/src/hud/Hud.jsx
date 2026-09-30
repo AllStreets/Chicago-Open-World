@@ -21,6 +21,7 @@ import Toast from './Toast.jsx'
 import PerfOverlay from './PerfOverlay.jsx'
 import LensRail from './LensRail.jsx'
 import ContextPanel from './ContextPanel.jsx'
+import BuildingTooltip from './BuildingTooltip.jsx'
 
 export default function Hud() {
   useFeatureKeys()
@@ -54,6 +55,7 @@ export default function Hud() {
       <PerfOverlay />
       <FollowChip />
       <Toast />
+      <BuildingTooltip />
       <CommandPalette />
       <HelpOverlay />
       <LoadingScreen />

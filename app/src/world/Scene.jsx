@@ -6,6 +6,7 @@ import { loadManifest, worldUrl } from '../lib/manifest.js'
 import SafeLoad from './SafeLoad.jsx'
 import { sunForPreset } from '../lib/sun.js'
 import TileStreamer from './TileStreamer.jsx'
+import Picker from './Picker.jsx'
 import Land from './Land.jsx'
 import { loadFacadeTextures, loadStylePalette } from './materials/facadeMaterial.js'
 import { loadGroundTextures } from './materials/groundShader.js'
@@ -87,6 +88,7 @@ export default function Scene() {
       {manifest && <Landmarks manifest={manifest} />}
       <TransitLayer />
       <StationHits />
+      <Picker />
       <TrainAudio />
         {manifest?.trains && <SafeLoad><Suspense fallback={null}><Trains file={manifest.trains} version={manifest.version} /></Suspense></SafeLoad>}
   

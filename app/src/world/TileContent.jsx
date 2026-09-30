@@ -38,14 +38,14 @@ export default function TileContent({ id, file, meta, lod, mats, version, onRead
       if (TRANSIT_LAYERS.includes(layer)) { o.visible = false; return } // drawn by the transit pools
       o.receiveShadow = true
       o.castShadow = false
-      if (layer === 'buildings') { o.material = buildingMaterial; o.castShadow = lod === 'lod0'; o.layers.enable(REFLECT_LAYER) }
+      if (layer === 'buildings') { o.material = buildingMaterial; o.castShadow = lod === 'lod0'; o.layers.enable(REFLECT_LAYER); o.userData = { tileId: id, lod, metaUrl: meta ? worldUrl(meta, version) : null } } // P4 picking
       else if (layer === 'leaves') { o.material = leafMaterial; o.castShadow = false; o.layers.enable(REFLECT_LAYER) } // a raised leaf would cast its closed shadow
       else if (layer === 'ground') o.material = groundMaterial
       else if (layer === 'water') { o.material = waterMaterial; o.receiveShadow = false }
       else o.material = mats.land
     })
     return scene
-  }, [scene, mats, lod])
+  }, [scene, mats, lod, id, meta, version])
   // hand this tile's track, stations and glow to the shared batched meshes; take them back on unmount
   useEffect(() => {
     const handles = []
