@@ -340,6 +340,29 @@ The recognisable towers got their sculptural signatures, and twenty more landmar
 </tr>
 </table>
 
+### Fireworks, snow and a sunny day
+
+Navy Pier's summer fireworks, fired from the barge off the pier's south side on the real schedule (Wednesdays at 9, Saturdays at 10) or any time with `X` — the camera flies to the harbour view, the bursts light the towers and shimmer on the lake, and with Sound on each boom arrives late by the speed of sound. Two new views: a clear midsummer day and a snowy Christmas Eve, with the lake frozen along the shore.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/p4-fireworks-finale-night.png" alt="The Navy Pier fireworks finale over the lake" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/p4-fireworks-streeterville-night.png" alt="Navy Pier fireworks seen from over Streeterville" width="100%"/></td>
+</tr>
+<tr>
+<td><em>The finale barrage from Monroe Harbor: chrysanthemums, peonies and willows over the barge, reflected in the lake.</em></td>
+<td><em>Mid-show from above Streeterville — a ring shell over the pier and the Centennial Wheel.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/p4-snow-christmas-dusk.png" alt="A snowy Christmas Eve dusk over Chicago with the lake frozen" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/p4-sunny-summer-day.png" alt="A clear sunny summer day over Chicago" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Press 7: Christmas Eve at dusk — snow falling, roofs and parks white, the harbour frozen, windows coming on.</em></td>
+<td><em>Press 6: a clear midsummer afternoon.</em></td>
+</tr>
+</table>
+
 ## Quickstart
 
 ```bash
@@ -369,14 +392,16 @@ Everything is reachable with the keyboard, the mouse and the on-screen dock — 
 | Double-click | fly to that spot |
 | `[` / `]` | previous / next view |
 | `H` · `N` · `O` | home · face north · slow orbit |
-| `1`–`5` | LIVE · DAWN · DAY · DUSK · NIGHT |
+| `1`–`7` | LIVE · DAWN · DAY · DUSK · NIGHT · SUNNY (a clear summer day) · SNOW (a snowy Christmas, the lake frozen) |
 | `T` · Transit button | CTA and Metra lines on/off; the legend switches single lines |
 | Click a train / station | its card — run, next stop, arrivals; "Follow this train" rides along (any key stops) |
 | `⌘K` "Follow a … train" · "Go to …" · "Show … Line" | transit from the search |
 | `M` · Sound button | music for the fountain and bridge shows, crowd cheers and passing trains — off until you turn it on |
 | `G` · Games button · `⌘K` "tonight" | tonight's game, scores and the next game at every venue |
-| `B` · Bridges button | raise the river bridges — a boat-run lift with gate bells, flashers and music |
-| `J` · Fountain button | Buckingham Fountain water show — jets dance to music, lit in colour after dusk |
+| `B` · Bridges button | raise the river bridges — a boat-run lift with gate bells, flashers and music; press again and they come down within seconds |
+| `J` · Fountain button | Buckingham Fountain water show — jets dance to music, lit in colour after dusk; press again to stop any show |
+| `X` · Fireworks button | Navy Pier fireworks — flies you to the harbour view; press again to stop (real shows: Wed 9 pm, Sat 10 pm in summer) |
+| `P` · Places button | pins for restaurants, bars, venues and more — click one for its card and website |
 | `?` · `Esc` | help card · close / stop a flight |
 | `⌘K` "performance" | draw calls, triangles and frame rate (a diagnostic chip) |
 | Control dock & minimap | the same moves as buttons; click the minimap to fly |
