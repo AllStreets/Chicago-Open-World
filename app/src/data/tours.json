@@ -139,5 +139,156 @@
         "dwell": 9
       }
     ]
+  },
+  {
+    "id": "lincolnpark",
+    "name": "Lincoln Park, South to North",
+    "time": null,
+    "stops": [
+      {
+        "landmark": "lincolnstatues",
+        "title": "Standing Lincoln",
+        "text": "Saint-Gaudens's twelve-foot Lincoln of 1887, just risen from his chair, before Stanford White's curved granite exedra. The Couch Tomb, last of the old City Cemetery that became this park, stands a short walk north.",
+        "dwell": 9,
+        "pose": {
+          "position": [
+            -201,
+            40,
+            -3181
+          ],
+          "target": [
+            -271,
+            3,
+            -3261
+          ]
+        }
+      },
+      {
+        "landmark": "northavebeach",
+        "title": "North Avenue Beach House",
+        "text": "Built in 1999 as an ocean liner run aground on the sand: a white hull with portholes, a blue-railed deck and two funnels. The Chess Pavilion's carved limestone king and queen stand just to the south.",
+        "dwell": 9,
+        "pose": {
+          "position": [
+            423,
+            50,
+            -3584
+          ],
+          "target": [
+            303,
+            6,
+            -3494
+          ]
+        }
+      },
+      {
+        "landmark": "cafebrauer",
+        "title": "Café Brauer and South Pond",
+        "text": "Dwight Perkins's 1908 Prairie School refectory curves around South Pond under green tile roofs. Across the water, Studio Gang's honeycomb pavilion rises over the Nature Boardwalk.",
+        "dwell": 9,
+        "pose": {
+          "position": [
+            -393,
+            48,
+            -3999
+          ],
+          "target": [
+            -503,
+            6,
+            -4119
+          ]
+        }
+      },
+      {
+        "landmark": "lincolnparkzoo",
+        "title": "The Kovler Lion House",
+        "text": "The heart of one of the oldest free zoos in America: the 1912 Lion House, tapestry brick under a tile roof, its great arched door guarded by terra-cotta lions. The sea lions swim just to the west.",
+        "dwell": 9,
+        "pose": {
+          "position": [
+            -396,
+            52,
+            -4225
+          ],
+          "target": [
+            -456,
+            8,
+            -4365
+          ]
+        }
+      },
+      {
+        "landmark": "palmhouse",
+        "title": "Lincoln Park Conservatory",
+        "text": "Four Victorian glass houses of 1890–95, the Palm House rising fifty feet over the formal garden. At the garden's far end, Saint-Gaudens's Bates Fountain: storks at play among bronze reeds.",
+        "dwell": 9,
+        "pose": {
+          "position": [
+            -577,
+            55,
+            -4476
+          ],
+          "target": [
+            -617,
+            8,
+            -4666
+          ]
+        }
+      },
+      {
+        "landmark": "lilypool",
+        "title": "Alfred Caldwell Lily Pool",
+        "text": "Caldwell's 1938 prairie river: a slow pool between stratified limestone ledges, a waterfall at its head and a council ring under the trees. A National Historic Landmark hidden in plain sight.",
+        "dwell": 9,
+        "pose": {
+          "position": [
+            -423,
+            40,
+            -4830
+          ],
+          "target": [
+            -513,
+            3,
+            -4770
+          ]
+        }
+      },
+      {
+        "landmark": "theateronthelake",
+        "title": "Theater on the Lake",
+        "text": "A 1920 fresh-air sanitarium with sweeping brick arches, a summer theatre since 1953, on the lake at Fullerton. North Pond and the Nature Museum's butterfly haven are a short walk west.",
+        "dwell": 9,
+        "pose": {
+          "position": [
+            -85,
+            50,
+            -4974
+          ],
+          "target": [
+            -235,
+            5,
+            -5004
+          ]
+        }
+      },
+      {
+        "landmark": "wavelandclock",
+        "title": "Waveland Clock Tower",
+        "text": "Edwin Clark's 1931 English Gothic carillon tower at the park's northern edge, a clock on every face — and the clubhouse of the Marovitz golf course along the lake.",
+        "dwell": 9,
+        "pose": {
+          "position": [
+            -931,
+            80,
+            -7599
+          ],
+          "target": [
+            -1101,
+            17,
+            -7759
+          ]
+        }
+      }
+    ]
   }
 ]
