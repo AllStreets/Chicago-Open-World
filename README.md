@@ -449,7 +449,7 @@ Flexport Chicago's office at 333 North Green and BCG's tower across the street, 
 <td><em>Sixteen rooftop clubs across Waveland and Sheffield: steel bleachers facing home plate, full on game nights, each a place with its website.</em></td>
 </tr>
 <tr>
-<td width="50%"><img src="docs/screenshots/p4-lily-pool.png" alt="The Alfred Caldwell Lily Pool" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v10-lily-pool-day.png" alt="The Alfred Caldwell Lily Pool" width="100%"/></td>
 <td width="50%"><img src="docs/screenshots/p4-place-popup-day.png" alt="A place card beside its pin" width="100%"/></td>
 </tr>
 <tr>
@@ -550,6 +550,61 @@ Forty-four buildings and structures along the main stem and both branches, each 
 <tr>
 <td><em>77 West Wacker's glazed temple pediment, floodlit.</em></td>
 <td><em>MORTON SALT on the Salt Shed's roof, facing the Kennedy.</em></td>
+</tr>
+</table>
+
+### Lincoln Park — *the whole park to the Tribune and Wrigley standard*
+
+Every building, monument and landmark in Lincoln Park from North Avenue to Irving Park, each from its OSM outline with sourced heights, materials and lighting (and what is read from photographs marked approximate): the zoo's houses from the 1912 Lion House to Penguin Cove and the red barns of Farm-in-the-Zoo, Café Brauer and the Nature Boardwalk, the Conservatory's four glass houses and the Bates Fountain, the History and Nature Museums, North Pond, Theater on the Lake, the Elks Memorial, the beach house, the Passerelle, the driving range, and the monuments — Lincoln's exedra, Grant's arch, Schiller, Andersen, Franklin, the gilded Hamilton, Altgeld, A Signal of Peace and Kwanusila. The ponds, lagoons and harbours show as water. Every site is on its hover card and in ⌘K, and the VISIT lens has a tour: *Lincoln Park, South to North*.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/v10-lp-north-avenue-beach-day.png" alt="North Avenue Beach by day" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v10-lp-north-avenue-beach-night.png" alt="North Avenue Beach at night" width="100%"/></td>
+</tr>
+<tr>
+<td><em>The North Avenue Beach House as the ocean liner it was built to be: portholes, the blue-railed decks, the Castaways canopy and two red-banded funnels; the Chess Pavilion beyond.</em></td>
+<td><em>At night the portholes glow along the hull.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/v10-lp-zoo-mall-day.png" alt="The zoo by day" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v10-lp-zoo-mall-night.png" alt="The zoo at night" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Lincoln Park Zoo: the Kovler Lion House's tile roof, ridge monitor and great arched door, the Primate House portico, the Small Mammal–Reptile House dome, the carousel, the sea lions' pool.</em></td>
+<td><em>The zoo after dark: closed, unlit, the way it is.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/v10-lp-south-pond-day.png" alt="South Pond by day" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v10-lp-south-pond-night.png" alt="South Pond at night" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Café Brauer's Prairie School brick and green tile curving round South Pond, the boardwalk loop and its prairie edge, the honeycomb pavilion across the water.</em></td>
+<td><em>Café Brauer's windows lit for an evening event over the pond.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/v10-lp-conservatory-day.png" alt="The Conservatory by day" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v10-lp-conservatory-night.png" alt="The Conservatory at night" width="100%"/></td>
+</tr>
+<tr>
+<td><em>The Conservatory's four glass houses — the 50 ft Palm House over the formal garden's hedged beds and the Bates Fountain.</em></td>
+<td><em>The glass houses dark after closing; the garden in shadow.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/v10-lp-theater-on-the-lake-day.png" alt="Fullerton by day" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v10-lp-theater-on-the-lake-night.png" alt="Fullerton at night" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Theater on the Lake's brick arches under its tile roofs at Fullerton, North Pond and the Nature Museum beyond.</em></td>
+<td><em>Fullerton at night.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/v10-lp-belmont-waveland-day.png" alt="Diversey to Waveland by day" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v10-lp-belmont-waveland-night.png" alt="Diversey to Waveland at night" width="100%"/></td>
+</tr>
+<tr>
+<td><em>From Diversey to Waveland: the harbours show as water now, the driving range's nets, the Elks rotunda, Kwanusila and the Waveland clock tower at the park's north edge.</em></td>
+<td><em>The north end of the park at night.</em></td>
 </tr>
 </table>
 
@@ -932,6 +987,115 @@ It wasn't made right in one attempt. Here are the same places through each pass,
 <td><sub>V5 · Sep 29<br/>the W flies</sub></td>
 <td><sub>Phase 4 · Sep 30<br/>the red marquee</sub></td>
 <td><sub>Phase 4 · Sep 30<br/>rooftop bleachers, full</sub></td>
+</tr>
+</table>
+
+**Lincoln Park** — the six gallery poses, before and after the pass (the Conservatory's generic dome became four glass houses; the Lion House's pyramid became its tile roof and ridge monitor)
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/before-lp-north-avenue-beach-day.png" alt="North Avenue Beach before the Lincoln Park pass" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v10-lp-north-avenue-beach-day.png" alt="North Avenue Beach after the Lincoln Park pass" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>North Avenue Beach · Oct 1, before (day)<br/>OSM boxes; the water under the grass</sub></td>
+<td><sub>North Avenue Beach · Oct 1, after (day)<br/>every building sculpted, the water shown</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/before-lp-north-avenue-beach-night.png" alt="North Avenue Beach before the Lincoln Park pass" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v10-lp-north-avenue-beach-night.png" alt="North Avenue Beach after the Lincoln Park pass" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>North Avenue Beach · Oct 1, before (night)<br/>OSM boxes; the water under the grass</sub></td>
+<td><sub>North Avenue Beach · Oct 1, after (night)<br/>every building sculpted, the water shown</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/before-lp-zoo-mall-day.png" alt="The zoo before the Lincoln Park pass" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v10-lp-zoo-mall-day.png" alt="The zoo after the Lincoln Park pass" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>The zoo · Oct 1, before (day)<br/>OSM boxes; the water under the grass</sub></td>
+<td><sub>The zoo · Oct 1, after (day)<br/>every building sculpted, the water shown</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/before-lp-zoo-mall-night.png" alt="The zoo before the Lincoln Park pass" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v10-lp-zoo-mall-night.png" alt="The zoo after the Lincoln Park pass" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>The zoo · Oct 1, before (night)<br/>OSM boxes; the water under the grass</sub></td>
+<td><sub>The zoo · Oct 1, after (night)<br/>every building sculpted, the water shown</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/before-lp-south-pond-day.png" alt="South Pond before the Lincoln Park pass" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v10-lp-south-pond-day.png" alt="South Pond after the Lincoln Park pass" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>South Pond · Oct 1, before (day)<br/>OSM boxes; the water under the grass</sub></td>
+<td><sub>South Pond · Oct 1, after (day)<br/>every building sculpted, the water shown</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/before-lp-south-pond-night.png" alt="South Pond before the Lincoln Park pass" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v10-lp-south-pond-night.png" alt="South Pond after the Lincoln Park pass" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>South Pond · Oct 1, before (night)<br/>OSM boxes; the water under the grass</sub></td>
+<td><sub>South Pond · Oct 1, after (night)<br/>every building sculpted, the water shown</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/before-lp-conservatory-day.png" alt="The Conservatory before the Lincoln Park pass" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v10-lp-conservatory-day.png" alt="The Conservatory after the Lincoln Park pass" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>The Conservatory · Oct 1, before (day)<br/>OSM boxes; the water under the grass</sub></td>
+<td><sub>The Conservatory · Oct 1, after (day)<br/>every building sculpted, the water shown</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/before-lp-conservatory-night.png" alt="The Conservatory before the Lincoln Park pass" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v10-lp-conservatory-night.png" alt="The Conservatory after the Lincoln Park pass" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>The Conservatory · Oct 1, before (night)<br/>OSM boxes; the water under the grass</sub></td>
+<td><sub>The Conservatory · Oct 1, after (night)<br/>every building sculpted, the water shown</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/before-lp-theater-on-the-lake-day.png" alt="Fullerton before the Lincoln Park pass" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v10-lp-theater-on-the-lake-day.png" alt="Fullerton after the Lincoln Park pass" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>Fullerton · Oct 1, before (day)<br/>OSM boxes; the water under the grass</sub></td>
+<td><sub>Fullerton · Oct 1, after (day)<br/>every building sculpted, the water shown</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/before-lp-theater-on-the-lake-night.png" alt="Fullerton before the Lincoln Park pass" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v10-lp-theater-on-the-lake-night.png" alt="Fullerton after the Lincoln Park pass" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>Fullerton · Oct 1, before (night)<br/>OSM boxes; the water under the grass</sub></td>
+<td><sub>Fullerton · Oct 1, after (night)<br/>every building sculpted, the water shown</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/before-lp-belmont-waveland-day.png" alt="Diversey to Waveland before the Lincoln Park pass" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v10-lp-belmont-waveland-day.png" alt="Diversey to Waveland after the Lincoln Park pass" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>Diversey to Waveland · Oct 1, before (day)<br/>OSM boxes; the water under the grass</sub></td>
+<td><sub>Diversey to Waveland · Oct 1, after (day)<br/>every building sculpted, the water shown</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/before-lp-belmont-waveland-night.png" alt="Diversey to Waveland before the Lincoln Park pass" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v10-lp-belmont-waveland-night.png" alt="Diversey to Waveland after the Lincoln Park pass" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>Diversey to Waveland · Oct 1, before (night)<br/>OSM boxes; the water under the grass</sub></td>
+<td><sub>Diversey to Waveland · Oct 1, after (night)<br/>every building sculpted, the water shown</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/p4-lily-pool.png" alt="The Lily Pool in Phase 4" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v10-lily-pool-day.png" alt="The Lily Pool after the Lincoln Park pass" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>The Lily Pool · Sep 30<br/>the Nature Museum a plain box</sub></td>
+<td><sub>The Lily Pool · Oct 1, the same view<br/>the Nature Museum and its Butterfly Haven, North Pond as water</sub></td>
 </tr>
 </table>
 
