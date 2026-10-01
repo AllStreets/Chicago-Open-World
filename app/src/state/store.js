@@ -13,7 +13,7 @@ export const useStore = create((set) => ({
   quality: 'HIGH',
   introDone: false,
   flight: null,
-  startFlight: (to, label = null) => set({ flight: { to, label, id: Date.now() + Math.random() }, follow: null }),
+  startFlight: (to, label = null) => set({ flight: { to, label, id: Date.now() + Math.random() }, follow: null, ride: null }),
   clearFlight: () => set({ flight: null }),
   paletteOpen: false,
   setPaletteOpen: (paletteOpen) => set({ paletteOpen }),
@@ -70,7 +70,7 @@ export const useStore = create((set) => ({
   toggleLine: (id) => set((s) => ({ hiddenLines: s.hiddenLines.includes(id) ? s.hiddenLines.filter((x) => x !== id) : [...s.hiddenLines, id] })),
   follow: null,
   followEnded: null,
-  startFollow: (trainId, view = 'chase') => set({ follow: { trainId, view }, followEnded: null, flight: null, cameraMode: 'FLY' }),
+  startFollow: (trainId, view = 'chase') => set({ follow: { trainId, view }, followEnded: null, flight: null, cameraMode: 'FLY', ride: null }),
   setFollowView: (view) => set((s) => (s.follow ? { follow: { ...s.follow, view } } : {})),
   stopFollow: (reason = null) => set({ follow: null, followEnded: reason }),
   clearFollowEnded: () => set({ followEnded: null }),
@@ -90,7 +90,7 @@ export const useStore = create((set) => ({
   placesOn: false,
   setPlacesOn: (placesOn) => set({ placesOn }),
   tour: null,
-  setTour: (tour) => set({ tour }),
+  setTour: (tour) => set(tour ? { tour, ride: null } : { tour }),
   hoods: null, // neighborhoods.json zones, loaded by the LIVE layer (P4)
   tourResume: null, // the tour a movement key interrupted, offered back for 10 s
   lineAlerts: {}, // line id → { severity, headlines } from CTA alerts (P4)
@@ -108,6 +108,11 @@ export const useStore = create((set) => ({
   weather: weatherFromChi(null),
   setWeatherMode: (weatherMode) => set((s) => ({ weatherMode, weather: weatherMode === 'LIVE' ? s.weatherLive : manualWeather(weatherMode) })),
   // Scan (P5): the holographic sweep — a render state, not a camera mode; LIVE's light columns show scanMetric
+  // Ride the city (P7): the running ride { id, kind, name, view, paused, speed }, its 5 Hz bar snapshot, the chooser
+  ride: null,
+  rideHud: null,
+  ridePanelOpen: false,
+  setRidePanelOpen: (ridePanelOpen) => set({ ridePanelOpen }),
   scan: false,
   setScan: (scan) => set({ scan }),
   toggleScan: () => set((s) => ({ scan: !s.scan })),

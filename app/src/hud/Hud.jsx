@@ -24,6 +24,8 @@ import ContextPanel from './ContextPanel.jsx'
 import BuildingTooltip from './BuildingTooltip.jsx'
 import PlacePopup from './PlacePopup.jsx'
 import TourBar from './TourBar.jsx'
+import RidePanel from './RidePanel.jsx'
+import RideBar from './RideBar.jsx'
 import { bootFeeds } from '../services/feeds.js'
 
 export default function Hud() {
@@ -62,6 +64,8 @@ export default function Hud() {
       <BuildingTooltip />
       <PlacePopup />
       <TourBar />
+      <RidePanel />
+      <RideBar />
       <CommandPalette />
       <HelpOverlay />
       <LoadingScreen />

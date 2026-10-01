@@ -6,7 +6,7 @@ import { useSports } from '../sports/sportsStore.js'
 import { useStore } from '../state/store.js'
 import { buildPlaces, searchPlaces } from '../lib/places.js'
 import { BOOKMARKS } from '../lib/bookmarks.js'
-import { featurePlaces, featureCommands, lensCommands, placeCommands, tourCommands, addressRows, officeRows, liveCommands } from '../lib/paletteSources.js'
+import { featurePlaces, featureCommands, lensCommands, placeCommands, tourCommands, addressRows, officeRows, liveCommands, rideCommands } from '../lib/paletteSources.js'
 import { buildPlaceRows } from '../lib/poiFilter.js'
 import { zoneForName } from '../lib/neighborhoods.js'
 import { openZone } from '../world/NeighborhoodZones.jsx'
@@ -38,6 +38,7 @@ export function commands() {
     ...placeCommands(),
     ...tourCommands(),
     ...liveCommands(),
+    ...rideCommands(),
   ]
 }
 

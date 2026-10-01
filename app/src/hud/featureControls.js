@@ -1,7 +1,7 @@
 // app/src/hud/featureControls.js — every city-life feature and every way to reach it (backlog G3).
 // The dock row, the keyboard, ⌘K, the help card and the hint bar all read this list, so a control can never be added
 // in one place and forgotten in another. The adapters (use/isOn/toggle/available) are the only lines naming feature state.
-import { RiTrainLine, RiTrophyLine, RiVolumeUpLine, RiVolumeMuteLine, RiShip2Line, RiDropLine, RiMapPin2Line, RiSparkling2Line, RiRadarLine } from 'react-icons/ri'
+import { RiTrainLine, RiTrophyLine, RiVolumeUpLine, RiVolumeMuteLine, RiShip2Line, RiDropLine, RiMapPin2Line, RiSparkling2Line, RiRadarLine, RiRouteLine } from 'react-icons/ri'
 import { useStore } from '../state/store.js'
 import { useSoundStore } from '../audio/soundStore.js'
 import { fountainShow } from '../landmarks/fountainSchedule.js'
@@ -57,6 +57,16 @@ export const FEATURE_CONTROLS = [
   // P5: Scan is the SCAN pill (top right), not a dock button — the dock stays a full grid (user: no dead space)
   { id: 'scan', label: 'Scan', key: 'KeyV', keyLabel: 'V', icon: RiRadarLine, hint: 'scan', commandName: 'Scan mode: on / off',
     help: 'holographic Scan — the city turns to dark glass with cyan edges; the lenses show their data on it (SCAN button, top right)', ...storeFlag('scan', 'setScan'), ...always },
+  // P7: Ride the city — the Ride button (its own dock row) or L opens the rides; during a ride, L gets off
+  { id: 'ride', label: 'Ride', key: 'KeyL', keyLabel: 'L', icon: RiRouteLine, hint: 'ride', commandName: 'Ride the city: L trains, buses, walks, glide',
+    help: 'ride the city — an L train from the front window, a CTA bus, a street-level walk or a hang-glider; the bar at the bottom has every control',
+    use: () => useStore((s) => Boolean(s.ride) || s.ridePanelOpen),
+    isOn: () => { const s = useStore.getState(); return Boolean(s.ride) || s.ridePanelOpen },
+    toggle: () => {
+      const s = useStore.getState()
+      if (s.ride) { import('../ride/rideActions.js').then((m) => m.stopRide()); return }
+      s.setRidePanelOpen(!s.ridePanelOpen)
+    }, ...always },
 ]
 
 export const featureById = (id) => FEATURE_CONTROLS.find((c) => c.id === id)

@@ -1,8 +1,8 @@
 // app/src/hud/ControlDock.jsx — on-screen buttons for everything the keyboard does.
 import './ControlDock.css'
-import { RiAddLine, RiSubtractLine, RiArrowGoBackLine, RiArrowGoForwardLine, RiArrowUpSLine, RiArrowDownSLine, RiHome5Line, RiQuestionLine, RiArrowLeftSLine, RiArrowRightSLine, RiSearchLine } from 'react-icons/ri'
+import { RiRouteLine, RiAddLine, RiSubtractLine, RiArrowGoBackLine, RiArrowGoForwardLine, RiArrowUpSLine, RiArrowDownSLine, RiHome5Line, RiQuestionLine, RiArrowLeftSLine, RiArrowRightSLine, RiSearchLine } from 'react-icons/ri'
 import { useSports } from '../sports/sportsStore.js'
-import { DOCK_FEATURES } from './featureControls.js'
+import { DOCK_FEATURES, featureById } from './featureControls.js'
 import { useStore } from '../state/store.js'
 import { cycleQuality } from '../lib/quality.js'
 import { VIEW_ORDER, VIEW_NAMES } from '../lib/views.js'
@@ -37,6 +37,7 @@ export default function ControlDock() {
   return (
     <div className="hud-panel dock" role="toolbar" aria-label="Camera controls">
       <Btn label="Search places (⌘K)" onClick={() => useStore.getState().setPaletteOpen(true)} wide><RiSearchLine /><span>Search</span><span className="hud-kbd">⌘K</span></Btn>
+      <RideButton />
       <div className="dock-row features" role="group" aria-label="City life">
         {DOCK_FEATURES.map((c) => <FeatureBtn key={c.id} c={c} live={c.id === 'games' && live} />)}
       </div>
@@ -64,5 +65,16 @@ export default function ControlDock() {
         <Btn label="Help (?)" onClick={() => useStore.getState().setHelpOpen(true)}><RiQuestionLine /></Btn>
       </div>
     </div>
+  )
+}
+
+// P7: Ride the city — a full-width row (the 3 × 2 feature grid keeps no dead space)
+function RideButton() {
+  const on = useStore((s) => Boolean(s.ride) || s.ridePanelOpen), riding = useStore((s) => Boolean(s.ride))
+  return (
+    <button type="button" className={`dock-btn ride-btn${on ? ' active' : ''}`} aria-pressed={on} aria-label="Ride (L)"
+      title="Ride an L train, a bus, a street-level walk or a hang-glider (L)" onClick={() => featureById('ride').toggle()}>
+      <RiRouteLine /><span>{riding ? 'Stop riding' : 'Ride the city'}</span><span className="hud-kbd">L</span>
+    </button>
   )
 }
