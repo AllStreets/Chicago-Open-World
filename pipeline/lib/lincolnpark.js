@@ -21,6 +21,8 @@ import { frameOf, at, prism, ringBand, offsetRing, edgeNormal, bellRoof, hatch, 
 import { project } from '../../shared/project.js'
 import polygonClipping from 'polygon-clipping'
 import { LANDMARK_FACADES as F } from './facadeIds.js'
+// a flat styled colour that stays dark at night (the paint façade, 12, glows after dark like a floodlit field)
+const FLAT = F.steel
 
 // close-range detail stays out of LOD1 (the size budget); the silhouette parts draw at every distance
 const FINE = new Set(['reliefs', 'tables', 'boards', 'stools', 'piece-reliefs', 'king', 'queen', 'door', 'fence', 'ledges', 'falls', 'council-ring', 'pavilion-piers', 'belfry', 'parapet', 'pinnacles', 'quoins'])
@@ -127,11 +129,11 @@ export function chessPavilion(b, spec = {}) {
     P(merge(stone, plinths), F.stone, LIME, 'platform'),
     P(walls, F.stone, LIME, 'end-walls'),
     P(pieces, F.stone, LIME, 'piece-reliefs'),
-    P(reliefs, F.paint, 'gothic-shadow', 'reliefs'),
-    P(roof, F.paint, 'lp-concrete', 'roof'),
-    P(cols, F.paint, 'lp-concrete', 'columns'),
+    P(reliefs, FLAT, 'gothic-shadow', 'reliefs'),
+    P(roof, FLAT, 'lp-concrete', 'roof'),
+    P(cols, FLAT, 'lp-concrete', 'columns'),
     P(tables, F.stone, LIME, 'tables'),
-    P(boards, F.paint, 'gothic-shadow', 'boards'),
+    P(boards, FLAT, 'gothic-shadow', 'boards'),
     P(stools, F.stone, LIME, 'stools'),
     P(merge(king, cross), F.stone, LIME, 'king'),
     P(merge(queen, coronet), F.stone, LIME, 'queen'),
@@ -159,7 +161,7 @@ export function couchTomb(b, spec = {}) {
   }
   return { replace: true, pieces: [], meshes: [
     P(plinth, F.stone, LIME, 'plinth'), P(vault, F.stone, LIME, 'vault'), P(cornice, F.stone, LIME, 'cornice'), P(attic, F.stone, LIME, 'attic'),
-    P(door, F.paint, 'tomb-iron', 'door'), P(fence, F.paint, 'tomb-iron', 'fence'),
+    P(door, FLAT, 'tomb-iron', 'door'), P(fence, FLAT, 'tomb-iron', 'fence'),
   ] }
 }
 
@@ -186,7 +188,7 @@ export function lilyPool(b, spec = {}) {
     // the pond's surface, a hand above the park ground (OSM's pond sits flush with the grass and was lost under it)
     const pool = mesh(), tri = earcut(r.flat()), y = 0.25
     for (let i = 0; i < tri.length; i += 3) { const [a, bb, cc] = [r[tri[i]], r[tri[i + 1]], r[tri[i + 2]]]; slabTri(pool, [a[0], y, a[1]], [bb[0], y, bb[1]], [cc[0], y, cc[1]]) }
-    meshes.push(P(pool, F.paint, 'lp-pool', 'pool'))
+    meshes.push(P(pool, FLAT, 'lp-pool', 'pool'))
   } else {
     const N = 28, bankL = [], bankR = []
     for (let i = 0; i <= N; i++) {
@@ -201,7 +203,7 @@ export function lilyPool(b, spec = {}) {
       slabQuad(pool, [a[0], y, a[1]], [bb[0], y, bb[1]], [cc[0], y, cc[1]], [d[0], y, d[1]])
       banks.push([bankL[i], bankL[i + 1], [-1, 0]], [bankR[i], bankR[i + 1], [1, 0]])
     }
-    meshes.push(P(pool, F.paint, 'lp-pool', 'pool'))
+    meshes.push(P(pool, FLAT, 'lp-pool', 'pool'))
     clear.push([...bankL, ...[...bankR].reverse()])
   }
   // stratified limestone: thin courses stepping back from the water, two to four high
@@ -236,9 +238,9 @@ export function lilyPool(b, spec = {}) {
   return { replace: true, pieces: [], clear, meshes: [
     ...meshes,
     P(ledges, F.stone, 'lp-ledgestone', 'ledges'),
-    P(falls, F.paint, 'lp-falls', 'falls'),
+    P(falls, FLAT, 'lp-falls', 'falls'),
     P(piers, F.stone, LIME, 'pavilion-piers'),
-    P(roof, F.paint, 'lp-roof', 'pavilion-roof'),
+    P(roof, FLAT, 'lp-roof', 'pavilion-roof'),
     P(ring, F.stone, 'lp-ledgestone', 'council-ring'),
   ] }
 }
@@ -277,7 +279,7 @@ export function wavelandClock(b, spec = {}) {
     P(tower, F.wall, 'waveland-brick', 'tower'),
     P(merge(quoins, bands), F.stone, LIME, 'quoins'),
     P(clock, F.signal, 'waveland-clock', 'clock'),
-    P(belfry, F.paint, 'gothic-shadow', 'belfry'),
+    P(belfry, FLAT, 'gothic-shadow', 'belfry'),
     P(parapet, F.stone, LIME, 'parapet'),
     P(pinnacles, F.stone, LIME, 'pinnacles'),
   ] }
@@ -323,10 +325,10 @@ export function glassHouse(b, spec = {}) {
     for (const e of sh > 0.5 ? [-1, 1] : [0]) into(finials, spire({ at: add2(c, mul2(ax, e * sh)), base: r.top - 0.05, top: r.top + (r.finialM ?? 1.4), r0: 0.12, sides: 6 }))
   }
   return { replace: true, pieces: [], meshes: [
-    PG(glass, F.paint, GLASS, 'glass'),
-    PG(ribs, F.paint, IRON, 'ribs'),
+    PG(glass, FLAT, GLASS, 'glass'),
+    PG(ribs, FLAT, IRON, 'ribs'),
     PG(stone, F.stone, 'lp-limestone', 'base'),
-    PG(finials, F.paint, IRON, 'finials'),
+    PG(finials, FLAT, IRON, 'finials'),
   ] }
 }
 const polyArea = (r) => r.reduce((s, p, i) => { const q = r[(i + 1) % r.length]; return s + p[0] * q[1] - q[0] * p[1] }, 0) / 2
@@ -354,7 +356,7 @@ export function batesFountain(at0, { r = 6, rim = 0.55 } = {}) {
     into(group, revolve(q, [[0.22, 1.45], [0.2, 1.75], [0.14, 2.05], [0.05, 2.1], [0.11, 2.2], [0.001, 2.38]], { sides: 8 }))
     for (let k = 0; k < 4; k++) { const rr = add2(at0, mul2([Math.cos(a + 0.6 + k * 0.25), Math.sin(a + 0.6 + k * 0.25)], 0.85 + 0.1 * k)); tube(reeds, at3(rr, 1.45), at3(add2(rr, mul2(d, 0.15)), 2.4 + 0.25 * (k % 2)), 0.035, 4) }
   }
-  return [PG(granite, F.stone, 'plinth-granite', 'basin'), PG(water, F.water, null, 'water'), PG(pedestal, F.stone, 'plinth-granite', 'pedestal'), PG(group, F.bronze, 'statue-bronze', 'fountain-group'), PG(reeds, F.bronze, 'statue-bronze', 'reeds')]
+  return [PG(granite, F.stone, 'plinth-granite', 'basin'), PG(water, FLAT, 'lp-pool', 'water'), PG(pedestal, F.stone, 'plinth-granite', 'pedestal'), PG(group, F.bronze, 'statue-bronze', 'fountain-group'), PG(reeds, F.bronze, 'statue-bronze', 'reeds')]
 }
 
 // The conservatory's own outline: the propagation ranges (the outline less the four display houses, which are heroes of
@@ -380,7 +382,7 @@ export function conservatoryGrounds(b, spec = {}) {
       tube(ribs, A, C, 0.06, 4)
     }
   }
-  meshes.push(PG(glass, F.paint, GLASS, 'ranges'), PG(ribs, F.paint, IRON, 'ribs'), PG(stone, F.stone, 'lp-limestone', 'base'))
+  meshes.push(PG(glass, FLAT, GLASS, 'ranges'), PG(ribs, FLAT, IRON, 'ribs'), PG(stone, F.stone, 'lp-limestone', 'base'))
   // the formal garden: hedge-edged beds of summer flowers
   const beds = mesh(), hedges = mesh(), clearPts = []
   for (const id of spec.garden?.beds ?? []) {
@@ -396,7 +398,7 @@ export function conservatoryGrounds(b, spec = {}) {
     }
     clearPts.push(...r)
   }
-  if (beds.positions.length) meshes.push(PG(beds, F.paint, 'lp-flowers', 'beds'), PG(hedges, F.paint, 'lp-hedge', 'hedges'))
+  if (beds.positions.length) meshes.push(PG(beds, FLAT, 'lp-flowers', 'beds'), PG(hedges, FLAT, 'lp-hedge', 'hedges'))
   const clear = []
   if (spec.fountain) {
     const fc = project(spec.fountain.lon, spec.fountain.lat)

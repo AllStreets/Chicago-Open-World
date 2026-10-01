@@ -137,7 +137,9 @@ async function main() {
   const greens = osmPolys(uniq(chunks('parks')))
   // the Lincoln Park sculpts read their neighbours (a conservatory's glass houses, a formal garden's beds) — B-2
   const greenById = new Map(greens.map((g) => [g.id, g]))
-  setSiteLookup({ building: (ref) => findByOsm(buildings, ref), green: (id) => greenById.get(id) ?? null })
+  let waterById = null
+  const waterOf = (id) => { waterById ??= Map.groupBy(osmPolys(uniq(chunks('water'))), (w) => w.id); return waterById.get(id) ?? [] }
+  setSiteLookup({ building: (ref) => findByOsm(buildings, ref), green: (id) => greenById.get(id) ?? null, water: waterOf })
   // ── Heroes + pieces ────────────────────────────────────────────────────────
   const heroes = existsSync(join(ROOT, 'data', 'heroes.json')) ? loadJson(join(ROOT, 'data', 'heroes.json')).heroes : []
   validateLandmarkRegistry(heroes)

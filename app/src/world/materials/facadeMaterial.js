@@ -152,8 +152,8 @@ vec3 venueAlbedo(int vi, float s, vec2 uv, vec3 wp, vec3 n, vec3 grain, vec3 roo
     float cy = wp.y / 0.076, row = floor(cy), bx = uv.x / 0.2 + 0.5 * mod(row, 2.0);
     float joint = max(step(fract(cy), 0.16), step(fract(bx), 0.07));
     vec3 brick = base * (0.84 + 0.3 * owHash(vec2(floor(bx), row)));
-    vec3 mortar = mix(base, vec3(0.8, 0.77, 0.72), 0.6);
-    vec3 avg = mix(base, mortar, 0.2);
+    vec3 mortar = mix(base, vec3(0.74, 0.71, 0.66), 0.45);
+    vec3 avg = mix(base, mortar, 0.08);
     float far = smoothstep(0.3, 0.8, max(fwRow * 5.5, fwAisle * 5.0)); // courses (and bricks) per pixel, from the caller's footprints
     return mix(mix(brick, mortar, joint), avg, far) * (0.93 + 0.12 * grain.r);
   }

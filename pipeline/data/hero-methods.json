@@ -614,7 +614,7 @@
         "parametric": true,
         "procTrisEstimate": 6000
       },
-      "reason": "P2 structure built by the parametric boardwalkArches builder (p2landmarks.js)"
+      "reason": "Studio Gang honeycomb vault: hexagonal rib lattice with crown pods on the OSM outline, the boardwalk loop and prairie fringe round South Pond (zoo.js natureBoardwalk)"
     },
     {
       "key": "rookery",
@@ -934,6 +934,17 @@
         "procTrisEstimate": 8000
       },
       "reason": "Lincoln Park glass: a bell roof over the Orchid House outline (lincolnpark.js glassHouse)"
+    },
+    {
+      "key": "cafebrauer",
+      "action": "build",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 8000
+      },
+      "reason": "Lincoln Park Prairie School: the Great Hall, end pavilions and loggias traced from the OSM outline, brick, green tile hipped roofs (zoo.js cafeBrauer)"
     }
   ]
 }

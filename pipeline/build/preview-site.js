@@ -17,6 +17,7 @@ import { sortCacheFiles } from '../lib/manifest.js'
 import { ringBBox, ringCentroid, signedArea, openRing } from '../lib/geom.js'
 import { preloadStatue } from '../lib/statues.js'
 import { setSiteLookup } from '../lib/parkkit.js'
+import { assembleRings } from '../lib/multipolygon.js'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const CACHE = join(ROOT, 'cache', 'world')
@@ -30,7 +31,14 @@ for (const s of [h.statue, ...(h.landmark?.type === 'statues' ? h.landmark.items
 const els = (kind) => sortCacheFiles(readdirSync(CACHE), `osm-${kind}-`).flatMap((f) => JSON.parse(readFileSync(join(CACHE, f), 'utf8')).data.elements)
 const all = els('allbuildings').map(osmToBuilding).filter(Boolean)
 const greens = new Map(els('parks').filter((e) => e.geometry).map((e) => { const o = openRing(e.geometry.map((p) => project(p.lon, p.lat))); return [e.id, { id: e.id, outer: o, holes: [], tags: e.tags ?? {}, bbox: ringBBox(o) }] }))
-setSiteLookup({ building: (ref) => findByOsm(all, ref), green: (id) => greens.get(id) ?? null })
+const waterEls = els('water')
+const waterOf = (id) => {
+  const e = waterEls.find((x) => x.id === id)
+  if (!e) return []
+  if (e.geometry) return [{ id, outer: openRing(e.geometry.map((p) => project(p.lon, p.lat))), holes: [], tags: e.tags ?? {} }]
+  return assembleRings(e.members.filter((m) => m.role === 'outer' && m.geometry).map((m) => m.geometry.map((p) => project(p.lon, p.lat)))).map((o) => ({ id, outer: o, holes: [], tags: e.tags ?? {} }))
+}
+setSiteLookup({ building: (ref) => findByOsm(all, ref), green: (id) => greens.get(id) ?? null, water: waterOf })
 let b
 const circle = (c, r) => Array.from({ length: 24 }, (_, i) => [c[0] + r * Math.cos((i / 24) * Math.PI * 2), c[1] + r * Math.sin((i / 24) * Math.PI * 2)])
 const mk = (outer, holes = []) => ({ id: `x-${key}`, osmId: null, tags: {}, name: h.name, polygons: [{ outer, holes }], area: Math.abs(signedArea(outer)), centroid: ringCentroid(outer), bbox: ringBBox(outer), height: 0, parts: null })

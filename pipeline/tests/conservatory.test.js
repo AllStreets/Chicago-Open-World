@@ -63,7 +63,7 @@ describe('the conservatory grounds: ranges, formal garden, Bates Fountain', () =
     const c = project(fountain.lon, fountain.lat), basin = pts(part(r, 'basin'))
     const rr = hi(basin.map(([x, , z]) => Math.hypot(x - c[0], z - c[1])))
     expect(Math.abs(rr - 6)).toBeLessThan(0.05)
-    expect(part(r, 'water')[0].facade).toBe(22)
+    expect(part(r, 'water')[0].style).toBe('lp-pool') // unlit at night
     const g = pts(part(r, 'fountain-group'))
     for (const [x, , z] of g) expect(Math.hypot(x - c[0], z - c[1])).toBeLessThan(2.5)
     expect(r.clear.length).toBe(2) // no tree in the garden or the fountain

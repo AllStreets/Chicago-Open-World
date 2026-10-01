@@ -268,10 +268,11 @@ export function hatch(ring, dir, spacing) {
 
 // Lookups into the city the builders may need (a garden's beds, the houses inside a conservatory's outline). Set by
 // build-world (and preview-site) before the heroes are applied; a unit test passes its own.
-let site = { building: () => null, green: () => null }
+let site = { building: () => null, green: () => null, water: () => [] }
 export function setSiteLookup(fns) { site = { ...site, ...fns } }
 export const siteBuilding = (ref) => site.building(ref)
 export const siteGreen = (id) => site.green(id)
+export const siteWater = (id) => site.water(id) // every assembled ring of the water body (a relation may have several)
 
 // Concatenate meshes into `into` (in place).
 export function into(dst, ...ms) { for (const m of ms) for (const k of ['positions', 'normals', 'uvs']) dst[k].push(...m[k]); return dst }
