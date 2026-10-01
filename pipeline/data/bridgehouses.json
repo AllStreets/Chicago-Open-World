@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "note": "A-9: the bridge-tender houses, dressed on their OpenStreetMap footprints (lib/bridgehouses.js). Each house takes its bridge's style (bridges.json houses.style). Near the river its stone base runs down to the water (levels.json RIVER_Y − 0.5), as the real houses stand on the bascule piers. Heights are above the street (model y 0); the forms are read from photographs and are approximate unless a source says more.",
+  "sources": [
+    "https://www.chicagoloopbridges.com/ (the bridge-tender houses, bridge by bridge)",
+    "https://en.wikipedia.org/wiki/DuSable_Bridge (Bedford-stone bridgehouses; the four reliefs and their corners; the McCormick Bridgehouse & Chicago River Museum, 5 floors)",
+    "https://en.wikipedia.org/wiki/List_of_crossings_of_the_Chicago_River",
+    "OpenStreetMap (ODbL): the bridgehouse footprints (building=service, name '… Bridgehouse' / 'Bridge House')"
+  ],
+  "match": { "name": "bridge ?house", "skipName": "railroad|railway|air line", "maxM": 45, "acrossM": 30 },
+  "styles": {
+    "beaux-arts": { "bodyM": 6.6, "roofM": 2.6, "cornice": 0.45, "windowW": 1.1, "windowY": [2.0, 4.9], "about": "1910s–1920s City Beautiful houses: Bedford limestone, rusticated base, arched windows, a cornice and a verdigris copper hip roof (Franklin, Wells, Lake, Washington, Madison, Jackson). Read from photographs" },
+    "deco": { "bodyM": 7.2, "steps": [1.6, 0.9], "finEvery": 0.9, "about": "1929–30 Art Deco houses: stepped massing, fluted piers between tall window strips, a stepped parapet (Clark Street). Read from photographs" },
+    "moderne": { "bodyM": 5.6, "chamfer": 1.3, "ribbon": [2.0, 3.7], "overhang": 0.6, "about": "1937–1956 Streamline Moderne houses: rounded corners, a ribbon of windows, a thin overhanging roof slab (State Street, the Outer Drive, Van Buren, Congress). Read from photographs" },
+    "modern": { "bodyM": 5.2, "mullionEvery": 1.5, "about": "1960–1984 glass-and-steel cabins: a glazed box in a dark steel frame under a flat roof slab (Dearborn, Columbus, Randolph). Read from photographs" },
+    "dusable": { "bodyM": 10.8, "atticM": 12.6, "pilaster": 0.8, "relief": { "w": 4.4, "h": 6.0, "y0": 3.9 }, "about": "Edward H. Bennett's four Bedford-stone bridgehouses (1920): towers rising from the river, rusticated below the street, corner pilasters, a cornice and attic; the 1928 reliefs high on their outward faces. The museum (SW house) has five floors from the Riverwalk. Heights read from photographs (approximate)" }
+  },
+  "dusable": {
+    "bridge": "dusable",
+    "reliefs": { "nw": "discoverers", "ne": "pioneers", "sw": "defense", "se": "regeneration" },
+    "reliefNote": "Wikipedia (DuSable Bridge): The Discoverers is on the northwest house and The Pioneers on the northeast (Fraser); Defense southwest and Regeneration southeast (Hering). bridges.json's older reliefs map has ne/nw swapped; this file is the source of truth.",
+    "museum": { "corner": "sw", "name": "McCormick Bridgehouse & Chicago River Museum", "source": "https://en.wikipedia.org/wiki/DuSable_Bridge (a 5-floor museum, opened 10 June 2006)" }
+  },
+  "newStyles": [
+    { "key": "bridgehouse-window", "base": "#1d252c", "finish": "glass", "source": "dark window glass of the bridge-tender houses, read from photographs (https://www.chicagoloopbridges.com/)" },
+    { "key": "bridgehouse-granite", "base": "#a59f94", "finish": "granite", "source": "the granite and rusticated limestone bases of the bridgehouses where they meet the river, read from photographs (https://www.chicagoloopbridges.com/)" }
+  ]
+}

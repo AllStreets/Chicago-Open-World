@@ -1,0 +1,142 @@
+{
+  "version": 1,
+  "note": "A-8 (plan 2026-10-01 §2): how each river icon meets the water after D1 (levels.json RIVER_Y −6.3, RIVERWALK_Y −5.3). Read by pipeline/lib/riverbases.js. Geometry is laid against the river polygon's land edges in front of each building (OSM); explicit points are model metres (shared/project.js, origin State & Madison, +x east, +z south) drawn on the OSM footprints and the river polygon. Layouts not given in a source are read from photographs and marked approximate. 'riverwalk' = RIVERWALK_Y; walk widths and stair positions are approximate.",
+  "sources": [
+    "https://en.wikipedia.org/wiki/Chicago_Riverwalk",
+    "https://www.chicago.gov/content/dam/city/depts/dcd/supp_info/chicago_river_main_branchframeworkplan.pdf (Chicago River Main Branch Framework Plan: river-level walks along the north bank and the South Branch)",
+    "OpenStreetMap (ODbL): building footprints and the river polygon"
+  ],
+  "sites": [
+    {
+      "key": "wrigleybldg", "osm": 17460539,
+      "about": "The Wrigley Building's river face: its white terra-cotta base carried down to the water, and the river-level walk along the north bank from the DuSable Bridge's northwest stair toward Trump",
+      "walk": { "width": 4.0 },
+      "stairs": [{ "near": [272, -796], "toward": [240, -808] }],
+      "plinth": { "style": "wrigley-terracotta", "onWall": true, "arches": { "every": 7.5, "w": 3.0, "h": 3.6, "arch": true } },
+      "reach": 12,
+      "source": ["https://en.wikipedia.org/wiki/Wrigley_Building", "https://en.wikipedia.org/wiki/Chicago_Riverwalk"],
+      "note": "the terra-cotta glaze matches the building's own row; arcade bays read from photographs (approximate)"
+    },
+    {
+      "key": "trump", "osm": 64594680,
+      "about": "Trump International Hotel & Tower's public riverwalk: a granite walk at the water below its riverside promenade, with stairs at both ends",
+      "walk": { "width": 6.0 },
+      "stairs": [{ "near": [168, -776], "toward": [130, -741] }, { "near": [86, -699], "toward": [120, -731] }],
+      "balustrade": { "style": "trump-granite", "lampEvery": 20 },
+      "reach": 12,
+      "source": ["https://en.wikipedia.org/wiki/Trump_International_Hotel_and_Tower_(Chicago)", "https://www.som.com/projects/trump-international-hotel-tower-chicago/"],
+      "note": "two-level riverfront (street promenade + river walk); widths read from photographs (approximate)"
+    },
+    {
+      "key": "applemichigan", "osm": "w685480593",
+      "about": "Apple Michigan Avenue: wide stone steps down from Pioneer Court either side of the glass pavilion to a landing at the river; 32 ft glass walls under a thin carbon-fibre roof 111 × 98 ft on slender stainless columns",
+      "zones": [{ "xz": [[331, -799.0], [342.4, -804.3], [366.6, -805.9], [380, -802.8], [382.5, -810.6], [331, -810.6]], "y": "riverwalk", "about": "the landing at the river" }],
+      "stepsLand": [
+        { "from": [337.5, -836], "to": [337.5, -810.4], "width": 12, "riser": 0.17, "about": "the west steps from Pioneer Court" },
+        { "from": [378.5, -836], "to": [378.5, -810.4], "width": 8.5, "riser": 0.17, "about": "the east steps" }
+      ],
+      "pavilion": { "y0": "riverwalk", "roofTop": 4.8, "roofL": 33.8, "roofW": 29.8, "corner": 3.0, "hide": ["w1270139861"] },
+      "source": ["https://en.wikipedia.org/wiki/Apple_Michigan_Avenue", "https://www.architectsjournal.co.uk/buildings/foster-partners-chicago-apple-store-cascades-down-to-meet-the-river", "https://www.e-architect.com/chicago/apple-on-michigan-avenue"],
+      "note": "glass walls 32 ft (9.75 m) from the river landing; roof 111 × 98 ft (33.8 × 29.8 m); the steps cascade from Pioneer Court to the river on both sides of the pavilion (Foster + Partners); step widths read from the OSM footprints and photographs (approximate)"
+    },
+    {
+      "key": "marina1", "osm": 1177923716,
+      "about": "Marina City's raised platform over its marina: the plaza deck on columns, the towers' cores down to the water, the restaurants at river level under the plaza, a terrace at the water and the boat slips in front",
+      "line": [[-122.0, -640.0], [-39.3, -642.2]],
+      "lineNote": "OSM maps the marina basin running in under the platform (to z −656); the walk and slips stand at the platform's river edge",
+      "hide": ["w1177923722"],
+      "reach": 60,
+      "walk": { "width": 3.5, "lamps": false },
+      "stairs": [{ "near": [-44, -641], "toward": [-80, -641] }],
+      "decks": [{ "xz": [[-122.6, -656.6], [-39.6, -657.2], [-39.3, -642.0], [-122.0, -640.0]], "y": 0, "t": 0.9 }],
+      "drums": [{ "at": [-108.2, -658.4], "r": 5.4, "top": -0.9 }],
+      "storefronts": [
+        { "osm": "w1177925119", "xz": [[-82.6, -641.7], [-83.0, -665.8], [-122.6, -665.5], [-122.6, -655.4], [-122.2, -645.4], [-122.0, -640.3]], "y0": "riverwalk", "y1": -1.0, "about": "Legal Sea Foods (OSM layer −2)" },
+        { "osm": "w1177925118", "xz": [[-56.0, -666.1], [-39.9, -666.4], [-39.3, -642.8], [-82.6, -641.7], [-83.0, -665.8]], "y0": "riverwalk", "y1": -1.0, "about": "Smith & Wollensky (OSM layer −1)" }
+      ],
+      "docks": { "boats": 6, "boatL": 10, "seed": 11 },
+      "source": ["https://en.wikipedia.org/wiki/Marina_City", "https://www.architecture.org/online-resources/buildings-of-chicago/marina-city"],
+      "note": "'built on a raised platform next to the Chicago River; beneath the platform, at river level, is a small marina' (Wikipedia). Core 35 ft across (approximate); restaurant and slip layout read from OSM (layer −1/−2 restaurants) and photographs (approximate)"
+    },
+    {
+      "key": "lasalle300", "osm": "w1274706595",
+      "about": "300 North LaSalle's river plaza and the river-level walk below it, with stairs down at both ends",
+      "box": [-474, -408, -700, -600],
+      "walk": { "width": 4.5 },
+      "stairs": [{ "near": "start" }, { "near": "end" }],
+      "reach": 22,
+      "source": ["https://en.wikipedia.org/wiki/300_North_LaSalle"],
+      "note": "plaza and walk widths read from photographs (approximate)"
+    },
+    {
+      "key": "mart", "osm": 28293211,
+      "about": "The Merchandise Mart's riverfront: the plaza's stone balustrade and lamp standards above the dockwall (the river face Art on theMART is seen from)",
+      "balustrade": { "style": "mart-limestone", "lampEvery": 24 },
+      "reach": 32,
+      "source": ["https://en.wikipedia.org/wiki/Merchandise_Mart", "https://artonthemart.com/"],
+      "note": "balustrade form read from photographs (approximate)"
+    },
+    {
+      "key": "wolfpointeast", "osm": "w509957160",
+      "about": "Wolf Point East's public riverwalk at the water, with a stair down from the point's lawn",
+      "walk": { "width": 4.5 },
+      "stairs": [{ "near": "end" }],
+      "reach": 16,
+      "source": ["https://en.wikipedia.org/wiki/Wolf_Point_(Chicago)", "https://en.wikipedia.org/wiki/Wolf_Point_East"],
+      "note": "walk width read from photographs (approximate)"
+    },
+    {
+      "key": "wolfpointwest", "osm": "w330745077",
+      "about": "Wolf Point West's riverwalk at the water",
+      "walk": { "width": 4.5 },
+      "stairs": [{ "near": "start" }],
+      "reach": 16,
+      "source": ["https://en.wikipedia.org/wiki/Wolf_Point_(Chicago)"],
+      "note": "approximate"
+    },
+    {
+      "key": "riverpoint", "osm": "w330309437",
+      "about": "River Point's riverfront: the 1.5-acre park ends in an esplanade a storey below it at the water's edge, stairs down at each end",
+      "walk": { "width": 6.0, "y": -3.3 },
+      "stairs": [{ "near": "start" }, { "near": "end" }],
+      "reach": 90,
+      "source": ["https://en.wikipedia.org/wiki/River_Point", "https://www.pickardchilton.com/work/river-point"],
+      "note": "esplanade level and width read from photographs (approximate)"
+    },
+    {
+      "key": "riverside150", "osm": "w330879260",
+      "about": "150 North Riverside's riverfront esplanade, a storey below the plaza, beside the narrow core",
+      "walk": { "width": 5.0, "y": -3.3 },
+      "stairs": [{ "near": "start" }],
+      "reach": 14,
+      "source": ["https://en.wikipedia.org/wiki/150_North_Riverside", "https://www.goettschpartners.com/projects/150-north-riverside/"],
+      "note": "esplanade level read from photographs (approximate)"
+    },
+    {
+      "key": "riversideplaza", "osm": "w149215037",
+      "about": "Riverside Plaza (the Chicago Daily News Building): its riverfront plaza's stone balustrade and lamps above the South Branch",
+      "balustrade": { "style": "riverside-limestone", "lampEvery": 20 },
+      "reach": 40,
+      "source": ["https://en.wikipedia.org/wiki/Riverside_Plaza", "https://en.wikipedia.org/wiki/Chicago_Daily_News_Building"],
+      "note": "balustrade form read from photographs (approximate)"
+    },
+    {
+      "key": "civicopera", "osm": "w124865443",
+      "about": "The Civic Opera House's river face: the limestone carried down to the South Branch with an arcade of arched openings at the water",
+      "plinth": { "style": "opera-limestone", "onWall": true, "arches": { "every": 7.2, "w": 3.6, "h": 4.2, "arch": true } },
+      "reach": 6,
+      "source": ["https://en.wikipedia.org/wiki/Civic_Opera_House_(Chicago)", "https://www.lyricopera.org/about/civic-opera-house/"],
+      "note": "the west façade stands on the river; arcade bays read from photographs (approximate)"
+    },
+    {
+      "key": "rivercity", "osm": "w148788175",
+      "about": "River City's river level: a walk along the water and the River City Marina's slips",
+      "walk": { "width": 4.0 },
+      "docks": { "boats": 8, "boatL": 11, "seed": 23 },
+      "stairs": [{ "near": "start" }],
+      "reach": 25,
+      "source": ["https://en.wikipedia.org/wiki/River_City_(Chicago)"],
+      "note": "Bertrand Goldberg's River City (1986) has its own marina on the South Branch; slip layout approximate"
+    }
+  ]
+}

@@ -5,7 +5,7 @@ import { CameraControls } from '@react-three/drei'
 import * as THREE from 'three'
 import { useStore } from '../state/store.js'
 import { clampCamera, glideVector, headingDeg, slideMove, MAX_DIST, WORLD_BOUNDS } from '../lib/cameraMath.js'
-import { BOOKMARKS, bookmarkFromUrl } from '../lib/bookmarks.js'
+import { BOOKMARKS, bookmarkFromUrl, poseFromParam } from '../lib/bookmarks.js'
 import { introPose, INTRO_SECONDS } from '../lib/introPath.js'
 import { crossStreets } from '../lib/grid.js'
 import { keyIntent } from '../lib/controls.js'
@@ -63,6 +63,7 @@ export default function AtlasRig() {
   const flightRun = useRef(null)
   const introStart = useRef(null)
   const camRest = useRef(createRestTracker({ frames: 20, eps: 1e-3 }))
+  const eyePose = useRef((() => { const q = new URLSearchParams(window.location.search); return q.has('stats') ? poseFromParam(q.get('eye')) : null })())
   const { gl, camera } = useThree()
   const mode = useStore((s) => s.cameraMode)
   const introDone = useStore((s) => s.introDone)
@@ -85,7 +86,7 @@ export default function AtlasRig() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-    const playIntro = !params.has('view') && !params.has('pose') && !reduced && !useStore.getState().introDone
+    const playIntro = !params.has('view') && !params.has('pose') && !params.has('eye') && !reduced && !useStore.getState().introDone
     if (!playIntro) {
       useStore.getState().finishIntro()
       const b = bookmarkFromUrl(window.location.search)
@@ -225,6 +226,15 @@ export default function AtlasRig() {
       const rp = sessionActive() ? rideFrame(dt, { keys: keys.current, tunnels: Boolean(state.scene.getObjectByName('tunnels')), clearance: clearanceAt, reducedMotion: reducedMotion.current }) : null
       if (rp) { c.setLookAt(...rp.position, ...rp.target, false); publishReadout(c, now); window.__camRest = false; return }
     } else if (sessionActive()) endSession()
+    // test-only ?eye=px,py,pz,tx,ty,tz with ?stats (A-8/A-9 evaluation and README frames): a pose at Riverwalk or
+    // tour-boat height, held without the orbit clamp. People see the river level from the rides.
+    if (eyePose.current) {
+      c.setLookAt(...eyePose.current.position, ...eyePose.current.target, false)
+      if (camera.near !== 0.5) { camera.near = 0.5; camera.updateProjectionMatrix() }
+      publishReadout(c, now)
+      window.__camRest = camRest.current.sample([...eyePose.current.position, ...eyePose.current.target])
+      return
+    }
     const fw = useStore.getState().follow
     if (fw) {
       const st = useStore.getState()

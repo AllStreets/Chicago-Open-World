@@ -483,7 +483,7 @@ Forty-four buildings and structures along the main stem and both branches, each 
 <td width="50%"><img src="docs/screenshots/v9-river-dusable-night.png" alt="DuSable Bridge at night" width="100%"/></td>
 </tr>
 <tr>
-<td colspan="2"><em>At DuSable: the Wrigley Building and the Tribune with London Guarantee's tholos and 333 N Michigan across the bridge; Trump's stainless fins and setbacks behind.</em></td>
+<td colspan="2"><em>At DuSable: the Wrigley Building and the Tribune with London Guarantee's tholos and 333 N Michigan across the bridge; Trump's stainless fins and setbacks behind. Bennett's four bridgehouses now stand on their mapped corners, their stone run down to the water.</em></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/screenshots/v9-river-marina-trump-day.png" alt="Marina City, AMA Plaza and Trump" width="100%"/></td>
@@ -511,7 +511,7 @@ Forty-four buildings and structures along the main stem and both branches, each 
 <td width="50%"><img src="docs/screenshots/v9-river-opera-night.png" alt="The Civic Opera at night" width="100%"/></td>
 </tr>
 <tr>
-<td colspan="2"><em>The South Branch: the Civic Opera's armchair and Wacker portico, Riverside Plaza, 150 N Riverside on its 12 m core, 110 N Wacker on its tridents.</em></td>
+<td colspan="2"><em>The South Branch from over the water: the bridge-tender houses at every crossing in their bridge's style, the Civic Opera on the right bank, Riverside Plaza and 150 N Riverside on the left.</em></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/screenshots/v9-river-post-office-day.png" alt="The Old Post Office" width="100%"/></td>
@@ -550,6 +550,41 @@ Forty-four buildings and structures along the main stem and both branches, each 
 <tr>
 <td><em>77 West Wacker's glazed temple pediment, floodlit.</em></td>
 <td><em>MORTON SALT on the Salt Shed's roof, facing the Kennedy.</em></td>
+</tr>
+</table>
+
+#### At the water — *how the river icons meet the river, from a tour boat and the street*
+
+With the river at its real depth, each icon's riverfront is built where it meets the dockwall: Trump's and Wrigley's river walks on piles with stairs down the wall, Marina City's raised plaza over its marina with the restaurants and slips beneath, Apple Michigan Avenue's steps from Pioneer Court to the water, the Opera's arcade at the river, the walks at 300 N LaSalle, Wolf Point, River Point, 150 N Riverside and River City, and the balustrades of the Mart and Riverside Plaza. Sixty bridge-tender houses stand on their mapped footprints in their bridge's style, down to the water. DuSable's carry Fraser's and Hering's 1928 reliefs. Upper Wacker's parapet is Bennett's balustrade again, and Taft's Heald Square group stands at Wabash.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/v9-river-level-marina-day.png" alt="Marina City at the water" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-level-marina-dusk.png" alt="Marina City at the water at dusk" width="100%"/></td>
+</tr>
+<tr>
+<td colspan="2"><em>Marina City from a tour boat: the plaza deck on its columns over the marina, the restaurants' glass beneath it, a terrace at the water and the boat slips.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/v9-river-level-apple-day.png" alt="Apple Michigan Avenue at the water" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-level-apple-dusk.png" alt="Apple Michigan Avenue at dusk" width="100%"/></td>
+</tr>
+<tr>
+<td colspan="2"><em>Apple Michigan Avenue: 32 ft of glass under the 111 × 98 ft carbon-fibre roof, with the wide steps down from Pioneer Court on either side to a landing at the river.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/v9-river-level-dusable-day.png" alt="The DuSable southeast bridgehouse" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-level-dusable-dusk.png" alt="The DuSable southeast bridgehouse at dusk" width="100%"/></td>
+</tr>
+<tr>
+<td colspan="2"><em>DuSable's southeast bridgehouse and Henry Hering's <em>Regeneration</em> (1928), workers rebuilding after the Fire. Fraser's <em>The Discoverers</em> and <em>The Pioneers</em> are on the north houses, Hering's <em>Defense</em> on the McCormick Bridgehouse. The figures are read from photographs.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/v9-river-level-opera-day.png" alt="The Civic Opera at the water" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-level-opera-dusk.png" alt="The Civic Opera at the water at dusk" width="100%"/></td>
+</tr>
+<tr>
+<td colspan="2"><em>The Civic Opera's limestone carried down to the South Branch, with its arcade at the water.</em></td>
 </tr>
 </table>
 
@@ -881,7 +916,7 @@ It wasn't made right in one attempt. Here are the same places through each pass,
 </tr>
 <tr>
 <td><sub>The Civic Opera · Oct 1, before<br/>OSM massing, generic façades</sub></td>
-<td><sub>The Civic Opera · Oct 1, after<br/>sourced crowns, rhythm and materials</sub></td>
+<td><sub>The Civic Opera · Oct 1, after<br/>sourced crowns, rhythm and materials; re-posed over the river (A-12)</sub></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/screenshots/evolution/v9-river-postoffice-before-day.png" alt="The Old Post Office before the river icons" width="100%"/></td>
@@ -903,6 +938,29 @@ It wasn't made right in one attempt. Here are the same places through each pass,
 <tr>
 <td><sub>Before · Oct 1<br/>plain glass and a stub spire</sub></td>
 <td><sub>After · Oct 1<br/>stainless fins, the 60 m podium, the 423 m spire, AMA Plaza's module</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/v9-river-level-marina-before-day.png" alt="Marina City at the water before A-8" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-level-marina-day.png" alt="Marina City at the water after A-8" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>From a tour boat · Oct 1, before<br/>a bare dockwall, a stray box in the marina</sub></td>
+<td><sub>From a tour boat · Oct 1, after (A-8)<br/>the raised plaza on columns, restaurants, terrace and slips</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/v9-river-dusable-before-a8-day.png" alt="DuSable before the bridgehouses" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-dusable-day.png" alt="DuSable with the bridgehouses" width="100%"/></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/v9-river-dusable-before-a8-night.png" alt="DuSable at night before the bridgehouses" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-dusable-night.png" alt="DuSable at night with the bridgehouses" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>DuSable · Oct 1, before A-9<br/>guessed tender houses beside OSM boxes</sub></td>
+<td><sub>DuSable · Oct 1, after A-9<br/>the four bridgehouses on their mapped corners, down to the water</sub></td>
+</tr>
+</table>
+
 **The river** — from flat water at street level to the river at its real depth
 
 <table>

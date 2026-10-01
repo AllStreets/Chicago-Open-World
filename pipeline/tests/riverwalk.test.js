@@ -75,6 +75,16 @@ describe('the River Theater and the stairs: up to Upper Wacker', () => {
     const y = ys('stairs')
     expect(Math.min(...y)).toBeCloseTo(L.RIVERWALK_Y, 6); expect(Math.max(...y)).toBeCloseTo(0, 1)
   })
+  it('A41: the Wacker parapet is a balustrade (coping over balusters) with a pair of light pylons at every stair head', () => {
+    const tris = (part) => rw.meshes.filter((m) => m.part === part).reduce((t, m) => t + m.mesh.positions.length / 9, 0)
+    expect(tris('wacker-balusters')).toBeGreaterThan(100)
+    const stairs = ys('stairs').length ? rw.meshes.find((m) => m.part === 'stairs').mesh.positions.length / 3 / 36 : 0 // 36 vertices a step slab
+    expect(stairs).toBeGreaterThan(0)
+    const lamps = rw.meshes.find((m) => m.part === 'wacker-pylon-lamp').mesh.positions.length / 3 / 36
+    expect(lamps % 2).toBe(0)
+    expect(lamps).toBeGreaterThanOrEqual(2)
+    expect(Math.max(...ys('wacker-pylons'))).toBeCloseTo(4.6, 5)
+  })
   it('features leave the walk along the river open (≥ 4 m of floor in front of them)', () => {
     for (const o of rw.obstacles) for (const q of o) expect(q[1]).toBeGreaterThan(-0.01 + 0) // obstacles stay on the walk band (z ≥ 0)…
     // …and a 4 m strip along the river edge is clear of all of them between the piers
@@ -83,10 +93,10 @@ describe('the River Theater and the stairs: up to Upper Wacker', () => {
       expect(rw.obstacles.some((o) => pointInRing([x, 2], o))).toBe(false)
     }
   })
-  it('every built part is at or above the water and at or below the street (bar the parapet and the railing)', () => {
+  it('every built part is at or above the water and at or below the street (bar the parapet, its balusters and pylons (A41), and the railing)', () => {
     for (const m of rw.meshes) for (let i = 1; i < m.mesh.positions.length; i += 3) {
       expect(m.mesh.positions[i]).toBeGreaterThanOrEqual(L.RIVER_Y - 0.5)
-      if (!['wacker-parapet', 'railing'].includes(m.part)) expect(m.mesh.positions[i]).toBeLessThanOrEqual(0.01)
+      if (!['wacker-parapet', 'wacker-balusters', 'wacker-pylons', 'wacker-pylon-lamp', 'railing'].includes(m.part)) expect(m.mesh.positions[i]).toBeLessThanOrEqual(0.01)
     }
   })
 })
