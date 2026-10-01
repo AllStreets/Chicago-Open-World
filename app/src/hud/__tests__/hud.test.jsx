@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import Hud from '../Hud.jsx'
 import { useStore } from '../../state/store.js'
@@ -57,7 +57,9 @@ describe('responsive HUD', () => {
 
 import { FEATURE_CONTROLS } from '../featureControls.js'
 describe('dock feature row (G3)', () => {
-  beforeEach(() => useStore.setState({ ...useStore.getInitialState(), transit: { lines: [], routes: [], stations: [] } }))
+  // a winter night: no scheduled fountain show or fireworks running (the result must not depend on the hour)
+  beforeEach(() => { vi.useFakeTimers({ toFake: ['Date'], now: new Date('2026-01-15T03:00:00Z') }); useStore.setState({ ...useStore.getInitialState(), transit: { lines: [], routes: [], stations: [] } }) })
+  afterEach(() => vi.useRealTimers())
   it('has exactly one button per dock feature anywhere in the HUD, pressed state tracks the feature (Sound lives on M)', () => {
     render(<Hud />)
     for (const c of FEATURE_CONTROLS.filter((f) => f.id !== 'sound')) {
