@@ -13,7 +13,7 @@ describe('POI filter chips', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Bars' }))
     expect(useStore.getState().poiCats).toEqual(['drinks'])
     fireEvent.click(screen.getByRole('button', { name: 'All' }))
-    expect(useStore.getState().poiCats.length).toBe(10)
+    expect(useStore.getState().poiCats.length).toBe(12)
   })
 })
 
@@ -23,6 +23,6 @@ describe('POI colours (user fixes)', () => {
     expect(new Set(POI_CATEGORIES.map((c) => c.color)).size).toBe(POI_CATEGORIES.length)
     render(<PoiFilters />)
     const bars = screen.getByRole('button', { name: 'Bars' })
-    expect(bars.style.getPropertyValue('--cat')).toBe('#ffc23d')
+    expect(bars.style.getPropertyValue('--cat')).toBe('#9C36B5')
   })
 })

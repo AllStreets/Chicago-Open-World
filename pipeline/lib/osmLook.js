@@ -57,3 +57,18 @@ export function applyOsmLooks(buildings, registry, { enabled }) {
   }
   return { styled, skipped }
 }
+
+// Sourced colour/material for notable buildings OSM leaves untagged (data/osm-tag-overrides.json), merged before the
+// looks are made; a tag OSM already carries always wins. Returns how many buildings gained a tag.
+export function applyTagOverrides(buildings, overrides) {
+  let n = 0
+  for (const b of buildings) {
+    const o = overrides?.[b.id]
+    if (!o) continue
+    b.tags ??= {}
+    let changed = false
+    for (const k of ['building:colour', 'building:material']) if (o[k] && !b.tags[k]) { b.tags[k] = o[k]; changed = true }
+    if (changed) n++
+  }
+  return n
+}

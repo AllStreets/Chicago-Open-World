@@ -26,12 +26,13 @@ import { venueZones, filterTrees, assertNoVenueTrees, outsideZones, cutZones } f
 import { createBlock, addTileToBlock, blockLayers, blockSidecar } from '../lib/blocks.js'
 import { bAcc, appendBuilding, appendLayer, asLayer } from '../lib/layers.js'
 import { preloadStatue } from '../lib/statues.js'
-import { poiRecord, dedupePois, anchorPoi, POI_CATEGORIES, POI_CAT_IDS } from '../lib/pois.js'
+import { mergeSites } from '../lib/poiSites.js'
+import { poiRecord, dedupePois, anchorPoi, buildingPoi, capByTile, POI_CATEGORIES, POI_CAT_IDS } from '../lib/pois.js'
 import { buildNeighborhoods } from '../lib/zones.js'
 import { loadBlenderMesh } from '../lib/blenderMesh.js'
 import { setSeahorseMesh } from '../lib/landmarks.js'
 import { createStyleRegistry, assignHeroStyles, meshStyle, writeStylePalettePng, addMaterialStyles, styleIndex, partStyle } from '../lib/styles.js'
-import { applyOsmLooks } from '../lib/osmLook.js'
+import { applyOsmLooks, applyTagOverrides } from '../lib/osmLook.js'
 import { lakePolygons, landMinusWater, joinLines, lakeSide } from '../lib/lake.js'
 import { bakeShore, SHORE } from '../lib/shore.js'
 import { bakeHeightfield, meshPoints, boundsUnion, HEIGHTFIELD } from '../lib/heightfield.js'
@@ -291,6 +292,7 @@ async function main() {
   const styles = createStyleRegistry()
   assignHeroStyles(buildings, heroes, styles)
   addMaterialStyles(styles) // V6 materials: after the heroes, before the OSM looks — styleIndex() relies on this order
+  log(`OSM tag overrides: ${applyTagOverrides(buildings, loadJson(join(ROOT, 'data', 'osm-tag-overrides.json')).buildings)} buildings`)
   const osmLooks = applyOsmLooks(buildings, styles, loadJson(join(ROOT, 'data', 'osm-looks.json')))
   log(`OSM-tagged looks: ${osmLooks.styled} buildings, ${osmLooks.skipped} over the palette cap`)
   // ── Transit (V3): CTA + Metra tracks, stations and glow ────────────────────
@@ -344,7 +346,14 @@ async function main() {
 
   // ── Places (P4 · I-4.1): named OSM amenities, one per venue, pinned on the roof they belong to ──────────
   const inWorld = (r) => r.lat >= WORLD_BBOX.s && r.lat <= WORLD_BBOX.n && r.lon >= WORLD_BBOX.w && r.lon <= WORLD_BBOX.e
-  const poiRecs = dedupePois(uniq(chunks('pois')).map(poiRecord).filter((r) => r && inWorld(r)).map((r) => { const [x, z] = project(r.lon, r.lat); return { ...r, x, z } }))
+  const amenityRecs = uniq(chunks('pois')).map(poiRecord).filter((r) => r && inWorld(r)).map((r) => { const [x, z] = project(r.lon, r.lat); return { ...r, x, z } })
+  // named apartment and office buildings join as places, at most a dozen of each per tile (the tallest)
+  const buildingRecs = capByTile(buildings.map(buildingPoi).filter(Boolean).map((r) => ({ ...r, tile: tileKeyFor([r.x, r.z]) })), { apartments: 12, offices: 12 })
+  // websites: OSM tags, then the cached Wikidata official sites (fetch/fetch-wikidata-sites.js)
+  const wdFile = join(ROOT, 'cache', 'wikidata-sites.json'), wd = existsSync(wdFile) ? loadJson(wdFile) : {}
+  const poiRecs = mergeSites(dedupePois([...amenityRecs, ...buildingRecs]), wd)
+  const withSite = (list) => list.filter((r) => r.tags?.website).length
+  log(`places with a website: ${withSite(dedupePois([...amenityRecs, ...buildingRecs]))} from OSM tags → ${withSite(poiRecs)} with Wikidata`)
   const poisByTile = new Map()
   for (const r of poiRecs) { const k = tileKeyFor([r.x, r.z]); if (!poisByTile.has(k)) poisByTile.set(k, []); poisByTile.get(k).push(r) }
   const poiIndex = []

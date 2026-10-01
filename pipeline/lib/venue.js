@@ -332,16 +332,17 @@ export function buildVenue(outline, spec) {
   }
 
   // ── street marquee (behind home plate) ──
+  let marquee = null
   if (spec.marquee) {
     const d = mul(ref, -1)
     const r = Math.max(...rayHits(outline, center, d))
     const at = add(center, mul(d, r + (spec.marquee.out ?? 3)))
     const { w, h, base } = spec.marquee
-    const m = box(at, d, w, 0.8, base, base + h)
-    put(m.front, F.marquee, S.marquee.red, { part: 'marquee' })
-    put(m.rest, F.marquee, S.marquee.red, { part: 'marquee' })
+    // the sign itself (shaped, lettered, lit) is drawn by the app from this frame (WrigleyMarquee.jsx); the tile keeps
+    // the two green steel posts it stands on
+    marquee = { center: [+at[0].toFixed(2), +(base + h / 2).toFixed(2), +at[1].toFixed(2)], normal: [+d[0].toFixed(4), +d[1].toFixed(4)], w, h, base }
     const side = left(d)
-    for (const s of [-1, 1]) put(spire({ at: add(at, mul(side, s * w * 0.32)), base: 0, top: base, r0: 0.35, r1: 0.3, sides: 8 }), F.steel, S.steel.navy, { part: 'marquee' })
+    for (const s of [-1, 1]) put(spire({ at: add(at, mul(side, s * w * 0.32)), base: 0, top: base + h * 0.4, r0: 0.35, r1: 0.3, sides: 8 }), F.steel, S.steel.green, { part: 'marquee' })
   }
 
   // ── classical colonnades on both long sides (Soldier Field) ──
@@ -368,6 +369,6 @@ export function buildVenue(outline, spec) {
       }
     }
   }
-  out.push({ mesh: mesh(), facade: F.field, seed: 0, fieldRing, venue: { frame, seats, boards: boardInfo, flagPole } })
+  out.push({ mesh: mesh(), facade: F.field, seed: 0, fieldRing, venue: { frame, seats, boards: boardInfo, flagPole, marquee } })
   return out
 }
