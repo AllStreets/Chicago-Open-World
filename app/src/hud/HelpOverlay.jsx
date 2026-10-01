@@ -13,7 +13,7 @@ const GROUPS = [
     ['Click', 'a train, a station or a ballpark for its card'],
     ['⌘K', '“Follow a train” rides along (any key stops) · “Go to Clark/Lake” · type “tonight” for tonight’s game'],
   ]],
-  ['Guide', [['Lenses', 'the tabs at the top — Visit, Live, Work (also ⌘K “Lens: Visit”)'], ['Hover', 'a building for its name and year; click it for its card'], ['Esc', 'close the card, then the lens'], ['Tours', 'in the Visit lens or ⌘K “Tour:” — Space pauses, , and . step between stops, any arrow key takes back the camera']]],
+  ['Guide', [['Lenses', 'the lens rail at the top — Visit, Live, Work (also ⌘K “Lens: Visit”)'], ['Hover', 'hover a building for its name and year; click it for its card'], ['P', 'places — pins for food, bars, venues and more; click one for its hours and website'], ['Tours', 'in the Visit lens or ⌘K “Tour:” — Space pauses, , and . step, any arrow key takes back the camera'], ['Work', 'set office (click the map) or type an address in ⌘K, like “333 N Green”, to see commute times'], ['Esc', 'close the card, then the lens']]],
   ['Time and quality', [['1 – 7', 'live Chicago time, dawn, day, dusk, night, a sunny summer day, a snowy Christmas (snow falling, the lake frozen)'], ['Quality', 'button on the right if things feel slow · Low also turns off water reflections'], ['Stats', '⌘K “performance” shows draw calls and frame rate']]],
 ]
 

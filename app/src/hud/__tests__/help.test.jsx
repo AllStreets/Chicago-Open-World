@@ -45,3 +45,14 @@ describe('help: City life from the registry', () => {
     expect(screen.getByText(/Follow a train/i)).toBeInTheDocument()
   })
 })
+
+describe('Phase 4 help', () => {
+  it('help card documents every Phase 4 control in plain words', async () => {
+    const { useStore } = await import('../../state/store.js')
+    const { default: HelpOverlay } = await import('../HelpOverlay.jsx')
+    const { render, screen } = await import('@testing-library/react')
+    useStore.getState().setHelpOpen(true)
+    render(<HelpOverlay />)
+    for (const t of [/lens rail/i, /hover a building/i, /places/i, /tour/i, /set office/i]) expect(screen.getAllByText(t).length).toBeGreaterThan(0)
+  })
+})
