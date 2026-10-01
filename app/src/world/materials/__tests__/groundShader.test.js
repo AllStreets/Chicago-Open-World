@@ -11,10 +11,16 @@ describe('ground shader', () => {
     expect(s.fragmentShader).toContain('uniform sampler2DArray uGround;')
     expect(s.uniforms.uNight).toBe(groundUniforms.uNight)
   })
-  it('one texture, size and tint per ground layer, in pipeline order', () => {
-    expect(GROUND_TEXTURES).toEqual(['asphalt', 'sidewalk', 'grass', 'pitch', 'sand', 'gravel'])
-    expect(groundUniforms.uSize.value).toHaveLength(6)
-    expect(groundUniforms.uTint.value).toHaveLength(6)
+  it('one texture, size and tint per ground layer, in pipeline order (paving: brick plazas, user 2026-09-30)', () => {
+    expect(GROUND_TEXTURES).toEqual(['asphalt', 'sidewalk', 'grass', 'pitch', 'sand', 'gravel', 'sidewalk'])
+    expect(groundUniforms.uSize.value).toHaveLength(7)
+    expect(groundUniforms.uTint.value).toHaveLength(7)
+  })
+  it('paving draws over the walks and under the roads, and lays brick in a running bond', () => {
+    const [roads, sidewalks, , , , , paving] = LAYER_RANK
+    expect(paving).toBeGreaterThan(sidewalks); expect(paving).toBeLessThan(roads)
+    expect(patchGroundShader(std()).fragmentShader).toMatch(/li == 6/)
+    expect(createGroundMaterial().customProgramCacheKey()).toBe('ground-v4')
   })
   it('orders overlapping layers in depth by rank, independent of quantized heights', () => {
     const s = patchGroundShader(std())
