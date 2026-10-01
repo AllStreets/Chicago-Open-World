@@ -58,9 +58,9 @@ describe('responsive HUD', () => {
 import { FEATURE_CONTROLS } from '../featureControls.js'
 describe('dock feature row (G3)', () => {
   beforeEach(() => useStore.setState({ ...useStore.getInitialState(), transit: { lines: [], routes: [], stations: [] } }))
-  it('has exactly one button per feature anywhere in the HUD, pressed state tracks the feature', () => {
+  it('has exactly one button per dock feature anywhere in the HUD, pressed state tracks the feature (Sound lives on M)', () => {
     render(<Hud />)
-    for (const c of FEATURE_CONTROLS) {
+    for (const c of FEATURE_CONTROLS.filter((f) => f.id !== 'sound')) {
       const btns = screen.getAllByRole('button', { name: new RegExp(`^${c.label} \\(${c.keyLabel}\\)$`) })
       expect(btns, c.id).toHaveLength(1)
       const was = c.isOn()

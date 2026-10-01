@@ -59,3 +59,7 @@ export const FEATURE_CONTROLS = [
 ]
 
 export const featureById = (id) => FEATURE_CONTROLS.find((c) => c.id === id)
+
+// The dock's six buttons (user, 2026-09-30): Places takes Sound's slot — Sound stays on M, ⌘K and the help card.
+const DOCK_ORDER = ['transit', 'games', 'places', 'bridges', 'fountain', 'fireworks']
+export const DOCK_FEATURES = DOCK_ORDER.map(featureById).filter(Boolean)

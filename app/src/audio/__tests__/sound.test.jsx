@@ -30,11 +30,8 @@ describe('sound', () => {
     expect(gains.some((g) => g.gain.setTargetAtTime.mock.calls.length > 0)).toBe(true)
     expect(() => r.stop()).not.toThrow()
   })
-  it('the dock has a Sound button, off until pressed', () => {
+  it('the dock no longer has a Sound button (user, 2026-09-30) — M, ⌘K and the help card switch it', () => {
     render(<ControlDock />)
-    const b = screen.getByRole('button', { name: 'Sound (M)' })
-    expect(b).toHaveAttribute('aria-pressed', 'false')
-    fireEvent.click(b)
-    expect(screen.getByRole('button', { name: 'Sound (M)' })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.queryByRole('button', { name: 'Sound (M)' })).toBeNull()
   })
 })

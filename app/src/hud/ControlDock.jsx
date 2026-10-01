@@ -2,7 +2,7 @@
 import './ControlDock.css'
 import { RiAddLine, RiSubtractLine, RiArrowGoBackLine, RiArrowGoForwardLine, RiArrowUpSLine, RiArrowDownSLine, RiHome5Line, RiQuestionLine, RiArrowLeftSLine, RiArrowRightSLine, RiSearchLine } from 'react-icons/ri'
 import { useSports } from '../sports/sportsStore.js'
-import { FEATURE_CONTROLS } from './featureControls.js'
+import { DOCK_FEATURES } from './featureControls.js'
 import { useStore } from '../state/store.js'
 import { cycleQuality } from '../lib/quality.js'
 import { VIEW_ORDER, VIEW_NAMES } from '../lib/views.js'
@@ -38,7 +38,7 @@ export default function ControlDock() {
     <div className="hud-panel dock" role="toolbar" aria-label="Camera controls">
       <Btn label="Search places (⌘K)" onClick={() => useStore.getState().setPaletteOpen(true)} wide><RiSearchLine /><span>Search</span><span className="hud-kbd">⌘K</span></Btn>
       <div className="dock-row features" role="group" aria-label="City life">
-        {FEATURE_CONTROLS.map((c) => <FeatureBtn key={c.id} c={c} live={c.id === 'games' && live} />)}
+        {DOCK_FEATURES.map((c) => <FeatureBtn key={c.id} c={c} live={c.id === 'games' && live} />)}
       </div>
       <div className="dock-row">
         <Btn label="Zoom in" onClick={() => cam('zoom', 1)}><RiAddLine /></Btn>
