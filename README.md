@@ -102,7 +102,7 @@ grid — so the HUD always knows which corner you are over.
 
 ## How it came together
 
-A progressive gallery, oldest first. Images are never replaced — each phase adds its own shots, so you can watch the city grow from flat boxes to a living place.
+A progressive gallery, oldest first. Each phase adds its own shots; when a building is rebuilt, the images that feature it are re-taken at the same pose so the gallery stays true, and the originals move to [Evolution](#evolution) — so you can still watch the city grow from flat boxes to a living place.
 
 ### Phase 1 · Foundation — *real footprints, real heights, flat colour*
 
@@ -170,7 +170,7 @@ A progressive gallery, oldest first. Images are never replaced — each phase ad
 </tr>
 <tr>
 <td><em>Willis in black aluminium and bronze glass; 311 South Wacker in pink Texas granite; Aon in white Mount Airy granite — 41 landmarks, each colour sourced.</em></td>
-<td><em>The Wrigley Building floodlit in warm white, as it has been since 1921; Tribune's crown lit above.</em></td>
+<td><em>The Wrigley Building floodlit in warm white, as it has been since 1921 — its Giralda clock tower now carved in full, four clock faces lit; Tribune's crown lit above.</em></td>
 <td><em>Ordinary buildings too: 464 mapped brick lofts, dark towers and concrete blocks take their OpenStreetMap colours.</em></td>
 </tr>
 </table>
@@ -214,14 +214,14 @@ A progressive gallery, oldest first. Images are never replaced — each phase ad
 </tr>
 <tr>
 <td><em>Soldier Field on a game night: rim floodlights, painted Bears end zones, a full bowl and the teams at the line.</em></td>
-<td><em>Wrigley from above: crosshatched outfield, clay arc and chalk at MLB dimensions.</em></td>
+<td><em>Wrigley from above: crosshatched outfield, clay arc and chalk at MLB dimensions — and the rooftop clubs' steel bleachers across Waveland and Sheffield.</em></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/screenshots/v5-w-flag-day.png" alt="V5 — the W flag over Wrigley's scoreboard" width="100%"/></td>
 <td width="50%"><img src="docs/screenshots/v5-united-center-night.png" alt="V5 — United Center game night" width="100%"/></td>
 </tr>
 <tr>
-<td><em>After a Cubs win the W flies over the scoreboard, the board reads FINAL, and the fans wave W flags.</em></td>
+<td><em>After a Cubs win the W flies over the scoreboard, the board reads FINAL, and the fans wave W flags — on the rooftops across Sheffield too.</em></td>
 <td><em>United Center game night: lit fascia, a stepped grey dome and the plaza crowd in Bulls red.</em></td>
 </tr>
 </table>
@@ -335,7 +335,7 @@ The recognisable towers got their sculptural signatures, and twenty more landmar
 <td width="50%"><img src="docs/screenshots/p3-pingtom-day.png" alt="Phase 3 — the Ping Tom Park pagoda on the river" width="100%"/></td>
 </tr>
 <tr>
-<td><em>The Tribune's octagonal Gothic crown with its eight flying buttresses and pinnacles.</em></td>
+<td><em>The Tribune's octagonal Gothic crown with its eight flying buttresses and pinnacles, over a shaft of limestone pier ribs.</em></td>
 <td><em>Ping Tom Park's pagoda on the South Branch — one of twenty P2 landmarks, from the Rookery to the Chinatown Gate and the Pilsen murals.</em></td>
 </tr>
 </table>
