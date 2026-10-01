@@ -63,18 +63,34 @@ export function greenTower360(b, spec = {}) {
   const meshes = []
   meshes.push(P(slab(mesh(), f.c, f.u, L, W, 0, 6), CURTAIN, 'bcg-storefront', 'storefront'))
   meshes.push(P(slab(mesh(), f.c, f.u, L, W, 6, podTop), F.stone, 'bcg-podium', 'podium'))
-  // the truss level: a dark recess with two rows of V-trusses carrying the bars
-  meshes.push(P(slab(mesh(), f.c, f.u, L - 8, W - 8, podTop, trussTop), F.paint, 'bcg-truss', 'truss-recess'))
-  const truss = mesh(), n = Math.max(3, Math.round(L / 13))
-  for (const side of [-1, 1]) for (let i = 0; i < n; i++) {
-    const a0 = -L / 2 + (L * (i + 0.5)) / n, half = L / n / 2, c = side * (W / 2 - 1.5)
-    const foot = at(f, a0, c), l = at(f, a0 - half, c), r = at(f, a0 + half, c)
-    tube(truss, [foot[0], podTop, foot[1]], [l[0], trussTop, l[1]], 0.55, 6)
-    tube(truss, [foot[0], podTop, foot[1]], [r[0], trussTop, r[1]], 0.55, 6)
-  }
-  meshes.push(P(truss, F.paint, 'bcg-truss', 'v-truss'))
   // two offset bars either side of the dark core
   const barW = W * 0.4, coreW = W - 2 * barW, off = spec.offsetM ?? 7
+  // the transfer level (user fix): "two rows of V-shaped trusses integrated into the parking podium" (Chicago YIMBY),
+  // one row under each bar. Each is a closed frame held inside its bar's footprint — a top chord flush with the bar's
+  // underside all round, a bottom chord on the podium roof, a post at each corner — with the Vs along the bar's outer
+  // face. Members are inset by their radius, so nothing reaches past the podium or the tower above it.
+  meshes.push(P(slab(mesh(), f.c, f.u, L - 8, W - 8, podTop, trussTop), F.paint, 'bcg-truss', 'truss-recess'))
+  const truss = mesh(), R = 0.45, Rc = 0.4
+  let posts = 0
+  for (const side of [-1, 1]) {
+    const ac = side * off / 2, cc = side * (coreW + barW) / 2, half = (L - off) / 2 - R, hc = barW / 2 - R
+    const outerC = cc + side * hc, yb = podTop + Rc, yt = trussTop - Rc
+    const corner = (a, c, y) => { const p = at(f, ac + a, c); return [p[0], y, p[1]] }
+    const ring = [[-half, cc - hc], [half, cc - hc], [half, cc + hc], [-half, cc + hc]]
+    for (let k = 0; k < 4; k++) {
+      const [a0, c0] = ring[k], [a1, c1] = ring[(k + 1) % 4]
+      tube(truss, corner(a0, c0, yt), corner(a1, c1, yt), Rc, 6) // top chord, all round under the bar's edge
+      tube(truss, corner(a0, c0, podTop), corner(a0, c0, trussTop), R, 6); posts++ // the corner post
+    }
+    tube(truss, corner(-half, outerC, yb), corner(half, outerC, yb), Rc, 6) // bottom chord along the outer face
+    const n = Math.max(3, Math.round((2 * half) / 13))
+    for (let i = 0; i < n; i++) {
+      const a0 = -half + (2 * half * (i + 0.5)) / n, h = half / n
+      tube(truss, corner(a0, outerC, yb), corner(a0 - h, outerC, yt), R, 6)
+      tube(truss, corner(a0, outerC, yb), corner(a0 + h, outerC, yt), R, 6)
+    }
+  }
+  meshes.push(Object.assign(P(truss, F.paint, 'bcg-truss', 'v-truss'), { posts }))
   const bar1 = slab(mesh(), at(f, -off / 2, -(coreW + barW) / 2), f.u, L - off, barW, trussTop, top - crown)
   const bar2 = slab(mesh(), at(f, off / 2, (coreW + barW) / 2), f.u, L - off, barW, trussTop, lowerTop)
   meshes.push(P(merge(bar1, bar2), CURTAIN, 'bcg-glass', 'tower'))
