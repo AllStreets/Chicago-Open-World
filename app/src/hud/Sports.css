@@ -8,6 +8,9 @@
 .chip { font-family: var(--font-mono); font-size: 10px; padding: 2px 6px; border-radius: 999px; border: 1px solid var(--border); }
 .chip-live { color: #ff5d5d; border-color: #ff5d5d; }
 .chip-simulated { color: #ffb347; border-color: #ffb347; }
+.chip-stale { color: #ffb347; border-color: #ffb347; }
+.data-stale { color: #ffb347; }
+.games-foot { margin: 8px 0 0; color: var(--text-dim, #9aa); font-size: 11px; }
 .venue-card { position: absolute; left: 16px; top: 164px; width: 280px; padding: 12px; animation: hud-rise 0.3s ease both; }
 .vc-score { display: flex; flex-direction: column; gap: 4px; font-family: var(--font-mono); font-size: 20px; }
 .vc-row { display: flex; justify-content: space-between; }

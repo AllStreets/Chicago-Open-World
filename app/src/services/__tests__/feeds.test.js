@@ -1,8 +1,9 @@
 // app/src/services/__tests__/feeds.test.js — the per-feed scheduler (P5 Task 1): backoff, hidden tab, parse errors.
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { createFeed } from '../chiApi.js'
-import { startFeeds } from '../feeds.js'
+import { startFeeds, SCHEDULE_FEED } from '../feeds.js'
 import { useStore } from '../../state/store.js'
+import { useSports } from '../../sports/sportsStore.js'
 
 function harness(responses, hidden = false) {
   const timers = []
@@ -48,11 +49,47 @@ describe('createFeed', () => {
   })
 })
 
+// E1-3: the schedule feed is ours (same-origin /api/schedule), so it runs whatever CHI ATLAS is doing.
+describe('schedule feed', () => {
+  const NOW = Date.now()
+  const doc = (o = {}) => ({ version: 1, source: 'espn-proxy', generatedAt: new Date(NOW).toISOString(), partial: [],
+    games: [{ id: 'b1', teams: ['bears'], results: {}, sport: 'football', league: 'nfl', start: new Date(NOW + 86400000).toISOString(), venue: 'soldierfield', status: 'STATUS_SCHEDULED', state: 'pre', home: { abbr: 'CHI', score: null }, away: { abbr: 'NYJ', score: null } }], ...o })
+  const fileSchedule = { games: [{ id: 'f1', venue: 'soldierfield', start: '2026-10-04T17:00:00Z' }], source: 'LIVE', origin: 'file', generatedAt: '2026-09-29T17:36:00Z' }
+  beforeEach(() => { useStore.setState(useStore.getInitialState()); useSports.setState(useSports.getInitialState()) })
+  it('starts with no CHI base and no probe, and a good answer becomes the schedule', async () => {
+    const get = vi.fn(async () => ({})), getSchedule = vi.fn(async () => doc())
+    const probe = vi.fn(async () => 'offline')
+    const stop = await startFeeds({ probe, get, getSchedule, base: '', schedule: () => 0, cancel: () => {}, isHidden: () => false })
+    await new Promise((r) => setTimeout(r, 0))
+    expect(getSchedule).toHaveBeenCalledWith('/api/schedule')
+    expect(get).not.toHaveBeenCalled() // CHI stays untouched
+    expect(useSports.getState()).toMatchObject({ origin: 'proxy', source: 'LIVE' })
+    expect(useSports.getState().games.map((g) => g.id)).toEqual(['b1'])
+    stop()
+  })
+  it('a failed or stale answer leaves the build-time schedule in place', async () => {
+    for (const answer of [null, doc({ generatedAt: new Date(NOW - 7 * 3600000).toISOString() }), doc({ games: [] }), '<!doctype html>']) {
+      useSports.setState({ ...useSports.getInitialState(), ...fileSchedule })
+      const stop = await startFeeds({ probe: async () => 'offline', get: async () => null, getSchedule: async () => answer, base: '', schedule: () => 0, cancel: () => {}, isHidden: () => false })
+      await new Promise((r) => setTimeout(r, 0))
+      expect(useSports.getState()).toMatchObject({ origin: 'file', generatedAt: '2026-09-29T17:36:00Z' })
+      expect(useSports.getState().games.map((g) => g.id)).toEqual(['f1'])
+      stop()
+    }
+  })
+  it('polls every minute in a game window and every 10 minutes otherwise', () => {
+    expect(SCHEDULE_FEED.intervalMs(doc(), NOW)).toBe(600_000)
+    expect(SCHEDULE_FEED.intervalMs(null, NOW)).toBe(600_000)
+    const soon = doc({ games: [{ ...doc().games[0], start: new Date(NOW + 3600000).toISOString() }] })
+    expect(SCHEDULE_FEED.intervalMs(soon, NOW)).toBe(60_000)
+  })
+})
+
 describe('startFeeds', () => {
   it('offline (no API configured): every feed stays SIMULATED and nothing is fetched', async () => {
     useStore.setState(useStore.getInitialState())
     const get = vi.fn(async () => ({}))
-    const stop = await startFeeds({ probe: async () => 'offline', get, base: '' })
+    const stop = await startFeeds({ probe: async () => 'offline', get, getSchedule: async () => null, base: '' })
     expect(useStore.getState().apiStatus).toBe('offline')
     expect(Object.values(useStore.getState().feeds).every((s) => s === 'SIMULATED')).toBe(true)
     expect(get).not.toHaveBeenCalled()
@@ -61,7 +98,7 @@ describe('startFeeds', () => {
   it('live: the probe flips apiStatus and the feeds report LIVE as their data arrives', async () => {
     useStore.setState(useStore.getInitialState())
     const get = vi.fn(async (path) => (path === '/api/weather' ? { icon: '10d', description: 'light rain', visibility: 6, wind: { speed: 4, deg: 270 } } : path === '/api/cta/trains' ? { trains: [] } : path === '/api/sports' ? [] : { alerts: [] }))
-    const stop = await startFeeds({ probe: async () => 'live', get, base: 'https://chi.example', schedule: () => 0, cancel: () => {}, isHidden: () => false })
+    const stop = await startFeeds({ probe: async () => 'live', get, getSchedule: async () => null, base: 'https://chi.example', schedule: () => 0, cancel: () => {}, isHidden: () => false })
     await new Promise((r) => setTimeout(r, 0))
     const s = useStore.getState()
     expect(s.apiStatus).toBe('live')
@@ -72,7 +109,7 @@ describe('startFeeds', () => {
   it('a CHI that answers 502 for trains leaves the chip on SIMULATED', async () => {
     useStore.setState(useStore.getInitialState())
     const get = vi.fn(async (path) => (path === '/api/cta/trains' ? null : {}))
-    const stop = await startFeeds({ probe: async () => 'live', get, base: 'https://chi.example', schedule: () => 0, cancel: () => {}, isHidden: () => false })
+    const stop = await startFeeds({ probe: async () => 'live', get, getSchedule: async () => null, base: 'https://chi.example', schedule: () => 0, cancel: () => {}, isHidden: () => false })
     await new Promise((r) => setTimeout(r, 0))
     expect(useStore.getState().feeds.cta).toBe('SIMULATED')
     stop()

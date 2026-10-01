@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import ControlDock from '../ControlDock.jsx'
 import GamesPanel from '../GamesPanel.jsx'
@@ -33,5 +33,27 @@ describe('sports HUD', () => {
     expect(card).toHaveTextContent('FINAL'); expect(card).toHaveTextContent('ESPN')
     fireEvent.keyDown(window, { key: 'Escape' })
     expect(useSports.getState().cardVenue).toBeNull()
+  })
+  // E1-4: where the schedule came from and how old it is — on the card foot and the Games panel foot.
+  describe('data age', () => {
+    beforeEach(() => { vi.useFakeTimers({ toFake: ['Date'] }); vi.setSystemTime(new Date('2026-10-01T17:00:00Z')) })
+    afterEach(() => vi.useRealTimers())
+    const cases = [
+      [{ source: 'LIVE', origin: 'proxy', generatedAt: '2026-10-01T16:57:00Z' }, 'ESPN · updated 3 min ago', false],
+      [{ source: 'LIVE', origin: 'file', generatedAt: '2026-09-29T17:36:00Z' }, 'ESPN schedule from Sep 29 — couldn’t refresh', true],
+      [{ source: 'SIMULATED', origin: 'simulated', generatedAt: null }, 'Simulated schedule — typical home dates', false],
+    ]
+    for (const [data, text, amber] of cases) {
+      it(`card and panel read “${text}”`, () => {
+        useSports.setState({ ...data, cardVenue: 'wrigleyfield', states: { wrigleyfield: { state: 'idle', game: null, next: { ...game, start: '2026-10-02T00:05:00Z' } } } })
+        useStore.setState({ gamesOpen: true })
+        render(<><VenueCard /><GamesPanel /></>)
+        for (const name of ['Wrigley Field', 'Games']) {
+          const note = screen.getByRole('dialog', { name }).querySelector('.data-note')
+          expect(note).toHaveTextContent(text)
+          expect(note.classList.contains('data-stale')).toBe(amber)
+        }
+      })
+    }
   })
 })
