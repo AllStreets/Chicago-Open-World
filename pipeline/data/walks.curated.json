@@ -3,9 +3,9 @@
   "walks": [
     {
       "id": "riverwalk", "name": "The Riverwalk", "from": "Lake Shore Drive", "to": "Lake Street",
-      "blurb": "The Chicago Riverwalk along the main branch's south bank, under the bascule bridges, from the lake to the river's bend",
-      "graph": true,
-      "waypoints": [[41.88768, -87.61545], [41.88745, -87.62090], [41.88720, -87.62440], [41.88695, -87.62800], [41.88670, -87.63150], [41.88640, -87.63500], [41.88590, -87.63760]],
+      "blurb": "The Chicago Riverwalk at river level, along the main branch's south bank and under every bascule bridge: the east section, the Vietnam Veterans Memorial, Marina Plaza, the Cove, the River Theater, the Water Plaza, the Jetty and the Boardwalk to the Confluence",
+      "graph": true, "level": "riverwalk",
+      "waypoints": [[41.88788, -87.61453], [41.88793, -87.61724], [41.88804, -87.62001], [41.88845, -87.62250], [41.88833, -87.62543], [41.88748, -87.62700], [41.88713, -87.62870], [41.88709, -87.63030], [41.88714, -87.63180], [41.88713, -87.63330], [41.88710, -87.63480], [41.88680, -87.63620], [41.88608, -87.63712]],
       "sources": ["https://www.chicagoriverwalk.us/", "https://www.openstreetmap.org/ (Chicago Riverwalk footways)"]
     },
     {

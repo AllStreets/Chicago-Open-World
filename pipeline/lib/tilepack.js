@@ -133,7 +133,9 @@ export async function quantizationError(layers, { keepPositions = false } = {}) 
 }
 
 // Ground surfaces share one mesh per tile; the shader picks the texture by layer index.
-export const GROUND_LAYERS = ['roads', 'sidewalks', 'parks', 'pitches', 'beaches', 'rail', 'paving'] // paving: brick plazas and paths (user, 2026-09-30)
+// paving: brick plazas and paths (user, 2026-09-30). dockwall, riprap (D1): the river's vertical walls — concrete and
+// sheet pile downtown, darker rubble-faced banks upriver — and the soffits under bridge decks over the Riverwalk
+export const GROUND_LAYERS = ['roads', 'sidewalks', 'parks', 'pitches', 'beaches', 'rail', 'paving', 'dockwall', 'riprap']
 export function mergeGroundLayers(layers) {
   const out = { positions: [], normals: [], uvs: [], layer: [] }
   for (const [name, m] of Object.entries(layers)) {

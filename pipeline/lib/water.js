@@ -15,10 +15,11 @@ export function calmFor(tags = {}) {
 // Lake Michigan is the baked lake mesh; fountains belong to their landmark builders.
 export const keepWater = (tags = {}) => tags.water !== 'fountain' && tags.name !== 'Lake Michigan'
 
+// y: one height for every polygon, or a function of the polygon (D1: the river system at RIVER_Y, the rest as before)
 export function waterLayer(polys, y) {
   const out = { positions: [], normals: [], uvs: [] }, calm = []
   for (const p of polys) {
-    const m = flatMesh([p], y)
+    const m = flatMesh([p], typeof y === 'function' ? y(p) : y)
     for (const k of ['positions', 'normals', 'uvs']) for (const v of m[k]) out[k].push(v)
     const c = calmFor(p.tags)
     for (let i = 0; i < m.positions.length / 3; i++) calm.push(c)

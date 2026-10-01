@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { leafGeometry, buildLeaves, buildPits, DECK, L_DECK_Y } from '../lib/bridges.js'
+import { readFileSync } from 'node:fs'
+import { leafGeometry, buildLeaves, buildPits, DECK, L_DECK_Y, buildBridge, pierBoxes, tailSweep, rotateLeafPoint, leafFramePoints, LIFT_MAX_DEG, WATER_CLEAR_M, PIT } from '../lib/bridges.js'
+import { MAX_LIFT_DEG } from '../../app/src/bridges/lift.js'
 import { LANDMARK_FACADES as F } from '../lib/facadeIds.js'
 
 const pts = (parts) => parts.flatMap((p) => { const o = []; for (let i = 0; i < p.mesh.positions.length; i += 3) o.push(p.mesh.positions.slice(i, i + 3)); return o })
@@ -70,5 +72,69 @@ describe('V6 review: the L crosses Wells and Lake on its own track', () => {
     expect(ys).toHaveLength(0)
     const chord = built.leaves.flatMap((lf) => lf.meshes.filter((m) => m.part === 'truss').flatMap((m) => m.mesh.positions.filter((_, i) => i % 3 === 1)))
     expect(Math.max(...chord)).toBeGreaterThan(RAIL_TOP_Y.cta + 3.66) // above a 3.66 m CTA car
+  })
+})
+
+describe('D1-4: the river at RIVER_Y — piers, pits sized from the tail sweep, steel clear of the water', () => {
+  const L = JSON.parse(readFileSync(new URL('../data/levels.json', import.meta.url), 'utf8')).levels
+  const levels = { river: L.RIVER_Y, lower: L.LOWER_Y }
+  const kinds = [B(), B({ leaf: 'girder', span: 60, width: 20 }), B({ decks: 2, span: 78, width: 28 }), B({ leaf: 'through-truss', decks: 2, span: 82, width: 21 }), B({ decks: 2, span: 108, width: 32 })]
+  it('the app lifts to the angle the pits are sized for', () => {
+    expect(LIFT_MAX_DEG).toBe(MAX_LIFT_DEG)
+  })
+  it('every tail-side vertex, at every angle of the lift, stays inside its pit or above the street', () => {
+    for (const b of kinds) {
+      const leaves = buildBridge(b, { deckY, levels }).leaves, boxes = pierBoxes(b, deckY, levels)
+      boxes.forEach((p, i) => {
+        const tail = leafFramePoints(p.g, leaves[i].meshes).filter(([a]) => a < 0.4)
+        expect(tail.length).toBeGreaterThan(50)
+        let a0 = Infinity, a1 = -Infinity, y0 = Infinity, w = 0
+        for (let deg = 0; deg <= LIFT_MAX_DEG; deg += 1) for (const [a, y, o] of tail) {
+          const [ra, ry] = rotateLeafPoint([a, y], p.g.pivot[1], deg)
+          if (ry > deckY - 0.4) continue
+          a0 = Math.min(a0, ra); a1 = Math.max(a1, ra); y0 = Math.min(y0, ry); w = Math.max(w, Math.abs(o))
+        }
+        expect(a0).toBeGreaterThan(p.a0); expect(a1).toBeLessThan(p.a1)
+        expect(w).toBeLessThan(p.inner); expect(y0).toBeGreaterThan(p.floor)
+      })
+    }
+  })
+  it('the pit is as deep as the tail really drops (≈ Lt·sin 75° under the trunnion), deeper than the old 9 m box', () => {
+    const [s] = tailSweep(B(), deckY, levels)
+    expect(s.y0).toBeLessThan(deckY - DECK.trunnionDrop - 0.16 * 70 * Math.sin((75 * Math.PI) / 180) + 0.5)
+    expect(s.y0).toBeLessThan(deckY - 9.4)
+  })
+  it('the pier walls stand in the water: down past RIVER_Y, up to just under the deck', () => {
+    for (const b of kinds) {
+      const built = buildBridge(b, { deckY, levels }), pit = built.fixed.filter((m) => m.part === 'pit')
+      expect(pit).toHaveLength(2)
+      expect(Math.min(...pts(pit).map((q) => q[1]))).toBeLessThanOrEqual(L.RIVER_Y - 0.5 + 1e-6)
+      for (const p of built.piers) {
+        expect(p.bottom).toBeLessThanOrEqual(L.RIVER_Y - 0.5)
+        expect(p.top).toBeLessThan(deckY - DECK.slabT)
+        expect(p.outer - p.inner).toBeCloseTo(PIT.wall)
+      }
+    }
+  })
+  it('no leaf steel hangs into the river: ahead of the pier it stays WATER_CLEAR_M over RIVER_Y at rest (the lower roadway is checked below)', () => {
+    for (const b of kinds) {
+      const built = buildBridge(b, { deckY, levels })
+      built.leaves.forEach((lf, i) => {
+        const ahead = leafFramePoints(built.piers[i].g, lf.meshes.filter((m) => m.part !== "lower-deck")).filter(([a]) => a > built.piers[i].a1)
+        expect(Math.min(...ahead.map((q) => q[1]))).toBeGreaterThanOrEqual(L.RIVER_Y + WATER_CLEAR_M - 1e-6)
+      })
+    }
+  })
+  it('a double deck (DuSable, the Outer Drive) hangs its lower roadway at LOWER_Y, above the water', () => {
+    for (const lf of buildBridge(B({ decks: 2, span: 78, width: 28 }), { deckY, levels }).leaves) {
+      const ys = pts(lf.meshes.filter((m) => m.part === 'lower-deck')).map((q) => q[1])
+      expect(Math.max(...ys)).toBeCloseTo(L.LOWER_Y)
+      expect(Math.min(...ys)).toBeGreaterThan(L.RIVER_Y)
+    }
+  })
+  it('without levels (the flat world) the pits are the old 9 m boxes and there are no piers', () => {
+    const a = buildBridge(B(), { deckY })
+    expect(a.piers).toEqual([])
+    expect(Math.min(...pts(a.fixed.filter((m) => m.part === 'pit')).map((q) => q[1]))).toBeCloseTo(deckY - 9.4)
   })
 })

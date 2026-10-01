@@ -6,8 +6,12 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useStore } from '../state/store.js'
 import { buildTunnels, setActiveTunnels, TUNNEL } from './tunnels.js'
+import { readLevels } from '../lib/levels.js'
 
 export const SHOW_BELOW_M = 25 // camera altitude under which the tubes are drawn (portals are only seen from low down)
+// below this the camera is in a tube. In the flat world anything under the street was; with the river at its real
+// depth (D1) a walker on the Riverwalk is 3.6 m under the street, in the open: only below the tubes' mouth is "underground"
+export const undergroundBelow = (levels) => (levels?.river ? TUNNEL.mouthY : 0)
 
 export const TUNNEL_VERT = /* glsl */ `
 attribute vec3 _col;
@@ -61,6 +65,8 @@ function signAtlas(names) {
 
 export default function Tunnels() {
   const transit = useStore((s) => s.transit)
+  const manifest = useStore((s) => s.manifest)
+  const below = useMemo(() => undergroundBelow(readLevels(manifest)), [manifest])
   const group = useRef()
   const built = useMemo(() => {
     if (!transit?.routes) return null
@@ -96,7 +102,7 @@ export default function Tunnels() {
   }, [built])
   useFrame(({ camera }) => {
     if (group.current) group.current.visible = camera.position.y < SHOW_BELOW_M
-    const under = camera.position.y < 0, s = useStore.getState()
+    const under = camera.position.y < below, s = useStore.getState()
     if (s.underground !== under) s.setUnderground(under)
   })
   if (!built) return null

@@ -3,7 +3,7 @@
 // curated walks, off-street legs routed over the walk graph (walk-graph.json), street walks on their sidewalk; every
 // walk is routed on a 3 m grid of open ground (no building, no water), cheapest along the walk graph's paths or the
 // street's sidewalk, then checked again against the footprints: the build fails if one passes through a building.
-// node build/build-rides.js [--cache <dir with osm-allbuildings-*.json and osm-roads-*.json>] [--refetch]
+// node build/build-rides.js [--cache <dir with osm-allbuildings-*.json and osm-roads-*.json>] [--refetch] [--keep-buses]
 import { readFileSync, writeFileSync, existsSync, readdirSync, mkdirSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -127,15 +127,38 @@ if (graph) {
   }
 }
 
+// D1-7: a walk on a sunken floor (the Riverwalk at river level) keeps to that floor — clear of its walls, its steps,
+// basins and planters (river-levels.json, written by build-world.js) — and every point carries the floor's height.
+const riverFile = join(ROOT, '..', 'app', 'public', 'world', 'river-levels.json')
+const riverLevels = existsSync(riverFile) ? JSON.parse(readFileSync(riverFile, 'utf8')) : null
+const inPoly = ([x, z], p) => pointInRing([x, z], p.outer) && !(p.holes ?? []).some((h) => pointInRing([x, z], h))
+const FLOOR_EDGE_M = 1.0
+function floorWalk(level) {
+  if (level !== 'riverwalk' || !riverLevels?.floors?.length) return null
+  const floors = riverLevels.floors, obstacles = riverLevels.obstacles ?? []
+  const onFloor = (x, z) => [[0, 0], [FLOOR_EDGE_M, 0], [-FLOOR_EDGE_M, 0], [0, FLOOR_EDGE_M], [0, -FLOOR_EDGE_M]].every(([dx, dz]) => floors.some((f) => inPoly([x + dx, z + dz], f)))
+  return { y: riverLevels.riverwalk, blocked: (x, z) => !onFloor(x, z) || obstacles.some((o) => pointInRing([x, z], o)) || [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dz]) => insideBuilding(x + dx, z + dz)) }
+}
+
 const walks = [], failures = []
 for (const w of curated.walks) {
   const base = walkRide(w, project)
   let way = base.path, preferred
   if (w.street) { way = offset(base.path, (w.side === 'left' ? -1 : 1) * (w.sidewalkM ?? 15)); preferred = (x, z) => distToLine([x, z], way) < 3 }
   else preferred = (x, z) => graphCells.has(ck(x, z))
+  const floor = floorWalk(w.level)
+  if (w.level && !floor) console.warn(`  ${w.id}: no ${w.level} floor in river-levels.json (flat world) — walked at street level`)
+  // on a floor, each waypoint moves to the nearest open spot of it (searched outward in 1 m rings, up to 150 m)
+  if (floor) way = way.map(([x, z]) => {
+    for (let r = 0; r <= 150; r += 1) for (let k = 0, n = Math.max(1, Math.round((2 * Math.PI * r) / 1)); k < n; k++) {
+      const a = (k / n) * 2 * Math.PI, p = [x + r * Math.cos(a), z + r * Math.sin(a)]
+      if (!floor.blocked(...p)) return p
+    }
+    return [x, z]
+  })
   let path = [], ok = true
   for (let i = 1; i < way.length; i++) {
-    const leg = gridRoute(way[i - 1], way[i], { blocked, preferred, cell: CELL, offPath: 12 }) // off the paths only where it must (a street is no place to walk)
+    const leg = gridRoute(way[i - 1], way[i], { blocked: floor ? floor.blocked : blocked, preferred, cell: floor ? 1.5 : CELL, offPath: 12, cornerCut: Boolean(floor) }) // off the paths only where it must (a street is no place to walk)
     if (!leg) { failures.push(`${w.id}: no open way for leg ${i}`); ok = false; break }
     path.push(...(i === 1 ? leg : leg.slice(1)))
   }
@@ -145,15 +168,31 @@ for (const w of curated.walks) {
   let out = rounded(simplify(path, 1.2))
   if (walkSamplesClear(out, near).length) out = rounded(simplify(path, 0.4))
   if (walkSamplesClear(out, near).length) out = rounded(path)
+  // a floor walk never leaves its floor (every 2 m sample on it), even after simplifying
+  const offFloor = (pts) => { if (!floor) return 0; let n = 0; for (let i = 1; i < pts.length; i++) { const [ax, az] = pts[i - 1], [bx, bz] = pts[i], k = Math.max(1, Math.ceil(Math.hypot(bx - ax, bz - az) / 2)); for (let j = 0; j <= k; j++) { const x = ax + ((bx - ax) * j) / k, z = az + ((bz - az) * j) / k; if (!riverLevels.floors.some((f) => inPoly([x, z], f))) n++ } } return n }
+  if (offFloor(out)) out = rounded(path)
+  if (offFloor(out)) { failures.push(`${w.id}: ${offFloor(out)} samples off the ${w.level} floor`); continue }
   const bad = walkSamplesClear(out, near)
   if (bad.length) { failures.push(`${w.id}: ${bad.length} samples inside buildings, e.g. ${JSON.stringify(bad.slice(0, 3))}`); continue }
   const onPath = out.length > 1 ? out.slice(1).filter(([x, z]) => preferred(x, z)).length / (out.length - 1) : 0
   const sights = [...base.sights, ...landmarkSights(out)]
-  walks.push({ ...base, path: out, sights: sights.filter((s, i) => sights.findIndex((t) => t.name === s.name) === i) })
+  if (floor) out = out.map(([x, z]) => [x, z, floor.y])
+  walks.push({ ...base, path: out, sights: sights.filter((s, i) => sights.findIndex((t) => t.name === s.name) === i), ...(floor ? { level: w.level } : {}) })
   console.log(`  ${w.id}: ${(polyLength(out) / 1000).toFixed(2)} km, ${out.length} points, ${Math.round(onPath * 100)} % of corners on the ${w.street ? 'sidewalk' : 'walk graph'}, ${sights.length} sights`)
 }
 if (failures.length) { console.error('walks that could not be routed clear of buildings:\n  ' + failures.join('\n  ')); process.exit(1) }
-const buses = pickBuses(withStopNames(await busRelations()))
+// --keep-buses (or no bus cache and Overpass unreachable): the bus rides already in rides.json stay as they are
+async function busesOrKept() {
+  const kept = () => (existsSync(OUT) ? JSON.parse(readFileSync(OUT, 'utf8')).buses ?? [] : [])
+  if (process.argv.includes('--keep-buses')) { console.log('  buses: kept from rides.json (--keep-buses)'); return kept() }
+  try { return pickBuses(withStopNames(await busRelations())) } catch (e) {
+    const k = kept()
+    if (!k.length) throw e
+    console.warn(`  buses: Overpass unavailable (${e.message}) — kept the ${k.length} routes already in rides.json`)
+    return k
+  }
+}
+const buses = await busesOrKept()
 for (const b of buses) console.log(`  bus #${b.ref} ${b.name}: ${(polyLength(b.path) / 1000).toFixed(1)} km, ${b.stops.length} stops`)
 writeFileSync(OUT, JSON.stringify({ about: 'Ride the city (P7): pipeline/build/build-rides.js. Local metres [x, z]; OSM (ODbL).', buses, walks }))
 console.log(`rides.json → ${OUT} (${(readFileSync(OUT).length / 1024).toFixed(0)} KB)`)

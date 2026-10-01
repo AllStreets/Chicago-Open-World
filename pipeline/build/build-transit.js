@@ -8,7 +8,7 @@ import { splitLineByTiles } from '../lib/tilepack.js'
 import { lineIdFor, lineOrder } from '../lib/transit/lines.js'
 import { chainRelation, stopsOnRun, isStopRole } from '../lib/transit/chain.js'
 import { resample, simplifyLine3, runsWhere, segLen } from '../lib/transit/polyline.js'
-import { gradeOf, refineGrades, heightProfile, RAIL_TOP_Y } from '../lib/transit/grade.js'
+import { gradeOf, refineGrades, heightProfile, dipProfile, RAIL_TOP_Y } from '../lib/transit/grade.js'
 import { linesByWay, planBents } from '../lib/transit/trackage.js'
 import { createMesh, toLayer, hexToLinear } from '../lib/transit/meshkit.js'
 import { elevatedPiece, embankmentPiece, atGradePiece, portalPiece, catenary, bentsMesh, junctionBox } from '../lib/transit/structure.js'
@@ -45,7 +45,11 @@ export function worldBounds() {
   return { minX, maxX, minZ, maxZ }
 }
 
-export function buildTransit({ routeEls, stationEls, catalog, styles = null, bounds = worldBounds() }) {
+// a subway platform stays level this far either side of its station point (tunnels.js STATION.len / 2 + 10 m)
+export const STATION_LEVEL_M = 85
+
+// dipTarget (D1-5, riverLevel.js tubeDipTarget): where the tubes dive under the sunken river; null = the flat world
+export function buildTransit({ routeEls, stationEls, catalog, styles = null, bounds = worldBounds(), dipTarget = null }) {
   const order = lineOrder(catalog), lineById = new Map(catalog.lines.map((l) => [l.id, l]))
   const colourOf = (id) => hexToLinear(lineById.get(id).colour)
   const ways = new Map(), nodes = new Map(), rels = []
@@ -57,6 +61,7 @@ export function buildTransit({ routeEls, stationEls, catalog, styles = null, bou
   rels.sort((a, b) => a.id - b.id) // deterministic: the first run to cover a way draws it
 
   // ── routes: every run of every CTA / Metra relation, graded and height-profiled
+  const stationPts = dipTarget ? stationFeatures(stationEls).map((st) => st.pt) : []
   const routes = [], pieces = new Map()
   for (const rel of rels) {
     const line = lineIdFor(rel.tags, catalog)
@@ -67,7 +72,8 @@ export function buildTransit({ routeEls, stationEls, catalog, styles = null, bou
     chainRelation(rel, ways).forEach((run, k) => {
       const { pts, tags: segWay } = resample(run.pts, run.segWay, RESAMPLE_M)
       const grades = refineGrades(segWay.map((w, i) => ({ grade: gradeOf(ways.get(w).tags), len: segLen(pts[i], pts[i + 1]), rail: ways.get(w).tags.railway === 'rail' })))
-      const ys = heightProfile(pts, grades, operator)
+      const ys0 = heightProfile(pts, grades, operator)
+      const ys = dipTarget ? dipProfile(pts, ys0, { target: dipTarget, fixed: (p) => stationPts.some((q) => Math.hypot(q[0] - p[0], q[1] - p[1]) <= STATION_LEVEL_M) }) : ys0
       const pts3 = pts.map((p, i) => [p[0], ys[i], p[1]])
       routes.push({ id: `${line}-${rel.id}-${k}`, line, relation: rel.id, name: rel.tags.name ?? '', from: rel.tags.from ?? '', to: rel.tags.to ?? '', wayIds: [...new Set(segWay)], pts3, stops: stopsOnRun({ pts }, stops) })
       for (let i = 0; i < segWay.length;) {

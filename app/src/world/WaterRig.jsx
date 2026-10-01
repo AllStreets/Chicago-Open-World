@@ -8,16 +8,29 @@ import { QUALITY } from '../lib/quality.js'
 import { waterPalette, isGreenRiverDay } from '../lib/waterPalette.js'
 import { waterUniforms, REFLECT_LAYER, WATER_PLANE_Y, loadWaterTextures } from './materials/waterSurface.js'
 import { mirrorCamera, textureMatrixFor } from './water/mirror.js'
+import { planeYFor, viewTarget, FLAT } from '../lib/levels.js'
+import { worldUrl } from '../lib/manifest.js'
 
 const elevOf = (s) => (Math.asin(Math.max(-1, Math.min(1, s[1]))) * 180) / Math.PI
 
-export default function WaterRig({ sunRef, shore, version }) {
+// levels (lib/levels.js readLevels): with the river at its real depth the mirror plane follows the view (D1-6)
+export default function WaterRig({ sunRef, shore, version, levels = FLAT }) {
   const { gl, scene, camera, size } = useThree()
   const forcedOff = useMemo(() => new URLSearchParams(window.location.search).get('reflect') === '0', []) // tests only
   const scale = forcedOff ? 0 : QUALITY[useStore((s) => s.quality)].reflection
   const rt = useMemo(() => new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType }), [])
   const mirror = useMemo(() => { const c = new THREE.PerspectiveCamera(); c.layers.set(REFLECT_LAYER); return c }, [])
   const green = useRef({ at: -Infinity })
+  const plane = useRef({ y: WATER_PLANE_Y, corridor: null })
+  const _p = useMemo(() => new THREE.Vector3(), []), _d = useMemo(() => new THREE.Vector3(), [])
+  useEffect(() => {
+    const file = levels?.river?.file
+    plane.current.corridor = null
+    if (!file) return undefined
+    let alive = true
+    fetch(worldUrl(file, version)).then((r) => (r.ok ? r.json() : null)).then((j) => { if (alive && j?.corridor) plane.current.corridor = j.corridor }).catch(() => {})
+    return () => { alive = false }
+  }, [levels, version])
 
   useEffect(() => { loadWaterTextures(shore, version) }, [shore, version])
   useEffect(() => {
@@ -40,7 +53,12 @@ export default function WaterRig({ sunRef, shore, version }) {
     if (clock.elapsedTime - green.current.at > 60) { green.current.at = clock.elapsedTime; u.uGreen.value = isGreenRiverDay() ? 1 : 0 }
     u.uReflect.value = scale ? 1 : 0
     if (!scale) return
-    mirrorCamera(camera, WATER_PLANE_Y, mirror)
+    // the plane under the view: the river's while looking at the river, the lake's elsewhere, eased over ~0.5 s
+    camera.getWorldPosition(_p); camera.getWorldDirection(_d)
+    const want = planeYFor(viewTarget([_p.x, _p.y, _p.z], [_d.x, _d.y, _d.z]), levels, plane.current.corridor)
+    const pl = plane.current
+    pl.y = Math.abs(want - pl.y) < 0.01 ? want : pl.y + (want - pl.y) * Math.min(1, dt * 6)
+    mirrorCamera(camera, pl.y, mirror)
     textureMatrixFor(mirror, u.uTextureMatrix.value)
     const prev = gl.getRenderTarget(), autoShadow = gl.shadowMap.autoUpdate
     gl.shadowMap.autoUpdate = false // reuse this frame's shadow map; never render the shadow pass twice

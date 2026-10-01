@@ -3,6 +3,7 @@ import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { useThree } from '@react-three/fiber'
 import { useStore } from '../state/store.js'
 import { loadManifest, worldUrl } from '../lib/manifest.js'
+import { readLevels } from '../lib/levels.js'
 import SafeLoad from './SafeLoad.jsx'
 import { sunForPreset } from '../lib/sun.js'
 import TileStreamer from './TileStreamer.jsx'
@@ -53,6 +54,7 @@ import { WEATHER_MODES } from '../weather/weatherState.js'
 
 export default function Scene() {
   const [manifest, setManifest] = useState(null)
+  const levels = useMemo(() => readLevels(manifest), [manifest]) // D1-8: absent = the flat world
   const preset = useStore((s) => s.timePreset)
   const ready = useStore((s) => s.load.ready)
   const quality = useStore((s) => s.quality)
@@ -116,7 +118,7 @@ export default function Scene() {
     <>
       <SkyRig target={sun} sunRef={sunRef} instant={reducedMotion} shadowMap={QUALITY[quality].shadowMap} fog={QUALITY[quality].fog} />
       {manifest?.lake && <Lake file={manifest.lake} version={manifest.version} />}
-      <WaterRig sunRef={sunRef} shore={manifest?.shore ?? null} version={manifest?.version} />
+      <WaterRig sunRef={sunRef} shore={manifest?.shore ?? null} version={manifest?.version} levels={levels} />
   
       {manifest && <Land file={manifest.land} version={manifest.version} />}
       {manifest && <TileStreamer manifest={manifest} />}

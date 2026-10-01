@@ -99,7 +99,7 @@ export function lod1Pieces(b, tol = 2) {
     const outer = simplifyRing(p.outer, tol)
     if (outer.length < 3) continue
     const holes = (p.holes || []).map((h) => simplifyRing(h, tol)).filter((h) => h.length >= 3)
-    out.push({ outer, holes, base: 0, top: b.height })
+    out.push({ outer, holes, base: b.skirtBase ?? 0, top: b.height }) // D1-3: a river-front skirt reaches the water at LOD1 too
   }
   return out
 }

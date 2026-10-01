@@ -194,8 +194,13 @@ function ballroom(b, spec) {
 }
 
 // ── Chicago Riverwalk ─ https://en.wikipedia.org/wiki/Chicago_Riverwalk — granite walk along the south bank with
-// its "rooms"; the River Theater's seating steps. (The flat world cannot show its drop below Wacker Drive.)
+// its "rooms"; the River Theater's seating steps. Over the sunken river (D1, levels.json) the Riverwalk is built at
+// river level by riverwalk.js once the bridges are known, and this builder only claims the footprint; in the flat
+// world (LEVELS_RIVER=0) it is the street-level walk below.
+let riverLevelOn = false
+export const setRiverwalkAtRiverLevel = (on) => { riverLevelOn = Boolean(on) }
 function riverwalk(b, spec) {
+  if (riverLevelOn) return { replace: true, pieces: [], meshes: [] }
   const ring = b.polygons[0].outer, y = spec.y ?? 0.16, meshes = [], flat = ring.flat(), t = earcut(flat, undefined, 2), pave = mesh()
   for (let i = 0; i < t.length; i += 3) {
     const v = [t[i], t[i + 1], t[i + 2]]
