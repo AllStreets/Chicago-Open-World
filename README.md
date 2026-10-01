@@ -200,7 +200,7 @@ A progressive gallery, oldest first. Each phase adds its own shots; when a build
 </tr>
 <tr>
 <td><em>5000- and 7000-series cars on real headways — accelerating, braking, dwelling at stations, held to 30 mph round the Loop.</em></td>
-<td><em>Follow any train from ⌘K or its card; the camera stays above the roofs and lets go on any key.</em></td>
+<td><em>Follow any train from ⌘K or its card; the camera stays above the roofs and lets go on Esc or a movement key (M, X and the other toggles keep following).</em></td>
 <td><em>Metra gallery cars and an MP36 in push-pull; everything is simulated from the clock until the live CTA feed arrives.</em></td>
 </tr>
 </table>
@@ -512,21 +512,32 @@ Everything is reachable with the keyboard, the mouse and the on-screen dock — 
 | `H` · `N` · `O` | home · face north · slow orbit |
 | `1`–`7` | LIVE · DAWN · DAY · DUSK · NIGHT · SUNNY (a clear summer day) · SNOW (a snowy Christmas, the lake frozen) |
 | `T` · Transit button | CTA and Metra lines on/off; the legend switches single lines |
-| Click a train / station | its card — run, next stop, arrivals; "Follow this train" rides along (any key stops) |
+| Click a train / station | its card — run, next stop, arrivals; "Follow this train" rides along (Esc or a move key stops; K changes the view) |
 | `⌘K` "Follow a … train" · "Go to …" · "Show … Line" | transit from the search |
-| `M` · Sound button | music for the fountain and bridge shows, crowd cheers and passing trains — off until you turn it on |
+| `M` · ⌘K "Sound" | music for the fountain and bridge shows, crowd cheers, passing trains and your ride (the L's rumble and door chime, a bus engine, the glider's wind, the city on a walk) — off until you turn it on; a green speaker (on) or a red one with a slash (off) shows in the middle of the screen for a second, then fades |
 | `G` · Games button · `⌘K` "tonight" | tonight's game, scores and the next game at every venue |
 | `B` · Bridges button | raise the river bridges — a boat-run lift with gate bells, flashers and music; press again and they come down within seconds |
 | `J` · Fountain button | Buckingham Fountain water show — jets dance to music, lit in colour after dusk; press again to stop any show |
 | `X` · Fireworks button | Navy Pier fireworks — flies you to the harbour view; press again to stop (real shows: Wed 9 pm, Sat 10 pm in summer) |
 | `P` · Places button | pins for restaurants, bars, venues and more — click one for its card and website |
-| `L` · Ride button | ride the city — an L line, a CTA bus, a street-level walk or the glide; Space pauses, `.` / `,` skip stops, `>` / `<` speed, `K` view, drag to look, Esc gets off |
+| `L` · Ride button | ride the city — an L line, a CTA bus, a street-level walk or the glide; `Space` pauses, `.` `,` next or previous stop, `>` `<` faster or slower, `K` view, drag to look, `Esc` gets off. `M`, `X` and the other toggles never end a ride, a tour or a train follow |
 | `V` · SCAN button | holographic Scan; in the Live lens, light columns for transit, nightlife, green space or rent |
 | Weather button | follows Chicago live, or pick clear, overcast, rain, snow or lake fog (also ⌘K "Weather") |
 | LIVE CTA / SIMULATED chip | click for the data sources and "Try live again" |
 | `?` · `Esc` | help card · close / stop a flight |
 | `⌘K` "performance" | draw calls, triangles and frame rate (a diagnostic chip) |
 | Control dock & minimap | the same moves as buttons; click the minimap to fly |
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/c-sound-on.png" alt="M — a bare green speaker with waves in the middle of the screen: sound on" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/c-sound-off.png" alt="M again — a bare red speaker with a slash: sound off" width="100%"/></td>
+</tr>
+<tr>
+<td><em>`M` — sound on: a green speaker, held a second, then fading.</em></td>
+<td><em>`M` again — sound off: the same speaker in red, struck through.</em></td>
+</tr>
+</table>
 
 ## Under the hood
 
@@ -614,6 +625,19 @@ It wasn't made right in one attempt. Here are the same places through each pass,
 <tr>
 <td><sub>Phase 4 · Sep 30<br/>a flat roof on two piers</sub></td>
 <td><sub>Today · Sep 30<br/>canopy, tables, carved king and knight</sub></td>
+</tr>
+</table>
+
+**The ride bar** — the Brown Line's front window at Wells & Adams, the same pose
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/p7-l-cab-day-bar.png" alt="Phase 7 — the ride bar with the ride named by its two end stations" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/p7-l-cab-day.png" alt="Today — the ride named 'around the Loop', its keys as keycaps" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>Phase 7 · Sep 30<br/>"Addison → the Loop", keys only in the panel</sub></td>
+<td><sub>Today · Oct 1<br/>"around the Loop", every key a keycap</sub></td>
 </tr>
 </table>
 
