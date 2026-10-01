@@ -16,11 +16,11 @@ import { pointInRing } from './geom.js'
 import earcut from 'earcut'
 import { spire } from './crowns.js'
 import { wallPolygon } from './icons.js'
-import { add2, mul2, left, mesh, merge, slab, revolve, ringAround } from './meshkit.js'
+import { add2, mul2, left, mesh, merge, slab, revolve, ringAround, tri, quad, tube, at3 } from './meshkit.js'
 import { LANDMARK_FACADES as F } from './facadeIds.js'
 
 // close-range detail stays out of LOD1 (the size budget); the silhouette parts draw at every distance
-const FINE = new Set(['reliefs', 'tables', 'king', 'queen', 'door', 'fence', 'ledges', 'falls', 'council-ring', 'pavilion-piers', 'belfry', 'parapet', 'pinnacles', 'quoins'])
+const FINE = new Set(['reliefs', 'tables', 'boards', 'stools', 'piece-reliefs', 'king', 'queen', 'door', 'fence', 'ledges', 'falls', 'council-ring', 'pavilion-piers', 'belfry', 'parapet', 'pinnacles', 'quoins'])
 const P = (m, facade, style, part, seed = 0.5) => ({ mesh: m, facade, seed, style, part, lod0Only: FINE.has(part) })
 const obOf = (b) => orientedBox(convexHull(b.polygons.flatMap((p) => p.outer)))
 const frac = (x) => x - Math.floor(x)
@@ -31,30 +31,88 @@ const LIME = 'lp-limestone'
 const KING = [[0.55, 0], [0.55, 0.12], [0.38, 0.22], [0.24, 0.5], [0.18, 0.95], [0.3, 1.05], [0.2, 1.15], [0.28, 1.36], [0.001, 1.4]]
 const QUEEN = [[0.55, 0], [0.55, 0.12], [0.38, 0.22], [0.24, 0.5], [0.17, 0.92], [0.29, 1.02], [0.19, 1.1], [0.3, 1.32], [0.12, 1.38], [0.001, 1.4]]
 
+// Gilbertson's carved pieces on the end walls, as flat silhouettes [across, up] one unit tall (counter-clockwise):
+// the king (his lathe profile mirrored, crowned with a cross) and the knight, its head turned to one side
+const KING_RELIEF = (() => {
+  const side = KING.slice(0, -1).map(([r, y]) => [r * 0.62, y / 1.75])
+  const cross = [[0.05, 1.36 / 1.75], [0.05, 1.47 / 1.75], [0.15, 1.47 / 1.75], [0.15, 1.56 / 1.75], [0.05, 1.56 / 1.75], [0.05, 1]]
+  const right = [...side, ...cross]
+  return [...right, ...right.slice().reverse().map(([x, y]) => [-x, y])].filter((p, i, a) => i === 0 || p[0] !== a[i - 1][0] || p[1] !== a[i - 1][1])
+})()
+const KNIGHT_RELIEF = [[-0.4, 0], [0.4, 0], [0.4, 0.1], [0.3, 0.16], [0.24, 0.3], [0.14, 0.46], [0.3, 0.56], [0.46, 0.6], [0.48, 0.68], [0.4, 0.76],
+  [0.22, 0.86], [0.12, 1], [0.04, 0.92], [-0.14, 0.9], [-0.28, 0.76], [-0.32, 0.55], [-0.26, 0.3], [-0.3, 0.16], [-0.4, 0.1]]
+
+// A silhouette carved in relief: its 2D outline [s along the wall, y up] at `origin`, standing `depth` proud along
+// `dir` — a front face and the sides that give it a shadow (geometry, not paint).
+export function carvedRelief(out, origin, along, dir, outline, depth) {
+  let pts = outline
+  const area = pts.reduce((a, p, i) => { const q = pts[(i + 1) % pts.length]; return a + p[0] * q[1] - q[0] * p[1] }, 0)
+  if (area < 0) pts = pts.slice().reverse()
+  const P3 = ([s, y], d) => [origin[0] + along[0] * s + dir[0] * d, y, origin[1] + along[1] * s + dir[1] * d]
+  const tr = earcut(pts.flat()), front = [dir[0], 0, dir[1]]
+  for (let i = 0; i < tr.length; i += 3) tri(out, P3(pts[tr[i]], depth), P3(pts[tr[i + 1]], depth), P3(pts[tr[i + 2]], depth), front)
+  for (let i = 0; i < pts.length; i++) {
+    const a = pts[i], b = pts[(i + 1) % pts.length], t = [b[0] - a[0], b[1] - a[1]], l = Math.hypot(...t)
+    if (l < 1e-6) continue
+    const n2 = [t[1] / l, -t[0] / l] // outward for a counter-clockwise outline
+    quad(out, P3(a, 0), P3(b, 0), P3(b, depth), P3(a, depth), [along[0] * n2[0], n2[1], along[1] * n2[0]])
+  }
+  return out
+}
+
+// Sculpt pass (user, 2026-09-30: "it reads as a plain slab"): the OSM outline is the roof seen from above — a thin
+// canopy that cantilevers past two carved limestone end walls and out over the open long sides from a spine of
+// slender columns; two rows of stone chess tables (a checkerboard on each, a stool at either side) beneath it; the
+// end walls' outer faces carry a giant king and a knight in relief, their inner faces carved game boards.
 export function chessPavilion(b, spec = {}) {
   const { c, u, v, L, W } = obOf(b), roofY = spec.roofM ?? 3.0
-  const stone = mesh(), roof = mesh(), tables = mesh(), reliefs = mesh(), walls = mesh(), plinths = mesh()
-  slab(stone, c, u, L + 1, W + 1, 0, 0.3)
-  for (const s of [-0.25, 0, 0.25]) slab(stone, add2(c, mul2(u, s * L)), u, 0.6, 0.6, 0.3, roofY)
-  // the carved end walls: game boards and incised panels on their outer faces
+  const floorY = 0.2, coreY = roofY - 0.14 // the canopy: a 0.16 m rim, deepening to 0.3 m over the walls and spine
+  const overEnd = Math.min(1.1, L * 0.06), overSide = Math.min(1.4, W * 0.18), wallT = 0.7
+  const wallW = W - 2 * overSide, wallMid = L / 2 - overEnd - wallT / 2, wallOuter = L / 2 - overEnd
+  const stone = mesh(), roof = mesh(), tables = mesh(), boards = mesh(), stools = mesh(), reliefs = mesh(), pieces = mesh(), walls = mesh(), cols = mesh(), plinths = mesh()
+  const A = (a, s = 0) => add2(add2(c, mul2(u, a)), mul2(v, s))
+  slab(stone, c, u, L - 0.4, W - 0.4, 0, floorY)
+  // the canopy
+  slab(roof, c, u, L, W, roofY, roofY + 0.16)
+  slab(roof, c, u, 2 * wallOuter, wallW, coreY, roofY)
+  // the slender columns down the spine, between the end walls
+  const span = 2 * (wallMid - wallT / 2), n = Math.max(2, Math.round(span / 5) - 1)
+  for (let k = 1; k <= n; k++) { const p = A(-span / 2 + (k * span) / (n + 1)); tube(cols, at3(p, floorY), at3(p, coreY), 0.11, 8) }
+  // the carved end walls: a knight on one outer face, the king on the other, a game board inside each
   for (const e of [-1, 1]) {
-    const wc = add2(c, mul2(u, e * (L / 2 - 0.4)))
-    slab(walls, wc, v, W, 0.8, 0.3, roofY)
-    const face = add2(c, mul2(u, e * L / 2)), dir = mul2(u, e), along = mul2(v, e)
-    for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) if ((i + j) % 2 === 0) {
-      const s0 = -0.9 + i * 0.45, y0 = 1.0 + j * 0.45
-      wallPolygon(reliefs, face, along, dir, [[s0, y0], [s0 + 0.45, y0], [s0 + 0.45, y0 + 0.45], [s0, y0 + 0.45]], 0.02)
+    slab(walls, A(e * wallMid), u, wallT, wallW, floorY, coreY)
+    const dir = mul2(u, e), along = mul2(v, e), face = A(e * wallOuter), inner = A(e * (wallOuter - wallT))
+    const h = Math.min(2.1, coreY - floorY - 0.5), y0 = floorY + 0.3
+    const shape = (e < 0 ? KING_RELIEF : KNIGHT_RELIEF).map(([x, y]) => [x * h, y0 + y * h])
+    carvedRelief(pieces, face, along, dir, shape, 0.1)
+    // a raised frame round the panel, its field cut back and in shadow so the piece stands out
+    const fw = Math.min(wallW - 0.4, h * 1.6), fy0 = floorY + 0.15, fy1 = coreY - 0.15
+    wallPolygon(reliefs, face, along, dir, [[-fw / 2, fy0], [fw / 2, fy0], [fw / 2, fy1], [-fw / 2, fy1]], 0.01)
+    for (const [s0, s1, a0, a1] of [[-fw / 2, fw / 2, fy0, fy0 + 0.1], [-fw / 2, fw / 2, fy1 - 0.1, fy1], [-fw / 2, -fw / 2 + 0.1, fy0, fy1], [fw / 2 - 0.1, fw / 2, fy0, fy1]]) {
+      carvedRelief(pieces, face, along, dir, [[s0, a0], [s1, a0], [s1, a1], [s0, a1]], 0.05)
     }
-    for (const s of [-W / 2 + 0.6, W / 2 - 1.6]) wallPolygon(reliefs, face, along, dir, [[s, 0.8], [s + 1.0, 0.8], [s + 1.0, roofY - 0.5], [s, roofY - 0.5]], 0.02)
+    const back = mul2(dir, -1), bAlong = mul2(along, -1)
+    for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) if ((i + j) % 2 === 0) {
+      const s0 = -0.9 + i * 0.45, yb = 1.0 + j * 0.45
+      wallPolygon(reliefs, inner, bAlong, back, [[s0, yb], [s0 + 0.45, yb], [s0 + 0.45, yb + 0.45], [s0, yb + 0.45]], 0.02)
+    }
   }
-  slab(roof, c, u, L + 3, W + 2.4, roofY, roofY + 0.32)
-  // the chess tables: two rows down the pavilion
-  for (const row of [-0.27, 0.27]) for (let a = -L / 2 + 2.4; a <= L / 2 - 2.4; a += 2.6) {
-    const t = add2(add2(c, mul2(u, a)), mul2(v, row * W))
-    slab(tables, t, u, 0.28, 0.28, 0.3, 0.72); slab(tables, t, u, 0.8, 0.8, 0.72, 0.8)
+  // the chess tables: two rows, one either side of the columns, each with an inlaid board and a stool at either side
+  const row = Math.min(1.7, W * 0.23), reach = wallMid - wallT / 2 - 1.1, step = 2.2
+  const count = Math.max(1, Math.floor((2 * reach) / step) + 1), first = -((count - 1) * step) / 2
+  const STOOL = [[0.17, 0], [0.11, 0.06], [0.11, 0.36], [0.19, 0.4], [0.19, 0.45], [0, 0.45]]
+  const topY = 0.76, sq = 0.075
+  for (const r of [-row, row]) for (let k = 0; k < count; k++) {
+    const t = A(first + k * step, r)
+    slab(tables, t, u, 0.3, 0.3, floorY, topY - 0.08); slab(tables, t, u, 0.78, 0.78, topY - 0.08, topY)
+    for (let i = 0; i < 8; i++) for (let j = 0; j < 8; j++) if ((i + j) % 2 === 0) {
+      const p = (a, s) => at3(add2(add2(t, mul2(u, (a - 4) * sq)), mul2(v, (s - 4) * sq)), topY + 0.004)
+      quad(boards, p(i, j), p(i + 1, j), p(i + 1, j + 1), p(i, j + 1), [0, 1, 0])
+    }
+    for (const s of [-0.62, 0.62]) { const m = revolve(A(first + k * step, r + s), STOOL.map(([rr, y]) => [rr, floorY + y]), { sides: 8 }); for (const key of ['positions', 'normals', 'uvs']) stools[key].push(...m[key]) }
   }
-  // the king and queen, five feet tall on their plinths, flanking the pavilion
-  const at = (e) => add2(c, mul2(u, e * (L / 2 + 1.3)))
+  // the king and queen, five feet tall on their plinths, beyond the canopy at opposite corners (clear of the reliefs)
+  const at = (e) => A(e * (L / 2 + 1.3), -e * Math.max(0, W / 2 - 0.9))
   for (const e of [-1, 1]) slab(plinths, at(e), u, 1.3, 1.3, 0, 0.9)
   const king = revolve(at(-1), KING.map(([r, y]) => [r, 0.9 + y * 1.1]), { sides: 16 })
   const cross = mesh(), kc = at(-1), ky = 0.9 + 1.4 * 1.1
@@ -65,9 +123,13 @@ export function chessPavilion(b, spec = {}) {
   return { replace: true, pieces: [], meshes: [
     P(merge(stone, plinths), F.stone, LIME, 'platform'),
     P(walls, F.stone, LIME, 'end-walls'),
+    P(pieces, F.stone, LIME, 'piece-reliefs'),
     P(reliefs, F.paint, 'gothic-shadow', 'reliefs'),
     P(roof, F.paint, 'lp-concrete', 'roof'),
-    P(tables, F.paint, 'lp-concrete', 'tables'),
+    P(cols, F.paint, 'lp-concrete', 'columns'),
+    P(tables, F.stone, LIME, 'tables'),
+    P(boards, F.paint, 'gothic-shadow', 'boards'),
+    P(stools, F.stone, LIME, 'stools'),
     P(merge(king, cross), F.stone, LIME, 'king'),
     P(merge(queen, coronet), F.stone, LIME, 'queen'),
   ] }

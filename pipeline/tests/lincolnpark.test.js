@@ -28,6 +28,88 @@ describe('the Chess Pavilion (Webster & Gilbertson, 1957)', () => {
   })
 })
 
+// sculpt pass (user, 2026-09-30: "it reads as a plain slab"): a thin cantilevered canopy on slender supports, open
+// sides, rows of stone chess tables with stools, and Gilbertson's carved chess pieces in relief on the end walls
+describe('the Chess Pavilion, sculpted', () => {
+  const r = chessPavilion(B(rect(0, 0, 32, 8)), {}) // long axis along x, centre (16, 4)
+  const P = (p) => pts(part(r, p))
+  const endWall = P('end-walls'), wallOuter = hi(endWall.map((q) => Math.abs(q[0] - 16)))
+  it('the roof is a thin canopy that cantilevers past its end walls and far out over the open long sides', () => {
+    const roof = P('roof'), rx = roof.map((q) => Math.abs(q[0] - 16)), rz = roof.map((q) => Math.abs(q[2] - 4))
+    expect(hi(rx) - wallOuter).toBeGreaterThan(1) // overhangs the carved end walls
+    const wz = hi(endWall.map((q) => Math.abs(q[2] - 4)))
+    expect(hi(rz) - wz).toBeGreaterThan(1) // and the walls stop well short of the long edges
+    // a thin edge: at the very rim the roof is under 0.2 m deep
+    const rim = roof.filter((q) => Math.abs(q[2] - 4) > hi(rz) - 0.01).map((q) => q[1])
+    expect(hi(rim) - lo(rim)).toBeLessThan(0.2)
+  })
+  it('stands on slender columns down its spine: nothing else rises above table height between the end walls', () => {
+    const cols = P('columns')
+    expect(cols.length).toBeGreaterThan(0)
+    const roofLo = lo(P('roof').map((q) => q[1]))
+    expect(hi(cols.map((q) => q[1]))).toBeGreaterThan(roofLo - 0.05)
+    // slender: every column is under 0.3 m across, on the centre line
+    const xs = [...new Set(cols.map((q) => Math.round(q[0])))]
+    expect(xs.length).toBeGreaterThanOrEqual(2)
+    for (const q of cols) expect(Math.abs(q[2] - 4)).toBeLessThan(0.15)
+    const clusters = []
+    for (const q of [...cols].sort((a, b) => a[0] - b[0])) { const c = clusters.at(-1); if (c && q[0] - c[1] < 0.5) c[1] = q[0]; else clusters.push([q[0], q[0]]) }
+    for (const [a, b] of clusters) expect(b - a).toBeLessThan(0.3)
+    // open sides: between the end walls, only the columns rise above 1 m
+    const inner = wallOuter - 1
+    for (const m of r.meshes) {
+      if (['roof', 'columns', 'end-walls', 'reliefs', 'piece-reliefs', 'king', 'queen'].includes(m.part)) continue
+      for (const q of pts([m])) if (Math.abs(q[0] - 16) < inner) expect(q[1], m.part).toBeLessThan(1)
+    }
+  })
+  it('rows of stone chess tables, a checkerboard on each, a stool at either side', () => {
+    const boards = part(r, 'boards'), stools = P('stools'), tops = P('tables')
+    expect(boards.length).toBe(1)
+    const sq = boards[0].mesh.positions.length / 18 // two triangles a dark square
+    const tables = sq / 32
+    expect(Number.isInteger(tables)).toBe(true); expect(tables).toBeGreaterThanOrEqual(10)
+    expect(boards[0].style).toBe('gothic-shadow')
+    // the board sits on the table top at chess-table height
+    const by = P('boards').map((q) => q[1]); expect(lo(by)).toBeGreaterThan(0.7); expect(hi(by)).toBeLessThan(1)
+    expect(hi(tops.map((q) => q[1]))).toBeLessThan(hi(by) + 0.001)
+    // two stools to a table, lower than the table
+    const feet = stools.filter((q) => q[1] < 0.21 + 1e-6)
+    expect(feet.length).toBeGreaterThan(0)
+    expect(hi(stools.map((q) => q[1]))).toBeLessThan(lo(by) - 0.1)
+    const seatY = hi(stools.map((s) => s[1])), seats = []
+    for (const s of stools) if (s[1] === seatY && !seats.some((c) => Math.hypot(c[0] - s[0], c[2] - s[2]) < 0.5)) seats.push(s)
+    expect(seats.length).toBe(tables * 2)
+  })
+  it('the end walls carry chess pieces in relief: real geometry standing proud of the stone, a king at one end, a knight at the other', () => {
+    const rel = part(r, 'piece-reliefs')
+    expect(rel.length).toBe(1)
+    const q = pts(rel), m = rel[0].mesh
+    for (const e of [-1, 1]) {
+      const side = q.filter((p) => Math.sign(p[0] - 16) === e)
+      const proud = side.map((p) => Math.abs(p[0] - 16) - wallOuter)
+      expect(hi(proud), `end ${e}`).toBeGreaterThan(0.06) // carved out of the face, not painted on it
+      expect(lo(proud), `end ${e}`).toBeGreaterThan(-0.01)
+      const ys = side.map((p) => p[1]); expect(hi(ys) - lo(ys), `end ${e}`).toBeGreaterThan(1.6) // a giant piece
+    }
+    // side faces: normals lying in the wall's plane (the relief's depth), not only the front
+    let sideFaces = 0
+    for (let i = 0; i < m.normals.length; i += 3) if (Math.abs(m.normals[i]) < 0.05) sideFaces++
+    expect(sideFaces).toBeGreaterThan(30)
+    // the two silhouettes differ: the king is mirror-symmetric, the knight's head faces one way
+    const unmirrored = (e) => {
+      const s = q.filter((p) => Math.sign(p[0] - 16) === e)
+      return s.filter((p) => !s.some((o) => Math.abs(o[2] - (8 - p[2])) < 1e-3 && Math.abs(o[1] - p[1]) < 1e-3)).length / s.length
+    }
+    expect(Math.max(unmirrored(-1), unmirrored(1))).toBeGreaterThan(0.3)
+    expect(Math.min(unmirrored(-1), unmirrored(1))).toBe(0)
+  })
+  it('stays a modest model', () => {
+    expect(tris(r)).toBeLessThan(20000)
+    // the real plan (OSM, 7.4 × 18.9 m) too
+    expect(tris(chessPavilion(B(rect(0, 0, 18.9, 7.4)), { roofM: 3 }))).toBeLessThan(8000)
+  })
+})
+
 describe('the Couch Tomb (1858)', () => {
   const r = couchTomb(B(rect(0, 0, 6, 4.5)), {})
   it('a limestone vault: plinth, block, a heavy cornice and attic, an iron door', () => {

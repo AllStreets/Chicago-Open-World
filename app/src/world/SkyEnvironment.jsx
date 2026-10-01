@@ -7,6 +7,12 @@ import { Sky } from 'three-stdlib'
 import { applySkyGain } from './materials/skyGain.js'
 import { paletteFor } from '../lib/skyPalette.js'
 import { envKey } from '../lib/envKey.js'
+import { useStore } from '../state/store.js'
+import { atmosphereFor } from '../lib/atmosphere.js'
+import { applyWeather, sunVeil } from '../weather/weatherState.js'
+
+// the weather's veil over the sun, in quarter steps: a change recaptures the reflections without the sun's disc
+const veilOf = (s) => Math.round(sunVeil(applyWeather(atmosphereFor(s.timePreset), s.weather, s.weatherMode, s.timePreset, s.quality)) * 4) / 4
 
 export default function SkyEnvironment({ direction, gain }) {
   const { gl, scene } = useThree()
@@ -26,9 +32,11 @@ export default function SkyEnvironment({ direction, gain }) {
   }, [gl, gain])
 
   const key = envKey(direction)
+  const veil = useStore(veilOf)
   useEffect(() => {
     const [x, y, z] = direction
     rig.sky.material.uniforms.sunPosition.value.set(x, y, z).multiplyScalar(5000)
+    applySkyGain(rig.sky.material, gain, null, null, 1 - veil) // glass and water don't mirror a sun hidden by rain or fog
     const p = paletteFor((Math.asin(Math.max(-1, Math.min(1, y))) * 180) / Math.PI)
     rig.nightMat.color.copy(p.fog)
     rig.nightMat.opacity = p.night * 0.95
@@ -36,7 +44,7 @@ export default function SkyEnvironment({ direction, gain }) {
     rig.rt?.dispose()
     rig.rt = rt
     scene.environment = rt.texture
-  }, [key]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [key, veil]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => () => { rig.rt?.dispose(); rig.pmrem.dispose(); scene.environment = null }, [rig, scene])
   return null
