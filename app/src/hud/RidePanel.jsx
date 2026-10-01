@@ -4,7 +4,7 @@
 // strength, and the panel sits under the time and weather pills, never over them.
 import './Ride.css'
 import { useEffect, useState } from 'react'
-import { RiCloseLine, RiTrainLine, RiBusLine, RiWalkLine, RiFlightTakeoffLine } from 'react-icons/ri'
+import { RiCloseLine, RiTrainLine, RiBusLine, RiWalkLine, RiFlightTakeoffLine, RiCarLine } from 'react-icons/ri'
 import { useStore } from '../state/store.js'
 import { getSim } from '../transit/simStore.js'
 import { allRides, loadRidesJson, ridesJsonNow, RIDE_KINDS } from '../ride/rideCatalog.js'
@@ -12,7 +12,7 @@ import { startRide } from '../ride/rideActions.js'
 import { withKeys, keysPlain } from './Keycap.jsx'
 import { swatchStyle } from '../lib/lineSwatch.js'
 
-const ICON = { L: RiTrainLine, bus: RiBusLine, walk: RiWalkLine, glide: RiFlightTakeoffLine }
+const ICON = { L: RiTrainLine, bus: RiBusLine, walk: RiWalkLine, drive: RiCarLine, glide: RiFlightTakeoffLine }
 // the controls during a path ride — the same keys as the bar's buttons (rideActions.handleRideKey)
 // (two columns, row by row: the two-key rows on the right, where there is room for their words)
 export const RIDE_KEYS = [['{Space}', 'pause'], ['{.} {,}', 'next or previous stop'], ['{K}', 'change the view'], ['{>} {<}', 'faster or slower'], ['{Drag}', 'look around'], ['{Esc}', 'get off']]
@@ -62,7 +62,7 @@ export default function RidePanel() {
                   <button type="button" className="ride-row" onClick={() => startRide(r.id)} title={keysPlain(r.blurb ?? r.name)}>
                     {r.colour && <i className="ride-swatch" style={swatchStyle(r.colour)} aria-hidden="true" />}
                     <RideName name={r.name} />
-                    {r.stops && <span className="ride-n">{r.kind === 'walk' ? `${(r.path.length / 1000).toFixed(1)} km` : `${r.stops.length} stops`}</span>}
+                    {r.stops && <span className="ride-n">{r.kind === 'walk' || r.kind === 'drive' ? `${(r.path.length / 1000).toFixed(1)} km` : `${r.stops.length} stops`}</span>}
                   </button>
                 </li>
               ))}

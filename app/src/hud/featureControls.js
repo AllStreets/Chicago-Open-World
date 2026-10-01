@@ -71,8 +71,8 @@ export const FEATURE_CONTROLS = [
   { id: 'scan', label: 'Scan', key: 'KeyV', keyLabel: 'V', icon: RiRadarLine, hint: 'scan', commandName: 'Scan mode: on / off',
     help: 'holographic Scan — the city turns to dark glass with cyan edges; the lenses show their data on it (SCAN button, top right)', ...storeFlag('scan', 'setScan'), ...always },
   // P7: Ride the city — the Ride button (its own dock row) or L opens the rides; during a ride, L gets off
-  { id: 'ride', label: 'Ride', key: 'KeyL', keyLabel: 'L', icon: RiRouteLine, hint: 'ride', commandName: 'Ride the city: L trains, buses, walks, glide',
-    help: 'ride the city — an L train from the front window, a CTA bus, a street-level walk or a hang-glider; the bar at the bottom has every control',
+  { id: 'ride', label: 'Ride', key: 'KeyL', keyLabel: 'L', icon: RiRouteLine, hint: 'ride', commandName: 'Ride the city: L trains, buses, walks, drives, glide',
+    help: 'ride the city — an L train from the front window, a CTA bus, a street-level walk, a drive along Lower Wacker under the street or a hang-glider; the bar at the bottom has every control',
     use: () => useStore((s) => Boolean(s.ride) || s.ridePanelOpen),
     isOn: () => { const s = useStore.getState(); return Boolean(s.ride) || s.ridePanelOpen },
     toggle: () => {
@@ -89,7 +89,7 @@ export const FEATURE_CONTROLS = [
   // D2-3 (Decision 7): the streets under the streets — U, ⌘K and the help card; not in the dock (it stays at six).
   // Turning it on from far away flies you over the Loop's lower levels — never while following, touring or riding (C-fix)
   { id: 'lowerLevels', label: 'Lower', key: 'KeyU', keyLabel: 'U', icon: RiStackLine, hint: 'lower levels', hintP: 3, commandName: 'Lower levels: see Lower Wacker under the street',
-    help: 'lower levels — the street over Lower Wacker, Lower Michigan, Lower Columbus and the other double-decker streets opens like a cut-away drawing, showing the roadway, columns and lights underneath; press again to close',
+    help: 'lower levels — the street over Lower Wacker, Lower Michigan, Lower Columbus and the other double-decker streets opens like a cut-away drawing, showing the roadway, columns and lights underneath and the cars, buses and trucks driving them, headlights on at any hour; press again to close',
     use: () => useStore((s) => s.lowerLevelsOn),
     isOn: () => Boolean(useStore.getState().lowerLevelsOn),
     toggle: () => {

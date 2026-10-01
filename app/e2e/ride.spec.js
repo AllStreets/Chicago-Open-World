@@ -89,6 +89,35 @@ test('the Riverwalk at river level (D1-7): the eye stays 1.5–1.9 m over the wa
   expect(end.done === true || end.ride === false).toBe(true)
 })
 
+test('the Lower Wacker drive (D3-3): ⌘K "Drive Lower Wacker", the cab goes under the street, traffic below, and it drives to Lake St', async ({ page }) => {
+  await ready(page, 'view=river&time=DAY')
+  await page.keyboard.press('Meta+k')
+  await page.waitForFunction(() => document.activeElement?.tagName === 'INPUT')
+  await page.keyboard.type('Drive Lower Wacker')
+  await page.waitForTimeout(300)
+  await page.keyboard.press('Enter')
+  await page.waitForFunction(() => window.__store.getState().rideHud?.kind === 'drive', null, { timeout: 20_000 })
+  let s = await st(page)
+  expect(s.ride.name).toMatch(/^Lower Wacker/); expect(s.ride.view).toBe('cab')
+  // on to Lower Columbus: the cab is under the street, 2.4 m over Lower Wacker's level, with the lower decks drawn
+  await page.keyboard.press('Period')
+  await page.waitForFunction(() => window.__camera.position.y < -2, null, { timeout: 20_000 })
+  await page.waitForTimeout(2500)
+  s = await st(page)
+  expect(s.y).toBeGreaterThan(-5.1 + 2.0); expect(s.y).toBeLessThan(-5.1 + 2.8)
+  const below = await page.evaluate(() => (window.__traffic?.sim?.vehicles ?? []).filter((v) => v.y < -4).length)
+  console.log(`RIDE drive eye=${s.y.toFixed(2)} vehicles under the street=${below}`)
+  expect(below).toBeGreaterThan(0) // the lower decks carry traffic while the ride shows them
+  await page.screenshot({ path: 'test-results/ride-drive.png' })
+  // stop by stop to the Lake St exit: it comes up to the street at the end
+  for (let k = 0; k < 12 && !(await page.evaluate(() => window.__store.getState().rideHud?.done)); k++) { await page.keyboard.press('Period'); await page.waitForTimeout(400) }
+  await page.waitForTimeout(800)
+  const end = await page.evaluate(() => ({ done: window.__store.getState().rideHud?.done ?? null, y: window.__camera.position.y }))
+  expect(end.done).toBe(true); expect(end.y).toBeGreaterThan(1.5)
+  await page.keyboard.press('Escape')
+  expect((await st(page)).ride).toBeNull()
+})
+
 test('the glide: dive gains speed, the arrows steer and do not end it, Esc lands', async ({ page }) => {
   await ready(page, 'view=loop&time=DAY')
   await page.keyboard.press('KeyL')

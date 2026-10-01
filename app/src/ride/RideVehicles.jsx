@@ -58,7 +58,7 @@ export function gliderGeometry() {
 
 const eu = new THREE.Euler(0, 0, 0, 'YZX')
 export default function RideVehicles() {
-  const kind = useStore((s) => (s.ride && (s.ride.kind === 'bus' || s.ride.kind === 'glide') ? s.ride.kind : null))
+  const kind = useStore((s) => (s.ride && (s.ride.kind === 'bus' || s.ride.kind === 'drive' || s.ride.kind === 'glide') ? (s.ride.kind === 'drive' ? 'bus' : s.ride.kind) : null))
   const mesh = useMemo(() => {
     if (!kind) return null
     const geo = kind === 'bus' ? busGeometry() : gliderGeometry()

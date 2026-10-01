@@ -194,5 +194,6 @@ async function busesOrKept() {
 }
 const buses = await busesOrKept()
 for (const b of buses) console.log(`  bus #${b.ref} ${b.name}: ${(polyLength(b.path) / 1000).toFixed(1)} km, ${b.stops.length} stops`)
-writeFileSync(OUT, JSON.stringify({ about: 'Ride the city (P7): pipeline/build/build-rides.js. Local metres [x, z]; OSM (ODbL).', buses, walks }))
+const drives = existsSync(OUT) ? JSON.parse(readFileSync(OUT, 'utf8')).drives ?? [] : [] // D3-3: build-drives.js writes these
+writeFileSync(OUT, JSON.stringify({ about: 'Ride the city (P7): pipeline/build/build-rides.js. Local metres [x, z]; OSM (ODbL).', buses, walks, ...(drives.length ? { drives } : {}) }))
 console.log(`rides.json → ${OUT} (${(readFileSync(OUT).length / 1024).toFixed(0)} KB)`)

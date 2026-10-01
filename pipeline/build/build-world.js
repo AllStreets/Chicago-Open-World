@@ -30,7 +30,7 @@ import { mergeSites } from '../lib/poiSites.js'
 import { poiRecord, dedupePois, anchorPoi, buildingPoi, capByTile, POI_CATEGORIES, POI_CAT_IDS } from '../lib/pois.js'
 import { buildNeighborhoods } from '../lib/zones.js'
 import { clearTracks } from '../lib/trackClearance.js'
-import { buildRoadGraph, encodeRoadGraph } from '../lib/traffic.js'
+import { buildRoadGraph, encodeRoadGraph, trafficRoads } from '../lib/traffic.js'
 import { isPavingArea, pavingKind, pathHalfWidth, synthPlazas, pathSurface, clipOutside } from '../lib/paving.js'
 import { buildWalkGraph, encodeWalkGraph } from '../lib/walkGraph.js'
 import { loadBlenderMesh } from '../lib/blenderMesh.js'
@@ -64,7 +64,7 @@ import { riverLevels, sunkWater, wallRuns, wallMesh, runsByTile, cutMeshOutside,
 import { buildRiverwalk, meshByTile } from '../lib/riverwalk.js'
 import { pierRing } from '../lib/bridges.js'
 import { setRiverwalkAtRiverLevel } from '../lib/civic.js'
-import { buildLowerLevels, lowerLevelsOn, lowerManifestEntry, LOWER_LEVELS_FILE, MAX_BYTES as LOWER_MAX_BYTES } from '../lib/lowerLevels.js'
+import { lowerProfile, lowerLevelsOn, lowerManifestEntry, LOWER_LEVELS_FILE, MAX_BYTES as LOWER_MAX_BYTES } from '../lib/lowerLevels.js'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const CACHE = join(ROOT, 'cache', 'world')
@@ -737,10 +737,11 @@ async function main() {
   }
   // ── The multi-level streets (D2-1): Lower Wacker, Lower Michigan, Lower Columbus … as centrelines the app builds ──
   rmSync(join(OUT, LOWER_LEVELS_FILE), { force: true })
-  let lowerEntry = null
+  let lowerEntry = null, lowerProf = null
   if (lowerLevelsOn(levelsData, process.env)) {
     const rr = (r) => simplifyRing(r, 1.5).map(([x, z]) => [r1(x), r1(z)]) // the river-levels.json rings, so build-lower-levels.js agrees
-    const lowerJson = buildLowerLevels({ roads: uniq(chunks('roads')), levels: levelsData.levels, water: sunk.map((p) => rr(p.outer)), tracks: transit.json.routes.map((r) => r.path), tubeClear: levelsData.tubeDips.tunnelClearM })
+    lowerProf = lowerProfile({ roads: uniq(chunks('roads')), levels: levelsData.levels, water: sunk.map((p) => rr(p.outer)), tracks: transit.json.routes.map((r) => r.path), tubeClear: levelsData.tubeDips.tunnelClearM })
+    const lowerJson = lowerProf.json
     const raw = JSON.stringify(lowerJson)
     if (raw.length > LOWER_MAX_BYTES) throw new Error(`${LOWER_LEVELS_FILE}: ${raw.length} B over its ${LOWER_MAX_BYTES} B budget`)
     writeFileSync(join(OUT, LOWER_LEVELS_FILE), raw)
@@ -762,7 +763,8 @@ async function main() {
   } else log('neighborhoods: no boundary cache (run fetch:world) — LIVE lens has no zones')
   await writeTrainsGlb(join(OUT, 'trains.glb'), loadCatalog())
   // ── Traffic (user, 2026-09-30): the drivable road graph, int16 metres ─────────
-  const roadGraph = buildRoadGraph(roads, project), roadEnc = encodeRoadGraph(roadGraph)
+  // D3-1: plus the lower streets lower-levels.json draws (trafficRoads: the same set build-traffic.js uses)
+  const roadGraph = buildRoadGraph(trafficRoads(roads, uniq(chunks('roads')), lowerProf), project, lowerProf), roadEnc = encodeRoadGraph(roadGraph)
   if (roadEnc.some((v) => v < -32768 || v > 32767)) throw new Error('traffic graph: a value outside int16')
   writeFileSync(join(OUT, 'traffic.bin'), Buffer.from(new Int16Array(roadEnc).buffer))
   log(`traffic graph: ${roadGraph.nodes.length} nodes, ${roadGraph.edges.length} edges, ${((roadEnc.length * 2) / 1e3).toFixed(0)} kB`)
