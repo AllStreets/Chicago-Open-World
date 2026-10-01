@@ -6,8 +6,8 @@ import { useSoundStore } from '../../audio/soundStore.js'
 
 describe('feature controls registry', () => {
   beforeEach(() => { useStore.setState(useStore.getInitialState()); useSoundStore.setState(useSoundStore.getInitialState()) })
-  it('lists Transit, Games, Sound, Bridges, Fountain, Fireworks, Places and Traffic with unique keys and every path filled in', () => {
-    expect(FEATURE_CONTROLS.map((c) => c.id)).toEqual(['transit', 'games', 'sound', 'bridges', 'fountain', 'fireworks', 'places', 'traffic'])
+  it('lists Transit, Games, Sound, Bridges, Fountain, Fireworks, Places, Traffic, Scan and Ride with unique keys and every path filled in', () => {
+    expect(FEATURE_CONTROLS.map((c) => c.id)).toEqual(['transit', 'games', 'sound', 'bridges', 'fountain', 'fireworks', 'places', 'traffic', 'scan', 'ride'])
     expect(new Set(FEATURE_CONTROLS.map((c) => c.key)).size).toBe(FEATURE_CONTROLS.length)
     for (const c of FEATURE_CONTROLS) {
       expect(c.label).toMatch(/^[A-Z][a-z]+$/)

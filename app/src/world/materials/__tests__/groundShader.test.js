@@ -20,7 +20,7 @@ describe('ground shader', () => {
     const [roads, sidewalks, , , , , paving] = LAYER_RANK
     expect(paving).toBeGreaterThan(sidewalks); expect(paving).toBeLessThan(roads)
     expect(patchGroundShader(std()).fragmentShader).toMatch(/li == 6/)
-    expect(createGroundMaterial().customProgramCacheKey()).toBe('ground-v4')
+    expect(createGroundMaterial().customProgramCacheKey()).toBe('ground-v5')
   })
   it('orders overlapping layers in depth by rank, independent of quantized heights', () => {
     const s = patchGroundShader(std())

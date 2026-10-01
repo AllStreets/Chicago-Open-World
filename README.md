@@ -425,6 +425,52 @@ Flexport Chicago's office at 333 North Green and BCG's tower across the street, 
 </tr>
 </table>
 
+### Phase 5 · Alive — *live trains, live scores, weather and Scan*
+
+The city reads the CHI ATLAS API when it can and never shows an error when it can't: real CTA trains snapped onto the track (with the timetable simulator as the fallback), live scores driving the stadiums, the scoreboards and the W flag, and the real Chicago sky — overcast, rain, snow or lake fog, carried by the wind. The chip at the top left says honestly which: LIVE CTA or SIMULATED, with the data sources one click away. Press `V` for Scan, the holographic city.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/p5-live-trains-dusk.png" alt="Phase 5 — a live Brown Line train on Lake Street with the data sources open" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/p5-scan-over-live.png" alt="Phase 5 — Scan over the Live lens at dusk" width="100%"/></td>
+</tr>
+<tr>
+<td><em>LIVE CTA: a Brown Line run on Lake Street, placed from Train Tracker (here a stand-in CHI server), and the plain-words data sources.</em></td>
+<td><em>Scan (`V`) over the Live lens: dark glass and cyan floor lines, a light column over each neighbourhood — here, transit.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/p5-rain-river-dusk.png" alt="Phase 5 — rain over the river at dusk" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/p5-snow-loop-day.png" alt="Phase 5 — snow falling over the Loop by day" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Rain down the river at dusk — a grey sky, thinner light and streaks slanting with the wind.</em></td>
+<td><em>Snow from the Weather button on an ordinary day: the SNOW view's flakes and white roofs, drifting with the wind.</em></td>
+</tr>
+</table>
+
+### Phase 7 · Ride the city — *the L, the bus, the street and the sky*
+
+A second way to be in Chicago (`L`, the Ride button or ⌘K): ride any L line from the front window, alongside or behind the train — through the subway tubes — with every stop announced and what's nearby named; ride eight CTA bus routes up the big avenues; walk the Riverwalk, the Magnificent Mile, the Lakefront Trail, Fulton Market and Lincoln Park at eye height (every walk checked never to pass through a building); or hang-glide over the city. Space pauses, `.` and `,` skip stops, `>` and `<` change speed, `K` changes the view, drag looks around, Esc gets off.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/p7-l-cab-day.png" alt="Phase 7 — the Brown Line's front window on the Loop elevated" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/p7-bus-146-day.png" alt="Phase 7 — riding the #146 bus up State Street" width="100%"/></td>
+</tr>
+<tr>
+<td><em>The Brown Line from the front window, round the Loop on Wells Street toward Quincy.</em></td>
+<td><em>The #146 up State Street, under the trees, the next stop and the Monadnock named as you pass.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/p7-riverwalk-dusk.png" alt="Phase 7 — walking by the river at Wells Street at dusk" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/p7-glide-dusk.png" alt="Phase 7 — hang-gliding over Streeterville at dusk" width="100%"/></td>
+</tr>
+<tr>
+<td><em>A street-level walk by the river at dusk, a Brown Line train crossing the Wells Street bridge.</em></td>
+<td><em>The glide: dive for speed, climb to trade it away — it banks round the towers, never through them.</em></td>
+</tr>
+</table>
+
 ## Quickstart
 
 ```bash
@@ -466,6 +512,10 @@ Everything is reachable with the keyboard, the mouse and the on-screen dock — 
 | `J` · Fountain button | Buckingham Fountain water show — jets dance to music, lit in colour after dusk; press again to stop any show |
 | `X` · Fireworks button | Navy Pier fireworks — flies you to the harbour view; press again to stop (real shows: Wed 9 pm, Sat 10 pm in summer) |
 | `P` · Places button | pins for restaurants, bars, venues and more — click one for its card and website |
+| `L` · Ride button | ride the city — an L line, a CTA bus, a street-level walk or the glide; Space pauses, `.` / `,` skip stops, `>` / `<` speed, `K` view, drag to look, Esc gets off |
+| `V` · SCAN button | holographic Scan; in the Live lens, light columns for transit, nightlife, green space or rent |
+| Weather button | follows Chicago live, or pick clear, overcast, rain, snow or lake fog (also ⌘K "Weather") |
+| LIVE CTA / SIMULATED chip | click for the data sources and "Try live again" |
 | `?` · `Esc` | help card · close / stop a flight |
 | `⌘K` "performance" | draw calls, triangles and frame rate (a diagnostic chip) |
 | Control dock & minimap | the same moves as buttons; click the minimap to fly |
@@ -500,9 +550,9 @@ npm run e2e --prefix app          # hero-view screenshot baselines (Playwright)
 - [x] **Vision pass** — one lake & river, CTA and Metra in true colours with a restrained glow and running trains, stadium game nights & crowds, detailed bridges & landmarks with music-and-light shows, true building colours, camera clearance, ≤ 900 draw calls
 - [x] **3 · Heroes** — Aqua's waves, Marina City's petals and spiral, the 900 N Michigan / CBOT / Tribune / Carbide crowns, Blender Ceres, sea horses and Lincoln Park statues, 20 P2 landmarks
 - [x] **4 · Guide** — VISIT / LIVE / WORK lenses: places, tours, neighbourhood profiles, commute estimates; hover cards; Navy Pier fireworks; snow and sunny views
-- [ ] **5 · Alive** — live L trains and weather via the CHI ATLAS API, Scan mode
-- [ ] **6 · Further rings** — streaming the rest of the city
-- [ ] **7 · Traversal** — glide mode
+- [x] **5 · Alive** — live L trains, scores and weather via the CHI ATLAS API (simulated whenever it isn't there), the LIVE / SIMULATED chip, Scan mode
+- [ ] **6 · Further rings** — streaming the rest of the city (deferred by the user, for later)
+- [x] **7 · Ride the city** — reworked from "glide mode": L train rides, CTA bus rides, street-level walks and the glide; a written plan for VR later
 
 Design spec: [docs/superpowers/specs/2026-09-28-chi-atlas-open-world-design.md](docs/superpowers/specs/2026-09-28-chi-atlas-open-world-design.md)
 

@@ -6,6 +6,9 @@ import { useStore } from '../../state/store.js'
 import { getSim } from '../../transit/simStore.js'
 import { TRANSIT } from '../../transit/__tests__/fixtures.js'
 
+const { getLiveReports } = vi.hoisted(() => ({ getLiveReports: vi.fn(() => []) }))
+vi.mock('../../transit/liveStore.js', async (orig) => ({ ...(await orig()), liveReports: getLiveReports }))
+
 describe('transit cards', () => {
   beforeEach(() => {
     vi.useFakeTimers({ now: new Date('2026-09-30T08:15:00-05:00'), toFake: ['Date'] })
@@ -38,6 +41,23 @@ describe('transit cards', () => {
     useStore.getState().select({ kind: 'train', id: 'svc-r1:1999-01-01:0' })
     render(<TransitCard />)
     expect(screen.getByText('This train has left the map')).toBeInTheDocument()
+  })
+  it('live (P5): a station card lists the live trains heading for it, tagged LIVE; a live train has a card', () => {
+    const st = TRANSIT.stations.find((x) => x.id === 'st-a')
+    useStore.getState().setFeed('cta', 'LIVE')
+    const local = new Date(Date.now() + 4 * 60000).toLocaleString('sv-SE', { timeZone: 'America/Chicago' }).replace(' ', 'T')
+    getLiveReports.mockReturnValue([{ rn: '812', line: 'Red', nextStation: st.name, arrTime: local, destination: 'Howard' }])
+    useStore.getState().select({ kind: 'station', id: 'st-a' })
+    render(<TransitCard />)
+    const card = screen.getByRole('dialog', { name: 'A' })
+    expect(card).toHaveTextContent('LIVE'); expect(card).toHaveTextContent(/to Howard/); expect(card).toHaveTextContent(/4 min/)
+  })
+  it('live, but no live train heading here: the scheduled arrivals, labelled as such', () => {
+    useStore.getState().setFeed('cta', 'LIVE')
+    getLiveReports.mockReturnValue([])
+    useStore.getState().select({ kind: 'station', id: 'st-a' })
+    render(<TransitCard />)
+    expect(screen.getByRole('dialog', { name: 'A' })).toHaveTextContent(/scheduled/i)
   })
   it('the top-left chip reads SIMULATED once transit is loaded', () => {
     const { rerender } = render(<WordmarkBlock />)

@@ -8,6 +8,11 @@ import { transitPlaces } from '../transit/palette.js'
 import { gamePlaces } from '../sports/palette.js'
 import { useSports } from '../sports/sportsStore.js'
 import { FEATURE_CONTROLS } from '../hud/featureControls.js'
+import { retryLive } from '../services/feeds.js'
+import { WEATHER_MODES, WEATHER_NAMES } from '../weather/weatherState.js'
+import { allRides, ridesJsonNow } from '../ride/rideCatalog.js'
+import { getSim } from '../transit/simStore.js'
+import { startRide } from '../ride/rideActions.js'
 
 export function featurePlaces(state) {
   const sp = useSports.getState()
@@ -67,4 +72,25 @@ export function officeRows(query, top) {
   if (top && ['landmark', 'place'].includes(top.kind) && Number.isFinite(x) && Number.isFinite(z) && top.name !== office?.label)
     rows.push({ id: `office:set:${top.id ?? top.name}`, kind: 'guide', name: `Set ${top.name} as my office`, sub: 'Work lens · commute estimates', run: () => { s().setOffice({ x, z, label: top.name }); if (s().lens !== 'WORK') s().setLens('WORK') } })
   return rows
+}
+
+// Live data (P5): the chip's two actions, from ⌘K
+export function liveCommands() {
+  const s = () => useStore.getState()
+  return [
+    { id: 'data:retry', kind: 'command', name: 'Data: try live again', sub: 'Live CTA trains, weather and scores from CHI ATLAS', aliases: ['live', 'reconnect'], run: () => { if (!retryLive()) s().showToast('The live service is not connected to this copy of the map — everything runs on simulations') } },
+    { id: 'data:sources', kind: 'command', name: 'Data: show sources', sub: 'What is live and what is simulated', aliases: ['data sources', 'simulated', 'live data'], run: () => s().setSourcesOpen(true) },
+    ...WEATHER_MODES.map((m) => ({ id: `weather:${m}`, kind: 'command', name: `Weather: ${WEATHER_NAMES[m]}`, sub: m === 'LIVE' ? 'Follow the real Chicago sky (clear when the live feed is off)' : 'Weather button · holds until you choose Live', aliases: ['weather', WEATHER_NAMES[m].toLowerCase()], run: () => s().setWeatherMode(m) })),
+  ]
+}
+
+// Ride the city (P7): every ride by name — "Ride: Brown Line …", "Bus: #146 …", "Walk: The Riverwalk", "Glide over the city"
+const RIDE_PREFIX = { L: 'Ride', bus: 'Bus', walk: 'Walk' }
+export function rideCommands() {
+  const rides = allRides(getSim(), useStore.getState().transit, ridesJsonNow())
+  return rides.map((r) => ({
+    id: `ride:${r.id}`, kind: 'guide', name: r.kind === 'glide' ? r.name : `${RIDE_PREFIX[r.kind]}: ${r.name}`,
+    sub: r.kind === 'L' ? 'Ride the L · front window, alongside or behind' : r.kind === 'bus' ? 'Ride a CTA bus' : r.kind === 'walk' ? 'Street-level walk' : 'Hang-glide · ↑ dive ↓ climb',
+    aliases: ['ride', r.kind === 'walk' ? 'walk' : r.kind === 'bus' ? 'bus' : r.kind === 'glide' ? 'glide' : 'train', ...(r.ref ? [`bus ${r.ref}`, `#${r.ref}`, `${r.ref} bus`] : [])], run: () => startRide(r.id),
+  }))
 }

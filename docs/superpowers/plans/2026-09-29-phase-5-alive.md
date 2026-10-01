@@ -21,6 +21,27 @@
 
 **Spec:** `docs/superpowers/specs/2026-09-28-chi-atlas-open-world-design.md`: §7 Scan, §8 HUD (chip, SCAN toggle), §10 Live data, §5 Weather, §11 (reduced motion), §12 (visual pose "Scan over LIVE"), Addendum B.1.5 (graceful live data), B.3 Motion (live snaps onto the same path; the simulator is the fallback), B.4 Game state. Backlog: I-5.1–I-5.5, C11, C12 (fallback), C16 (live arrivals), C19 (deferred), D6, D7, D11, D13, D10. Master plan: the P5 row.
 
+## Refresh at phase start (2026-09-30) — what actually shipped, and the rulings that follow
+
+The upstream table below was written before V1–V8 and Phases 3–4 landed. Checked against `main` at `2863a52`:
+
+- `chiGet` / `chiBase` are in `app/src/services/chiApi.js` as assumed. CHI still serves `/api/health` → `{ status: 'ok' }` (`~/Downloads/chi/backend/server.js`). The P4 pollers live in `transit/lineAlerts.js` (`useLineAlerts`, 5 min) and `world/livePlaces.js` (`loadLivePlaces`, once per VISIT session).
+- `transit.json` is V3's routes + services shape, not `lines[].paths[]`: `routes[] { id, line, path: [[x, y, z]], stops: [{ station, name, s }] }`, `services[] { id, line, routes[], inbound }`, `lines[].service` (stock, headways, vmax). Stations carry `{ id, name, operator, lines, x, y, z, grade, osm }` and **no CTA `mapId`**.
+- V4's simulator is `createSim(transit).trainsAt(ms)` → `{ id, rn, line, service, destination, sHead, speed, head: { p, dir }, cars, nextStop }` (via `getSim()`), and `arrivalsAt(stationId, ms)` already returns CHI's arrivals shape. `Trains.jsx` calls `sim.trainsAt` and `publishTrains`.
+- V5: `gameState(venueKey, nowMs, games)` with games `{ id, teams, results, sport, start (ISO), venue, home: { abbr, score }, away, state, status }`; `setScoreboard` (scoreboard.js) and `cheer` (audio/cheers.js) exist as Phase 5 hooks.
+- Weather already has a home: the SUNNY / SNOW views (`lib/atmosphere.js` `overcast`, `snow`, `ice`, `fogScale`), eased in `SkyRig`'s `atmosphereNow`, with `SeasonRig` drawing the falling snow and settling it on roofs (`facadeUniforms.uSnow`, `groundUniforms.uSnow`, `waterUniforms.uIce`).
+- Keys: **X is the Fireworks key** (P4/V8 user request), and the dock is a full 3 × 2 grid of six feature buttons (user: no dead space).
+- The deployed site (`chicago-open-world.vercel.app`) has `VITE_CHI_API_URL` unset, so production runs simulated; CHI's backend needs secrets, so it is not started here — every live path is verified against mocked CHI payloads.
+
+Ruling: Scan toggles on **V** (for "vision"; X is Fireworks, S is move-back). It gets a SCAN pill, ⌘K, a help line and a hint; it does **not** take a dock slot — the dock stays a full 3 × 2 grid (user: no dead space). Cost if wrong: one keymap line.
+Ruling: weather reuses the SNOW view's systems instead of new ones: live weather feeds the same eased atmosphere (`overcast`, `snow`, `fogScale`, `sunScale`) that SkyRig already applies and SeasonRig already draws; rain adds one streak-particle draw beside SeasonRig's snow, and wind drifts both. No new façade uniforms for snow (`uSnow` exists). Cost if wrong: weather looks like the SNOW view's palette.
+Ruling: weather only shapes the sky in the LIVE time view and in the Weather menu's manual choices; the DAY / SUNNY / SNOW looks keep their own designed weather. Cost if wrong: none — a choice from the Weather menu always applies.
+Ruling: no `mapId` on V3 stations, so live station arrivals come from the live train feed itself (each CTA train reports its `nextStation` and `arrTime`); `parseArrivals` and the `/api/cta/arrivals` path stay for stations that gain a `mapId`. Offline, the card keeps V4's scheduled arrivals, labelled "scheduled". Cost if wrong: live mode lists only the next train per approaching run, not the full board.
+Ruling: live trains snap onto V3 **services** (a line + direction, joined routes), so a live train is drawn exactly like a simulated one — same object shape, same instanced renderer, 0 extra draw calls. Cost if wrong: none.
+Ruling: with no `VITE_CHI_API_URL` the probe answers `offline` at once and never re-probes (there is nothing to probe); with a URL it re-probes every 60 s while offline. Cost if wrong: none.
+Ruling: the live chip keeps its place in the wordmark block and opens a plain-words "Data sources" popover; there is no other error UI. Cost if wrong: none.
+Ruling: Phase 6 (the wider city) is deferred by the user ("I don't think we need to do the rest of the city — we can save that for later"); Phase 5 does not depend on it. Cost if wrong: none.
+
 ## Global Constraints
 
 - **Live data (B.1.5).**
@@ -820,3 +841,15 @@ describe('bus snapping', () => {
 - Ruling: the Chicago Sky stay on V5's build-time schedule, because CHI's `/api/sports` does not include them. Cost if wrong: Sky scores are not live at Wintrust until CHI adds the team (a CHI change, out of scope).
 - Ruling: weather has no single-letter key (the button menu plus ⌘K), and manual weather choices override live until "Live" is chosen again. Cost if wrong: none.
 - Ruling: CTA buses (C19) are deferred, with an interface sketch and a gate test recorded here. Cost if wrong: no buses in the city until scheduled.
+
+## Rulings made while executing (2026-09-30)
+
+- Ruling: wet streets (`uWet`) are deferred — rain is the grey sky, the thinner light, the haze and the streaks; the 495-line façade shader is left alone apart from Scan. Cost if wrong: rainy streets don't shine yet.
+- Ruling: no lightning (the plan's reduced-motion rule allowed it; we skipped it for everyone). Cost if wrong: thunderstorms look like heavy rain.
+- Ruling: lake fog is a global haze (fog pulled in near and far) rather than a shore-distance density on the lake only. Cost if wrong: fog lies over the land as well as the lake.
+- Ruling: Scan reshades the façades and the ground; trees, the landmark meshes and the far horizon keep their look (warm points in the dark glass). Cost if wrong: a few objects aren't holographic.
+- Ruling: Scan's off-sweep draws the scanned disc back in to the camera (the same front reversed), so a re-toggle mid-sweep reverses from wherever the front is. Cost if wrong: none.
+- Ruling: a final first seen long after it ended (an afternoon game at night) is dated to its likely end, so the park doesn't light up again; a feed silent for 20 minutes hands the venues back to the schedule. Cost if wrong: none.
+- Ruling: the home crowd stands for each home score whether or not Sound is on (it is heard only with Sound on). Cost if wrong: none.
+- Ruling: verified against `app/e2e/chi-mock.mjs` (a stand-in CHI serving V4's own trains as Train Tracker reports with GPS noise, a rain report, a live White Sox game and a Red Line alert), not the real backend (it needs secrets). With the mock: probe live, all four feeds LIVE, 21 of 21 live trains snapped and drawn, Metra simulated alongside.
+- Ruling: this fork's dev server ran on 5177 (5176 was in use by the ground fork's server). Cost if wrong: none.

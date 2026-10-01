@@ -19,6 +19,11 @@ import { ensureClear } from '../lib/poseClearance.js'
 import { FEATURE_CONTROLS } from '../hud/featureControls.js'
 import { tourById, tourPoses, tourClock } from '../lib/tourPoses.js'
 import { tourAt } from '../lib/tour.js'
+import { CHI_LINE } from '../lib/nearestTransit.js'
+
+const CTA_LINES = new Set(Object.values(CHI_LINE))
+import { sessionActive, beginSession, endSession, frame as rideFrame, rideDefById, addLook } from '../ride/rideSession.js'
+import { stopRide, handleRideKey } from '../ride/rideActions.js'
 
 // keys that move the camera: during a tour they hand control back (and offer to resume)
 const MOVE_KEYS = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyW', 'KeyA', 'KeyS', 'KeyD', 'KeyQ', 'KeyE', 'KeyR', 'KeyF', 'PageUp', 'PageDown', 'Equal', 'Minus']
@@ -52,6 +57,7 @@ export default function AtlasRig() {
   const ref = useRef()
   const keys = useRef(new Set())
   const tourPosesRef = useRef({ id: null, poses: [] })
+  const followLast = useRef(null) // the followed train's line and position (P5: survives a live/simulated switch)
   const lastReadout = useRef(0)
   const flightRun = useRef(null)
   const introStart = useRef(null)
@@ -62,8 +68,17 @@ export default function AtlasRig() {
   const flight = useStore((s) => s.flight)
   const flyTo = useStore((s) => s.flyTo)
   const cam = useStore((s) => s.cam)
+  const riding = useStore((s) => Boolean(s.ride))
+  const reducedMotion = useRef(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false)
 
-  useEffect(() => { if (ref.current) ref.current.enabled = introDone }, [introDone])
+  // P7: during a ride the ride owns the camera — no orbit input, and the street-level horizon is allowed
+  useEffect(() => {
+    const c = ref.current
+    if (!c) return
+    c.enabled = introDone && !riding
+    c.maxPolarAngle = riding ? Math.PI * 0.999 : Math.PI * 0.47
+    c.minDistance = riding ? 0.5 : 60
+  }, [introDone, riding])
 
   // Opening: intro flight for real visitors; ?view= (tests) jumps straight to a pose.
   useEffect(() => {
@@ -95,6 +110,11 @@ export default function AtlasRig() {
     const down = (e) => {
       if (typing(e) || e.metaKey || e.ctrlKey) return
       const st0 = useStore.getState()
+      if (st0.ride) { // P7: Esc or a movement key leaves a path ride; the glide steers with the arrows
+        if (e.code === 'Escape') { stopRide(); return }
+        if (handleRideKey(e)) { e.preventDefault(); return }
+        if (st0.ride.kind !== 'glide' && MOVE_KEYS.includes(e.code)) { stopRide(); return }
+      }
       if (st0.follow && shouldExitFollow(e)) { st0.stopFollow(); return } // any key takes back control
       if (st0.tour && MOVE_KEYS.includes(e.code)) { useStore.setState({ tourResume: { ...st0.tour, t: tourClock.t } }); st0.setTour(null) } // a movement key takes back the camera
       keys.current.add(e.code)
@@ -119,10 +139,17 @@ export default function AtlasRig() {
   // Mouse: grabbing the city cancels a flight; double-click flies to the spot.
   useEffect(() => {
     const el = gl.domElement
-    const cancel = () => { const s = useStore.getState(); if (flightRun.current) s.clearFlight(); if (s.follow) s.stopFollow() }
+    let drag = null // P7: during a ride, dragging looks around instead of moving the camera
+    const cancel = (e) => {
+      const s = useStore.getState()
+      if (s.ride) { if (e?.type === 'pointerdown') drag = { x: e.clientX, y: e.clientY }; return }
+      if (flightRun.current) s.clearFlight(); if (s.follow) s.stopFollow()
+    }
+    const move = (e) => { if (!drag) return; addLook(e.clientX - drag.x, e.clientY - drag.y); drag = { x: e.clientX, y: e.clientY } }
+    const up = () => { drag = null }
     const dbl = (e) => {
       const c = ref.current
-      if (!c) return
+      if (!c || useStore.getState().ride) return
       const r = el.getBoundingClientRect()
       ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1)
       ray.setFromCamera(ndc, camera)
@@ -135,7 +162,9 @@ export default function AtlasRig() {
     el.addEventListener('pointerdown', cancel)
     el.addEventListener('wheel', cancel, { passive: true })
     el.addEventListener('dblclick', dbl)
-    return () => { el.removeEventListener('pointerdown', cancel); el.removeEventListener('wheel', cancel); el.removeEventListener('dblclick', dbl) }
+    window.addEventListener('pointermove', move)
+    window.addEventListener('pointerup', up)
+    return () => { el.removeEventListener('pointerdown', cancel); el.removeEventListener('wheel', cancel); el.removeEventListener('dblclick', dbl); window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up) }
   }, [gl, camera])
 
   // Minimap click → fly there, keeping the current viewing angle.
@@ -188,12 +217,23 @@ export default function AtlasRig() {
       window.__camRest = false
       return
     }
+    // P7: a ride drives the camera (its session starts here, where the camera is, so a train boards at the nearest stop)
+    const rideNow = useStore.getState().ride
+    if (rideNow) {
+      if (!sessionActive()) { const def = rideDefById(rideNow.id); if (def) beginSession(def, pose(c)); else useStore.setState({ ride: null }) }
+      const rp = sessionActive() ? rideFrame(dt, { keys: keys.current, tunnels: Boolean(state.scene.getObjectByName('tunnels')), clearance: clearanceAt, reducedMotion: reducedMotion.current }) : null
+      if (rp) { c.setLookAt(...rp.position, ...rp.target, false); publishReadout(c, now); window.__camRest = false; return }
+    } else if (sessionActive()) endSession()
     const fw = useStore.getState().follow
     if (fw) {
       const st = useStore.getState()
-      const r = st.transitOn ? followStep(fw, getTrains(), undefined, (id) => getSim()?.trainById(id, Date.now())) : { ended: null }
-      if (r.ended !== undefined) st.stopFollow(r.ended) // transit switched off: stop quietly
+      // a simulated train not drawn this frame can be recomputed — but not a CTA one while live trains are shown (P5)
+      const lookup = (id) => { if (String(id).startsWith('rn:')) return null; const t = getSim()?.trainById(id, Date.now()); return t && (st.feeds.cta !== 'LIVE' || !CTA_LINES.has(t.line)) ? t : null }
+      const r = st.transitOn ? followStep({ ...fw, last: followLast.current }, getTrains(), undefined, lookup) : { ended: null }
+      if (r.ended !== undefined) { followLast.current = null; st.stopFollow(r.ended) } // transit switched off: stop quietly
       else { // smoothed by camera-controls; in a subway tube the roof clearance doesn't apply
+        followLast.current = { line: r.train.line, p: r.train.head.p }
+        if (r.retarget) useStore.setState({ follow: { ...fw, trainId: r.retarget } }) // P5: live ↔ simulated switch: same line, nearest train
         const under = !!r.pose.underground
         tubeLimits(c, state.camera, under)
         const cp = under ? r.pose : ensureClear(r.pose)

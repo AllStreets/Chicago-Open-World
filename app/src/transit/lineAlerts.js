@@ -1,8 +1,7 @@
 // app/src/transit/lineAlerts.js — CTA alerts from the CHI ATLAS API → line pulses and the legend's alert markers
-// (P4 · C17). Polled every 5 minutes while the transit lines or a lens are showing; offline (null) there are none.
+// (P4 · C17). Polled every 5 minutes by the P5 feed scheduler; offline (null) there are none.
 import { useEffect } from 'react'
 import { useStore } from '../state/store.js'
-import { chiGet } from '../services/chiApi.js'
 import { alertsToLinePulses } from '../lib/alerts.js'
 import { setLinePulse, resetLineEmphasis } from './lineEmphasis.js'
 
@@ -18,16 +17,14 @@ export function applyLineAlerts(payload) {
   useStore.setState({ lineAlerts })
 }
 
+// P5: the live alerts now arrive through the feed scheduler (services/feeds.js — 5 min, backoff, paused while the tab
+// is hidden); this hook only plays the test fixture.
 export function useLineAlerts() {
   const on = useStore((s) => s.transitOn || s.lens != null)
   useEffect(() => {
     if (!on) return undefined
-    if (new URLSearchParams(window.location.search).get('alerts') === 'fixture') { applyLineAlerts(ALERT_FIXTURE); return undefined }
-    let alive = true
-    const poll = () => chiGet('/api/cta/alerts').then((p) => { if (alive) applyLineAlerts(p) })
-    poll()
-    const id = setInterval(poll, ALERTS_EVERY_MS)
-    return () => { alive = false; clearInterval(id) }
+    if (new URLSearchParams(window.location.search).get('alerts') === 'fixture') applyLineAlerts(ALERT_FIXTURE)
+    return undefined
   }, [on])
 }
 export { resetLineEmphasis }

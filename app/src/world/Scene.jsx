@@ -8,6 +8,12 @@ import { sunForPreset } from '../lib/sun.js'
 import TileStreamer from './TileStreamer.jsx'
 import Picker from './Picker.jsx'
 import SeasonRig from './SeasonRig.jsx'
+import Rain from './Rain.jsx'
+import ScanController from '../scan/ScanController.jsx'
+import ScanOverlays from '../scan/ScanOverlays.jsx'
+import RideVehicles from '../ride/RideVehicles.jsx'
+import { startRide } from '../ride/rideActions.js'
+import { seekRide } from '../ride/rideSession.js'
 import Fireworks from '../landmarks/Fireworks.jsx'
 import PoiPins from './PoiPins.jsx'
 import Beacons from './Beacons.jsx'
@@ -37,8 +43,11 @@ import StationHits from '../transit/StationHits.jsx'
 import Landmarks from './Landmarks.jsx'
 import TrainAudio from '../transit/TrainAudio.jsx'
 import { followNearest } from '../transit/actions.js'
+import { getTracker } from '../transit/liveStore.js'
+import { getTrains } from '../transit/simStore.js'
 import PerfProbe from './PerfProbe.jsx'
 import { PRESETS } from '../lib/atmosphere.js'
+import { WEATHER_MODES } from '../weather/weatherState.js'
 
 export default function Scene() {
   const [manifest, setManifest] = useState(null)
@@ -61,6 +70,8 @@ export default function Scene() {
     const { setLoadTotal, setLoadError, setTimePreset } = useStore.getState()
     const t = new URLSearchParams(window.location.search).get('time')?.toUpperCase()
     if (PRESETS.includes(t)) setTimePreset(t) // every view, SUNNY and SNOW included (tests only)
+    const w = new URLSearchParams(window.location.search).get('weather')?.toUpperCase()
+    if (WEATHER_MODES.includes(w)) useStore.getState().setWeatherMode(w) // P5, tests only (people use the Weather button)
     loadManifest().then((r) => {
       if (!r.ok) { setLoadError(r.error); return }
       setLoadTotal(3) // land + façade textures + 'tiles-planned'; TileStreamer adds the near tiles
@@ -81,12 +92,23 @@ export default function Scene() {
     const id = setTimeout(() => { followNearest(f); const v = q.get('followView'); if (v) useStore.getState().setFollowView(v) }, 500)
     return () => clearTimeout(id)
   }, [ready, transit])
+  useEffect(() => { // test-only ?ride=<id>&rideView=side&rideAt=<s metres> (people use the Ride button, L or ⌘K)
+    const q = new URLSearchParams(window.location.search), id = q.get('ride')
+    if (!id || !ready || !transit) return
+    const t = setTimeout(() => {
+      if (!startRide(id)) return
+      const v = q.get('rideView'), at = Number(q.get('rideAt'))
+      if (v) useStore.setState((s) => ({ ride: s.ride && { ...s.ride, view: v } }))
+      if (Number.isFinite(at) && q.has('rideAt')) setTimeout(() => seekRide(at), 300)
+    }, 500)
+    return () => clearTimeout(t)
+  }, [ready, transit])
   const gl = useThree((s) => s.gl)
   const threeScene = useThree((s) => s.scene)
   const threeCamera = useThree((s) => s.camera)
   // test-only ?perf turns the exact draw probe on (it owns renderer.info while on, so ?stats specs that read it stay unaffected)
   useEffect(() => { if (new URLSearchParams(window.location.search).has('perf')) useStore.getState().setPerfOn(true) }, [])
-  useEffect(() => { if (new URLSearchParams(window.location.search).has('stats')) { window.__gl = gl; window.__store = useStore; window.__clearanceAt = clearanceAt; window.__scene = threeScene; window.__camera = threeCamera; window.__getSim = getSim } }, [gl, threeScene, threeCamera])
+  useEffect(() => { if (new URLSearchParams(window.location.search).has('stats')) { window.__gl = gl; window.__store = useStore; window.__clearanceAt = clearanceAt; window.__scene = threeScene; window.__camera = threeCamera; window.__live = { tracker: getTracker, trains: getTrains }; window.__getSim = getSim } }, [gl, threeScene, threeCamera])
 
   return (
     <>
@@ -103,6 +125,10 @@ export default function Scene() {
       <StationHits />
       <Picker />
       <SeasonRig />
+      <Rain />
+      <ScanController />
+      <ScanOverlays />
+      <RideVehicles />
       <Fireworks />
       <PoiPins />
       <Beacons />

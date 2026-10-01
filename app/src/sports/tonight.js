@@ -28,4 +28,4 @@ export function stateLabel(st, nowMs = Date.now()) {
 export const gameLabel = (g) => `${g.away.abbr} @ ${g.home.abbr}`
 // Provenance chip: 'ESPN' for the build-time schedule, 'SIMULATED' for the fallback calendar. Never 'LIVE' —
 // that word belongs to a game in progress, and one row must not use it for both.
-export const dataChip = (st, source) => ((st?.game ?? st?.next)?.simulated || source !== 'LIVE' ? 'SIMULATED' : 'ESPN')
+export const dataChip = (st, source) => (st?.game?.live ? 'LIVE' : (st?.game ?? st?.next)?.simulated || source !== 'LIVE' ? 'SIMULATED' : 'ESPN')

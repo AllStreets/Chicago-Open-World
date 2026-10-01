@@ -14,13 +14,25 @@ export function gameWindow(g) {
 }
 
 const RANK = { live: 3, pregame: 2, postgame: 1 }
+function clockState(g, nowMs) {
+  const w = gameWindow(g)
+  if (nowMs < w.open || nowMs >= w.close) return null
+  return nowMs < w.start ? 'pregame' : nowMs < w.end ? 'live' : 'postgame'
+}
+// P5: a live report (CHI /api/sports via liveScores.overlayLive) wins over the clock — a game in progress is live
+// whatever the schedule says; a final is postgame for an hour after the report, then over. 'pre' keeps the clock.
+function liveState(g, nowMs) {
+  const L = g.live
+  if (!L || L.state === 'pre') return undefined
+  if (L.state === 'in') return 'live'
+  return nowMs < (L.at ?? 0) + POSTGAME_MIN * 60000 ? 'postgame' : null
+}
 export function gameState(venueKey, nowMs, games) {
   let best = null
   for (const g of games) {
     if (g.venue !== venueKey || isVoid(g)) continue
-    const w = gameWindow(g)
-    if (nowMs < w.open || nowMs >= w.close) continue
-    const state = nowMs < w.start ? 'pregame' : nowMs < w.end ? 'live' : 'postgame'
+    const ls = liveState(g, nowMs), state = ls === undefined ? clockState(g, nowMs) : ls
+    if (!state) continue
     if (!best || RANK[state] > RANK[best.state]) best = { state, game: g }
   }
   const day = resultDay('cubs', nowMs, games)
@@ -36,7 +48,7 @@ export function resultDay(teamKey, nowMs, games) {
     const r = g.results?.[teamKey]
     if (r !== 'W' && r !== 'L') continue
     const w = gameWindow(g)
-    if (nowMs < w.end || chicagoDate(w.start) !== today) continue
+    if ((nowMs < w.end && g.live?.state !== 'post') || chicagoDate(w.start) !== today) continue // a live final counts at once
     if (!latest || w.start > latest.start) latest = { start: w.start, r }
   }
   return latest?.r ?? null

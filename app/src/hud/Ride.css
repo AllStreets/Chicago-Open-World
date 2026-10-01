@@ -1,0 +1,26 @@
+/* app/src/hud/Ride.css — the Ride panel (beside the dock, like Games) and the in-ride bar (bottom centre, over the hints) */
+.ride-panel { position: absolute; right: 224px; bottom: 228px; width: 340px; max-height: 66vh; overflow: auto; padding: 10px 12px; animation: hud-rise 0.3s ease both; display: flex; flex-direction: column; gap: 6px; }
+.ride-head { display: flex; align-items: center; gap: 8px; }
+.ride-head .dock-btn { flex: 0 0 32px; margin-left: auto; }
+.ride-sub, .ride-blurb { margin: 0; font: 500 11.5px/1.4 var(--font-ui); color: var(--text-muted); }
+.ride-panel section { display: flex; flex-direction: column; gap: 4px; margin-top: 4px; }
+.ride-panel h3 { display: flex; align-items: center; gap: 6px; margin: 4px 0 0; }
+.ride-panel ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.ride-row { width: 100%; display: flex; align-items: center; gap: 8px; text-align: left; padding: 6px 8px; border-radius: var(--r-sm); border: 1px solid transparent; background: transparent; color: var(--text); font: 500 12px var(--font-ui); cursor: pointer; }
+.ride-row:hover, .ride-row:focus-visible { border-color: var(--border-strong); background: rgba(var(--accent-rgb), 0.08); outline: none; }
+.ride-row span:first-of-type { flex: 1; }
+.ride-n { font-family: var(--font-mono); font-size: 10px; color: var(--text-faint); }
+.ride-bar { position: absolute; left: 332px; right: 228px; bottom: 16px; max-width: 900px; margin: 0 auto; padding: 10px 14px; display: flex; align-items: center; gap: 14px; z-index: 5; animation: hud-rise 0.3s ease both; }
+.rb-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.rb-info .hud-title { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rb-line { font: 500 12px var(--font-ui); color: var(--accent); }
+.rb-near, .rb-keys { font: 500 11px var(--font-ui); color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rb-keys .hud-kbd { margin: 0 2px 0 6px; }
+.rb-progress, .rb-boost { height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
+.rb-progress i, .rb-boost i { display: block; height: 100%; background: var(--accent); }
+.rb-buttons { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.rb-buttons .dock-btn { width: 34px; flex: 0 0 34px; }
+.rb-buttons .hud-pill { display: inline-flex; align-items: center; gap: 4px; }
+.hud-root:has(.ride-bar) .hud-hints { display: none; }
+.dock-btn.ride-btn { justify-content: flex-start; padding: 0 10px; }
+.dock-btn.ride-btn.active { color: var(--accent); border-color: rgba(var(--accent-rgb), 0.45); background: rgba(var(--accent-rgb), 0.1); }

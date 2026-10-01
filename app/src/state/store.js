@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { FOUNTAIN_SCHEDULE } from '../landmarks/fountainSchedule.js'
+import { weatherFromChi, manualWeather } from '../weather/weatherState.js'
 
 // Your office, remembered in this browser (user, 2026-09-30); storage can be blocked — then it simply isn't remembered
 const OFFICE_KEY = 'chi-ow-office'
@@ -12,7 +13,7 @@ export const useStore = create((set) => ({
   quality: 'HIGH',
   introDone: false,
   flight: null,
-  startFlight: (to, label = null) => set({ flight: { to, label, id: Date.now() + Math.random() }, follow: null }),
+  startFlight: (to, label = null) => set({ flight: { to, label, id: Date.now() + Math.random() }, follow: null, ride: null }),
   clearFlight: () => set({ flight: null }),
   paletteOpen: false,
   setPaletteOpen: (paletteOpen) => set({ paletteOpen }),
@@ -73,7 +74,7 @@ export const useStore = create((set) => ({
   underground: false, // the camera is in a subway tube (Tunnels.jsx): PostFX drops the city-scale AO there
   setUnderground: (underground) => set({ underground }),
   followEnded: null,
-  startFollow: (trainId, view = 'chase') => set({ follow: { trainId, view }, followEnded: null, flight: null, cameraMode: 'FLY' }),
+  startFollow: (trainId, view = 'chase') => set({ follow: { trainId, view }, followEnded: null, flight: null, cameraMode: 'FLY', ride: null }),
   setFollowView: (view) => set((s) => (s.follow ? { follow: { ...s.follow, view } } : {})),
   stopFollow: (reason = null) => set({ follow: null, followEnded: reason }),
   clearFollowEnded: () => set({ followEnded: null }),
@@ -93,10 +94,35 @@ export const useStore = create((set) => ({
   placesOn: false,
   setPlacesOn: (placesOn) => set({ placesOn }),
   tour: null,
-  setTour: (tour) => set({ tour }),
+  setTour: (tour) => set(tour ? { tour, ride: null } : { tour }),
   hoods: null, // neighborhoods.json zones, loaded by the LIVE layer (P4)
   tourResume: null, // the tour a movement key interrupted, offered back for 10 s
   lineAlerts: {}, // line id → { severity, headlines } from CTA alerts (P4)
+  // live data (P5): the CHI probe, each feed's honest status and when it last answered; the chip's sources popover
+  apiStatus: 'unknown',
+  setApiStatus: (apiStatus) => set({ apiStatus }),
+  feeds: { cta: 'SIMULATED', alerts: 'SIMULATED', weather: 'SIMULATED', sports: 'SIMULATED', places: 'SIMULATED' },
+  feedAt: {},
+  setFeed: (name, status) => set((s) => (s.feeds[name] === status && status !== 'LIVE' ? {} : { feeds: { ...s.feeds, [name]: status }, ...(status === 'LIVE' ? { feedAt: { ...s.feedAt, [name]: Date.now() } } : {}) })),
+  sourcesOpen: false,
+  setSourcesOpen: (sourcesOpen) => set({ sourcesOpen }),
+  // weather (P5): 'LIVE' follows the weather feed (clear when offline); a menu choice overrides it until Live again
+  weatherMode: 'LIVE',
+  weatherLive: weatherFromChi(null),
+  weather: weatherFromChi(null),
+  setWeatherMode: (weatherMode) => set((s) => ({ weatherMode, weather: weatherMode === 'LIVE' ? s.weatherLive : manualWeather(weatherMode) })),
+  // Scan (P5): the holographic sweep — a render state, not a camera mode; LIVE's light columns show scanMetric
+  // Ride the city (P7): the running ride { id, kind, name, view, paused, speed }, its 5 Hz bar snapshot, the chooser
+  ride: null,
+  rideHud: null,
+  ridePanelOpen: false,
+  setRidePanelOpen: (ridePanelOpen) => set({ ridePanelOpen }),
+  scan: false,
+  setScan: (scan) => set({ scan }),
+  toggleScan: () => set((s) => ({ scan: !s.scan })),
+  scanMetric: 'transit',
+  setScanMetric: (scanMetric) => set({ scanMetric }),
+  setWeatherLive: (weatherLive) => set((s) => ({ weatherLive, ...(s.weatherMode === 'LIVE' ? { weather: weatherLive } : {}) })),
   hover: null,    // { x, y, lines } — the building under the pointer (P4)
   setHover: (hover) => set({ hover }),
   readout: { streets: 'STATE & MADISON', altitude: 0, heading: 0 },

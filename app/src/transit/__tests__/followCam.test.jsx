@@ -9,6 +9,14 @@ import { TRANSIT } from './fixtures.js'
 const none = () => 0
 describe('follow cam', () => {
   beforeEach(() => { useStore.setState(useStore.getInitialState()); vi.useRealTimers() })
+  it('P5: when the source switches (simulated ↔ live) the follow moves to the nearest train of the same line', () => {
+    const live = { id: 'rn:812', line: 'red', head: { p: [30, 7, 0], dir: [1, 0, 0] }, cars: [] }
+    const far = { id: 'rn:900', line: 'red', head: { p: [5000, 7, 0], dir: [1, 0, 0] }, cars: [] }
+    const blue = { id: 'rn:300', line: 'blue', head: { p: [5, 7, 0], dir: [1, 0, 0] }, cars: [] }
+    const r = followStep({ trainId: 'svc-r1:2026-09-30:4', view: 'chase', last: { line: 'red', p: [0, 7, 0] } }, [far, blue, live], none)
+    expect(r.train.id).toBe('rn:812'); expect(r.retarget).toBe('rn:812')
+    expect(followStep({ trainId: 'x', view: 'chase', last: { line: 'red', p: [0, 7, 0] } }, [far, blue], none)).toEqual({ ended: 'left' })
+  })
   it('chases from behind and above, looking down the track', () => {
     expect(followPose([0, 7.2, 0], [1, 0, 0], 'chase', none)).toEqual({ position: [-38, 21.2, 0], target: [70, 9.2, 0] })
     const side = followPose([0, 7.2, 0], [1, 0, 0], 'side', none)

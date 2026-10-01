@@ -3,6 +3,7 @@
 import * as THREE from 'three'
 import { loadLayerArray } from './textureArray.js'
 import { facadeUniforms } from './facadeMaterial.js'
+import { scanUniforms, SCAN_HEAD, SCAN_GROUND, SCAN_GROUND_DERIV } from '../../scan/scanShader.js'
 
 // Order matches pipeline GROUND_LAYERS: roads, sidewalks, parks, pitches, beaches, rail, paving (brick plazas and
 // paths, user 2026-09-30 — the sidewalk texture gives its grain, the shader lays the brick)
@@ -29,7 +30,8 @@ export function patchGroundShader(shader) {
   let v = shader.vertexShader, f = shader.fragmentShader
   v = v.replace(need(v, '#include <common>'), '#include <common>\nattribute float _layer;\nvarying float vLayer;\nvarying vec2 vGUv;\nuniform float uLayerRank[7];\nuniform float uLayerBias;')
   v = v.replace(need(v, '#include <project_vertex>'), '#include <project_vertex>\ngl_Position.z -= uLayerBias * uLayerRank[int(_layer + 0.5)] * gl_Position.w;')
-  v = v.replace(need(v, '#include <worldpos_vertex>'), '#include <worldpos_vertex>\nvLayer = _layer;\nvGUv = uv;')
+  v = v.replace(need(v, '#include <worldpos_vertex>'), '#include <worldpos_vertex>\nvLayer = _layer;\nvGUv = uv;\nvGWPos = (modelMatrix * vec4(transformed, 1.0)).xyz;')
+  v = v.replace('varying vec2 vGUv;', 'varying vec2 vGUv;\nvarying vec3 vGWPos;')
   f = f.replace(need(f, '#include <common>'), `#include <common>
 uniform sampler2DArray uGround;
 uniform float uSize[7];
@@ -37,7 +39,9 @@ uniform vec3 uTint[7];
 uniform float uNight;
 uniform float uSnow;
 varying float vLayer;
-varying vec2 vGUv;`)
+varying vec2 vGUv;
+varying vec3 vGWPos;
+${SCAN_HEAD}`)
   f = f.replace(need(f, '#include <map_fragment>'), `#include <map_fragment>
 int li = int(vLayer + 0.5);
 vec3 gcol = texture(uGround, vec3(vGUv / uSize[li], float(li))).rgb * uTint[li];
@@ -58,15 +62,17 @@ float snowK = uSnow * (li == 0 ? 0.3 : 0.9);
 diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.88, 0.9, 0.95) * (0.93 + 0.07 * gcol.g), snowK);`)
   f = f.replace(need(f, '#include <emissivemap_fragment>'), `#include <emissivemap_fragment>
 if (li == 0) totalEmissiveRadiance += vec3(1.0, 0.68, 0.36) * uNight * 0.07; // sodium street light`)
+  f = f.replace(need(f, '#include <dithering_fragment>'), `#include <dithering_fragment>\n${SCAN_GROUND}`) // P5: Scan
+  f = f.replace(need(f, 'void main() {'), `void main() {\n${SCAN_GROUND_DERIV}`)
   shader.vertexShader = v; shader.fragmentShader = f
-  Object.assign(shader.uniforms, groundUniforms)
+  Object.assign(shader.uniforms, groundUniforms, scanUniforms)
   return shader
 }
 
 export function createGroundMaterial() {
   const m = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.92, metalness: 0, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 })
   m.onBeforeCompile = patchGroundShader
-  m.customProgramCacheKey = () => 'ground-v4' // paving layer (user 2026-09-30)
+  m.customProgramCacheKey = () => 'ground-v5' // paving layer (user 2026-09-30); P5: Scan
   return m
 }
 

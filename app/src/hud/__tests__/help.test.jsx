@@ -56,3 +56,12 @@ describe('Phase 4 help', () => {
     for (const t of [/lens rail/i, /hover a building/i, /places/i, /tour/i, /set office/i]) expect(screen.getAllByText(t).length).toBeGreaterThan(0)
   })
 })
+
+describe('Phase 5 help', () => {
+  it('help card explains the live chip, Scan and Weather', () => {
+    useStore.getState().setHelpOpen(true)
+    render(<HelpOverlay />)
+    for (const t of [/LIVE CTA/i, /Scan/i, /Weather/i]) expect(screen.getAllByText(t).length).toBeGreaterThan(0)
+    expect(screen.getByText('Live city')).toBeInTheDocument()
+  })
+})

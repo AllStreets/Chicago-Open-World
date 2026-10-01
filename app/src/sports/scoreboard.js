@@ -42,7 +42,8 @@ export function boardLines(venue, st, nowMs, override = null) {
   if (override) score = { home: override.home, away: override.away }
   else if (g.simulated) score = st.state === 'live' ? simScore(g, nowMs) : st.state === 'postgame' ? { home: g.home.score, away: g.away.score } : null
   else if (g.home.score != null && g.away.score != null) score = { home: g.home.score, away: g.away.score }
-  return { title, rows: [{ abbr: g.away.abbr, score: score?.away ?? null }, { abbr: g.home.abbr, score: score?.home ?? null }], status: override?.status ?? periodLabel(g, nowMs, st.state) }
+  const liveStatus = st.state === 'live' && g.live?.status ? String(g.live.status).toUpperCase() : null // P5: ESPN's own words ("TOP 3RD")
+  return { title, rows: [{ abbr: g.away.abbr, score: score?.away ?? null }, { abbr: g.home.abbr, score: score?.home ?? null }], status: override?.status ?? liveStatus ?? periodLabel(g, nowMs, st.state) }
 }
 
 // Phase 5 hook: live numbers from the CHI API replace the board's numbers until cleared with null.

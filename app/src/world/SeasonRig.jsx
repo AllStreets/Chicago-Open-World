@@ -16,14 +16,14 @@ const BOX = [520, 300, 520] // the volume of falling snow that travels with the 
 
 const vert = /* glsl */ `
 attribute vec3 aSeed;
-uniform vec3 uCam; uniform float uTime; uniform vec3 uBox; uniform float uAmount; uniform float uPx;
+uniform vec3 uCam; uniform float uTime; uniform vec3 uBox; uniform float uAmount; uniform float uPx; uniform vec2 uWind;
 varying float vA;
 void main() {
   // each flake falls ~1.1 m/s with a slow sideways drift, wrapping inside a box centred on the camera
   vec3 p = aSeed * uBox;
   p.y -= uTime * (0.9 + 0.5 * aSeed.x);
-  p.x += sin(uTime * 0.6 + aSeed.z * 40.0) * 2.5 + uTime * 0.7;
-  p.z += cos(uTime * 0.5 + aSeed.x * 40.0) * 2.0;
+  p.x += sin(uTime * 0.6 + aSeed.z * 40.0) * 2.5 + uTime * uWind.x; // P5: the live wind carries the snow
+  p.z += cos(uTime * 0.5 + aSeed.x * 40.0) * 2.0 + uTime * uWind.y;
   p = mod(p - uCam + 0.5 * uBox, uBox) - 0.5 * uBox + uCam;
   vec4 mv = viewMatrix * vec4(p, 1.0);
   float d = -mv.z;
@@ -51,7 +51,7 @@ export default function SeasonRig() {
     g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(n * 3), 3)) // unused: the shader places each flake
     g.setAttribute('aSeed', new THREE.BufferAttribute(seed, 3))
     const m = new THREE.ShaderMaterial({ vertexShader: vert, fragmentShader: frag, transparent: true, depthWrite: false,
-      uniforms: { uCam: { value: new THREE.Vector3() }, uTime: { value: 0 }, uBox: { value: new THREE.Vector3(...BOX) }, uAmount: { value: 0 }, uPx: { value: 1 } } })
+      uniforms: { uCam: { value: new THREE.Vector3() }, uTime: { value: 0 }, uBox: { value: new THREE.Vector3(...BOX) }, uAmount: { value: 0 }, uPx: { value: 1 }, uWind: { value: new THREE.Vector2(0.7, 0) } } })
     const p = new THREE.Points(g, m)
     p.frustumCulled = false
     p.renderOrder = 6
@@ -69,7 +69,7 @@ export default function SeasonRig() {
     points.visible = A.snow > 0.02
     if (!points.visible) return
     const u = points.material.uniforms
-    u.uCam.value.copy(camera.position); u.uTime.value = clock.elapsedTime; u.uAmount.value = A.snow; u.uPx.value = gl.getPixelRatio()
+    u.uCam.value.copy(camera.position); u.uTime.value = clock.elapsedTime; u.uAmount.value = A.snow; u.uPx.value = gl.getPixelRatio(); u.uWind.value.set(A.wind[0], A.wind[1])
   })
   return <primitive object={points} />
 }
