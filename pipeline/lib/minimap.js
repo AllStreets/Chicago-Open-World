@@ -1,4 +1,11 @@
 // pipeline/lib/minimap.js — the CHI-palette 2D city for the HUD minimap.
+import sharp from 'sharp'
+
+// X-0c (V3): a 256-colour palette PNG was measured (1.19 MB) and rejected — ΔE2000 max 8.4 on antialiased edges, over
+// V3's 5. Lossless WebP keeps every pixel (ΔE 0) at 1.39 MB instead of 2.21 MB; the image has no transparency.
+export const MINIMAP_FILE = 'minimap.webp'
+export const encodeMinimap = (svg) => sharp(Buffer.from(svg), { limitInputPixels: false }).removeAlpha().webp({ lossless: true, effort: 6 }).toBuffer()
+
 const COLORS = { land: '#0a111f', water: '#0b2433', parks: '#0f2a22', buildings: '#243650', roads: '#1a2940' }
 
 export function minimapSvg(layers, b, size) {

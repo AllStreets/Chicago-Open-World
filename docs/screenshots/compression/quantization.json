@@ -1,0 +1,193 @@
+{
+ "lod0": {
+  "files": 512,
+  "layers": {
+   "buildings": {
+    "verts": 7004640,
+    "positionM": 0.12276844360156028,
+    "normalDeg": 0.09171723933027233,
+    "uvM": 0.0019531221822539635,
+    "customExact": true,
+    "fracErr": 0.00013602896086672978,
+    "bits": 14,
+    "floatMeshes": 0,
+    "worst": "tiles/0_-2.glb"
+   },
+   "ground": {
+    "verts": 1395549,
+    "positionM": 0.0664394080957272,
+    "normalDeg": 0,
+    "uvM": 0.0019531128737071413,
+    "customExact": true,
+    "fracErr": 0,
+    "bits": 14,
+    "floatMeshes": 0,
+    "worst": "tiles/-1_10.glb"
+   },
+   "transit": {
+    "verts": 4036458,
+    "positionM": 0.03220447036875826,
+    "normalDeg": 0.09322774435502088,
+    "uvM": 0,
+    "customExact": true,
+    "fracErr": 0,
+    "bits": 14,
+    "floatMeshes": 0,
+    "worst": "tiles/-1_-1.glb"
+   },
+   "ties": {
+    "verts": 1833240,
+    "positionM": 0.028754142733016685,
+    "normalDeg": 0,
+    "uvM": 0,
+    "customExact": true,
+    "fracErr": 0,
+    "bits": 14,
+    "floatMeshes": 0,
+    "worst": "tiles/-1_-1.glb"
+   },
+   "glow": {
+    "verts": 194028,
+    "positionM": 0.029843835701596846,
+    "normalDeg": 0.09011975689166027,
+    "uvM": 0,
+    "customExact": true,
+    "fracErr": 0.00025940733054596876,
+    "bits": 14,
+    "floatMeshes": 0,
+    "worst": "tiles/-1_5.glb"
+   },
+   "stations": {
+    "verts": 100371,
+    "positionM": 0.02899479187485066,
+    "normalDeg": 0.07184235231073106,
+    "uvM": 0,
+    "customExact": true,
+    "fracErr": 0,
+    "bits": 14,
+    "floatMeshes": 0,
+    "worst": "tiles/-1_-1.glb"
+   },
+   "water": {
+    "verts": 25938,
+    "positionM": 0.026545083817123824,
+    "normalDeg": 0,
+    "uvM": 0.0019531128737071413,
+    "customExact": true,
+    "fracErr": 0.00006484488259650423,
+    "bits": 14,
+    "floatMeshes": 0,
+    "worst": "tiles/-10_-12.glb"
+   },
+   "leaves": {
+    "verts": 114768,
+    "positionM": 0.0304304687847699,
+    "normalDeg": 0.09044492860902728,
+    "uvM": 0.0019528056009812111,
+    "customExact": true,
+    "fracErr": 0.00012970168612191912,
+    "bits": 14,
+    "floatMeshes": 0,
+    "worst": "tiles/-2_-2.glb"
+   }
+  }
+ },
+ "lod1": {
+  "files": 512,
+  "layers": {
+   "buildings": {
+    "verts": 3030720,
+    "positionM": 0.12276844360156028,
+    "normalDeg": 0.09171723933027233,
+    "uvM": 0.0019531215775714372,
+    "customExact": true,
+    "fracErr": 0.00013602896086672978,
+    "bits": 14,
+    "floatMeshes": 0,
+    "worst": "tiles/0_-2.lod1.glb"
+   },
+   "ground": {
+    "verts": 796194,
+    "positionM": 0.06735473198602474,
+    "normalDeg": 0,
+    "uvM": 0.0019531128737071413,
+    "customExact": true,
+    "fracErr": 0,
+    "bits": 14,
+    "floatMeshes": 0,
+    "worst": "tiles/-1_10.lod1.glb"
+   },
+   "glow": {
+    "verts": 12738,
+    "positionM": 0.11211131827070321,
+    "normalDeg": 0.08576700046187323,
+    "uvM": 0,
+    "customExact": true,
+    "fracErr": 0.00025940733054596876,
+    "bits": 14,
+    "floatMeshes": 0,
+    "worst": "tiles/0_9.lod1.glb"
+   },
+   "water": {
+    "verts": 25938,
+    "positionM": 0.026545083817123824,
+    "normalDeg": 0,
+    "uvM": 0.0019531128737071413,
+    "customExact": true,
+    "fracErr": 0.00006484488259650423,
+    "bits": 14,
+    "floatMeshes": 0,
+    "worst": "tiles/-10_-12.lod1.glb"
+   }
+  }
+ },
+ "block": {
+  "files": 99,
+  "layers": {
+   "buildings": {
+    "verts": 4538700,
+    "positionM": 0.18574207216999328,
+    "normalDeg": 0.09171723933027233,
+    "uvM": 0.0019531215775714372,
+    "customExact": true,
+    "fracErr": 0.00013602896086672978,
+    "bits": 14,
+    "floatMeshes": 0,
+    "worst": "blocks/0_-1.glb"
+   },
+   "ground": {
+    "verts": 796194,
+    "positionM": 0.127790856610733,
+    "normalDeg": 0,
+    "uvM": 0.0019531128737071413,
+    "customExact": true,
+    "fracErr": 0,
+    "bits": 14,
+    "floatMeshes": 0,
+    "worst": "blocks/-2_2.glb"
+   },
+   "water": {
+    "verts": 25938,
+    "positionM": 0.10277024372285071,
+    "normalDeg": 0,
+    "uvM": 0.0019531128737071413,
+    "customExact": true,
+    "fracErr": 0.00006484488259650423,
+    "bits": 14,
+    "floatMeshes": 0,
+    "worst": "blocks/0_0.glb"
+   },
+   "glow": {
+    "verts": 12738,
+    "positionM": 0.1573205934777739,
+    "normalDeg": 0.08576700046187323,
+    "uvM": 0,
+    "customExact": true,
+    "fracErr": 0.00025940733054596876,
+    "bits": 14,
+    "floatMeshes": 0,
+    "worst": "blocks/-2_0.glb"
+   }
+  }
+ }
+}

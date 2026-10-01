@@ -10,7 +10,8 @@
     "fetch:world": "node fetch/fetch-world.js",
     "skyline": "node fetch/skyline.js",
     "build:trains": "node build/build-trains.js",
-    "schedules": "node fetch/fetch-schedules.js"
+    "schedules": "node fetch/fetch-schedules.js",
+    "compare-shots": "node build/compare-shots.js"
   },
   "dependencies": {
     "@gltf-transform/core": "^4.5.1",
