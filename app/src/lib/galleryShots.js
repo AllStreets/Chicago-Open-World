@@ -53,7 +53,7 @@ export const RIVER_GALLERY = {
   rivermarinatrump: { position: [-140, 60, -520], target: [20, 120, -760] },    // Marina City, AMA Plaza, Trump from the south bank
   riverclarklasalle: { position: [-140, 50, -600], target: [-420, 40, -680] },  // Reid Murdoch's clock, the Wacker wall
   riverwolfpoint: { position: [-560, 70, -560], target: [-860, 60, -620] },     // the forks: Wolf Point, the Mart, 333 W Wacker
-  riveropera: { position: [-700, 60, -260], target: [-830, 60, -60] },           // the South Branch at the Civic Opera
+  riveropera: { position: [-872, 70, 230], target: [-845, 30, -90] },             // the South Branch at the Civic Opera (A-12: over the river; the old pose stood in a tower)
   riverpostoffice: { position: [-760, 80, 420], target: [-900, 30, 715] },      // the Old Post Office over the expressway
   riversaltshed: { position: [-2720, 60, -2700], target: [-2601, 10, -2740] },  // the North Branch Salt Shed and its roof sign
 }
@@ -63,7 +63,7 @@ export const riverShotQuery = (pose, time) => `pose=${[...pose.position, ...pose
 // a tour boat's upper deck (y ≈ −2.5, the river at −6.3) or the sidewalk (1.7). gallery.spec.js holds them with the
 // test-only ?eye= (AtlasRig, with ?stats): people see the river level from the Riverwalk walk and the rides.
 export const RIVER_LEVEL_GALLERY = {
-  riverlevelapple: { position: [395, -2.5, -768], target: [300, 2, -806] },        // Apple's steps, the DuSable NE house, Wrigley's river walk
+  riverlevelapple: { position: [318, -2.5, -772], target: [362, 1, -822] },        // Apple's pavilion and steps down from Pioneer Court
   riverlevelmarina: { position: [-40, -2.5, -605], target: [-95, 2, -660] },      // Marina City's platform, restaurants and slips
   riverleveldusable: { position: [296, 1.7, -690], target: [297, 7.5, -712] },   // the SE bridgehouse and Hering's Regeneration
   riverlevelopera: { position: [-870, -2.5, -10], target: [-800, 4, -70] },       // the Civic Opera's arcade at the water
