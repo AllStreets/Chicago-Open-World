@@ -3014,6 +3014,82 @@
       },
       "source": "https://en.wikipedia.org/wiki/Pilsen,_Chicago",
       "p2": true
+    },
+    {
+      "key": "gr333n",
+      "name": "333 North Green · Flexport Chicago",
+      "aliases": [
+        "Flexport Chicago",
+        "Flexport",
+        "333 North Green",
+        "Gr333n"
+      ],
+      "match": {
+        "osmId": "w206804554",
+        "osmType": "way"
+      },
+      "heightM": 87.8,
+      "landmark": {
+        "type": "gr333n",
+        "heightM": 87.8,
+        "lowerM": 80.6,
+        "podiumM": 26,
+        "gapM": 5,
+        "flexportFloorFromTowerBase": 4
+      },
+      "beacon": {
+        "lat": 41.8869,
+        "lon": -87.6488,
+        "y": 96
+      },
+      "note": "Gensler, 2020: 19 storeys — two retail levels, five of parking behind a kinetic wall, thirteen office floors, an amenity level and a sky deck; two deep-blue glass masses in a black grid joined by a glass connector. Flexport Chicago leases the 12th floor (~40,000 sq ft).",
+      "source": "https://www.gensler.com/projects/333-north-green-development",
+      "sources": [
+        "https://www.gensler.com/projects/333-north-green-development",
+        "https://www.skyscrapercenter.com/building/333-north-green/32209",
+        "https://sterlingbay.com/properties/333-north-green/",
+        "https://therealdeal.com/chicago/2019/12/04/sterling-bay-inks-tech-firm-to-latest-lease-at-fulton-market-hq/",
+        "https://rejournals.com/sterling-bays-333-n-green-in-fulton-market-lands-freight-startup-flexport/"
+      ],
+      "p2": true
+    },
+    {
+      "key": "bcg360",
+      "name": "360 North Green · BCG Chicago",
+      "aliases": [
+        "BCG",
+        "Boston Consulting Group",
+        "360 North Green",
+        "BCG Chicago"
+      ],
+      "match": {
+        "osmId": "w1073965096",
+        "osmType": "way"
+      },
+      "heightM": 122,
+      "landmark": {
+        "type": "greenTower360",
+        "heightM": 122,
+        "lowerM": 110,
+        "crownM": 7,
+        "podiumM": 22,
+        "trussM": 8,
+        "offsetM": 7
+      },
+      "beacon": {
+        "lat": 41.888,
+        "lon": -87.649,
+        "y": 130
+      },
+      "note": "Gensler for Sterling Bay / J.P. Morgan, 2024: 24 storeys, 399 ft; two offset glass bars around a central core on a parking podium of V-trusses, inlaid balconies on every floor. Boston Consulting Group's Chicago office (≈250,000 sq ft, 15-year lease).",
+      "source": "https://www.gensler.com/projects/360-north-green",
+      "sources": [
+        "https://www.gensler.com/projects/360-north-green",
+        "https://chicagoyimby.com/2023/12/360-n-green-street-approaches-exterior-completion-as-countdowns-third-tallest-project.html",
+        "https://rejournals.com/sterling-bay-and-j-p-morgan-announce-boston-consulting-group-moving-to-fulton-market/",
+        "https://chicago.suntimes.com/business/2022/6/2/23152410/boston-consulting-group-signs-big-fulton-market-lease"
+      ],
+      "p2": true
     }
   ]
 }

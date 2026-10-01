@@ -1,4 +1,5 @@
-// app/src/data/landmarks.js — the VISIT lens's curated landmarks: CHI ATLAS's 32 Explore landmarks (name, category,
+// app/src/data/landmarks.js — the VISIT lens's curated landmarks: CHI ATLAS's 32 Explore landmarks, plus Fulton
+// Market's Flexport and BCG offices (user request), (name, category,
 // description and insider tip written for CHI ATLAS, frontend/src/data/landmarks.js), with a heroKey where this world
 // models the landmark. Entries outside the world stay listed as "Beyond the map".
 export const LANDMARKS = [
@@ -34,6 +35,8 @@ export const LANDMARKS = [
   {"id":"longman-and-eagle","name":"Longman & Eagle","category":"hidden","lat":41.9337,"lon":-87.7023,"desc":"2657 N Kedzie Ave, Logan Square. Michelin-starred gastropub (bib gourmand since 2012) that looks like a dive bar. Six-room inn above the bar. Exceptional whiskey program — 300+ bottles. Whole-animal butchery.","tip":"Walk-in brunch is easier than dinner reservations. Sit at the bar and ask the bartender what's new."},
   {"id":"the-empty-bottle","name":"The Empty Bottle","category":"hidden","lat":41.8951,"lon":-87.6839,"desc":"1035 N Western Ave, Ukrainian Village. Legendary Chicago indie rock venue since 1992. Before they were famous: Modest Mouse, The National, Wilco all played here. Cheapest beer in the city, no pretension.","tip":"Check the calendar — weeknight shows often have $10 cover. The back patio in summer is one of Chicago's best-kept secrets."},
   {"id":"gene-and-jude-s","name":"Gene & Jude's","category":"hidden","lat":41.927,"lon":-87.838,"desc":"2720 River Rd, River Grove — 20 min from the Loop but worth it. Cash-only hot dog stand open since 1945. Chicago-style dog served with fries on top of the dog, no ketchup ever, no seats, no debate.","tip":"Order a double and a root beer. No modifications. There's always a line but it moves fast."},
+  {"id": "flexport-chicago", "name": "Flexport Chicago · 333 North Green", "category": "architecture", "lat": 41.8869, "lon": -87.6488, "desc": "Gensler's 19-storey Gr333n (2020) in Fulton Market: two deep-blue glass towers in a bold black grid, joined by a glass connector, over a garage screened by a shimmering kinetic wall. Flexport Chicago's office is on the 12th floor — the thin blue line of light around the taller tower.", "tip": "Look for the kinetic wall at street level on Green Street — it ripples in the wind. The sky deck on top looks straight down the Fulton Market restaurant row.", "heroKey": "gr333n"},
+  {"id": "bcg-chicago", "name": "BCG Chicago · 360 North Green", "category": "architecture", "lat": 41.888, "lon": -87.649, "desc": "Gensler's 24-storey 360 North Green (2024): two offset silver-blue glass bars around a central core, lifted on a level of exposed V-trusses above the parking podium, with inlaid balconies on every floor. Boston Consulting Group's Chicago office.", "tip": "Stand on Green Street at Kinzie to see the V-trusses carrying the tower — and 333 North Green just across the street.", "heroKey": "bcg360"}
 ]
 
 export const CATEGORY_COLOR = { icon: 'var(--accent)', architecture: '#e8eef9', culture: '#b89cff', nature: '#5fd49a', hidden: '#ffb35c' }

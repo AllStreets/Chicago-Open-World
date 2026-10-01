@@ -332,6 +332,84 @@
       "base": "#8f8b84",
       "finish": "granite",
       "source": "photo-matched, granite pedestals (Lincoln Park)"
+    },
+    {
+      "key": "gr333n-glass",
+      "base": "#2d4f7c",
+      "glass": "#4f86c8",
+      "mullion": "#0e1114",
+      "spandrel": "#25446a",
+      "finish": "glass",
+      "source": "https://sterlingbay.com/properties/333-north-green/ (photos: deep-blue glass, black grid; photo-matched)"
+    },
+    {
+      "key": "gr333n-storefront",
+      "base": "#2b3036",
+      "glass": "#3a5068",
+      "mullion": "#15181b",
+      "spandrel": "#23282d",
+      "finish": "glass",
+      "source": "https://www.gensler.com/projects/333-north-green-development (aluminium storefront glazing; photo-matched)"
+    },
+    {
+      "key": "gr333n-frame",
+      "base": "#111417",
+      "finish": "metal",
+      "source": "https://sterlingbay.com/properties/333-north-green/ (black mullion grid; photo-matched)"
+    },
+    {
+      "key": "gr333n-shadow",
+      "base": "#1a1d21",
+      "finish": "concrete",
+      "source": "photo-matched, the open column level"
+    },
+    {
+      "key": "kinetic-wall",
+      "base": "#5b6168",
+      "finish": "metal",
+      "source": "https://www.gensler.com/projects/333-north-green-development (custom kinetic wall screening the garage; photo-matched)"
+    },
+    {
+      "key": "flexport-blue",
+      "base": "#2f6bff",
+      "finish": "glass",
+      "source": "Flexport brand blue (accent for Flexport's office floor)"
+    },
+    {
+      "key": "bcg-glass",
+      "base": "#8aa1b8",
+      "glass": "#7897b8",
+      "mullion": "#c9ced3",
+      "spandrel": "#90a4b8",
+      "finish": "glass",
+      "source": "https://chicagoyimby.com/2023/12/360-n-green-street-approaches-exterior-completion-as-countdowns-third-tallest-project.html (silver-blue curtain wall; photo-matched)"
+    },
+    {
+      "key": "bcg-storefront",
+      "base": "#39404a",
+      "glass": "#5d7086",
+      "mullion": "#c9cdd1",
+      "spandrel": "#4a525c",
+      "finish": "glass",
+      "source": "photo-matched, 360 N Green retail base"
+    },
+    {
+      "key": "bcg-podium",
+      "base": "#c4c9cf",
+      "finish": "metal",
+      "source": "https://chicagoyimby.com/2023/12/360-n-green-street-approaches-exterior-completion-as-countdowns-third-tallest-project.html (pale ribbed metal podium; photo-matched)"
+    },
+    {
+      "key": "bcg-truss",
+      "base": "#1f2328",
+      "finish": "metal",
+      "source": "https://chicagoyimby.com/2023/10/facade-nearly-complete-for-360-n-green-in-fulton-market.html (V-shaped trusses in the parking podium)"
+    },
+    {
+      "key": "bcg-core",
+      "base": "#353c44",
+      "finish": "metal",
+      "source": "photo-matched, 360 N Green dark core, crown and balcony stacks"
     }
   ]
 }

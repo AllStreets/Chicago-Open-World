@@ -267,6 +267,46 @@
    "kindLine": "Arena · home of the Bulls and the Blackhawks"
   },
   {
+   "key": "gr333n",
+   "name": "333 North Green · Flexport Chicago",
+   "aliases": [
+    "Flexport Chicago",
+    "Flexport",
+    "333 North Green",
+    "Gr333n"
+   ],
+   "x": -1685,
+   "z": -634,
+   "top": 91,
+   "beacon": [
+    -1740,
+    96,
+    -541
+   ],
+   "kind": "landmark",
+   "kindLine": "Landmark"
+  },
+  {
+   "key": "bcg360",
+   "name": "360 North Green · BCG Chicago",
+   "aliases": [
+    "BCG",
+    "Boston Consulting Group",
+    "360 North Green",
+    "BCG Chicago"
+   ],
+   "x": -1782,
+   "z": -740,
+   "top": 122,
+   "beacon": [
+    -1756,
+    130,
+    -663
+   ],
+   "kind": "landmark",
+   "kindLine": "Landmark"
+  },
+  {
    "key": "mart",
    "name": "Merchandise Mart",
    "aliases": [
