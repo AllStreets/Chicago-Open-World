@@ -25,6 +25,18 @@ test('an L ride from the dock: front window, skip a stop, pause, Esc gets off', 
   await page.waitForTimeout(600)
   s = await st(page)
   expect(s.hud.next?.name).not.toBe(before)
+  // F-7 + C-fix: M turns the sound on and the ride goes on — and the ride train is heard in the front window
+  await page.keyboard.press('KeyM')
+  await expect(page.locator('.sound-toast[data-state="on"]')).toBeVisible()
+  await page.keyboard.press('>'); await page.keyboard.press('>') // > > : ×4, out of the station sooner
+  await page.waitForFunction(() => window.__audio?.train > 0, null, { timeout: 40_000 })
+  s = await st(page)
+  expect(s.ride?.kind).toBe('L')
+  console.log(`RIDE L train level=${await page.evaluate(() => window.__audio.train)}`)
+  await page.keyboard.press('KeyX') // fireworks: no flight while riding
+  await page.waitForTimeout(600)
+  s = await st(page)
+  expect(s.ride?.kind).toBe('L'); expect(s.flight).toBe(false)
   await page.keyboard.press('Space')
   expect((await st(page)).ride.paused).toBe(true)
   await page.screenshot({ path: 'test-results/ride-l-cab.png' })

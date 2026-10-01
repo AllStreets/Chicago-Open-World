@@ -42,10 +42,18 @@ export function runState(def, run) {
   const prev = [...stops].reverse().find((x) => x.s <= s + NEAR) ?? null
   const moving = def.profile ? sOf(def, run.tau + 0.5) - sOf(def, run.tau - 0.5) > 0.01 : !run.paused
   const atStop = prev && Math.abs(prev.s - s) <= 3
+  // speed along the path in ride-clock m/s (F-7: the ride train's rumble follows it); a walk keeps its pace
+  const v = def.profile ? Math.max(0, (sOf(def, run.tau + 0.25) - sOf(def, Math.max(0, run.tau - 0.25))) / (run.tau >= 0.25 ? 0.5 : 0.25 + run.tau)) : pace(def)
   return {
-    s, head: pointAt(def.path, s), next, prev, etaS: next ? Math.max(0, tauOf(def, next.s) - run.tau) : 0,
+    s, v, head: pointAt(def.path, s), next, prev, etaS: next ? Math.max(0, tauOf(def, next.s) - run.tau) : 0,
     dwelling: Boolean(def.profile && atStop && !moving), atStop: Boolean(atStop), progress: def.path.length ? s / def.path.length : 1,
   }
+}
+
+// how fast the rider is really moving, in m/s of wall-clock time: 0 paused or at the end, × the ride speed (×2, ×4)
+export function rideSpeedMps(def, run) {
+  if (!def || !run || run.paused || run.done) return 0
+  return runState(def, run).v * (run.speed ?? 1)
 }
 
 // to the next (+1) or the previous (−1) stop, arriving there; past the last stop the ride is over

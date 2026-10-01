@@ -22,9 +22,12 @@ export function createRumble(ctx) {
   lfo.connect(lfoGain).connect(clack.gain)
   src.start(); lfo.start()
   return {
-    set(level, hz) {
+    // cab (F-7): riding in the train — the rumble lower and fuller, the rail joints duller, through the floor
+    set(level, hz, cab = false) {
       const t = ctx.currentTime
-      gain.gain.setTargetAtTime(level * 0.6, t, 0.25)
+      low.frequency.setTargetAtTime(cab ? 105 : 140, t, 0.3)
+      band.frequency.setTargetAtTime(cab ? 620 : 900, t, 0.3)
+      gain.gain.setTargetAtTime(level * (cab ? 0.75 : 0.6), t, 0.25)
       // the clatter breathes with each rail joint (a sine at half depth over a steady base) — a full-depth square gate
       // switched the sound on and off and made a followed train sound choppy
       clack.gain.setTargetAtTime(level * 0.14, t, 0.25)

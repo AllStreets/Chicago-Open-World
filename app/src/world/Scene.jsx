@@ -42,6 +42,8 @@ import SportsLife from '../sports/SportsLife.jsx'
 import StationHits from '../transit/StationHits.jsx'
 import Landmarks from './Landmarks.jsx'
 import TrainAudio from '../transit/TrainAudio.jsx'
+import RideAudio from '../ride/RideAudio.jsx'
+import { audioLevels } from '../audio/levels.js'
 import { followNearest } from '../transit/actions.js'
 import { getTracker } from '../transit/liveStore.js'
 import { getTrains } from '../transit/simStore.js'
@@ -108,7 +110,7 @@ export default function Scene() {
   const threeCamera = useThree((s) => s.camera)
   // test-only ?perf turns the exact draw probe on (it owns renderer.info while on, so ?stats specs that read it stay unaffected)
   useEffect(() => { if (new URLSearchParams(window.location.search).has('perf')) useStore.getState().setPerfOn(true) }, [])
-  useEffect(() => { if (new URLSearchParams(window.location.search).has('stats')) { window.__gl = gl; window.__store = useStore; window.__clearanceAt = clearanceAt; window.__scene = threeScene; window.__camera = threeCamera; window.__live = { tracker: getTracker, trains: getTrains }; window.__getSim = getSim } }, [gl, threeScene, threeCamera])
+  useEffect(() => { if (new URLSearchParams(window.location.search).has('stats')) { window.__gl = gl; window.__store = useStore; window.__clearanceAt = clearanceAt; window.__scene = threeScene; window.__camera = threeCamera; window.__live = { tracker: getTracker, trains: getTrains }; window.__getSim = getSim; window.__audio = audioLevels } }, [gl, threeScene, threeCamera])
 
   return (
     <>
@@ -136,6 +138,7 @@ export default function Scene() {
       <NeighborhoodZones />
       <Isochrones />
       <TrainAudio />
+      <RideAudio />
         {manifest?.trains && <SafeLoad><Suspense fallback={null}><Trains file={manifest.trains} version={manifest.version} /></Suspense></SafeLoad>}
   
       <AtlasRig />
