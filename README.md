@@ -377,6 +377,8 @@ npm run dev            # http://localhost:5173
 ```
 
 The generated world is committed, so `npm run dev` works straight after install.
+
+**Deploy.** Vercel project `chicago-open-world` (Root Directory `app`, settings in [`app/vercel.json`](app/vercel.json)): every push to `main` deploys production at **https://chicago-open-world.vercel.app**, other branches get preview URLs. Only the app is built — the committed world in `app/public/world` ships as static files; the pipeline never runs on Vercel.
 Everything is reachable with the keyboard, the mouse and the on-screen dock — `?view=` / `?time=` URL parameters exist only for tests and screenshots.
 
 ## Controls
