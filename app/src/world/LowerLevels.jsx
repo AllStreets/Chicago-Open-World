@@ -12,8 +12,9 @@ import { worldUrl } from '../lib/manifest.js'
 import { buildLowerDecks, cutMask, LOWER } from './lowerLevels.js'
 import { cutUniforms, setCutMask } from './materials/cutaway.js'
 import { BOOKMARKS } from '../lib/bookmarks.js'
+import { facadeUniforms } from './materials/facadeMaterial.js'
 
-export const SHOW = { belowM: 120, withinM: 600, fadeS: 0.6 }
+export const SHOW = { belowM: 120, withinM: 600, fadeS: 0.6, cutBelowM: 2000 }
 
 export const LOWER_VERT = /* glsl */ `
 attribute vec3 _col;
@@ -135,9 +136,9 @@ export default function LowerLevels() {
     const u = cutUniforms.uCut, want = on ? 1 : 0
     if (u.value !== want) u.value = want > u.value ? Math.min(1, u.value + dt / SHOW.fadeS) : Math.max(0, u.value - dt / SHOW.fadeS)
     const ride = Boolean(useStore.getState().ride)
-    group.current.visible = u.value > 0 || ride || nearLower(cam.position.toArray(), built.box)
+    group.current.visible = (u.value > 0 && cam.position.y < SHOW.cutBelowM) || ride || nearLower(cam.position.toArray(), built.box) // lean: from very high the cut lines say it all
     const mu = built.mesh.material.uniforms
-    mu.uBoost.value = 0.32 * u.value
+    mu.uBoost.value = 0.32 * u.value * (1 - 0.8 * facadeUniforms.uNight.value) // daylight falls in by day; at night only the lamps
     mu.uFar.value = u.value > 0 ? 0 : 1 / 120
   })
   if (!built) return null

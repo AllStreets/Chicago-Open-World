@@ -15,13 +15,11 @@ export const D2_SHOTS = [
   // down into Lower Wacker between Michigan and Columbus from over the river: columns, lanes, lamps (day and night)
   { name: 'lower-wacker-day', q: 'pose=430,75,-770,400,-5,-640&time=DAY', u: true },
   { name: 'lower-wacker-night', q: 'pose=430,75,-770,400,-5,-640&time=NIGHT', u: true },
-  // Lower Wacker along the river behind the Riverwalk, east of Columbus
+  // Lower Wacker along the river behind the Riverwalk, at Columbus Drive
   { name: 'lower-wacker-riverwalk-day', q: 'pose=520,160,-860,350,-5,-610&time=DAY', u: true },
   // Lower Michigan at the river: the DuSable bridge's lower deck carrying it across, the cut-away south of it
   { name: 'lower-michigan-river-day', q: 'pose=330,46,-800,276,-5,-600&time=DAY', u: true },
   { name: 'lower-michigan-river-dusk', q: 'pose=330,46,-800,276,-5,-600&time=DUSK', u: true },
-  // West Lower Wacker along the South Branch
-  { name: 'lower-wacker-west-day', q: 'pose=-640,60,-240,-750,-5,-60&time=DAY', u: true },
 ]
 if (process.argv[1]?.endsWith('d2shots.mjs')) {
   const browser = await chromium.launch({ args: ['--use-angle=metal', '--enable-gpu', '--ignore-gpu-blocklist'] })

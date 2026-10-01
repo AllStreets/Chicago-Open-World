@@ -687,6 +687,37 @@ The Chicago River now runs where it really does: 6.3 m below Upper Wacker Drive 
 </tr>
 </table>
 
+### Workstream D2 · The streets under the streets — *Lower Wacker, Lower Michigan and the U cut-away*
+
+Chicago's double- and triple-decker streets are now under the city where they really are: Lower Wacker Drive 5.1 m below Upper Wacker (4.2 m of clearance under a 0.9 m deck, the 2002 rebuild's 13′9″), Lower Michigan, Lower Columbus, Lower Randolph, Lower Stetson, South Water, Field Boulevard, Lower North Water and the service drives, and a third level 9.5 m down for Lower Lower Wacker and Lower Lower Randolph — 25 km of roadway from OpenStreetMap, each ramp climbing to the street at its real mouth. They have their lanes and worn yellow edge lines, a column every 32 ft (9.75 m) holding up the street above, and strip lights pooling warm light on the asphalt; the DuSable and Outer Drive bridges carry Lower Michigan and the lower Drive across the river on their lower decks. Press **U** (or ⌘K "Lower levels") and the street over them dissolves away, outlined by a thin cyan cut line like an architect's cut-away drawing, so you can look down into Lower Wacker from anywhere; press U again and the street closes. From far away U flies you over the river to see them. With U off, nothing at street level changes — the streets, buildings, traffic and the river are exactly as they were.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/d2-u-loop-day.png" alt="D2 — the U cut-away over the river: Lower Wacker and Lower Michigan opened" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/d2-u-loop-night.png" alt="D2 — the U cut-away at night: the lower streets' lights" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Press U over the river: the street opens along Wacker Drive and up Michigan Avenue, and the lower level shows underneath.</em></td>
+<td><em>The same view at night: Lower Wacker's strip lights glow under the opened street.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/d2-lower-wacker-day.png" alt="D2 — down into Lower Wacker between Michigan and Columbus" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/d2-lower-wacker-night.png" alt="D2 — Lower Wacker at night under the cut-away" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Down into Lower Wacker east of Michigan: its lanes, the column rows every 32 ft and a ramp leaving for the street.</em></td>
+<td><em>Lower Wacker at night: the lamps pool light on the roadway; the street above stays dark.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/d2-lower-michigan-river-day.png" alt="D2 — Lower Michigan at the river, beside the DuSable Bridge" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/d2-lower-wacker-riverwalk-day.png" alt="D2 — Lower Wacker behind the Riverwalk at Columbus Drive" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Lower Michigan meets the river at the DuSable Bridge, whose lower deck carries it across.</em></td>
+<td><em>Lower Wacker runs behind the Riverwalk's retaining wall, between the river and the towers.</em></td>
+</tr>
+</table>
+
 ## Quickstart
 
 ```bash
@@ -730,6 +761,7 @@ Everything is reachable with the keyboard, the mouse and the on-screen dock — 
 | `X` · Fireworks button | Navy Pier fireworks — flies you to the harbour view; press again to stop (real shows: Wed 9 pm, Sat 10 pm in summer) |
 | `P` · Places button | pins for restaurants, bars, venues and more — click one for its card and website |
 | `L` · Ride button | ride the city — an L line, a CTA bus, a street-level walk or the glide; `Space` pauses, `.` `,` next or previous stop, `>` `<` faster or slower, `K` view, drag to look, `Esc` gets off. `M`, `X` and the other toggles never end a ride, a tour or a train follow |
+| `U` · ⌘K "Lower levels" | the streets under the streets — the street over Lower Wacker, Lower Michigan, Lower Columbus and the other double-decker streets opens like a cut-away drawing; `U` again closes it (from far away it flies you over the river first) |
 | `V` · SCAN button | holographic Scan; in the Live lens, light columns for transit, nightlife, green space or rent |
 | Weather button | follows Chicago live, or pick clear, overcast, rain, snow or lake fog (also ⌘K "Weather") |
 | LIVE CTA / SIMULATED chip | click for the data sources and "Try live again" |
