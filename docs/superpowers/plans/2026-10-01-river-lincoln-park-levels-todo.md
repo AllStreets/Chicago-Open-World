@@ -305,7 +305,7 @@ Shipped (C-1…C-6 sound toast; C-fix-1…5 follow/tour/ride-safe toggles incl. 
 
 ---
 
-## 5B. Workstream E — Sports: live schedules, the United Center board, "Play a game"
+## 5B. Workstream E — DONE 2026-10-01 (E1–E5 live) — Sports: live schedules, the United Center board, "Play a game"
 
 ### 5B.1 What exists (verified 2026-10-01)
 
@@ -333,8 +333,6 @@ Shipped (C-1…C-6 sound toast; C-fix-1…5 follow/tour/ride-safe toggles incl. 
 
 ### 5B.3 E2 — Every venue uses the refreshed data
 
-- [ ] **E2-1** Prove one source. A unit test feeds one proxy payload through `setData → tick → computeStates`, then checks that `boardLines` for Wrigley, Rate Field and Soldier Field (both boards), `marqueeMessage` at Wrigley, `WinFlag`'s `flagKind`, `VenueCard`, `GamesPanel` and ⌘K `gamePlaces` all show the same next/live/final game. The new United Center board (E3) joins the same test. **Done when** the test is green and no component reads `schedules.json` directly (grep check in the test).
-- [ ] **E2-2** Crosstown and shared venues: a White Sox game at Wrigley, a Fire match at Soldier Field, a Sky game at the United Center go to the venue in the data (`VENUE_BY_NAME`), not to the team's home. **Done when** fixtures for all three pass.
 
 ### 5B.4 E3 — A Bulls board on the United Center
 
@@ -345,11 +343,6 @@ Shipped (C-1…C-6 sound toast; C-fix-1…5 follow/tour/ride-safe toggles incl. 
 - **The ribbon** scrolls the status ("NEXT MIL · TUE 7:00 PM", "LIVE · Q3 CHI 78–71 MIL", "FINAL · CHI 104–97") by UV offset, never by redrawing.
 - **Colour rule (decided):** the board takes the colours of the team whose game it is showing. A Blackhawks game today, live or final within the postgame hour, gets Blackhawks styling: #CF0A2C red with black and a white feather-stripe accent. The header reads "BLACKHAWKS". Everything else, including idle, the next game and Sky or other events, gets **Bulls styling** as the user asked. Reason: the two reds are nearly identical (#CE1141 vs #CF0A2C), so what changes is the wordmark band and accent, which is what the real arena does on a Hawks night. The user still sees Bulls colours almost all the time.
 
-- [ ] **E3-0 Source check.** Find the United Center's real exterior displays (Madison St atrium LED boards: position and size) and its roof height. Record them with sources in `heroes.json` `unitedcenter.sports`. **Done when** the sources are in the data, and the plan notes whether a real-position board is added next to the roof crown.
-- [ ] **E3-1 Data.** `heroes.json` `unitedcenter.sports.crown = { roofM, faceM, mastM, ribbon: true, source/note }`, with the roof height sourced. `pipeline/lib/sportsSites.js#venueRecord` emits `crown: { center, roofY, face, mast }` into `venues.json` (world rebuild in E's wave). **Done when** a pipeline test asserts the crown sits inside the hull and above the roof by `mastM`, and `venues.json` has it.
-- [ ] **E3-2 `app/src/sports/ArenaCrown.jsx`** (mounted by `SportsLife` for venues with `crown`). One merged mesh for the four faces (one `CanvasTexture` shared, redrawn only when `boardLines` text changes, the same as `Scoreboard.jsx`), plus one ribbon mesh: **≤ 2 draw calls**. `MeshBasicMaterial`, `toneMapped: false`. Night glow scales with `facadeUniforms.uNight` like the boards; by day it is still readable at 0.8. LOD: mounted within 3 km (`MOUNT_M`), canvas 1024×512 at HIGH, 512×256 at LOW, and the ribbon hidden at LOW. **Done when** a unit test covers `crownStyle(st)` (bulls / blackhawks rule, idle → bulls) and `drawBoard(…, 'bulls')`, the draw-census test shows ≤ 2 calls added, and `perf.spec.js` at a new "United Center" pose holds ≥ 58 fps.
-- [ ] **E3-3 Card and ⌘K.** The United Center card says "Bulls and Blackhawks — the board on the roof shows the next game, live scores and finals". ⌘K "Games at United Center" already flies there. **Done when** `sports.test.jsx` covers the line.
-- [ ] **E3-4 README (cohesion rule).** Day and night shots at a fixed United Center gallery pose (`galleryShots.js`), with the caption "United Center — the Bulls board on the roof, showing the same next game and live score as the other venues (a guide display, not a real fixture)". The previous United Center frame moves to `docs/screenshots/evolution/` with an Evolution row. **Done when** links resolve and there are no orphans.
 
 ### 5B.5 E4 — "Play a game" at Wrigley, Rate Field and Soldier Field
 
@@ -360,23 +353,15 @@ Shipped (C-1…C-6 sound toast; C-fix-1…5 follow/tour/ride-safe toggles incl. 
 - **The real live game always wins.** The showcase is a separate `useSports.showcase = { venueKey, team, startedAt }`. `tick()` uses it for that venue **only while the venue's real state is idle or postgame**. During a real **live** game the button is hidden and the card reads "Live now — this is the real game". During real **pregame** (gates open, 2 h before) the button is disabled with "Tonight's game starts at 7:05 PM — watch it live then". If a real game goes live mid-showcase, the showcase stops and a Toast says "The real game is starting — showing it live". The showcase never writes to `games`, `liveGames` or `boardOverrides`.
 - **Sound off:** the same text Toast as the fireworks ("Sound is off — press M to hear the crowd").
 
-- [ ] **E4-1 `app/src/sports/showcase.js`** (pure): `showcaseState(venue, team, startedAt, nowMs)` → `{ state, game, virtualNow, winDay }`, mapping 90 s onto the sport's full `gameWindow` so `boardLines`, `periodLabel`, `simScore` and `flagKind` work unchanged on `virtualNow`; a deterministic simulated game (`hashFrac` seed) in which the home team wins by default so the W flag shows. **Done when** unit tests cover the phase boundaries (0 / 10 / 75 / 90 s), the score never decreases, it ends at 90 s, the Cubs final gives `winDay`, and each sport's labels are right.
-- [ ] **E4-2 Store and clock.** Add `startShowcase(venueKey, team)` / `stopShowcase()` / an expiry in `sportsStore.js`. `tick()` applies the precedence above and pushes a swell on each simulated score change. `SportsLife` and `WrigleyMarquee` take a per-venue `now` (`virtualNow` while a showcase runs). Venue lights use `lightLevel('live')` during the showcase. **Done when** unit tests show a real `live` beats the showcase, a real pregame start stops it, expiry at 90 s restores the real state, and `boardOverrides` and `games` are untouched.
-- [ ] **E4-3 Buttons in both cards.** `VenueCard.jsx`, and the clicked-stadium card (`LandmarkCard`/`BuildingCard` when `selection.id` is `wrigleyfield`, `ratefield` or `soldierfield`), get a pill "▶ Play a Cubs game" ↔ "■ Stop the game" with the live/pregame states above. It shows only for those three venues (not the United Center or Wintrust, which are indoor). **Done when** `sports.test.jsx` covers idle (button), live (hidden plus "Live now"), pregame (disabled plus explanation), running (Stop), and another venue (none).
-- [ ] **E4-4 Key, ⌘K, help (human-first).** A `FEATURE_CONTROLS` entry `showcase`, key **Y** ("Play a game": the venue whose card is open, else the nearest of the three to the camera target; Y again stops), **not in the dock** (it stays at six buttons). ⌘K: "Play a Cubs game at Wrigley Field", "Play a White Sox game at Rate Field", "Play a Bears game at Soldier Field", "Play a Fire match at Soldier Field", "Stop the game". A help line. Y joins the C-fix safe-key list. **Done when** `featureControls.test.js`, `help.test.jsx` and `searchCoverage.test.js` pass, and a test asserts `DOCK_FEATURES` is unchanged.
-- [ ] **E4-5 e2e.** Open the Wrigley card, press Play: within 2 s `window.__sports` (with `?stats`) shows `wrigleyfield` live with the showcase flag; the board text changes within 10 s; Stop returns it to the real state; Esc also stops it. With `?sports=live` (a real live game) the button is hidden. Perf: a "Wrigley showcase" pose holds ≥ 58 fps and ≤ 900 calls. **Done when** 3× green at 1 worker.
-- [ ] **E4-6 README.** One frame per venue mid-showcase (day), plus the Wrigley W flag at the final, in the sports gallery section, with captions. The previous sports frames move to Evolution per the cohesion rule. **Done when** links resolve.
 
 ### 5B.6 E5 — Explain the live-game feature to people
 
-- [ ] **E5-1 Card copy.** A one-line explainer on every venue card: "When a real game is on, this stadium comes alive by itself — the crowd, the lights, the players and the live score on the board. Press ▶ Play a game to see a 90-second preview any time." (Indoor arenas get the first sentence only.) **Done when** `sports.test.jsx` checks the line on all five venue cards.
-- [ ] **E5-2 Help card and Games panel.** The help card gets a "Games" paragraph: the live behaviour, Y / "Play a game", where the data comes from (ESPN, refreshed on the live site), and that live CTA trains stay simulated for now. The Games panel gets the same one line and the staleness label (E1-4). **Done when** `help.test.jsx` is green and the hint bar has no dead entry.
 
 ---
 
 ## 6. Cross-cutting
 
-### 6.1 World-size budget (today 199.73 MB of the 200 MB cap; `build-world.js:662` throws above 200e6)
+### 6.1 World-size budget — X-0 DONE 2026-10-01: 199.73 → 171.02 MB with visual parity (16-bit positions, meshopt high, palette minimap rejected for artefacts).  (today 199.73 MB of the 200 MB cap; `build-world.js:662` throws above 200e6)
 
 **Where today's bytes are** (`du`, KB): tiles 137,840 (1,024 glb incl. 33,808 KB of LOD1 + **15,148 KB of tile JSON**), blocks 42,840, ground 9,300, minimap.png 3,076, venues 1,124, transit.json 992, heightfield 836, trees.json 632, walk-graph 616, landmarks 568, pois-index 436, traffic.bin 332.
 
@@ -392,14 +377,8 @@ Shipped (C-1…C-6 sound toast; C-fix-1…5 follow/tour/ride-safe toggles incl. 
 - **V5 revert rule.** Any saving that fails V1–V4 is reverted in its own commit, and the ledger (X-0e) records "rejected: artefact" with the before/after pair.
 
 **Where the bytes come from (do X-0 before any content lands):**
-- [ ] **X-0a Compact the tile metadata JSON** (15.1 MB). Today each building is `{"id","name","address","stories","year","height","hero"}` with many `null`s. Change to columnar arrays with nulls omitted, a shared string table per tile, and heights at 0.1 m. Update `TileContent.jsx` / picking to read v2 and still read v1. **Expected −8 to −10 MB.** **Done when** hover cards are identical on 50 sampled buildings (unit test on the decoder) and `hover.spec.js` is green.
-- [ ] **X-0b meshopt `level: 'high'`** (filters: octahedral normals, quantised positions) in `tilepack.js#writeTileGlb` for tiles, blocks and ground, after checking that the custom `_seed`/`_layer`/`CALM` attributes survive (keep them unfiltered if needed). **Expected −5 to −12 % of ≈ 181 MB of glb (−9 to −20 MB).** **Done when** V1–V3 pass (side-by-side pairs show no visible change, and the quantisation-error test is within the V2 limits), hero-view diffs stay within the current thresholds, and `glb.test.js` round-trips the custom attributes. Otherwise use a lower meshopt level, or revert (V5).
-- [ ] **X-0c `minimap.png`** palette-quantised (pngquant-style in the pipeline, ≤ 1.2 MB). **Expected −1.9 MB.** **Done when** `minimap.test.js` passes, the V3 ΔE limits hold, and the minimap looks unchanged at 2× zoom in a side-by-side pair. Otherwise revert (V5).
-- [ ] **X-0d Minify** `trees.json`, `walk-graph.json`, `pois-index.json`, `transit.json` (fixed 0.1 m precision, no whitespace). **Expected −0.5 to −1 MB.**
-- [ ] **X-0e Budget ledger.** `build-world` prints per-folder MB and a per-stage delta, and fails above **197 MB** for content stages (a 3 MB margin). **Done when** the log shows the ledger.
 - **Expected reclaim ≈ 19–33 MB vs ≈ 6–11 MB of additions.** The world ends around 185–192 MB.
 - **Escalation (Decision 5: approved as a last resort only):** if, after every saving that passes V1–V5, a content stage still can't fit under 197 MB, raise the `build-world.js:662` cap to 210 MB in its own commit and **report it to the user** with the ledger. Vercel serves brotli, so transfer size stays far lower. **Never used to avoid doing X-0.**
-- [ ] **X-0f Visual-parity harness.** A `compare-shots` script plus a Playwright run that writes the before/after pairs, the SSIM/diff table and the quantisation-error report for V1–V4. **Done when** it runs on X-0a…X-0d and its table is in the wave-0 PR.
 
 ### 6.2 Performance plan
 - Budgets: ≤ 900 draw calls, ≤ 4 M triangles, about 60 fps.
