@@ -1,6 +1,11 @@
 import { create } from 'zustand'
 import { FOUNTAIN_SCHEDULE } from '../landmarks/fountainSchedule.js'
 
+// Your office, remembered in this browser (user, 2026-09-30); storage can be blocked — then it simply isn't remembered
+const OFFICE_KEY = 'chi-ow-office'
+export function loadSavedOffice() { try { const o = JSON.parse(localStorage.getItem(OFFICE_KEY)); return o && Number.isFinite(o.x) && Number.isFinite(o.z) ? o : null } catch { return null } }
+const saveOffice = (o) => { try { if (o) localStorage.setItem(OFFICE_KEY, JSON.stringify(o)); else localStorage.removeItem(OFFICE_KEY) } catch { /* not remembered */ } }
+
 export const useStore = create((set) => ({
   timePreset: 'LIVE',
   cameraMode: 'FLY',
@@ -75,8 +80,8 @@ export const useStore = create((set) => ({
   // the guide (P4): one lens at a time (pressing the active lens again turns it off), the office for WORK, places
   lens: null,
   setLens: (l) => set((s) => ({ lens: s.lens === l ? null : l })),
-  office: null,
-  setOffice: (office) => set({ office, officeArmed: false }),
+  office: loadSavedOffice(),
+  setOffice: (office) => { saveOffice(office); set({ office, officeArmed: false }) },
   officeArmed: false, // WORK: the next map click sets the office
   setOfficeArmed: (officeArmed) => set({ officeArmed }),
   poiCats: 'all',

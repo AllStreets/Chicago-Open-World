@@ -6,7 +6,7 @@ import { useSports } from '../sports/sportsStore.js'
 import { useStore } from '../state/store.js'
 import { buildPlaces, searchPlaces } from '../lib/places.js'
 import { BOOKMARKS } from '../lib/bookmarks.js'
-import { featurePlaces, featureCommands, lensCommands, placeCommands, tourCommands, addressRows } from '../lib/paletteSources.js'
+import { featurePlaces, featureCommands, lensCommands, placeCommands, tourCommands, addressRows, officeRows } from '../lib/paletteSources.js'
 import { buildPlaceRows } from '../lib/poiFilter.js'
 import { zoneForName } from '../lib/neighborhoods.js'
 import { openZone } from '../world/NeighborhoodZones.jsx'
@@ -76,7 +76,8 @@ export default function CommandPalette() {
   const results = useMemo(() => {
     const found = q.trim() ? searchPlaces(q, all) : [...searchPlaces('', all.filter((p) => p.kind !== 'command' && p.kind !== 'guide' && p.kind !== 'place')), ...all.filter((p) => p.kind === 'guide').slice(0, 3), ...all.filter((p) => p.kind === 'command').slice(0, 5)]
     const grouped = ORDER.flatMap((k) => found.filter((r) => r.kind === k))
-    return q.trim() ? [...addressRows(q), ...found].slice(0, 40) : grouped.slice(0, 40) // a typed address leads with Set office / Fly to
+    // a typed address leads with Set office / Fly to; 'work' finds your office; the top landmark or place can become it
+    return q.trim() ? [...addressRows(q), ...officeRows(q, null).filter((r) => r.id === 'office:go'), found[0], ...officeRows(q, found[0]).filter((r) => r.id !== 'office:go'), ...found.slice(1)].filter(Boolean).slice(0, 40) : grouped.slice(0, 40)
   }, [q, all])
   useEffect(() => { listRef.current?.querySelector('[aria-selected="true"]')?.scrollIntoView?.({ block: 'nearest' }) }, [cursor])
 
