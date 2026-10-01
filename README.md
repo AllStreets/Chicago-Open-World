@@ -423,6 +423,14 @@ Flexport Chicago's office at 333 North Green and BCG's tower across the street, 
 <td><em>Lincoln Park's stone: Caldwell's Lily Pool between stratified limestone ledges, with the Chess Pavilion, the Couch Tomb and the Waveland Clock Tower.</em></td>
 <td><em>Click a pin: today's hours, the address and the website (or a web search), in a card that follows the pin.</em></td>
 </tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/p4-chess-pavilion-day.png" alt="The Chess Pavilion at North Avenue Beach" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/p4-chess-pavilion-king.png" alt="The carved king on the Chess Pavilion's end wall" width="100%"/></td>
+</tr>
+<tr>
+<td><em>The Chess Pavilion (Webster, 1957): a thin concrete canopy cantilevered off slender columns, open on both long sides over two rows of stone chess tables and their stools.</em></td>
+<td><em>Gilbertson's carving on the limestone end walls: a giant king in relief here and a knight at the far end, with the freestanding king and queen at the corners.</em></td>
+</tr>
 </table>
 
 ### Phase 5 · Alive — *live trains, live scores, weather and Scan*
@@ -443,7 +451,7 @@ The city reads the CHI ATLAS API when it can and never shows an error when it ca
 <td width="50%"><img src="docs/screenshots/p5-snow-loop-day.png" alt="Phase 5 — snow falling over the Loop by day" width="100%"/></td>
 </tr>
 <tr>
-<td><em>Rain down the river at dusk — a grey sky, thinner light and streaks slanting with the wind.</em></td>
+<td><em>Rain down the river at dusk — a grey deck that hides the setting sun, thinner light and streaks slanting with the wind.</em></td>
 <td><em>Snow from the Weather button on an ordinary day: the SNOW view's flakes and white roofs, drifting with the wind.</em></td>
 </tr>
 </table>
@@ -593,6 +601,32 @@ It wasn't made right in one attempt. Here are the same places through each pass,
 <td><sub>Phase 3 · Sep 29<br/>the Tribune's crown</sub></td>
 <td><sub>Phase 4 · Sep 30<br/>the Giralda clock tower</sub></td>
 <td><sub>Phase 4 · Sep 30<br/>pier ribs, lantern tracery</sub></td>
+</tr>
+</table>
+
+**The Chess Pavilion** — Lincoln Park, the same pose
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/p4-chess-pavilion-slab.png" alt="Phase 4 — the Chess Pavilion as a plain slab" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/evolution/today-chess-pavilion.png" alt="Today — the cantilevered canopy, columns, chess tables and carved end walls" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>Phase 4 · Sep 30<br/>a flat roof on two piers</sub></td>
+<td><sub>Today · Sep 30<br/>canopy, tables, carved king and knight</sub></td>
+</tr>
+</table>
+
+**Rain at dusk** — down the river, the same pose
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/p5-rain-river-dusk-sun.png" alt="Phase 5 — rain with the sun's disc burning through the cloud" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/p5-rain-river-dusk.png" alt="Today — rain under a deck that hides the sun" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>Phase 5 · Sep 30<br/>the sun shone through the rain</sub></td>
+<td><sub>Today · Sep 30<br/>the cloud hides the sun and its glare</sub></td>
 </tr>
 </table>
 
