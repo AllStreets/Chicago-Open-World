@@ -2,6 +2,7 @@
 // pinned where a person would look for it — on the roof of its building, or just above the ground in the open or
 // in a courtyard.
 import { pointInRing, distToRing } from './geom.js'
+import { siteFromTags, wikidataId } from './poiSites.js'
 
 export const POI_CATEGORIES = [
   { id: 'food', label: 'Food', icon: 'RiRestaurantLine' },
@@ -14,6 +15,8 @@ export const POI_CATEGORIES = [
   { id: 'outdoors', label: 'Outdoors', icon: 'RiLeafLine' },
   { id: 'hotels', label: 'Hotels', icon: 'RiHotelLine' },
   { id: 'services', label: 'Services', icon: 'RiFirstAidKitLine' },
+  { id: 'apartments', label: 'Apartments', icon: 'RiHome4Line' },
+  { id: 'offices', label: 'Offices', icon: 'RiBuilding2Line' },
 ]
 export const POI_CAT_IDS = POI_CATEGORIES.map((c) => c.id)
 
@@ -33,16 +36,17 @@ export function poiCategory(tags = {}) {
   return AMENITY[tags.amenity] ?? TOURISM[tags.tourism] ?? LEISURE[tags.leisure] ?? (tags.shop ? 'shops' : null)
 }
 
-const KEEP = ['cuisine', 'opening_hours', 'website']
+const KEEP = ['cuisine', 'opening_hours']
 export function poiRecord(el) {
   const tags = el?.tags ?? {}, cat = poiCategory(tags)
   const lat = el?.lat ?? el?.center?.lat, lon = el?.lon ?? el?.center?.lon
   if (!cat || lat == null || lon == null) return null
   const t = {}
   for (const k of KEEP) if (tags[k]) t[k] = tags[k]
-  if (!t.website && tags['contact:website']) t.website = tags['contact:website']
+  const site = siteFromTags(tags)
+  if (site) t.website = site
   for (const [k, v] of Object.entries(tags)) if (k.startsWith('addr:')) t[k] = v
-  return { id: `${el.type?.[0] ?? 'n'}${el.id}`, name: tags.name.trim(), cat, lon, lat, tags: t }
+  return { id: `${el.type?.[0] ?? 'n'}${el.id}`, name: tags.name.trim(), cat, lon, lat, tags: t, qid: wikidataId(tags) }
 }
 
 const norm = (s) => String(s ?? '').toLowerCase().replace(/\s+/g, ' ').trim()
@@ -77,4 +81,33 @@ export function anchorPoi({ x, z }, index, groundY = 0) {
     }
   }
   return near ? { x, y: near.top + ROOF_M, z, bldg: near.bldg } : { x, y: groundY + OPEN_M, z, bldg: -1 }
+}
+
+// Apartments and offices (P4 fix): named buildings, straight from the footprints — apartment/residential buildings,
+// and office/commercial buildings or anything carrying an office tag. Pinned at the building's centre (its roof).
+const APARTMENT = /^(apartments|residential)$/, OFFICE = /^(office|commercial)$/
+export function buildingPoi(b) {
+  const t = b?.tags ?? {}, name = (b?.name ?? t.name)?.trim()
+  if (!name) return null
+  const cat = t.office || OFFICE.test(t.building ?? '') ? 'offices' : APARTMENT.test(t.building ?? '') ? 'apartments' : null
+  if (!cat) return null
+  const tags = {}
+  if (t.opening_hours) tags.opening_hours = t.opening_hours
+  const site = siteFromTags(t)
+  if (site) tags.website = site
+  for (const [k, v] of Object.entries(t)) if (k.startsWith('addr:')) tags[k] = v
+  return { id: b.id, name, cat, x: b.centroid[0], z: b.centroid[1], tags, qid: wikidataId(t), h: Math.max(0, ...(b.pieces ?? []).map((p) => p.top ?? 0)) }
+}
+
+// So named apartment and office buildings don't swamp the map: at most `caps[cat]` per tile, the tallest kept.
+export function capByTile(list, caps) {
+  const groups = new Map(), out = []
+  for (const p of list) {
+    if (caps[p.cat] == null) { out.push(p); continue }
+    const k = `${p.tile}|${p.cat}`
+    if (!groups.has(k)) groups.set(k, [])
+    groups.get(k).push(p)
+  }
+  for (const [k, g] of groups) out.push(...g.sort((a, b) => (b.h ?? 0) - (a.h ?? 0)).slice(0, caps[k.split('|')[1]]))
+  return out
 }

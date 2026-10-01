@@ -11,6 +11,7 @@ import { pickPin } from './PoiPins.jsx'
 import { zoneAt } from '../lib/neighborhoods.js'
 import { crossStreets } from '../lib/grid.js'
 import { POI_CATEGORIES } from '../data/poiCategories.js'
+import { usePlacePopup } from '../hud/placePopup.js'
 
 THREE.BufferGeometry.prototype.computeBoundsTree = computeBoundsTree
 THREE.BufferGeometry.prototype.disposeBoundsTree = disposeBoundsTree
@@ -86,7 +87,8 @@ export default function Picker() {
         return
       }
       const pin = pickPin(e.clientX, e.clientY)
-      if (pin) { useStore.getState().select({ kind: 'poi', id: pin.id, data: pin }); return }
+      if (pin) { usePlacePopup.getState().open(pin); return } // a place opens its small card beside the pin
+      if (Date.now() - usePlacePopup.getState().closedAt < 600) return // this click only dismissed a place card
       const p = pick(e)
       if (!p) {
         // LIVE: a click on open ground opens the neighbourhood it lies in

@@ -64,3 +64,27 @@ describe('the pois Overpass kind', () => {
     expect(FETCH_KINDS.pois).toEqual([3, 4])
   })
 })
+
+import { buildingPoi, capByTile } from '../lib/pois.js'
+describe('apartments and offices from named buildings (P4 fix)', () => {
+  const b = (tags, extra = {}) => ({ id: 'w206804554', name: tags.name ?? null, tags, centroid: [10, 20], pieces: [{ top: 70 }], ...extra })
+  it('a named apartment or residential building is an apartments place', () => {
+    expect(buildingPoi(b({ name: 'The Emily', building: 'apartments' }))).toMatchObject({ id: 'w206804554', name: 'The Emily', cat: 'apartments', x: 10, z: 20 })
+    expect(buildingPoi(b({ name: 'Elm Flats', building: 'residential' })).cat).toBe('apartments')
+  })
+  it('a named office or commercial building, or anything tagged office, is an offices place, with its website', () => {
+    const p = buildingPoi(b({ name: '333 North Green', building: 'office', website: 'https://www.333northgreen.com' }))
+    expect(p).toMatchObject({ cat: 'offices' }); expect(p.tags.website).toBe('https://www.333northgreen.com')
+    expect(buildingPoi(b({ name: 'Acme', building: 'yes', office: 'company' })).cat).toBe('offices')
+  })
+  it('unnamed buildings and other kinds are not places', () => {
+    expect(buildingPoi(b({ building: 'apartments' }))).toBeNull()
+    expect(buildingPoi(b({ name: 'Church', building: 'church' }))).toBeNull()
+  })
+  it('caps apartments and offices per tile, tallest first, leaving other categories alone', () => {
+    const list = [...Array.from({ length: 30 }, (_, i) => ({ id: `w${i}`, cat: 'offices', tile: 'a', h: i })), { id: 'n1', cat: 'food', tile: 'a', h: 0 }]
+    const out = capByTile(list, { offices: 5 })
+    expect(out.filter((p) => p.cat === 'offices').map((p) => p.h)).toEqual([29, 28, 27, 26, 25])
+    expect(out.some((p) => p.cat === 'food')).toBe(true)
+  })
+})

@@ -13,3 +13,13 @@ describe('WORK panel', () => {
     expect(useStore.getState().officeArmed).toBe(true)
   })
 })
+
+import { bandColour } from '../panels/WorkPanel.jsx'
+describe('WORK rows wear their map colour (user, 2026-09-30)', () => {
+  it('cyan under 15 min, amber to 30, red beyond — the isochrone shells', () => {
+    expect(bandColour(10)).toBe(bandColour(14.9))
+    expect(bandColour(15)).not.toBe(bandColour(10))
+    expect(bandColour(29)).toBe(bandColour(20))
+    expect(bandColour(31)).not.toBe(bandColour(20))
+  })
+})

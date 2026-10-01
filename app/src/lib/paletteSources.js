@@ -58,3 +58,13 @@ export function addressRows(query) {
     { id: `addr:fly:${a.label}`, kind: 'guide', name: `Fly to ${a.label}`, sub: 'Address', run: () => s().startFlight(pose, a.label) },
   ]
 }
+
+// Your office in ⌘K: "work" / "office" finds it (and opens the Work lens); a landmark or place result can become it
+export function officeRows(query, top) {
+  const s = () => useStore.getState(), office = s().office, rows = []
+  if (office && /\b(work|office)\b/i.test(query)) rows.push({ id: 'office:go', kind: 'guide', name: `Work: ${office.label}`, sub: 'Your office · commute estimates', run: () => { if (s().lens !== 'WORK') s().setLens('WORK'); s().startFlight({ position: [office.x + 260, 220, office.z + 320], target: [office.x, 20, office.z] }, office.label) } })
+  const t = top?.pose?.target, x = top?.x ?? t?.[0], z = top?.z ?? t?.[2]
+  if (top && ['landmark', 'place'].includes(top.kind) && Number.isFinite(x) && Number.isFinite(z) && top.name !== office?.label)
+    rows.push({ id: `office:set:${top.id ?? top.name}`, kind: 'guide', name: `Set ${top.name} as my office`, sub: 'Work lens · commute estimates', run: () => { s().setOffice({ x, z, label: top.name }); if (s().lens !== 'WORK') s().setLens('WORK') } })
+  return rows
+}
