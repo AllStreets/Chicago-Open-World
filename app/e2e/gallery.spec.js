@@ -3,7 +3,7 @@
 import { test } from '@playwright/test'
 import { existsSync, mkdirSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { galleryFile, parseGallery, refuseOverwrite, RIVER_GALLERY, riverShotQuery } from '../src/lib/galleryShots.js'
+import { galleryFile, parseGallery, refuseOverwrite, RIVER_GALLERY, riverShotQuery, RIVER_LEVEL_GALLERY, riverLevelShotQuery } from '../src/lib/galleryShots.js'
 
 const items = process.env.GALLERY ? parseGallery(process.env.GALLERY) : []
 const milestone = process.env.GALLERY_MILESTONE ?? 'v6'
@@ -17,7 +17,7 @@ for (const it of items) {
     const out = refuseOverwrite(galleryFile({ dir, milestone, subject: it.subject, time: it.time }), existsSync)
     await page.clock.setFixedTime(new Date(clock))
     await page.addInitScript(() => { try { localStorage.setItem('chi-ow-help-seen', '1') } catch {} })
-    await page.goto(RIVER_GALLERY[it.view] ? `/?${riverShotQuery(RIVER_GALLERY[it.view], it.time)}` : `/?view=${it.view}&time=${it.time}`)
+    await page.goto(RIVER_LEVEL_GALLERY[it.view] ? `/?${riverLevelShotQuery(RIVER_LEVEL_GALLERY[it.view], it.time)}` : RIVER_GALLERY[it.view] ? `/?${riverShotQuery(RIVER_GALLERY[it.view], it.time)}` : `/?view=${it.view}&time=${it.time}`)
     await page.waitForFunction(() => window.__worldReady === true, null, { timeout: 90_000 })
     await page.waitForFunction(() => window.__camRest === true && window.__skyRest === true && window.__tilesIdle === true && window.__hudReady === true, null, { timeout: 60_000 })
     await page.waitForTimeout(1000) // the loading veil's last fade

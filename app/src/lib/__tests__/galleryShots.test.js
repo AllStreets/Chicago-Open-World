@@ -55,3 +55,16 @@ describe('river gallery poses (A-0)', () => {
     expect(riverShotQuery(RIVER_GALLERY.rivermouth, 'night')).toBe('pose=2150,90,-600,1500,10,-720&time=night')
   })
 })
+
+import { RIVER_LEVEL_GALLERY, riverLevelShotQuery } from '../galleryShots.js'
+describe('river-level gallery poses (A-12)', () => {
+  it('four eye-level poses at Riverwalk or tour-boat height, below the street, held by the test-only ?eye=', () => {
+    expect(Object.keys(RIVER_LEVEL_GALLERY)).toHaveLength(4)
+    for (const [k, v] of Object.entries(RIVER_LEVEL_GALLERY)) {
+      expect(k).toMatch(/^riverlevel[a-z0-9]+$/)
+      expect(v.position).toHaveLength(3); expect(v.target).toHaveLength(3)
+      expect(v.position[1]).toBeLessThan(2) // at the water, the Riverwalk or the sidewalk: never an aerial pose
+    }
+    expect(riverLevelShotQuery({ position: [1, -2.5, 3], target: [4, 5, 6] }, 'dusk')).toBe('eye=1,-2.5,3,4,5,6&time=dusk&stats')
+  })
+})

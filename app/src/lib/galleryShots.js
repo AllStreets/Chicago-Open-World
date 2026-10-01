@@ -58,3 +58,14 @@ export const RIVER_GALLERY = {
   riversaltshed: { position: [-2720, 60, -2700], target: [-2601, 10, -2740] },  // the North Branch Salt Shed and its roof sign
 }
 export const riverShotQuery = (pose, time) => `pose=${[...pose.position, ...pose.target].join(',')}&time=${time}`
+
+// ── A-12 (river-level bases, 2026-10-01): four poses at the water for the README's River icons frames, day and dusk —
+// a tour boat's upper deck (y ≈ −2.5, the river at −6.3) or the sidewalk (1.7). gallery.spec.js holds them with the
+// test-only ?eye= (AtlasRig, with ?stats): people see the river level from the Riverwalk walk and the rides.
+export const RIVER_LEVEL_GALLERY = {
+  riverlevelapple: { position: [395, -2.5, -768], target: [300, 2, -806] },        // Apple's steps, the DuSable NE house, Wrigley's river walk
+  riverlevelmarina: { position: [-40, -2.5, -605], target: [-95, 2, -660] },      // Marina City's platform, restaurants and slips
+  riverleveldusable: { position: [296, 1.7, -690], target: [297, 7.5, -712] },   // the SE bridgehouse and Hering's Regeneration
+  riverlevelopera: { position: [-870, -2.5, -10], target: [-800, 4, -70] },       // the Civic Opera's arcade at the water
+}
+export const riverLevelShotQuery = (pose, time) => `eye=${[...pose.position, ...pose.target].join(',')}&time=${time}&stats`
