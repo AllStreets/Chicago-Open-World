@@ -8,6 +8,7 @@ import { transitPlaces } from '../transit/palette.js'
 import { gamePlaces } from '../sports/palette.js'
 import { useSports } from '../sports/sportsStore.js'
 import { FEATURE_CONTROLS } from '../hud/featureControls.js'
+import { retryLive } from '../services/feeds.js'
 
 export function featurePlaces(state) {
   const sp = useSports.getState()
@@ -67,4 +68,13 @@ export function officeRows(query, top) {
   if (top && ['landmark', 'place'].includes(top.kind) && Number.isFinite(x) && Number.isFinite(z) && top.name !== office?.label)
     rows.push({ id: `office:set:${top.id ?? top.name}`, kind: 'guide', name: `Set ${top.name} as my office`, sub: 'Work lens · commute estimates', run: () => { s().setOffice({ x, z, label: top.name }); if (s().lens !== 'WORK') s().setLens('WORK') } })
   return rows
+}
+
+// Live data (P5): the chip's two actions, from ⌘K
+export function liveCommands() {
+  const s = () => useStore.getState()
+  return [
+    { id: 'data:retry', kind: 'command', name: 'Data: try live again', sub: 'Live CTA trains, weather and scores from CHI ATLAS', aliases: ['live', 'reconnect'], run: () => { if (!retryLive()) s().showToast('The live service is not connected to this copy of the map — everything runs on simulations') } },
+    { id: 'data:sources', kind: 'command', name: 'Data: show sources', sub: 'What is live and what is simulated', aliases: ['data sources', 'simulated', 'live data'], run: () => s().setSourcesOpen(true) },
+  ]
 }

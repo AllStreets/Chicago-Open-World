@@ -1,6 +1,6 @@
 // app/src/services/__tests__/chiApi.test.js
 import { describe, it, expect, vi } from 'vitest'
-import { chiGet, chiBase } from '../chiApi.js'
+import { chiGet, chiBase, probeHealth, nextDelay } from '../chiApi.js'
 
 const ok = (body) => vi.fn(async () => ({ ok: true, status: 200, json: async () => body }))
 describe('chiGet', () => {
@@ -29,5 +29,17 @@ describe('chiGet', () => {
   it('chiBase reads VITE_CHI_API_URL and strips a trailing slash', () => {
     expect(chiBase({ VITE_CHI_API_URL: 'https://chi.example/' })).toBe('https://chi.example')
     expect(chiBase({})).toBe('')
+  })
+})
+
+describe('probeHealth', () => {
+  it('live only for 2xx with status ok', async () => {
+    expect(await probeHealth({ base: 'b', fetchImpl: async () => ({ ok: true, status: 200, json: async () => ({ status: 'ok' }) }) })).toBe('live')
+    expect(await probeHealth({ base: 'b', fetchImpl: async () => ({ ok: true, status: 200, json: async () => ({ status: 'down' }) }) })).toBe('offline')
+    expect(await probeHealth({ base: 'b', fetchImpl: async () => { throw new TypeError('CORS') } })).toBe('offline')
+    expect(await probeHealth({ base: '' })).toBe('offline')
+  })
+  it('backoff doubles and caps at 5 minutes', () => {
+    expect(nextDelay(30_000, 0)).toBe(30_000); expect(nextDelay(30_000, 2)).toBe(120_000); expect(nextDelay(30_000, 10)).toBe(300_000)
   })
 })

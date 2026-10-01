@@ -24,9 +24,11 @@ import ContextPanel from './ContextPanel.jsx'
 import BuildingTooltip from './BuildingTooltip.jsx'
 import PlacePopup from './PlacePopup.jsx'
 import TourBar from './TourBar.jsx'
+import { bootFeeds } from '../services/feeds.js'
 
 export default function Hud() {
   useFeatureKeys()
+  useEffect(() => { bootFeeds() }, []) // P5: probe CHI once; offline, everything stays simulated
   const manifest = useStore((s) => s.manifest)
   const [size, setSize] = useState(() => [window.innerWidth, window.innerHeight])
   useEffect(() => {

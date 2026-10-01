@@ -93,6 +93,14 @@ export const useStore = create((set) => ({
   hoods: null, // neighborhoods.json zones, loaded by the LIVE layer (P4)
   tourResume: null, // the tour a movement key interrupted, offered back for 10 s
   lineAlerts: {}, // line id → { severity, headlines } from CTA alerts (P4)
+  // live data (P5): the CHI probe, each feed's honest status and when it last answered; the chip's sources popover
+  apiStatus: 'unknown',
+  setApiStatus: (apiStatus) => set({ apiStatus }),
+  feeds: { cta: 'SIMULATED', alerts: 'SIMULATED', weather: 'SIMULATED', sports: 'SIMULATED', places: 'SIMULATED' },
+  feedAt: {},
+  setFeed: (name, status) => set((s) => (s.feeds[name] === status && status !== 'LIVE' ? {} : { feeds: { ...s.feeds, [name]: status }, ...(status === 'LIVE' ? { feedAt: { ...s.feedAt, [name]: Date.now() } } : {}) })),
+  sourcesOpen: false,
+  setSourcesOpen: (sourcesOpen) => set({ sourcesOpen }),
   hover: null,    // { x, y, lines } — the building under the pointer (P4)
   setHover: (hover) => set({ hover }),
   readout: { streets: 'STATE & MADISON', altitude: 0, heading: 0 },

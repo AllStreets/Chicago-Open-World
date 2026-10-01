@@ -10,6 +10,7 @@ vi.mock('../../lib/paletteSources.js', () => ({
   lensCommands: () => [],
   placeCommands: () => [],
   tourCommands: () => [],
+  liveCommands: () => [],
   addressRows: () => [],
   officeRows: () => [],
   featurePlaces: () => [

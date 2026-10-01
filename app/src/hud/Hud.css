@@ -80,6 +80,15 @@
 .tc-empty, .transit-card p { margin: 0; color: var(--text-muted); font: 500 12px var(--font-ui); }
 .tc-speed { font-family: var(--font-mono) !important; }
 .wm-chips { margin-top: 6px; }
+/* P5: the live chip is a button; its "Data sources" popover hangs under the wordmark, above the side stack */
+.live-chip { position: relative; }
+.live-chip > .hud-chip { cursor: pointer; background: transparent; font: inherit; font-family: var(--font-mono); font-size: 10.5px; }
+.live-chip > .hud-chip:hover { color: var(--text); }
+.sources-pop { position: absolute; top: calc(100% + 8px); left: -18px; z-index: 30; width: 340px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+.sources-pop ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font: 500 12px/1.4 var(--font-ui); color: var(--text-muted); }
+.sources-pop b { color: var(--text); font-weight: 600; }
+.sources-actions { display: flex; gap: 6px; }
+.sources-note { margin: 0; font: 500 11.5px var(--font-ui); color: var(--text-faint); }
 .toast { position: absolute; top: 168px; left: 50%; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 8px; animation: hud-rise 0.3s ease both; }
 /* V7: one left column for the side panels; scrolls when full, lets clicks through between cards */
 .hud-root > .hud-left-stack { position: absolute; top: 148px; left: 16px; bottom: 64px; width: 300px; display: flex; flex-direction: column; gap: 10px;
