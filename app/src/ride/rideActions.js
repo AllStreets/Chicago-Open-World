@@ -49,7 +49,7 @@ export function handleRideKey(e) {
   if (e.key === '<') { changeSpeed(-1); return true }
   if (e.key === '.') { skipTo(1); return true }
   if (e.key === ',') { skipTo(-1); return true }
-  if (e.code === 'KeyC') { cycleView(); return true }
+  if (e.code === 'KeyK') { cycleView(); return true } // K: C is Traffic
   return false
 }
 export const ridingKind = () => sessionDef()?.kind ?? useStore.getState().ride?.kind ?? null

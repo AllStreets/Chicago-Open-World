@@ -102,7 +102,7 @@ grid — so the HUD always knows which corner you are over.
 
 ## How it came together
 
-A progressive gallery, oldest first. Images are never replaced — each phase adds its own shots, so you can watch the city grow from flat boxes to a living place.
+A progressive gallery, oldest first. Each phase adds its own shots; when a building is rebuilt, the images that feature it are re-taken at the same pose so the gallery stays true, and the originals move to [Evolution](#evolution) — so you can still watch the city grow from flat boxes to a living place.
 
 ### Phase 1 · Foundation — *real footprints, real heights, flat colour*
 
@@ -170,7 +170,7 @@ A progressive gallery, oldest first. Images are never replaced — each phase ad
 </tr>
 <tr>
 <td><em>Willis in black aluminium and bronze glass; 311 South Wacker in pink Texas granite; Aon in white Mount Airy granite — 41 landmarks, each colour sourced.</em></td>
-<td><em>The Wrigley Building floodlit in warm white, as it has been since 1921; Tribune's crown lit above.</em></td>
+<td><em>The Wrigley Building floodlit in warm white, as it has been since 1921 — its Giralda clock tower now carved in full, four clock faces lit; Tribune's crown lit above.</em></td>
 <td><em>Ordinary buildings too: 464 mapped brick lofts, dark towers and concrete blocks take their OpenStreetMap colours.</em></td>
 </tr>
 </table>
@@ -214,14 +214,14 @@ A progressive gallery, oldest first. Images are never replaced — each phase ad
 </tr>
 <tr>
 <td><em>Soldier Field on a game night: rim floodlights, painted Bears end zones, a full bowl and the teams at the line.</em></td>
-<td><em>Wrigley from above: crosshatched outfield, clay arc and chalk at MLB dimensions.</em></td>
+<td><em>Wrigley from above: crosshatched outfield, clay arc and chalk at MLB dimensions — and the rooftop clubs' steel bleachers across Waveland and Sheffield.</em></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/screenshots/v5-w-flag-day.png" alt="V5 — the W flag over Wrigley's scoreboard" width="100%"/></td>
 <td width="50%"><img src="docs/screenshots/v5-united-center-night.png" alt="V5 — United Center game night" width="100%"/></td>
 </tr>
 <tr>
-<td><em>After a Cubs win the W flies over the scoreboard, the board reads FINAL, and the fans wave W flags.</em></td>
+<td><em>After a Cubs win the W flies over the scoreboard, the board reads FINAL, and the fans wave W flags — on the rooftops across Sheffield too.</em></td>
 <td><em>United Center game night: lit fascia, a stepped grey dome and the plaza crowd in Bulls red.</em></td>
 </tr>
 </table>
@@ -257,11 +257,11 @@ Game days come from the real ESPN schedules of all seven Chicago teams, fetched 
 </tr>
 <tr>
 <td><img src="docs/screenshots/v6-crownfountain-night.png" alt="V6 — Crown Fountain's faces at night" width="100%"/></td>
-<td></td>
+<td><img src="docs/screenshots/v6-picasso-day.png" alt="V6 — the Chicago Picasso in Daley Plaza" width="100%"/></td>
 </tr>
 <tr>
-<td><em>Crown Fountain's LED faces pucker and spout on their cycle. Also new: Lurie Garden, the BP Bridge, the Art Institute lions, the Picasso, the Flamingo, the Cultural Center domes, Union Station, Navy Pier's Headhouse and Ballroom, the Riverwalk and the Zoo.</em></td>
-<td></td>
+<td><em>Crown Fountain's LED faces pucker and spout on their cycle. Also new: Lurie Garden, the BP Bridge, the Art Institute lions, the Flamingo, the Cultural Center domes, Union Station, Navy Pier's Headhouse and Ballroom, the Riverwalk and the Zoo.</em></td>
+<td><em>The Chicago Picasso in Daley Plaza — 50 ft of rust-red Cor-Ten steel on its granite base, under the Daley Center's dark glass.</em></td>
 </tr>
 </table>
 
@@ -299,11 +299,11 @@ Game days come from the real ESPN schedules of all seven Chicago teams, fetched 
 </tr>
 <tr>
 <td width="50%"><img src="docs/screenshots/v8-loop-night.png" alt="V8 — the Loop at night" width="100%"/></td>
-<td></td>
+<td width="50%"><img src="docs/screenshots/v8-riverwalk-night.png" alt="V8 — the main branch and the Riverwalk at night" width="100%"/></td>
 </tr>
 <tr>
 <td><em>The Loop at night: lit crowns, glowing L lines, trains and ballparks in one frame.</em></td>
-<td></td>
+<td><em>The Riverwalk at night: lamps along the promenade, Wacker's traffic, and the canyon's windows broken up on the water.</em></td>
 </tr>
 </table>
 
@@ -335,7 +335,7 @@ The recognisable towers got their sculptural signatures, and twenty more landmar
 <td width="50%"><img src="docs/screenshots/p3-pingtom-day.png" alt="Phase 3 — the Ping Tom Park pagoda on the river" width="100%"/></td>
 </tr>
 <tr>
-<td><em>The Tribune's octagonal Gothic crown with its eight flying buttresses and pinnacles.</em></td>
+<td><em>The Tribune's octagonal Gothic crown with its eight flying buttresses and pinnacles, over a shaft of limestone pier ribs.</em></td>
 <td><em>Ping Tom Park's pagoda on the South Branch — one of twenty P2 landmarks, from the Rookery to the Chinatown Gate and the Pilsen murals.</em></td>
 </tr>
 </table>
@@ -383,6 +383,45 @@ Navy Pier's summer fireworks, fired from the barge off the pier's south side on 
 <tr>
 <td><em>Press 7: Christmas Eve at dusk — snow falling, roofs and parks white, the harbour frozen, windows coming on.</em></td>
 <td><em>Press 6: a clear midsummer afternoon.</em></td>
+</tr>
+</table>
+
+### Icons, offices and places — *Flexport's building, the Tribune and Wrigley gone all out, Lincoln Park's stone*
+
+Flexport Chicago's office at 333 North Green and BCG's tower across the street, modelled from photographs; the Tribune, the Wrigley Building, Carbide &amp; Carbon, the Water Tower and Willis carved to a new level of detail; the Wrigley marquee and the rooftop clubs; Lincoln Park's stone structures; and places that read at a glance — deep matte pins with a small card for each.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/p4-north-green-pair-day.png" alt="333 and 360 North Green — Flexport Chicago and BCG Chicago" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/p4-wrigley-building-clock.png" alt="The Wrigley Building's clock tower" width="100%"/></td>
+</tr>
+<tr>
+<td><em>333 North Green (Flexport Chicago, the thin blue line is their floor) in its black grid over the kinetic wall; 360 North Green (BCG) on its V-truss transfer level.</em></td>
+<td><em>The Wrigley Building's Giralda tower: four 6 m clock faces, the arcaded belfry, the octagons, the cupola and its gilded finial.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/p4-carbide-carbon-night.png" alt="Carbide &amp; Carbon's gold crown at night" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/p4-water-tower.png" alt="The Chicago Water Tower" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Carbide &amp; Carbon: black granite, dark green terra cotta with gold-tipped piers, two setbacks into the floodlit gold-leaf tower.</em></td>
+<td><em>The Water Tower, Wilde's "castellated monstrosity with pepper boxes stuck all over it" — turrets, battlements, lancets and the lantern.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/p4-wrigley-marquee-night.png" alt="The Wrigley Field marquee at night" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/p4-wrigley-rooftops-night.png" alt="The rooftop clubs full on a game night" width="100%"/></td>
+</tr>
+<tr>
+<td><em>The red marquee at Clark &amp; Addison — WRIGLEY FIELD / HOME OF / CHICAGO CUBS over its message board, lit at night.</em></td>
+<td><em>Sixteen rooftop clubs across Waveland and Sheffield: steel bleachers facing home plate, full on game nights, each a place with its website.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/p4-lily-pool.png" alt="The Alfred Caldwell Lily Pool" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/p4-place-popup-day.png" alt="A place card beside its pin" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Lincoln Park's stone: Caldwell's Lily Pool between stratified limestone ledges, with the Chess Pavilion, the Couch Tomb and the Waveland Clock Tower.</em></td>
+<td><em>Click a pin: today's hours, the address and the website (or a web search), in a card that follows the pin.</em></td>
 </tr>
 </table>
 
@@ -466,6 +505,122 @@ npm run e2e --prefix app          # hero-view screenshot baselines (Playwright)
 - [ ] **7 · Traversal** — glide mode
 
 Design spec: [docs/superpowers/specs/2026-09-28-chi-atlas-open-world-design.md](docs/superpowers/specs/2026-09-28-chi-atlas-open-world-design.md)
+
+## Evolution
+
+It wasn't made right in one attempt. Here are the same places through each pass, first and roughest on the left, newest on the right. When a building is rebuilt, its README images are re-taken, and the earlier frames are kept in [docs/screenshots/evolution](docs/screenshots/evolution).
+
+**The city** — Streeterville at dusk, from flat colour to today
+
+<table>
+<tr>
+<td width="20%"><img src="docs/screenshots/phase1-streeterville-dusk.png" alt="Phase 1 — flat-shaded Streeterville" width="100%"/></td>
+<td width="20%"><img src="docs/screenshots/phase2-streeterville-dusk.png" alt="Phase 2 — façades and lit windows" width="100%"/></td>
+<td width="20%"><img src="docs/screenshots/phase25-wrigleyville.png" alt="Phase 2.5 — the expanded city" width="100%"/></td>
+<td width="20%"><img src="docs/screenshots/v8-wide-streeterville-dusk.png" alt="Vision pass — the wide lakefront" width="100%"/></td>
+<td width="20%"><img src="docs/screenshots/evolution/today-streeterville-dusk.png" alt="Today — Streeterville at dusk" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>Phase 1 · Sep 28<br/>extruded footprints, flat colour</sub></td>
+<td><sub>Phase 2 · Sep 28<br/>façades, windows, sky</sub></td>
+<td><sub>Phase 2.5 · Sep 28<br/>Wrigleyville to 35th St</sub></td>
+<td><sub>Vision pass · Sep 29<br/>one lake, true colours</sub></td>
+<td><sub>Today · Sep 30<br/>traffic, crowns, paving</sub></td>
+</tr>
+</table>
+
+**One landmark** — the Wrigley Building and the Tribune
+
+<table>
+<tr>
+<td width="25%"><img src="docs/screenshots/evolution/v2-wrigley-building-night.png" alt="V2 — the Wrigley Building as a coloured massing" width="100%"/></td>
+<td width="25%"><img src="docs/screenshots/evolution/p3-tribune-dusk.png" alt="Phase 3 — the Tribune's Gothic crown" width="100%"/></td>
+<td width="25%"><img src="docs/screenshots/v2-wrigley-building-night.png" alt="Today — the Wrigley Building's clock tower" width="100%"/></td>
+<td width="25%"><img src="docs/screenshots/p3-tribune-dusk.png" alt="Today — the Tribune's pier ribs and crown" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>V2 · Sep 29<br/>true colour, plain massing</sub></td>
+<td><sub>Phase 3 · Sep 29<br/>the Tribune's crown</sub></td>
+<td><sub>Phase 4 · Sep 30<br/>the Giralda clock tower</sub></td>
+<td><sub>Phase 4 · Sep 30<br/>pier ribs, lantern tracery</sub></td>
+</tr>
+</table>
+
+**The lake**
+
+<table>
+<tr>
+<td width="20%"><img src="docs/screenshots/phase1-museum-day.png" alt="Phase 1 — the lake behind Museum Campus" width="100%"/></td>
+<td width="20%"><img src="docs/screenshots/v1-harbor-dusk.png" alt="V1 — harbour and lake as one water" width="100%"/></td>
+<td width="20%"><img src="docs/screenshots/v1-lake-horizon-day.png" alt="V1 — the lake to the horizon" width="100%"/></td>
+<td width="20%"><img src="docs/screenshots/p4-snow-christmas-dusk.png" alt="Phase 4 — the frozen shore" width="100%"/></td>
+<td width="20%"><img src="docs/screenshots/p4-fireworks-finale-night.png" alt="Phase 4 — fireworks on the water" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>Phase 1 · Sep 28<br/>a flat plane</sub></td>
+<td><sub>V1 · Sep 29<br/>one body of water</sub></td>
+<td><sub>V1 · Sep 29<br/>no edge to the lake</sub></td>
+<td><sub>Phase 4 · Sep 30<br/>ice along the shore</sub></td>
+<td><sub>Phase 4 · Sep 30<br/>fireworks reflected</sub></td>
+</tr>
+</table>
+
+**The city at night**
+
+<table>
+<tr>
+<td width="20%"><img src="docs/screenshots/v1-river-night.png" alt="V1 — the river at night" width="100%"/></td>
+<td width="20%"><img src="docs/screenshots/v3-transit-loop-night.png" alt="V3 — the L glowing in the Loop" width="100%"/></td>
+<td width="20%"><img src="docs/screenshots/v8-loop-night.png" alt="Vision pass — the Loop at night" width="100%"/></td>
+<td width="20%"><img src="docs/screenshots/v8-riverwalk-night.png" alt="The Riverwalk at night" width="100%"/></td>
+<td width="20%"><img src="docs/screenshots/p4-carbide-carbon-night.png" alt="Phase 4 — Carbide &amp; Carbon's floodlit crown" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>V1 · Sep 29<br/>windows on the water</sub></td>
+<td><sub>V3 · Sep 29<br/>the L in its colours</sub></td>
+<td><sub>Vision pass · Sep 29<br/>lit crowns, trains</sub></td>
+<td><sub>Phase 4 · Sep 30<br/>street lamps, traffic</sub></td>
+<td><sub>Phase 4 · Sep 30<br/>floodlit gold leaf</sub></td>
+</tr>
+</table>
+
+**The HUD**
+
+<table>
+<tr>
+<td width="20%"><img src="docs/screenshots/phase1-loop-day.png" alt="Phase 1 — the first HUD" width="100%"/></td>
+<td width="20%"><img src="docs/screenshots/evolution/v2-willis-loop-day.png" alt="V2 — the HUD with a view list" width="100%"/></td>
+<td width="20%"><img src="docs/screenshots/v7-hud-1440x900-day.png" alt="V7 — every feature in one dock" width="100%"/></td>
+<td width="20%"><img src="docs/screenshots/p4-visit-beacons-dusk.png" alt="Phase 4 — the guide's lenses" width="100%"/></td>
+<td width="20%"><img src="docs/screenshots/p4-place-popup-day.png" alt="Phase 4 — a place card" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>Phase 1 · Sep 28<br/>a readout and time chips</sub></td>
+<td><sub>V2 · Sep 29<br/>search, views, time</sub></td>
+<td><sub>V7 · Sep 29<br/>one dock, one key each</sub></td>
+<td><sub>Phase 4 · Sep 30<br/>VISIT · LIVE · WORK</sub></td>
+<td><sub>Phase 4 · Sep 30<br/>hours, address, website</sub></td>
+</tr>
+</table>
+
+**Wrigley Field**
+
+<table>
+<tr>
+<td width="20%"><img src="docs/screenshots/phase25-wrigleyville.png" alt="Phase 2.5 — Wrigley as a shell" width="100%"/></td>
+<td width="20%"><img src="docs/screenshots/evolution/v5-wrigley-field-day.png" alt="V5 — the field painted" width="100%"/></td>
+<td width="20%"><img src="docs/screenshots/evolution/v5-w-flag-day.png" alt="V5 — the W after a win" width="100%"/></td>
+<td width="20%"><img src="docs/screenshots/p4-wrigley-marquee-day.png" alt="Phase 4 — the marquee" width="100%"/></td>
+<td width="20%"><img src="docs/screenshots/p4-wrigley-rooftops-gameday.png" alt="Phase 4 — the rooftops on game day" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>Phase 2.5 · Sep 28<br/>a ballpark shell</sub></td>
+<td><sub>V5 · Sep 29<br/>the field, the bowl</sub></td>
+<td><sub>V5 · Sep 29<br/>the W flies</sub></td>
+<td><sub>Phase 4 · Sep 30<br/>the red marquee</sub></td>
+<td><sub>Phase 4 · Sep 30<br/>rooftop bleachers, full</sub></td>
+</tr>
+</table>
 
 ---
 

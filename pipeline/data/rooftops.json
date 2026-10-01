@@ -1,0 +1,204 @@
+{
+  "note": "The Wrigley Field rooftop clubs on Waveland Avenue (beyond left field) and Sheffield Avenue (beyond right field): steel bleacher grandstands built on the roofs of three-flats, facing home plate. Names, addresses and owners from Wikipedia's Wrigley Rooftops article (Ricketts family purchases 2016, Crain's); club websites as listed by SpotHero's Wrigleyville rooftops guide, with Ricketts-owned clubs pointing at the group's WrigleyRooftops.com. Footprints are OSM ways matched by address; 1010 W Waveland has no OSM footprint and is a place only, pinned at its lot by address interpolation; 3627 and 3633 N Sheffield fill the 28 m gap OSM leaves between 3625 and 3637 with two three-storey lots (`lot`, world metres) so the row reads continuous. Brick colours are a common-brick Chicago palette, NOT read from photographs of each building — treat them as approximate.",
+  "sources": [
+    "https://en.wikipedia.org/wiki/Wrigley_Rooftops",
+    "https://blog.spothero.com/wrigleyville-rooftops",
+    "https://www.chicagobusiness.com/article/20160113/BLOGS04/160119941/ricketts-buys-three-more-wrigley-rooftops-unveils-new-ticket-site",
+    "https://www.chicagobusiness.com/article/20160410/BLOGS04/160409814/ricketts-family-buys-10th-wrigley-field-rooftop"
+  ],
+  "homePlateFrom": "wrigleyfield",
+  "clubs": [
+    {
+      "key": "wrigley-view",
+      "name": "Wrigley View Rooftop",
+      "address": "1050 W Waveland Ave",
+      "osm": "w158622288",
+      "street": "waveland",
+      "website": "http://www.wrigleyview.com/",
+      "brick": "#7e3b2c"
+    },
+    {
+      "key": "sky-lounge-1048",
+      "name": "1048 Sky Lounge Wrigley Rooftop",
+      "address": "1048 W Waveland Ave",
+      "osm": "w210328647",
+      "street": "waveland",
+      "owner": "Ricketts family",
+      "website": "https://www.wrigleyrooftops.com/",
+      "brick": "#8d4a35"
+    },
+    {
+      "key": "brixen-ivy",
+      "name": "Brixen Ivy",
+      "address": "1044 W Waveland Ave",
+      "osm": "w210328639",
+      "street": "waveland",
+      "owner": "Ricketts family",
+      "website": "https://www.wrigleyrooftops.com/",
+      "brick": "#6f3a2b"
+    },
+    {
+      "key": "beyond-the-ivy-1038",
+      "name": "Beyond the Ivy (1038 Waveland)",
+      "address": "1038 W Waveland Ave",
+      "osm": "w210328617",
+      "street": "waveland",
+      "owner": "Ricketts family",
+      "website": "https://www.wrigleyrooftops.com/",
+      "brick": "#9a5a3e"
+    },
+    {
+      "key": "wrigleyville-rooftops-1032",
+      "name": "Wrigleyville Rooftops (1032 Waveland)",
+      "address": "1032 W Waveland Ave",
+      "osm": "w1058679139",
+      "street": "waveland",
+      "owner": "Ricketts family",
+      "website": "https://www.wrigleyrooftops.com/",
+      "brick": "#80412f"
+    },
+    {
+      "key": "beyond-the-ivy-1010",
+      "name": "Beyond the Ivy (1010 Waveland)",
+      "address": "1010 W Waveland Ave",
+      "osm": null,
+      "at": [
+        -2250,
+        -7462
+      ],
+      "street": "waveland",
+      "owner": "Ricketts family",
+      "website": "https://www.wrigleyrooftops.com/"
+    },
+    {
+      "key": "wrigleyville-rooftops-3609",
+      "name": "Wrigleyville Rooftops (3609 Sheffield)",
+      "address": "3609 N Sheffield Ave",
+      "osm": "w210329826",
+      "street": "sheffield",
+      "website": "http://www.wrigleyvillerooftops.com/",
+      "brick": "#874632"
+    },
+    {
+      "key": "wrigley-field-rooftop-club",
+      "name": "Wrigley Field Rooftop Club",
+      "address": "3617 N Sheffield Ave",
+      "osm": "w210329839",
+      "street": "sheffield",
+      "website": "http://www.wrigleyfieldrooftopclub.com/",
+      "brick": "#a46a46"
+    },
+    {
+      "key": "sheffield-baseball-club",
+      "name": "Sheffield Baseball Club",
+      "address": "3619 N Sheffield Ave",
+      "osm": "w210329869",
+      "street": "sheffield",
+      "website": "http://www.sheffieldbaseballclub.com/",
+      "brick": "#7a3a2a"
+    },
+    {
+      "key": "down-the-line",
+      "name": "Down the Line Rooftop",
+      "address": "3621-3625 N Sheffield Ave",
+      "osm": "w210329877",
+      "street": "sheffield",
+      "owner": "Ricketts family (Hickory Street Capital)",
+      "website": "https://www.wrigleyrooftops.com/",
+      "brick": "#8f4d36"
+    },
+    {
+      "key": "skybox-on-sheffield",
+      "name": "Skybox on Sheffield",
+      "address": "3627 N Sheffield Ave",
+      "osm": null,
+      "street": "sheffield",
+      "website": "http://www.skyboxonsheffield.com/",
+      "lot": [
+        [
+          -2185.4,
+          -7335.2
+        ],
+        [
+          -2160.0,
+          -7335.2
+        ],
+        [
+          -2160.0,
+          -7348.6
+        ],
+        [
+          -2185.4,
+          -7348.6
+        ]
+      ],
+      "storeys": 3,
+      "brick": "#8a4b34"
+    },
+    {
+      "key": "lakeview-baseball-club",
+      "name": "Lakeview Baseball Club",
+      "address": "3633 N Sheffield Ave",
+      "osm": null,
+      "street": "sheffield",
+      "website": "http://www.lakeviewbaseballclub.com/",
+      "lot": [
+        [
+          -2185.4,
+          -7349.0
+        ],
+        [
+          -2160.0,
+          -7349.0
+        ],
+        [
+          -2160.0,
+          -7362.2
+        ],
+        [
+          -2185.4,
+          -7362.2
+        ]
+      ],
+      "storeys": 3,
+      "brick": "#76392a"
+    },
+    {
+      "key": "ivy-league-baseball-club",
+      "name": "Ivy League Baseball Club",
+      "address": "3637 N Sheffield Ave",
+      "osm": "w210329920",
+      "street": "sheffield",
+      "website": "http://www.ivyleaguebaseballclub.com/",
+      "brick": "#6c3528"
+    },
+    {
+      "key": "wrigley-rooftop-3639",
+      "name": "3639 Wrigley Rooftop",
+      "address": "3639 N Sheffield Ave",
+      "osm": "w210329929",
+      "street": "sheffield",
+      "website": "http://www.3639wrigleyrooftop.com/",
+      "brick": "#93553b"
+    },
+    {
+      "key": "wrigleyville-rooftops-3643",
+      "name": "Wrigleyville Rooftops (3643 Sheffield)",
+      "address": "3643 N Sheffield Ave",
+      "osm": "w210329942",
+      "street": "sheffield",
+      "owner": "Ricketts family",
+      "website": "https://www.wrigleyrooftops.com/",
+      "brick": "#7b3f2e"
+    },
+    {
+      "key": "murphys-rooftop",
+      "name": "Murphy's Rooftop",
+      "address": "3653 N Sheffield Ave",
+      "osm": "w31136054",
+      "street": "sheffield",
+      "website": "http://murphysrooftop.com/",
+      "brick": "#8a4630"
+    }
+  ]
+}

@@ -4,7 +4,7 @@ import { ORIGIN } from '../../../shared/project.js'
 
 const MIN = 60 * 1000
 
-function presetDate(preset, now) {
+export function presetDate(preset, now) {
   const t = SunCalc.getTimes(now, ORIGIN.lat, ORIGIN.lon)
   switch (preset) {
     case 'DAWN': return new Date(t.sunrise.getTime() + 20 * MIN)

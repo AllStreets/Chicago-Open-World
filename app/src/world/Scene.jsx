@@ -29,6 +29,9 @@ import PostFX from './PostFX.jsx'
 import PerfWatch from './PerfWatch.jsx'
 import { QUALITY } from '../lib/quality.js'
 import { loadHeightfield, clearanceAt } from '../lib/clearance.js'
+import Tunnels from '../transit/Tunnels.jsx'
+import Traffic from '../traffic/Traffic.jsx'
+import { getSim } from '../transit/simStore.js'
 import TransitLayer from '../transit/TransitLayer.jsx'
 import Trains from '../transit/Trains.jsx'
 import SportsClock from '../sports/SportsClock.jsx'
@@ -91,7 +94,7 @@ export default function Scene() {
   const threeCamera = useThree((s) => s.camera)
   // test-only ?perf turns the exact draw probe on (it owns renderer.info while on, so ?stats specs that read it stay unaffected)
   useEffect(() => { if (new URLSearchParams(window.location.search).has('perf')) useStore.getState().setPerfOn(true) }, [])
-  useEffect(() => { if (new URLSearchParams(window.location.search).has('stats')) { window.__gl = gl; window.__store = useStore; window.__clearanceAt = clearanceAt; window.__scene = threeScene; window.__camera = threeCamera; window.__live = { tracker: getTracker, trains: getTrains } } }, [gl, threeScene, threeCamera])
+  useEffect(() => { if (new URLSearchParams(window.location.search).has('stats')) { window.__gl = gl; window.__store = useStore; window.__clearanceAt = clearanceAt; window.__scene = threeScene; window.__camera = threeCamera; window.__live = { tracker: getTracker, trains: getTrains }; window.__getSim = getSim } }, [gl, threeScene, threeCamera])
 
   return (
     <>
@@ -103,6 +106,8 @@ export default function Scene() {
       {manifest && <TileStreamer manifest={manifest} />}
       {manifest && <Landmarks manifest={manifest} />}
       <TransitLayer />
+      <Tunnels />
+      {manifest?.traffic && <Traffic file={manifest.traffic} version={manifest.version} />}
       <StationHits />
       <Picker />
       <SeasonRig />

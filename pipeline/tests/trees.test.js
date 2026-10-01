@@ -28,8 +28,9 @@ describe('venues stay tree-free (D1)', () => {
   })
   it('filters on the coordinates it writes: a tree 1 cm outside a hull that rounds inside is removed', () => {
     expect(roundTree([10.06, 50])).toEqual([10.1, 50])
-    const r = filterTrees([[10.06, 50], [5, 50], [550, 40]], { zones: zones.map((z) => z.ring) })
-    expect(r.kept).toEqual([[5, 50]])
+    // (5, 50) is 5 m off the hull, inside the colonnade/concourse margin since the user fix; (-30, 50) is clear
+    const r = filterTrees([[10.06, 50], [-30, 50], [550, 40]], { zones: zones.map((z) => z.ring) })
+    expect(r.kept).toEqual([[-30, 50]])
     expect(r.removed.venue).toBe(2)
   })
   it('the build gate names the venue and the tile', () => {
@@ -38,7 +39,44 @@ describe('venues stay tree-free (D1)', () => {
   })
 })
 
-import { outsideZones } from '../lib/trees.js'
+import { outsideZones, canopyRadius, VENUE_MARGIN_M } from '../lib/trees.js'
+
+describe('no canopy through a building, a stadium, a plaza or a railway (user fix, project-wide)', () => {
+  const b = { bbox: { minX: 0, minZ: 0, maxX: 40, maxZ: 40 }, polygons: [{ outer: sq(0, 0, 40, 40), holes: [sq(10, 10, 30, 30)] }] }
+  it('a canopy is ~3.5 m × the tree\'s scale (0.8–1.4), decided on the stored coordinates', () => {
+    const r = canopyRadius([100, 100])
+    expect(r).toBeGreaterThanOrEqual(3.5 * 0.8); expect(r).toBeLessThanOrEqual(3.5 * 1.4)
+    expect(canopyRadius([100.04, 100])).toBe(canopyRadius([100, 100]))
+  })
+  it('a trunk outside the wall whose canopy reaches it goes; one a full canopy clear stays', () => {
+    const r = filterTrees([[42, 20], [-10, 20]], { nearBuildings: () => [b] })
+    expect(r.kept).toEqual([[-10, 20]]); expect(r.removed.building).toBe(1)
+  })
+  it('in a courtyard: the middle stays, a tree against the courtyard wall goes', () => {
+    const r = filterTrees([[20, 20], [11, 20]], { nearBuildings: () => [b] })
+    expect(r.kept).toEqual([[20, 20]])
+  })
+  it('a hero whose built form spills past its OSM outline (a podium on the oriented box) keeps trees off that form too', () => {
+    const hero = { polygons: [{ outer: [[0, 0], [40, 0], [20, 30]], holes: [] }], treeHull: sq(0, 0, 40, 30) }
+    const r = filterTrees([[38, 25], [60, 25]], { nearBuildings: () => [hero] })
+    expect(r.kept).toEqual([[60, 25]])
+  })
+  it('stadium colonnades and concourses: a margin round the venue hull', () => {
+    expect(VENUE_MARGIN_M).toBeGreaterThanOrEqual(10)
+    const zone = sq(0, 0, 100, 100)
+    const r = filterTrees([[-8, 50], [-40, 50]], { zones: [zone] })
+    expect(r.kept).toEqual([[-40, 50]]); expect(r.removed.venue).toBe(1)
+  })
+  it('paved plazas and squares: no trunk on the paving (canopy may overhang — tree pits at the edge are real)', () => {
+    const r = filterTrees([[10, 10], [30, 10]], { paved: () => [sq(0, 0, 20, 20)] })
+    expect(r.kept).toEqual([[30, 10]]); expect(r.removed.paved).toBe(1)
+  })
+  it('plazas and railways', () => {
+    const r = filterTrees([[0, 3], [50, 50], [200, 2], [200, 40]], { plazas: [{ c: [50, 50], r: 20 }], rails: () => [[[-100, 0], [300, 0]]] })
+    expect(r.kept).toEqual([[200, 40]])
+    expect(r.removed.plaza).toBe(1); expect(r.removed.rail).toBe(2)
+  })
+})
 
 describe('mapped pitches inside venues (the venue paints its own field)', () => {
   it('drops a pitch polygon whose centre is inside a venue zone, keeps park pitches', () => {

@@ -40,7 +40,7 @@ export default function RideBar() {
         <button type="button" className="dock-btn" aria-label={ride.paused ? 'Resume (Space)' : 'Pause (Space)'} title="Pause / resume (Space)" onClick={togglePause}>{ride.paused ? <RiPlayLine /> : <RiPauseLine />}</button>
         <button type="button" className="dock-btn" aria-label="Next stop (.)" title="Next stop (.)" onClick={() => skipTo(1)}><RiSkipForwardLine /></button>
         <button type="button" className="hud-pill" aria-label={`Speed ×${ride.speed} (< >)`} title="Speed: < slower, > faster" onClick={() => changeSpeed(ride.speed >= 4 ? -2 : 1)}>×{ride.speed}</button>
-        {views.length > 1 && <button type="button" className="hud-pill" aria-label={`View: ${VIEW_NAMES[ride.view]} (C)`} title="Change the view (C)" onClick={cycleView}><RiCameraSwitchLine /> {VIEW_NAMES[ride.view]}</button>}
+        {views.length > 1 && <button type="button" className="hud-pill" aria-label={`View: ${VIEW_NAMES[ride.view]} (K)`} title="Change the view (K)" onClick={cycleView}><RiCameraSwitchLine /> {VIEW_NAMES[ride.view]}</button>}
         <button type="button" className="hud-pill" aria-label="Stop riding (Esc)" onClick={() => stopRide()}><RiCloseLine /> Stop {kbd('Esc')}</button>
       </div>
     </div>

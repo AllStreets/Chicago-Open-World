@@ -1,5 +1,6 @@
 // app/src/sports/SportsLife.jsx — everything alive at the venues. Crowds and players sit in a group culled
-// beyond 1.5 km and dropped at LOW; fields paint at every quality.
+// beyond 1.5 km and dropped at LOW; fields paint at every quality. People appear only in the stands (and on the field)
+// — no fans stand on the plazas outside (user, 2026-09-30).
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import FieldTextures from './FieldTextures.jsx'
@@ -16,7 +17,7 @@ import { uniformColors } from './formations.js'
 import { useSports } from './sportsStore.js'
 import { useStore } from '../state/store.js'
 import { lightLevel } from './venueStates.js'
-import { shirtColors, crowdDensity, lifeVisible, shownCount, flagMask, homeTeamFor, celebration, plazaCount } from './crowd.js'
+import { shirtColors, crowdDensity, lifeVisible, shownCount, flagMask, homeTeamFor, celebration, rooftopCount } from './crowd.js'
 import { fetchAnchors, fieldFans } from './anchors.js'
 
 const MOUNT_M = 3000
@@ -41,15 +42,16 @@ function SeatCrowd({ venue, st }) {
     wave={party.wave} cheer={() => swellNow(useSports.getState().states[venue.key]?.state, venue.slot + 1, Date.now() / 1000, useSports.getState().swells[venue.key])} level={lightLevel(st?.state)} center={venue.center} radius={venue.radius} />
 }
 
-function PlazaCrowd({ venue, st }) {
+// The rooftop clubs across Waveland and Sheffield (user item 13): the same billboard crowd, on the roof bleachers.
+function RoofCrowd({ venue, st }) {
   const [anchors, setAnchors] = useState(null)
-  useEffect(() => { let alive = true; fetchAnchors(venue.plaza, venue.center).then((a) => alive && setAnchors(a)); return () => { alive = false } }, [venue])
+  useEffect(() => { let alive = true; fetchAnchors(venue.rooftops, venue.center).then((a) => alive && setAnchors(a)); return () => { alive = false } }, [venue])
   const home = homeTeamFor(venue, st)
-  const shirts = useMemo(() => (anchors ? shirtColors(anchors.length / 4, home.colors, null, venue.slot + 21) : []), [anchors, home, venue])
-  const flags = useMemo(() => new Float32Array(anchors ? anchors.length / 4 : 0), [anchors])
+  const shirts = useMemo(() => (anchors ? shirtColors(anchors.length / 4, home.colors, null, venue.slot + 31) : []), [anchors, home, venue])
+  const flags = useMemo(() => (anchors ? flagMask(anchors.length / 4) : new Float32Array(0)), [anchors])
   if (!anchors?.length) return null
   const n = anchors.length / 4
-  return <Crowd anchors={anchors} split={n} seatCount={plazaCount(venue, st)} shirts={shirts} flags={flags} standing level={lightLevel(st?.state)} center={venue.center} radius={venue.radius + 30} />
+  return <Crowd anchors={anchors} split={n} seatCount={rooftopCount(venue, st)} shirts={shirts} flags={flags} level={lightLevel(st?.state)} center={venue.center} radius={venue.radius + 60} />
 }
 
 const BOARD_RANGE_M = 3000
@@ -80,7 +82,7 @@ function VenueLife({ venue }) {
     <>
       <group ref={group}>
         {quality !== 'LOW' && venue.seats && <SeatCrowd venue={venue} st={st} />}
-        {quality !== 'LOW' && venue.plaza && <PlazaCrowd venue={venue} st={st} />}
+        {quality !== 'LOW' && venue.rooftops && <RoofCrowd venue={venue} st={st} />}
         {quality !== 'LOW' && venue.frame && st?.state === 'live' && st.game && (
           <>
             <Players frame={venue.frame} sport={st.game.sport} colors={uniformColors(st.game.sport, homeTeamFor(venue, st))} />

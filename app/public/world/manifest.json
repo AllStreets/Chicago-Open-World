@@ -1064,6 +1064,43 @@
    "kindLine": "Landmark"
   },
   {
+   "key": "couchtomb",
+   "name": "Couch Tomb",
+   "aliases": [
+    "Ira Couch Tomb",
+    "Couch Mausoleum"
+   ],
+   "x": -297,
+   "z": -3432,
+   "top": 5,
+   "beacon": [
+    -297,
+    9,
+    -3432
+   ],
+   "kind": "landmark",
+   "kindLine": "Tomb"
+  },
+  {
+   "key": "chesspavilion",
+   "name": "Chess Pavilion",
+   "aliases": [
+    "North Avenue Beach Chess Pavilion",
+    "Lincoln Park Chess Pavilion",
+    "chess"
+   ],
+   "x": 236,
+   "z": -3252,
+   "top": 3,
+   "beacon": [
+    235,
+    10,
+    -3251
+   ],
+   "kind": "landmark",
+   "kindLine": "Pavilion"
+  },
+  {
    "key": "northavebeach",
    "name": "North Avenue Beach House",
    "aliases": [
@@ -1135,6 +1172,24 @@
    ],
    "kind": "venue",
    "kindLine": "Ballpark · home of the Cubs"
+  },
+  {
+   "key": "wavelandclock",
+   "name": "Waveland Clock Tower",
+   "aliases": [
+    "Waveland Fieldhouse",
+    "Lincoln Park Carillon Tower"
+   ],
+   "x": -1101,
+   "z": -7759,
+   "top": 38,
+   "beacon": [
+    -1119,
+    42,
+    -7746
+   ],
+   "kind": "landmark",
+   "kindLine": "Clock tower"
   },
   {
    "key": "buckingham",
@@ -1426,6 +1481,25 @@
    ],
    "kind": "landmark",
    "kindLine": "Riverwalk"
+  },
+  {
+   "key": "lilypool",
+   "name": "Alfred Caldwell Lily Pool",
+   "aliases": [
+    "Lily Pool",
+    "Caldwell Lily Pool",
+    "Lincoln Park Lily Pool"
+   ],
+   "x": -513,
+   "z": -4770,
+   "top": 3,
+   "beacon": [
+    -520,
+    8,
+    -4806
+   ],
+   "kind": "landmark",
+   "kindLine": "Garden"
   },
   {
    "key": "bridge-franklin-orleans",
@@ -3442,7 +3516,7 @@
    "lod0": "tiles/-1_10.glb",
    "lod1": "tiles/-1_10.lod1.glb",
    "meta": "tiles/-1_10.json",
-   "buildings": 172,
+   "buildings": 171,
    "maxHeight": 49.4
   },
   {
@@ -3637,7 +3711,7 @@
    "lod0": "tiles/0_11.glb",
    "lod1": "tiles/0_11.lod1.glb",
    "meta": "tiles/0_11.json",
-   "buildings": 89,
+   "buildings": 88,
    "maxHeight": 79.8
   },
   {
@@ -3892,7 +3966,7 @@
    "lod0": "tiles/-11_6.glb",
    "lod1": "tiles/-11_6.lod1.glb",
    "meta": "tiles/-11_6.json",
-   "buildings": 445,
+   "buildings": 443,
    "maxHeight": 19
   },
   {
@@ -3907,7 +3981,7 @@
    "lod0": "tiles/-10_6.glb",
    "lod1": "tiles/-10_6.lod1.glb",
    "meta": "tiles/-10_6.json",
-   "buildings": 431,
+   "buildings": 424,
    "maxHeight": 12
   },
   {
@@ -3967,7 +4041,7 @@
    "lod0": "tiles/-9_6.glb",
    "lod1": "tiles/-9_6.lod1.glb",
    "meta": "tiles/-9_6.json",
-   "buildings": 784,
+   "buildings": 775,
    "maxHeight": 55.2
   },
   {
@@ -4042,7 +4116,7 @@
    "lod0": "tiles/-7_5.glb",
    "lod1": "tiles/-7_5.lod1.glb",
    "meta": "tiles/-7_5.json",
-   "buildings": 634,
+   "buildings": 631,
    "maxHeight": 67.2
   },
   {
@@ -4057,7 +4131,7 @@
    "lod0": "tiles/-8_6.glb",
    "lod1": "tiles/-8_6.lod1.glb",
    "meta": "tiles/-8_6.json",
-   "buildings": 701,
+   "buildings": 698,
    "maxHeight": 40.6
   },
   {
@@ -4282,7 +4356,7 @@
    "lod0": "tiles/-3_7.glb",
    "lod1": "tiles/-3_7.lod1.glb",
    "meta": "tiles/-3_7.json",
-   "buildings": 59,
+   "buildings": 58,
    "maxHeight": 11.4
   },
   {
@@ -4297,7 +4371,7 @@
    "lod0": "tiles/-1_6.glb",
    "lod1": "tiles/-1_6.lod1.glb",
    "meta": "tiles/-1_6.json",
-   "buildings": 216,
+   "buildings": 215,
    "maxHeight": 83.6
   },
   {
@@ -4477,7 +4551,7 @@
    "lod0": "tiles/0_6.glb",
    "lod1": "tiles/0_6.lod1.glb",
    "meta": "tiles/0_6.json",
-   "buildings": 80,
+   "buildings": 79,
    "maxHeight": 140.6
   },
   {
@@ -4657,7 +4731,7 @@
    "lod0": "tiles/-10_1.glb",
    "lod1": "tiles/-10_1.lod1.glb",
    "meta": "tiles/-10_1.json",
-   "buildings": 230,
+   "buildings": 228,
    "maxHeight": 48.5
   },
   {
@@ -4867,7 +4941,7 @@
    "lod0": "tiles/-6_1.glb",
    "lod1": "tiles/-6_1.lod1.glb",
    "meta": "tiles/-6_1.json",
-   "buildings": 170,
+   "buildings": 168,
    "maxHeight": 54
   },
   {
@@ -4912,7 +4986,7 @@
    "lod0": "tiles/-8_1.glb",
    "lod1": "tiles/-8_1.lod1.glb",
    "meta": "tiles/-8_1.json",
-   "buildings": 20,
+   "buildings": 19,
    "maxHeight": 83.6
   },
   {
@@ -4927,7 +5001,7 @@
    "lod0": "tiles/-9_1.glb",
    "lod1": "tiles/-9_1.lod1.glb",
    "meta": "tiles/-9_1.json",
-   "buildings": 79,
+   "buildings": 78,
    "maxHeight": 79.8
   },
   {
@@ -5002,7 +5076,7 @@
    "lod0": "tiles/-5_1.glb",
    "lod1": "tiles/-5_1.lod1.glb",
    "meta": "tiles/-5_1.json",
-   "buildings": 57,
+   "buildings": 53,
    "maxHeight": 117.8
   },
   {
@@ -5017,7 +5091,7 @@
    "lod0": "tiles/-4_1.glb",
    "lod1": "tiles/-4_1.lod1.glb",
    "meta": "tiles/-4_1.json",
-   "buildings": 36,
+   "buildings": 35,
    "maxHeight": 103
   },
   {
@@ -5212,7 +5286,7 @@
    "lod0": "tiles/-1_4.glb",
    "lod1": "tiles/-1_4.lod1.glb",
    "meta": "tiles/-1_4.json",
-   "buildings": 172,
+   "buildings": 170,
    "maxHeight": 64.6
   },
   {
@@ -5272,7 +5346,7 @@
    "lod0": "tiles/0_2.glb",
    "lod1": "tiles/0_2.lod1.glb",
    "meta": "tiles/0_2.json",
-   "buildings": 56,
+   "buildings": 55,
    "maxHeight": 245
   },
   {
@@ -5677,7 +5751,7 @@
    "lod0": "tiles/-8_-1.glb",
    "lod1": "tiles/-8_-1.lod1.glb",
    "meta": "tiles/-8_-1.json",
-   "buildings": 65,
+   "buildings": 64,
    "maxHeight": 51.5
   },
   {
@@ -5782,7 +5856,7 @@
    "lod0": "tiles/-3_-2.glb",
    "lod1": "tiles/-3_-2.lod1.glb",
    "meta": "tiles/-3_-2.json",
-   "buildings": 150,
+   "buildings": 149,
    "maxHeight": 186.2
   },
   {
@@ -5887,7 +5961,7 @@
    "lod0": "tiles/-2_-2.glb",
    "lod1": "tiles/-2_-2.lod1.glb",
    "meta": "tiles/-2_-2.json",
-   "buildings": 64,
+   "buildings": 61,
    "maxHeight": 255
   },
   {
@@ -5902,7 +5976,7 @@
    "lod0": "tiles/-1_-1.glb",
    "lod1": "tiles/-1_-1.lod1.glb",
    "meta": "tiles/-1_-1.json",
-   "buildings": 77,
+   "buildings": 74,
    "maxHeight": 234
   },
   {
@@ -5917,7 +5991,7 @@
    "lod0": "tiles/-2_-1.glb",
    "lod1": "tiles/-2_-1.lod1.glb",
    "meta": "tiles/-2_-1.json",
-   "buildings": 67,
+   "buildings": 66,
    "maxHeight": 248
   },
   {
@@ -6397,7 +6471,7 @@
    "lod0": "tiles/-6_-4.glb",
    "lod1": "tiles/-6_-4.lod1.glb",
    "meta": "tiles/-6_-4.json",
-   "buildings": 315,
+   "buildings": 316,
    "maxHeight": 76
   },
   {
@@ -6502,7 +6576,7 @@
    "lod0": "tiles/-6_-5.glb",
    "lod1": "tiles/-6_-5.lod1.glb",
    "meta": "tiles/-6_-5.json",
-   "buildings": 123,
+   "buildings": 122,
    "maxHeight": 66.6
   },
   {
@@ -6562,7 +6636,7 @@
    "lod0": "tiles/-8_-6.glb",
    "lod1": "tiles/-8_-6.lod1.glb",
    "meta": "tiles/-8_-6.json",
-   "buildings": 669,
+   "buildings": 667,
    "maxHeight": 15.2
   },
   {
@@ -6832,7 +6906,7 @@
    "lod0": "tiles/-2_-4.glb",
    "lod1": "tiles/-2_-4.lod1.glb",
    "meta": "tiles/-2_-4.json",
-   "buildings": 100,
+   "buildings": 99,
    "maxHeight": 83.6
   },
   {
@@ -7072,7 +7146,7 @@
    "lod0": "tiles/-11_-9.glb",
    "lod1": "tiles/-11_-9.lod1.glb",
    "meta": "tiles/-11_-9.json",
-   "buildings": 580,
+   "buildings": 576,
    "maxHeight": 45.6
   },
   {
@@ -7132,7 +7206,7 @@
    "lod0": "tiles/-11_-8.glb",
    "lod1": "tiles/-11_-8.lod1.glb",
    "meta": "tiles/-11_-8.json",
-   "buildings": 651,
+   "buildings": 648,
    "maxHeight": 26.6
   },
   {
@@ -7417,7 +7491,7 @@
    "lod0": "tiles/-5_-9.glb",
    "lod1": "tiles/-5_-9.lod1.glb",
    "meta": "tiles/-5_-9.json",
-   "buildings": 669,
+   "buildings": 668,
    "maxHeight": 54
   },
   {
@@ -7432,7 +7506,7 @@
    "lod0": "tiles/-5_-8.glb",
    "lod1": "tiles/-5_-8.lod1.glb",
    "meta": "tiles/-5_-8.json",
-   "buildings": 420,
+   "buildings": 417,
    "maxHeight": 62.6
   },
   {
@@ -7447,7 +7521,7 @@
    "lod0": "tiles/-3_-7.glb",
    "lod1": "tiles/-3_-7.lod1.glb",
    "meta": "tiles/-3_-7.json",
-   "buildings": 354,
+   "buildings": 353,
    "maxHeight": 53.4
   },
   {
@@ -7552,7 +7626,7 @@
    "lod0": "tiles/-2_-7.glb",
    "lod1": "tiles/-2_-7.lod1.glb",
    "meta": "tiles/-2_-7.json",
-   "buildings": 472,
+   "buildings": 471,
    "maxHeight": 121.6
   },
   {
@@ -8032,7 +8106,7 @@
    "lod0": "tiles/-5_-10.glb",
    "lod1": "tiles/-5_-10.lod1.glb",
    "meta": "tiles/-5_-10.json",
-   "buildings": 376,
+   "buildings": 372,
    "maxHeight": 22.8
   },
   {
@@ -8107,7 +8181,7 @@
    "lod0": "tiles/-5_-13.glb",
    "lod1": "tiles/-5_-13.lod1.glb",
    "meta": "tiles/-5_-13.json",
-   "buildings": 543,
+   "buildings": 542,
    "maxHeight": 49.5
   },
   {
@@ -8212,7 +8286,7 @@
    "lod0": "tiles/-2_-10.glb",
    "lod1": "tiles/-2_-10.lod1.glb",
    "meta": "tiles/-2_-10.json",
-   "buildings": 88,
+   "buildings": 89,
    "maxHeight": 114
   },
   {
@@ -8512,7 +8586,7 @@
    "lod0": "tiles/-6_-14.glb",
    "lod1": "tiles/-6_-14.lod1.glb",
    "meta": "tiles/-6_-14.json",
-   "buildings": 803,
+   "buildings": 786,
    "maxHeight": 15.2
   },
   {
@@ -8542,7 +8616,7 @@
    "lod0": "tiles/-8_-14.glb",
    "lod1": "tiles/-8_-14.lod1.glb",
    "meta": "tiles/-8_-14.json",
-   "buildings": 756,
+   "buildings": 754,
    "maxHeight": 55.1
   },
   {
@@ -8557,7 +8631,7 @@
    "lod0": "tiles/-7_-14.glb",
    "lod1": "tiles/-7_-14.lod1.glb",
    "meta": "tiles/-7_-14.json",
-   "buildings": 652,
+   "buildings": 651,
    "maxHeight": 26.6
   },
   {
@@ -8632,7 +8706,7 @@
    "lod0": "tiles/-5_-15.glb",
    "lod1": "tiles/-5_-15.lod1.glb",
    "meta": "tiles/-5_-15.json",
-   "buildings": 335,
+   "buildings": 336,
    "maxHeight": 53.2
   },
   {
@@ -8677,7 +8751,7 @@
    "lod0": "tiles/-5_-14.glb",
    "lod1": "tiles/-5_-14.lod1.glb",
    "meta": "tiles/-5_-14.json",
-   "buildings": 575,
+   "buildings": 567,
    "maxHeight": 58.3
   },
   {
@@ -8692,7 +8766,7 @@
    "lod0": "tiles/-5_-16.glb",
    "lod1": "tiles/-5_-16.lod1.glb",
    "meta": "tiles/-5_-16.json",
-   "buildings": 337,
+   "buildings": 335,
    "maxHeight": 15.2
   },
   {
@@ -9566,6 +9640,51 @@
    "maxHeight": 0
   },
   {
+   "key": "6_14",
+   "block": "1_3",
+   "bounds": {
+    "minX": 3000,
+    "maxX": 3500,
+    "minZ": 7000,
+    "maxZ": 7500
+   },
+   "lod0": "tiles/6_14.glb",
+   "lod1": "tiles/6_14.lod1.glb",
+   "meta": "tiles/6_14.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "6_16",
+   "block": "1_4",
+   "bounds": {
+    "minX": 3000,
+    "maxX": 3500,
+    "minZ": 8000,
+    "maxZ": 8500
+   },
+   "lod0": "tiles/6_16.glb",
+   "lod1": "tiles/6_16.lod1.glb",
+   "meta": "tiles/6_16.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
+   "key": "7_16",
+   "block": "1_4",
+   "bounds": {
+    "minX": 3500,
+    "maxX": 4000,
+    "minZ": 8000,
+    "maxZ": 8500
+   },
+   "lod0": "tiles/7_16.glb",
+   "lod1": "tiles/7_16.lod1.glb",
+   "meta": "tiles/7_16.json",
+   "buildings": 0,
+   "maxHeight": 0
+  },
+  {
    "key": "-13_6",
    "block": "-4_1",
    "bounds": {
@@ -9907,51 +10026,6 @@
    "lod0": "tiles/8_19.glb",
    "lod1": "tiles/8_19.lod1.glb",
    "meta": "tiles/8_19.json",
-   "buildings": 0,
-   "maxHeight": 0
-  },
-  {
-   "key": "6_16",
-   "block": "1_4",
-   "bounds": {
-    "minX": 3000,
-    "maxX": 3500,
-    "minZ": 8000,
-    "maxZ": 8500
-   },
-   "lod0": "tiles/6_16.glb",
-   "lod1": "tiles/6_16.lod1.glb",
-   "meta": "tiles/6_16.json",
-   "buildings": 0,
-   "maxHeight": 0
-  },
-  {
-   "key": "6_14",
-   "block": "1_3",
-   "bounds": {
-    "minX": 3000,
-    "maxX": 3500,
-    "minZ": 7000,
-    "maxZ": 7500
-   },
-   "lod0": "tiles/6_14.glb",
-   "lod1": "tiles/6_14.lod1.glb",
-   "meta": "tiles/6_14.json",
-   "buildings": 0,
-   "maxHeight": 0
-  },
-  {
-   "key": "7_16",
-   "block": "1_4",
-   "bounds": {
-    "minX": 3500,
-    "maxX": 4000,
-    "minZ": 8000,
-    "maxZ": 8500
-   },
-   "lod0": "tiles/7_16.glb",
-   "lod1": "tiles/7_16.lod1.glb",
-   "meta": "tiles/7_16.json",
    "buildings": 0,
    "maxHeight": 0
   },
@@ -10810,6 +10884,17 @@
    }
   },
   {
+   "key": "1_4",
+   "file": "blocks/1_4.glb",
+   "meta": "blocks/1_4.json",
+   "bounds": {
+    "minX": 2000,
+    "maxX": 4000,
+    "minZ": 8000,
+    "maxZ": 10000
+   }
+  },
+  {
    "key": "-4_1",
    "file": "blocks/-4_1.glb",
    "meta": "blocks/-4_1.json",
@@ -10862,17 +10947,6 @@
     "maxX": -6000,
     "minZ": -6000,
     "maxZ": -4000
-   }
-  },
-  {
-   "key": "1_4",
-   "file": "blocks/1_4.glb",
-   "meta": "blocks/1_4.json",
-   "bounds": {
-    "minX": 2000,
-    "maxX": 4000,
-    "minZ": 8000,
-    "maxZ": 10000
    }
   },
   {
@@ -11442,6 +11516,8 @@
  "landMask": "land.json",
  "transit": "transit.json",
  "trains": "trains.glb",
+ "traffic": "traffic.bin",
+ "walkGraph": "walk-graph.json",
  "styles": "styles.json",
  "stylePalette": "style-palette.png",
  "shore": {
@@ -11475,7 +11551,7 @@
  "neighborhoods": "neighborhoods.json",
  "pois": {
   "index": "pois-index.json",
-  "count": 7980,
+  "count": 7996,
   "categories": [
    {
     "id": "food",

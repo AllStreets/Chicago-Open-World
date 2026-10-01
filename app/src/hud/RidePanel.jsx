@@ -30,7 +30,7 @@ export default function RidePanel() {
         <span className="hud-label">Ride the city</span>
         <button type="button" className="dock-btn" aria-label="Close rides" onClick={close}><RiCloseLine /></button>
       </div>
-      <p className="ride-sub">Pick a ride — it starts from where you are. Space pauses, . and , skip stops, &gt; and &lt; change speed, C changes the view, drag to look around, Esc gets off.</p>
+      <p className="ride-sub">Pick a ride — it starts from where you are. Space pauses, . and , skip stops, &gt; and &lt; change speed, K changes the view, drag to look around, Esc gets off.</p>
       {RIDE_KINDS.map(([kind, title, blurb]) => {
         const list = rides.filter((r) => r.kind === kind), Icon = ICON[kind]
         return (

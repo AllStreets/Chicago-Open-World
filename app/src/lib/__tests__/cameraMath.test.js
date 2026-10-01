@@ -115,3 +115,11 @@ describe('WORLD_BOUNDS reach the offshore landmarks (P3)', () => {
     expect(t[0]).toBeCloseTo(3049, 0)
   })
 })
+
+describe('WORLD_BOUNDS reach the Waveland Clock Tower (merge review)', () => {
+  it('the camera can look at the tower at the north end of Lincoln Park', async () => {
+    const { WORLD_BOUNDS, clampCamera } = await import('../cameraMath.js')
+    const r = clampCamera([-1000, 120, -7600], [-1101, 20, -7759], WORLD_BOUNDS)
+    expect(r.target[2]).toBeCloseTo(-7759, 0)
+  })
+})

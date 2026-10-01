@@ -458,6 +458,102 @@
       "base": "#1c1c1e",
       "finish": "metal",
       "source": "photo-matched, clock hands"
+    },
+    {
+      "key": "rooftop-steel",
+      "base": "#6f767d",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Wrigley_Rooftops (galvanised steel bleacher structures on the three-flat roofs)"
+    },
+    {
+      "key": "rooftop-seat",
+      "base": "#a7adb2",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Wrigley_Rooftops (galvanised steel bleacher structures on the three-flat roofs); aluminium bleacher planks"
+    },
+    {
+      "key": "rooftop-rail",
+      "base": "#2b2f33",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Wrigley_Rooftops (galvanised steel bleacher structures on the three-flat roofs)"
+    },
+    {
+      "key": "cc-granite",
+      "base": "#121416",
+      "finish": "granite",
+      "source": "https://en.wikipedia.org/wiki/Carbide_%26_Carbon_Building (polished black granite base)"
+    },
+    {
+      "key": "willis-fin",
+      "base": "#0e0e0f",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Willis_Tower (black anodized aluminium mullions)"
+    },
+    {
+      "key": "willis-louver",
+      "base": "#1b1b1c",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Willis_Tower (louvred mechanical floors)"
+    },
+    {
+      "key": "willis-ledge",
+      "base": "#a9c2d0",
+      "finish": "glass",
+      "source": "https://theskydeck.com/the-ledge/ (glass boxes)"
+    },
+    {
+      "key": "lp-limestone",
+      "base": "#cfc3a4",
+      "finish": "limestone",
+      "source": "https://www.chicagoparkdistrict.com/parks-facilities/chess-pavilion-artwork (Indiana limestone)"
+    },
+    {
+      "key": "lp-concrete",
+      "base": "#bdbab2",
+      "finish": "concrete",
+      "source": "https://www.chicagoparkdistrict.com/parks-facilities/chess-pavilion-artwork (concrete roof)"
+    },
+    {
+      "key": "lp-ledgestone",
+      "base": "#b8a77f",
+      "finish": "limestone",
+      "source": "https://en.wikipedia.org/wiki/Alfred_Caldwell_Lily_Pool (stratified limestone)"
+    },
+    {
+      "key": "lp-pool",
+      "base": "#2f4a42",
+      "finish": "glass",
+      "source": "https://en.wikipedia.org/wiki/Alfred_Caldwell_Lily_Pool"
+    },
+    {
+      "key": "lp-falls",
+      "base": "#d4e2e3",
+      "finish": "glass",
+      "source": "https://en.wikipedia.org/wiki/Alfred_Caldwell_Lily_Pool (waterfall)"
+    },
+    {
+      "key": "lp-roof",
+      "base": "#5b4636",
+      "finish": "concrete",
+      "source": "https://en.wikipedia.org/wiki/Alfred_Caldwell_Lily_Pool (prairie pavilion roof)"
+    },
+    {
+      "key": "tomb-iron",
+      "base": "#2a2d2f",
+      "finish": "metal",
+      "source": "https://www.atlasobscura.com/places/couch-tomb (iron door and fence)"
+    },
+    {
+      "key": "waveland-brick",
+      "base": "#8a5a43",
+      "finish": "terracotta",
+      "source": "https://historicalmarkerproject.com/markers/HM1S1M_waveland-clock-tower_Chicago-IL.html (brick and limestone)"
+    },
+    {
+      "key": "waveland-clock",
+      "base": "#ece4d0",
+      "finish": "limestone",
+      "source": "https://historicalmarkerproject.com/markers/HM1S1M_waveland-clock-tower_Chicago-IL.html (clock faces)"
     }
   ]
 }

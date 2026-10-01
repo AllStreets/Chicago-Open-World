@@ -6,8 +6,8 @@ import { useSoundStore } from '../../audio/soundStore.js'
 
 describe('feature controls registry', () => {
   beforeEach(() => { useStore.setState(useStore.getInitialState()); useSoundStore.setState(useSoundStore.getInitialState()) })
-  it('lists Transit, Games, Sound, Bridges, Fountain, Fireworks and Places with unique keys and every path filled in', () => {
-    expect(FEATURE_CONTROLS.map((c) => c.id)).toEqual(['transit', 'games', 'sound', 'bridges', 'fountain', 'fireworks', 'places', 'scan', 'ride'])
+  it('lists Transit, Games, Sound, Bridges, Fountain, Fireworks, Places, Traffic, Scan and Ride with unique keys and every path filled in', () => {
+    expect(FEATURE_CONTROLS.map((c) => c.id)).toEqual(['transit', 'games', 'sound', 'bridges', 'fountain', 'fireworks', 'places', 'traffic', 'scan', 'ride'])
     expect(new Set(FEATURE_CONTROLS.map((c) => c.key)).size).toBe(FEATURE_CONTROLS.length)
     for (const c of FEATURE_CONTROLS) {
       expect(c.label).toMatch(/^[A-Z][a-z]+$/)
@@ -28,6 +28,12 @@ describe('feature controls registry', () => {
   })
   it('sound starts off (browsers block autoplay; nobody is surprised by noise)', () => {
     expect(featureById('sound').isOn()).toBe(false)
+  })
+  it('traffic is on by default, on C, and waits for its road graph', () => {
+    const c = featureById('traffic')
+    expect(c.key).toBe('KeyC'); expect(c.isOn()).toBe(true)
+    useStore.setState({ manifest: null }); expect(c.available()).toBe(false)
+    useStore.setState({ manifest: { traffic: 'traffic.bin' } }); expect(c.available()).toBe(true)
   })
   it('transit is unavailable until its data loads', () => {
     useStore.setState({ transit: null })

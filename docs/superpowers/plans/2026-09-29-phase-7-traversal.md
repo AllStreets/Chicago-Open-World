@@ -22,10 +22,10 @@
 
 - **Human-first (B.1.4).** Ride has a **Ride the city** dock button (a full-width row under Search: the 3 × 2 feature grid keeps no dead space), the key **L**, ⌘K rows (`Ride: Brown Line toward Kimball`, `Bus: #146 …`, `Walk: The Riverwalk`, `Glide over the city`), a Ride panel listing every ride in plain words, and a help-card group. During a ride a bar at the bottom states its own controls and has buttons for each. URL parameters are for tests only (`?ride=<id>`).
 - **Keys.**
-  - Any path ride: **Space** pause / resume, **.** next stop, **,** previous stop, **>** faster, **<** slower, **C** change the view (cab → side → chase; walks have one eye view), drag to look around.
+  - Any path ride: **Space** pause / resume, **.** next stop, **,** previous stop, **>** faster, **<** slower, **K** change the view (cab → side → chase; walks have one eye view), drag to look around.
   - Glide: ↑/W nose down (faster), ↓/S nose up, ←/→ and A/D bank and turn, Shift boost.
   - **Exit:** Esc, the bar's **Stop** button, or L — and for path rides any movement key (arrows, WASD, Q/E, R/F, +/−) also takes the camera back, exactly like the follow cam and the tours. In the glide the arrows steer, so only Esc, L and the button land it.
-  - Free keys verified against the keymap: L, C, `<`, `>` (Shift+, Shift+.) are unused outside a ride; Space, `,` and `.` are the tour keys and mean the same here.
+  - Free keys verified against the keymap: L, K (C became Traffic on main), `<`, `>` (Shift+, Shift+.) are unused outside a ride; Space, `,` and `.` are the tour keys and mean the same here.
 - **Clearance (B.7, G1, G6).** No camera is ever inside a building:
   - L and bus cameras sit on the vehicle (exempt from the 30 m `MIN_ALT`, as V4's follow cam is); the side and chase views use V4's clearance-safe `followPose`.
   - A walk path is checked at build time: every 2 m sample lies outside every OSM building footprint (the build fails otherwise).

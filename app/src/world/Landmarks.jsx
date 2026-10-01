@@ -1,4 +1,4 @@
-// app/src/world/Landmarks.jsx — V6 runtime: bridge leaves and lights, fountain show, Cloud Gate mirror, plaza people.
+// app/src/world/Landmarks.jsx — V6 runtime: bridge leaves and lights, fountain show, Cloud Gate mirror.
 import { Suspense, useEffect, useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { facadeUniforms } from './materials/facadeMaterial.js'
@@ -7,7 +7,6 @@ import BridgeLights from '../bridges/BridgeLights.jsx'
 import FountainShow from '../landmarks/FountainShow.jsx'
 import { showEmitters } from '../landmarks/jets.js'
 import CloudGate from '../landmarks/CloudGate.jsx'
-import PlazaPeople from '../landmarks/PlazaPeople.jsx'
 import { crownFace, crownWaterOn } from '../landmarks/crownFace.js'
 import { worldUrl } from '../lib/manifest.js'
 import ShowMusic from '../landmarks/ShowMusic.jsx'
@@ -33,9 +32,8 @@ export default function Landmarks({ manifest }) {
       {bridges && <BridgeLeaves sidecar={bridges} />}
       {bridges && <BridgeLights sidecar={bridges} />}
       <ShowMusic fountainCentre={runtime?.fountain?.centre ?? null} bridges={bridges?.bridges ?? []} />
-      {/* Tasks 9, 12, 14, 15, 16 add: BridgeLights, FountainShow, CloudGate, PlazaPeople, and the Crown face driver (they use `runtime`) */}
+      {/* no plaza people (user, 2026-09-30: stick figures read as unfinished) — people stay only in the stadium stands */}
       {runtime?.fountain && <FountainShow emitters={showEmitters(runtime)} crownLevels={crownLevels} />}
-      {runtime?.plazas?.length > 0 && <PlazaPeople plazas={runtime.plazas} />}
       {runtime?.detached?.filter((d) => d.key === 'cloudgate').map((d) => <Suspense key={d.key} fallback={null}><CloudGate file={d.file} version={manifest.version} centre={d.centre} /></Suspense>)}
     </>
   )
