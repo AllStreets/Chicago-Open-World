@@ -1060,7 +1060,21 @@
           "blackhawks"
         ],
         "capacity": 20917,
-        "source": "United Center capacity 20,917 basketball / 19,717 hockey (unitedcenter.com)"
+        "source": "United Center capacity 20,917 basketball / 19,717 hockey (unitedcenter.com)",
+        "crown": {
+          "roofM": 39,
+          "faceM": [28, 14],
+          "mastM": 6,
+          "ribbon": { "topM": 29.6, "hM": 3, "outM": 0.7 },
+          "guideDisplay": true,
+          "note": "A game board added for the guide (user request 2026-10-01), not a real fixture: a four-faced LED cube on a short mast at the roof centre, echoing the arena's centre-hung scoreboard, and an LED ribbon round the roof parapet. roofM is the modelled roof crown (stepdome base 30 m + step 2.5 m + dome 6.5 m = 39 m) so the mast stands on the dome; the building's overall height is 140 ft (42.7 m) per the Chicago Architecture Center. The real exterior LED boards (38 outdoor boards added 2014, and three LED ribbon boards round the 2017 east atrium, which are indoors) are not modelled: no published positions or sizes were found, so no real-position board is added.",
+          "sources": [
+            "https://www.architecture.org/online-resources/buildings-of-chicago/united-center",
+            "https://en.wikipedia.org/wiki/United_Center",
+            "https://www.chicagobusiness.com/article/20141028/BLOGS04/141029789/united-center-looks-for-social-buzz-new-revenue-from-new-led-video-boards/",
+            "https://urbanmatter.com/chicago/united-center-atrium/"
+          ]
+        }
       }
     },
     {
