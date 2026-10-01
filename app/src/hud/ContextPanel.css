@@ -55,3 +55,7 @@
 .wp-row .wp-name { color: var(--band); }
 .wp-row .wp-time { margin-left: auto; display: inline-flex; align-items: center; gap: 4px; color: var(--band); font: 400 11px var(--font-ui); opacity: 0.9; }
 .wp-row .tl-swatch { width: 8px; height: 8px; }
+/* P5: the Scan column metric, a wrapping row of small pills */
+.lp-scan { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin: 2px 0 6px; }
+.lp-scan .hud-label { width: 100%; }
+.lp-scan .hud-pill { font-size: 10px; padding: 3px 9px; }

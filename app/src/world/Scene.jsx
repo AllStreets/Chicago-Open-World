@@ -9,6 +9,8 @@ import TileStreamer from './TileStreamer.jsx'
 import Picker from './Picker.jsx'
 import SeasonRig from './SeasonRig.jsx'
 import Rain from './Rain.jsx'
+import ScanController from '../scan/ScanController.jsx'
+import ScanOverlays from '../scan/ScanOverlays.jsx'
 import Fireworks from '../landmarks/Fireworks.jsx'
 import PoiPins from './PoiPins.jsx'
 import Beacons from './Beacons.jsx'
@@ -103,6 +105,8 @@ export default function Scene() {
       <Picker />
       <SeasonRig />
       <Rain />
+      <ScanController />
+      <ScanOverlays />
       <Fireworks />
       <PoiPins />
       <Beacons />

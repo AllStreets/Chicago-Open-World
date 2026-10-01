@@ -1,7 +1,7 @@
 // app/src/hud/featureControls.js — every city-life feature and every way to reach it (backlog G3).
 // The dock row, the keyboard, ⌘K, the help card and the hint bar all read this list, so a control can never be added
 // in one place and forgotten in another. The adapters (use/isOn/toggle/available) are the only lines naming feature state.
-import { RiTrainLine, RiTrophyLine, RiVolumeUpLine, RiVolumeMuteLine, RiShip2Line, RiDropLine, RiMapPin2Line, RiSparkling2Line } from 'react-icons/ri'
+import { RiTrainLine, RiTrophyLine, RiVolumeUpLine, RiVolumeMuteLine, RiShip2Line, RiDropLine, RiMapPin2Line, RiSparkling2Line, RiRadarLine } from 'react-icons/ri'
 import { useStore } from '../state/store.js'
 import { useSoundStore } from '../audio/soundStore.js'
 import { fountainShow } from '../landmarks/fountainSchedule.js'
@@ -54,6 +54,9 @@ export const FEATURE_CONTROLS = [
     }, ...always },
   { id: 'places', label: 'Places', key: 'KeyP', keyLabel: 'P', icon: RiMapPin2Line, hint: 'places',
     help: 'pins for restaurants, bars, venues and more, on the roofs they belong to (always on in the Visit lens)', ...storeFlag('placesOn', 'setPlacesOn'), ...always },
+  // P5: Scan is the SCAN pill (top right), not a dock button — the dock stays a full grid (user: no dead space)
+  { id: 'scan', label: 'Scan', key: 'KeyV', keyLabel: 'V', icon: RiRadarLine, hint: 'scan', commandName: 'Scan mode: on / off',
+    help: 'holographic Scan — the city turns to dark glass with cyan edges; the lenses show their data on it (SCAN button, top right)', ...storeFlag('scan', 'setScan'), ...always },
 ]
 
 export const featureById = (id) => FEATURE_CONTROLS.find((c) => c.id === id)

@@ -107,6 +107,12 @@ export const useStore = create((set) => ({
   weatherLive: weatherFromChi(null),
   weather: weatherFromChi(null),
   setWeatherMode: (weatherMode) => set((s) => ({ weatherMode, weather: weatherMode === 'LIVE' ? s.weatherLive : manualWeather(weatherMode) })),
+  // Scan (P5): the holographic sweep — a render state, not a camera mode; LIVE's light columns show scanMetric
+  scan: false,
+  setScan: (scan) => set({ scan }),
+  toggleScan: () => set((s) => ({ scan: !s.scan })),
+  scanMetric: 'transit',
+  setScanMetric: (scanMetric) => set({ scanMetric }),
   setWeatherLive: (weatherLive) => set((s) => ({ weatherLive, ...(s.weatherMode === 'LIVE' ? { weather: weatherLive } : {}) })),
   hover: null,    // { x, y, lines } — the building under the pointer (P4)
   setHover: (hover) => set({ hover }),

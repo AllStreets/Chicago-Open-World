@@ -1,5 +1,6 @@
 // app/src/world/materials/facadeMaterial.js — one shader for every building.
 import * as THREE from 'three'
+import { scanUniforms, SCAN_HEAD, SCAN_FACADE, SCAN_FACADE_DERIV } from '../../scan/scanShader.js'
 import { loadLayerArray } from './textureArray.js'
 import { createStyleTexture } from './stylePalette.js'
 import { worldUrl } from '../../lib/manifest.js'
@@ -441,9 +442,12 @@ export function patchFacadeShader(shader) {
   f = f.replace(need(f, '#include <roughnessmap_fragment>'), `#include <roughnessmap_fragment>\n${FRAG_ROUGH}`)
   f = f.replace(need(f, '#include <metalnessmap_fragment>'), `#include <metalnessmap_fragment>\n${FRAG_METAL}`)
   f = f.replace(need(f, '#include <emissivemap_fragment>'), `#include <emissivemap_fragment>\n${FRAG_EMISSIVE}`)
+  f = f.replace(need(f, '#include <common>'), `#include <common>\n${SCAN_HEAD}`) // P5: Scan
+  f = f.replace(need(f, '#include <dithering_fragment>'), `#include <dithering_fragment>\n${SCAN_FACADE}`)
+  f = f.replace(need(f, 'void main() {'), `void main() {\n${SCAN_FACADE_DERIV}`)
   shader.vertexShader = v
   shader.fragmentShader = f
-  Object.assign(shader.uniforms, facadeUniforms)
+  Object.assign(shader.uniforms, facadeUniforms, scanUniforms)
   return shader
 }
 
@@ -451,7 +455,7 @@ export function createFacadeMaterial({ leaf = false } = {}) {
   const m = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.86, metalness: 0.02 })
   if (leaf) m.defines = { USE_LEAF: '' }
   m.onBeforeCompile = patchFacadeShader
-  const key = 'facade-v13' // P3: mural layers (V6 Task 3 was v10); only the -leaf suffix is new here
+  const key = 'facade-v14' // P5: Scan // P3: mural layers (V6 Task 3 was v10); only the -leaf suffix is new here
   m.customProgramCacheKey = () => (leaf ? `${key}-leaf` : key)
   return m
 }

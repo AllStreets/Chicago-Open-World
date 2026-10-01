@@ -12,6 +12,7 @@ import { createRestTracker } from '../lib/rest.js'
 import { REFLECT_LAYER } from './materials/waterSurface.js'
 import { atmosphereFor } from '../lib/atmosphere.js'
 import { applyWeather } from '../weather/weatherState.js'
+import { scanNow } from '../scan/ScanController.jsx'
 import * as THREE from 'three'
 
 // the weather of the current view, eased (user fixes): the season rig reads it for snow and ice
@@ -21,7 +22,7 @@ const ease = (a, b, k) => a + (b - a) * k
 const SKY_GAIN = 0.42
 
 const DIST = 5000
-const tmpTint = new THREE.Color(), tmpFog = new THREE.Color()
+const tmpTint = new THREE.Color(), tmpFog = new THREE.Color(), SCAN_BG = new THREE.Color('#030509')
 
 export default function SkyRig({ target, sunRef, instant = false, shadowMap = 4096, fog = [2600, 17000] }) {
   const { scene } = useThree()
@@ -49,7 +50,7 @@ export default function SkyRig({ target, sunRef, instant = false, shadowMap = 40
     const elev = (Math.asin(Math.max(-1, Math.min(1, y))) * 180) / Math.PI
     const p = paletteFor(elev)
     sky.current?.material.uniforms.sunPosition.value.set(x * DIST, y * DIST, z * DIST)
-    if (sky.current) { const u = sky.current.material.uniforms; u.turbidity.value = A.turbidity; u.rayleigh.value = A.rayleigh; u.mieDirectionalG.value = 0.82 - 0.55 * A.overcast /* cloud hides the sun's disc */; applySkyGain(sky.current.material, A.skyGain, A.skyTint, [0.2, 0.2, 0.25, 0.92 * A.overcast]) } // SNOW: a low grey-violet deck lit by the city
+    if (sky.current) { const u = sky.current.material.uniforms; u.turbidity.value = A.turbidity; u.rayleigh.value = A.rayleigh; u.mieDirectionalG.value = 0.82 - 0.55 * A.overcast /* cloud hides the sun's disc */; applySkyGain(sky.current.material, A.skyGain * (1 - scanNow.sky), A.skyTint, [0.2, 0.2, 0.25, 0.92 * A.overcast]) } // SNOW: a low grey-violet deck lit by the city
     const lightScale = (1 - 0.6 * A.overcast) * A.sunScale // an overcast sky dims the sun and flattens the shadows
     if (light.current) {
       // shadows cover the area around the camera target (snapped to 50 m so they don't swim)
@@ -62,11 +63,11 @@ export default function SkyRig({ target, sunRef, instant = false, shadowMap = 40
       light.current.intensity = p.sunIntensity * p.exposure * lightScale
     }
     if (hemi.current) { hemi.current.color.copy(p.hemiSky); hemi.current.groundColor.copy(p.hemiGround); hemi.current.intensity = p.hemiIntensity * p.exposure * (1 + 0.6 * A.overcast) } // overcast (and snow) light comes from the whole sky
-    const fogCol = tmpFog.copy(p.fog).lerp(A.tint, A.fogMix * (1 - p.night * 0.7))
+    const fogCol = tmpFog.copy(p.fog).lerp(A.tint, A.fogMix * (1 - p.night * 0.7)).lerp(SCAN_BG, scanNow.sky) // P5 Scan: the sky fades to --bg
     if (scene.fog) { scene.fog.color.copy(fogCol); scene.fog.near = fog[0] * A.fogScale * (1 - 0.9 * A.haze); scene.fog.far = fog[1] * Math.max(0.6, A.fogScale) * (1 - 0.85 * A.haze) } // P5 haze: lake fog, rain, snow
     if (scene.background?.isColor) scene.background.copy(fogCol)
     facadeUniforms.uNight.value = p.night
-    if (stars.current) { stars.current.position.copy(camera.position); stars.current.visible = p.stars > 0.05 && A.overcast < 0.4 } // no stars under cloud
+    if (stars.current) { stars.current.position.copy(camera.position); stars.current.visible = p.stars > 0.05 && A.overcast < 0.4 && scanNow.sky < 0.5 } // no stars under cloud
     if (sky.current) sky.current.visible = p.night < 0.98
     window.__skyRest = skyRest.current.sample(cur.current)
   })

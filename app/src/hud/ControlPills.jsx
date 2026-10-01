@@ -42,6 +42,7 @@ export default function ControlPills() {
         {MODES.map((m) => (
           <button key={m} type="button" className={`hud-pill ${mode === m ? 'active' : ''}`} onClick={() => setMode(m)}>{m}</button>
         ))}
+        <ScanPill />
       </div>
       <div className="pill-row small">
         {TIMES.slice(0, 5).map((t) => (
@@ -86,4 +87,10 @@ function WeatherPill() {
       )}
     </span>
   )
+}
+
+// P5: SCAN (spec §8) — the holographic sweep; V does the same
+function ScanPill() {
+  const on = useStore((s) => s.scan)
+  return <button type="button" className={`hud-pill scan-pill ${on ? 'active' : ''}`} aria-pressed={on} aria-label="Scan (V)" title="Scan — holographic city (V)" onClick={() => useStore.getState().toggleScan()}>SCAN</button>
 }
