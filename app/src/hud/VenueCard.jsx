@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { RiCloseLine } from 'react-icons/ri'
 import { useSports } from '../sports/sportsStore.js'
 import { boardLines } from '../sports/scoreboard.js'
-import { stateLabel, gameLabel, dataChip } from '../sports/tonight.js'
+import { stateLabel, gameLabel, dataChip, sourceNote } from '../sports/tonight.js'
 import { whenChicago } from '../sports/chicagoTime.js'
 
 export default function VenueCard() {
@@ -21,7 +21,7 @@ export default function VenueCard() {
   }, [key])
   if (!venue) return null
   const lines = boardLines(venue, st, Date.now(), override)
-  const chip = dataChip(st, source)
+  const now = Date.now(), chip = dataChip(st, source, generatedAt, now), note = sourceNote({ source, generatedAt }, now)
   return (
     <div className="hud-panel venue-card" role="dialog" aria-label={venue.name}>
       <div className="vc-head">
@@ -34,7 +34,9 @@ export default function VenueCard() {
       )}
       <p className="vc-status">{lines.status}</p>
       {st?.next && <p className="vc-next">Next: {gameLabel(st.next)} · {whenChicago(Date.parse(st.next.start))}</p>}
-      <p className="vc-foot"><span className={`chip chip-${chip.toLowerCase()}`}>{chip}</span> {chip === 'LIVE' ? 'Live score from ESPN, via CHI ATLAS' : chip === 'ESPN' ? `ESPN schedule as of ${generatedAt?.slice(0, 10)}` : 'Simulated schedule — typical home dates'}</p>
+      <p className="vc-foot"><span className={`chip chip-${chip.toLowerCase()}`}>{chip}</span>{' '}
+        {chip === 'LIVE' && <span>Live score from ESPN · </span>}
+        <span className={`data-note${note.stale ? ' data-stale' : ''}`}>{note.text}</span></p>
     </div>
   )
 }

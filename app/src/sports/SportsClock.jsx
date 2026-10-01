@@ -1,7 +1,7 @@
-// app/src/sports/SportsClock.jsx — loads the schedule and venues, recomputes every venue's state every 15 s,
-// and hands each venue's light level to the façade shader.
+// app/src/sports/SportsClock.jsx — loads the build-time schedule and venues, takes /api/schedule refreshes,
+// recomputes every venue's state every 15 s, and hands each venue's light level to the façade shader.
 import { useEffect } from 'react'
-import { useSports, loadSchedule, loadVenues } from './sportsStore.js'
+import { useSports, loadSchedule, loadVenues, scheduleFromProxy } from './sportsStore.js'
 import { computeStates, overrideStates, parseOverride, lightLevel } from './venueStates.js'
 import { setVenueLights } from '../world/materials/facadeMaterial.js'
 import { overlayLive, scoreEvents } from './liveScores.js'
@@ -23,6 +23,18 @@ export function applyLiveSports(liveGames, nowMs = Date.now()) {
   if (s.venues.length) tick(nowMs)
 }
 
+// E1: a good /api/schedule answer (services/feeds.js) — the home crowd stands for every home score since the last
+// answer, then the proxy's schedule replaces the build-time one (sportsStore's trust order) and the venues re-tick.
+export function applyProxySchedule(doc, nowMs = Date.now()) {
+  const s = useSports.getState()
+  const next = scheduleFromProxy(doc, s.origin === 'proxy' ? s.games : [], nowMs)
+  if (s.origin === 'proxy') {
+    const asLive = (gs) => gs.filter((g) => g.live && g.venue).map((g) => ({ id: g.id, venueKey: g.venue, homeScore: g.live.homeScore, awayScore: g.live.awayScore }))
+    for (const e of scoreEvents(asLive(s.games), asLive(next.games))) if (e.side === 'home') cheer(e.venueKey, Math.min(1, 0.5 + 0.25 * e.delta))
+  }
+  if (s.acceptSchedule(next) && s.venues.length) tick(nowMs)
+}
+
 export function tick(nowMs = Date.now()) {
   const s = useSports.getState()
   const fresh = s.liveGames.length && nowMs - (s.liveAt ?? 0) < LIVE_STALE_MS // a feed gone quiet hands back to the schedule
@@ -40,7 +52,7 @@ export default function SportsClock() {
     if (params.has('stats')) window.__sports = useSports
     Promise.all([loadSchedule(), loadVenues()]).then(([sched, venues]) => {
       if (!alive) return
-      useSports.getState().setData(sched)
+      useSports.getState().acceptSchedule(sched) // ignored when a fresher /api/schedule answer got here first
       useSports.getState().setVenues(venues)
       tick()
     })

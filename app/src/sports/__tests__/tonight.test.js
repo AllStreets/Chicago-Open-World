@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { tonightsGame, stateLabel, gameLabel, dataChip } from '../tonight.js'
+import { tonightsGame, stateLabel, gameLabel, dataChip, sourceNote } from '../tonight.js'
 import { venueFocusPose } from '../venueFocus.js'
 import { gamePlaces } from '../palette.js'
 import { useStore } from '../../state/store.js'
@@ -23,6 +23,18 @@ describe('tonight', () => {
     expect(stateLabel({ state: 'idle', next: g() }, now)).toMatch(/^NEXT (TONIGHT|TOMORROW|[A-Z]{3} [A-Z]{3} \d+) 7:05 PM$/) // dated (V5 review #1); expect(stateLabel(undefined)).toBe('NO GAMES')
     expect(gameLabel(g())).toBe('MIL @ CHC')
     expect(dataChip({ game: g({ simulated: true }) }, 'LIVE')).toBe('SIMULATED'); expect(dataChip({ game: g() }, 'LIVE')).toBe('ESPN') // provenance, never confused with a game in progress
+  })
+  it('provenance labels: fresh ESPN, stale ESPN (amber), simulated (E1-4)', () => {
+    const at = Date.parse('2026-10-01T17:00:00Z')
+    expect(sourceNote({ source: 'LIVE', generatedAt: '2026-10-01T16:57:00Z' }, at)).toEqual({ chip: 'ESPN', text: 'ESPN · updated 3 min ago', stale: false })
+    expect(sourceNote({ source: 'LIVE', generatedAt: '2026-10-01T16:59:40Z' }, at).text).toBe('ESPN · updated just now')
+    expect(sourceNote({ source: 'LIVE', generatedAt: '2026-10-01T13:00:00Z' }, at).text).toBe('ESPN · updated 4 h ago')
+    expect(sourceNote({ source: 'LIVE', generatedAt: '2026-09-29T17:36:00Z' }, at)).toEqual({ chip: 'STALE', text: 'ESPN schedule from Sep 29 — couldn’t refresh', stale: true })
+    expect(sourceNote({ source: 'SIMULATED', generatedAt: null }, at)).toEqual({ chip: 'SIMULATED', text: 'Simulated schedule — typical home dates', stale: false })
+    expect(dataChip({ game: g() }, 'LIVE', '2026-09-29T17:36:00Z', at)).toBe('STALE')
+    expect(dataChip({ game: g() }, 'LIVE', '2026-10-01T16:57:00Z', at)).toBe('ESPN')
+    expect(dataChip({ game: g({ live: { state: 'in' } }) }, 'LIVE', '2026-09-29T17:36:00Z', at)).toBe('LIVE') // a game in progress
+    expect(dataChip({ game: g({ live: { state: 'post' } }) }, 'LIVE', '2026-10-01T16:57:00Z', at)).toBe('ESPN') // a final is not "live"
   })
   it('venue focus: above the rim, looking into the bowl', () => {
     const b = venueFocusPose(W), f = venueFocusPose(S), a = venueFocusPose(U)

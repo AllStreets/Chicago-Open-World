@@ -1,4 +1,7 @@
-// app/src/sports/liveScores.js — live scores from CHI's /api/sports over V5's build-time schedule (P5 · I-5.5).
+// app/src/sports/liveScores.js — live scores from CHI's /api/sports over the schedule (P5 · I-5.5). The schedule
+// itself — and ESPN's own live scores — now refresh through our cached same-origin /api/schedule (E1,
+// sportsStore.scheduleFromProxy); this CHI overlay is optional and dormant while the CHI ATLAS link is parked.
+// The browser never calls ESPN; our own cached /api/schedule does.
 // gameState stays a pure function of (venue, time, games): live data arrives as a `live` field on each game.
 import { TEAMS, VENUE_BY_NAME } from '../../../shared/teams.js'
 import { chicagoDate } from './chicagoTime.js'

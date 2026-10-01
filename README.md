@@ -226,7 +226,7 @@ A progressive gallery, oldest first. Each phase adds its own shots; when a build
 </tr>
 </table>
 
-Game days come from the real ESPN schedules of all seven Chicago teams, fetched when the world is built; without them the city falls back to a simulated calendar and says so.
+Game days come from the real ESPN schedules of all seven Chicago teams. A copy is built with the world, and on the live site our own cached `/api/schedule` function refreshes it every 10 minutes (every minute around a game), so new games, reschedules, results and live scores arrive without a redeploy. The browser never calls ESPN; our own cached /api/schedule does. Without either, the city falls back to a simulated calendar and says so; the game card and the Games panel say where the schedule came from and how old it is.
 
 ### Vision pass · V6 landmarks and bridges — *bascules, Buckingham, the Bean, the civic icons*
 
@@ -437,6 +437,8 @@ Flexport Chicago's office at 333 North Green and BCG's tower across the street, 
 
 The city reads the CHI ATLAS API when it can and never shows an error when it can't: real CTA trains snapped onto the track (with the timetable simulator as the fallback), live scores driving the stadiums, the scoreboards and the W flag, and the real Chicago sky — overcast, rain, snow or lake fog, carried by the wind. The chip at the top left says honestly which: LIVE CTA or SIMULATED, with the data sources one click away. Press `V` for Scan, the holographic city.
 
+**Live data, today.** Sports schedules and live scores refresh on the live site through our own cached `/api/schedule` (ESPN, cached by Vercel's CDN, so ESPN sees about one request per 10 minutes however many people visit); the browser never calls ESPN; our own cached /api/schedule does. Live CTA trains, alerts and weather still wait for the CHI ATLAS link, which is parked, so the live site shows them simulated.
+
 <table>
 <tr>
 <td width="50%"><img src="docs/screenshots/p5-live-trains-dusk.png" alt="Phase 5 — a live Brown Line train on Lake Street with the data sources open" width="100%"/></td>
@@ -560,6 +562,7 @@ npm run e2e --prefix app          # hero-view screenshot baselines (Playwright)
 - **City of Chicago Data Portal** — Building Footprints (`syp8-uezg`), City Boundary (`qqq8-j68g`).
 - **OpenStreetMap** — building heights, `building:part` setbacks, water, parks, roads, rail, street trees.
   © OpenStreetMap contributors, available under the [ODbL](https://www.openstreetmap.org/copyright).
+- **ESPN public site API** — team schedules and scoreboards, fetched at build time (`npm run schedules`) and by the cached `/api/schedule` function (`app/api/schedule.js`). The browser never calls ESPN; our own cached /api/schedule does.
 
 ## Roadmap
 

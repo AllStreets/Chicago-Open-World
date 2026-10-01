@@ -26,6 +26,20 @@ export function stateLabel(st, nowMs = Date.now()) {
   return st?.next ? `NEXT ${whenChicago(Date.parse(st.next.start), nowMs).toUpperCase()}` : 'NO GAMES'
 }
 export const gameLabel = (g) => `${g.away.abbr} @ ${g.home.abbr}`
-// Provenance chip: 'ESPN' for the build-time schedule, 'SIMULATED' for the fallback calendar. Never 'LIVE' —
-// that word belongs to a game in progress, and one row must not use it for both.
-export const dataChip = (st, source) => (st?.game?.live ? 'LIVE' : (st?.game ?? st?.next)?.simulated || source !== 'LIVE' ? 'SIMULATED' : 'ESPN')
+// E1-4: ESPN data older than this means the refresh (/api/schedule) isn't getting through — say so, in amber.
+export const STALE_AFTER_MS = 6 * 3600000
+const isOld = (generatedAt, nowMs) => { const t = Date.parse(generatedAt ?? ''); return Number.isFinite(t) && nowMs - t > STALE_AFTER_MS }
+// Provenance chip: 'LIVE' only for a game in progress; 'ESPN' for a fresh ESPN schedule (the /api/schedule proxy or
+// the build-time file), 'STALE' when that schedule is over 6 h old, 'SIMULATED' for the fallback calendar.
+export const dataChip = (st, source, generatedAt = null, nowMs = Date.now()) =>
+  st?.game?.live?.state === 'in' ? 'LIVE' : (st?.game ?? st?.next)?.simulated || source !== 'LIVE' ? 'SIMULATED' : isOld(generatedAt, nowMs) ? 'STALE' : 'ESPN'
+const ago = (ms) => { const m = Math.floor(ms / 60000); return m < 1 ? 'just now' : m < 60 ? `${m} min ago` : `${Math.floor(m / 60)} h ago` }
+const dayOf = (t) => new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'America/Chicago' })
+// Where the schedule came from and how old it is, in words (the VenueCard and Games panel feet).
+export function sourceNote({ source, generatedAt }, nowMs = Date.now()) {
+  if (source !== 'LIVE') return { chip: 'SIMULATED', text: 'Simulated schedule — typical home dates', stale: false }
+  const t = Date.parse(generatedAt ?? '')
+  if (!Number.isFinite(t)) return { chip: 'ESPN', text: 'ESPN schedule', stale: false }
+  if (isOld(generatedAt, nowMs)) return { chip: 'STALE', text: `ESPN schedule from ${dayOf(t)} — couldn’t refresh`, stale: true }
+  return { chip: 'ESPN', text: `ESPN · updated ${ago(Math.max(0, nowMs - t))}`, stale: false }
+}

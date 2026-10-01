@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useStore } from '../state/store.js'
 import { retryLive } from '../services/feeds.js'
+import { useSports } from '../sports/sportsStore.js'
 
 const ago = (t, now) => {
   if (!t) return ''
@@ -11,14 +12,16 @@ const ago = (t, now) => {
 }
 
 export function sourceLines(state, now = Date.now()) {
-  const { feeds, feedAt, weather } = state
+  const { feeds, feedAt, weather, schedule } = state
   const live = (k) => feeds[k] === 'LIVE'
   const sky = weather?.label ?? 'clear sky'
   return [
     ['Trains', live('cta') ? `live from CTA Train Tracker, updated ${ago(feedAt.cta, now)}` : 'simulated from CTA and Metra timetables (typical service)'],
     ['Line alerts', live('alerts') ? `live CTA service alerts, updated ${ago(feedAt.alerts, now)}` : 'none shown — the live alerts feed is not connected'],
     ['Weather', live('weather') ? `live Chicago weather (${sky}), updated ${ago(feedAt.weather, now)}` : `simulated (${sky})`],
-    ['Scores', live('sports') ? `live from ESPN, updated ${ago(feedAt.sports, now)}` : 'the season schedule built with the map, with simulated scores'],
+    ['Scores', live('sports') ? `live from ESPN, updated ${ago(feedAt.sports, now)}`
+      : schedule?.origin === 'proxy' ? `ESPN schedule and scores through our cached schedule service, updated ${ago(Date.parse(schedule.generatedAt), now)}`
+        : schedule?.origin === 'simulated' ? 'a simulated calendar of typical home dates' : 'the ESPN season schedule built with the map'],
     ['Places', live('places') ? 'live from CHI ATLAS, merged with the map' : 'built into the map from OpenStreetMap'],
   ]
 }
@@ -27,7 +30,8 @@ export default function LiveChip() {
   const ctaLive = useStore((s) => s.feeds.cta === 'LIVE')
   const open = useStore((s) => s.sourcesOpen)
   const feeds = useStore((s) => s.feeds), feedAt = useStore((s) => s.feedAt), weather = useStore((s) => s.weather)
-  const state = { feeds, feedAt, weather }
+  const origin = useSports((s) => s.origin), generatedAt = useSports((s) => s.generatedAt)
+  const state = { feeds, feedAt, weather, schedule: { origin, generatedAt } }
   const [now, setNow] = useState(() => Date.now())
   useEffect(() => {
     if (!open) return undefined
