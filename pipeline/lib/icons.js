@@ -158,7 +158,12 @@ export function willisDetail({ pieces, belts = [], ledge = null, finGap = 4.6 })
   }
   for (const { a, t, n, len, y0, y1 } of edges) {
     const k = Math.max(1, Math.round(len / finGap))
-    for (let i = 0; i <= k; i++) slab(fins, add2(add2(a, mul2(t, (i * len) / k)), mul2(n, 0.15)), t, 0.35, 0.3, y0, y1)
+    // a fin is only ever seen from outside: its face and two sides (half a box's triangles, for the size budget)
+    for (let i = 0; i <= k; i++) {
+      const at = add2(a, mul2(t, (i * len) / k)), Q = (s, d, y) => [at[0] + t[0] * s + n[0] * d, y, at[1] + t[1] * s + n[1] * d]
+      quad(fins, Q(-0.175, 0.3, y0), Q(0.175, 0.3, y0), Q(0.175, 0.3, y1), Q(-0.175, 0.3, y1), [n[0], 0, n[1]])
+      for (const s of [-1, 1]) quad(fins, Q(s * 0.175, 0, y0), Q(s * 0.175, 0.3, y0), Q(s * 0.175, 0.3, y1), Q(s * 0.175, 0, y1), [t[0] * s, 0, t[1] * s])
+    }
     for (const [b0, b1] of belts) {
       const lo = Math.max(b0, y0), hi = Math.min(b1, y1)
       if (hi > lo) slab(bands, add2(add2(a, mul2(t, len / 2)), mul2(n, 0.2)), t, len, 0.4, lo, hi)

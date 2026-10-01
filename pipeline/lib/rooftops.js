@@ -8,6 +8,7 @@ import { add2, sub2, mul2, dot2, norm2, mesh, slab, tube, at3 } from './meshkit.
 import { LANDMARK_FACADES as F } from './facadeIds.js'
 import { shuffled } from './sportsSites.js'
 
+// lean for the size budget: tread and riser per row (no separate bench), four-sided tubes
 const ROW_D = 0.85, RISE = 0.55, DECK = 1.2, MAX_ROWS = 14, SEAT_GAP = 0.62
 
 // One grandstand on a roof. ring: the footprint (x, z); roofY: the roof height; plate: home plate (x, z).
@@ -27,26 +28,25 @@ export function rooftopStand({ ring, roofY, plate }) {
     const c = rowC(i), y = rowY(i)
     slab(seat, c, s, width, ROW_D, y - 0.08, y) // the tread
     slab(seat, add2(c, mul2(d, ROW_D / 2 - 0.02)), s, width, 0.04, i ? rowY(i - 1) : roofY, y - 0.08) // the riser
-    slab(seat, add2(c, mul2(d, -0.18)), s, width - 0.2, 0.32, y + 0.4, y + 0.46) // the bench
   }
   // the steel frame: columns under every third row and the back row, cross-braced along both sides
   const cols = [...new Set([...Array.from({ length: Math.ceil(n / 3) }, (_, k) => k * 3), n - 1])]
   for (const side of [-1, 1]) {
     const foot = (i) => add2(rowC(i), mul2(s, side * hw))
-    for (const i of cols) tube(steel, at3(foot(i), roofY), at3(foot(i), rowY(i) - 0.08), 0.12, 6)
-    for (let k = 0; k + 1 < cols.length; k++) tube(steel, at3(foot(cols[k]), roofY + 0.2), at3(foot(cols[k + 1]), rowY(cols[k + 1]) - 0.3), 0.07, 5)
+    for (const i of cols) tube(steel, at3(foot(i), roofY), at3(foot(i), rowY(i) - 0.08), 0.12, 4)
+    for (let k = 0; k + 1 < cols.length; k++) tube(steel, at3(foot(cols[k]), roofY + 0.2), at3(foot(cols[k + 1]), rowY(cols[k + 1]) - 0.3), 0.07, 4)
   }
   // rails: along the front, up both sides with the rows, and across the back
   const top = rowY(n - 1) + 1.05
   const fl = add2(rowC(0), mul2(d, ROW_D / 2)), bl = add2(rowC(n - 1), mul2(d, -ROW_D / 2))
   const sideAt = (p, k) => add2(p, mul2(s, k * (width / 2)))
-  tube(rail, at3(sideAt(fl, -1), rowY(0) + 0.95), at3(sideAt(fl, 1), rowY(0) + 0.95), 0.05, 5)
+  tube(rail, at3(sideAt(fl, -1), rowY(0) + 0.95), at3(sideAt(fl, 1), rowY(0) + 0.95), 0.05, 4)
   for (const k of [-1, 1]) {
-    tube(rail, at3(sideAt(fl, k), rowY(0) + 1.0), at3(sideAt(bl, k), top), 0.05, 5)
-    tube(rail, at3(sideAt(fl, k), rowY(0) - 0.08), at3(sideAt(fl, k), rowY(0) + 1.0), 0.04, 5)
-    tube(rail, at3(sideAt(bl, k), rowY(n - 1) - 0.08), at3(sideAt(bl, k), top), 0.04, 5)
+    tube(rail, at3(sideAt(fl, k), rowY(0) + 1.0), at3(sideAt(bl, k), top), 0.05, 4)
+    tube(rail, at3(sideAt(fl, k), rowY(0) - 0.08), at3(sideAt(fl, k), rowY(0) + 1.0), 0.04, 4)
+    tube(rail, at3(sideAt(bl, k), rowY(n - 1) - 0.08), at3(sideAt(bl, k), top), 0.04, 4)
   }
-  tube(rail, at3(sideAt(bl, -1), top), at3(sideAt(bl, 1), top), 0.05, 5)
+  tube(rail, at3(sideAt(bl, -1), top), at3(sideAt(bl, 1), top), 0.05, 4)
   // the crowd: one place every SEAT_GAP along each row, facing home plate
   const seats = []
   const per = Math.max(1, Math.floor((width - 0.4) / SEAT_GAP))

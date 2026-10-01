@@ -67,6 +67,10 @@ describe('no canopy through a building, a stadium, a plaza or a railway (user fi
     const r = filterTrees([[-8, 50], [-40, 50]], { zones: [zone] })
     expect(r.kept).toEqual([[-40, 50]]); expect(r.removed.venue).toBe(1)
   })
+  it('paved plazas and squares: no trunk on the paving (canopy may overhang — tree pits at the edge are real)', () => {
+    const r = filterTrees([[10, 10], [30, 10]], { paved: () => [sq(0, 0, 20, 20)] })
+    expect(r.kept).toEqual([[30, 10]]); expect(r.removed.paved).toBe(1)
+  })
   it('plazas and railways', () => {
     const r = filterTrees([[0, 3], [50, 50], [200, 2], [200, 40]], { plazas: [{ c: [50, 50], r: 20 }], rails: () => [[[-100, 0], [300, 0]]] })
     expect(r.kept).toEqual([[200, 40]])

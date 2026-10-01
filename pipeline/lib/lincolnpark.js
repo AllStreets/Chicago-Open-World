@@ -19,7 +19,9 @@ import { wallPolygon } from './icons.js'
 import { add2, mul2, left, mesh, merge, slab, revolve, ringAround } from './meshkit.js'
 import { LANDMARK_FACADES as F } from './facadeIds.js'
 
-const P = (m, facade, style, part, seed = 0.5) => ({ mesh: m, facade, seed, style, part })
+// close-range detail stays out of LOD1 (the size budget); the silhouette parts draw at every distance
+const FINE = new Set(['reliefs', 'tables', 'king', 'queen', 'door', 'fence', 'ledges', 'falls', 'council-ring', 'pavilion-piers', 'belfry', 'parapet', 'pinnacles', 'quoins'])
+const P = (m, facade, style, part, seed = 0.5) => ({ mesh: m, facade, seed, style, part, lod0Only: FINE.has(part) })
 const obOf = (b) => orientedBox(convexHull(b.polygons.flatMap((p) => p.outer)))
 const frac = (x) => x - Math.floor(x)
 const rnd = (k) => frac(Math.sin(k * 127.1 + 311.7) * 43758.5453)
@@ -117,7 +119,7 @@ export function lilyPool(b, spec = {}) {
       for (let j = 0; j < k; j++) banks.push([add2(p, mul2(t, j / k)), add2(p, mul2(t, (j + 1) / k)), n])
     }
     // the pond's surface, a hand above the park ground (OSM's pond sits flush with the grass and was lost under it)
-    const pool = mesh(), tri = earcut(r.flat()), y = 0.12
+    const pool = mesh(), tri = earcut(r.flat()), y = 0.25
     for (let i = 0; i < tri.length; i += 3) { const [a, bb, cc] = [r[tri[i]], r[tri[i + 1]], r[tri[i + 2]]]; slabTri(pool, [a[0], y, a[1]], [bb[0], y, bb[1]], [cc[0], y, cc[1]]) }
     meshes.push(P(pool, F.paint, 'lp-pool', 'pool'))
   } else {

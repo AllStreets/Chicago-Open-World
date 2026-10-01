@@ -258,8 +258,8 @@ function castellated(b, spec) {
   for (const p of sq(0.9)) turret(p, 0, 0.36 * H, 0.07 * m0, 'turret')
   for (const p of sq(0.46)) turret(p, yBase, yShaft + 0.04 * H, 0.045 * m0, 'shaft-turret')
   battlements(sq(1), yBase); battlements(sq(0.46), yShaft); battlements(oct(rOct), yOct, 0.9, 0.6, 0.4)
-  meshes.push({ mesh: caps, facade: F.wall, seed: stone, part: 'caps' })
-  meshes.push({ mesh: merl, facade: F.wall, seed: stone, part: 'merlons' })
+  meshes.push({ mesh: caps, facade: F.wall, seed: stone, part: 'caps', lod0Only: true })
+  meshes.push({ mesh: merl, facade: F.wall, seed: stone, part: 'merlons', lod0Only: true })
   // tall pointed lancets on the shaft, a pointed doorway and two lancets on each face of the base
   const lancets = mesh(), doors = mesh()
   const lancet = (out, o, along, dir, s, y0, y1, hw) => wallPolygon(out, add2(o, mul2(along, s)), along, dir, [[-hw, y0], [hw, y0], [hw, y1 - hw * 1.6], [0, y1], [-hw, y1 - hw * 1.6]], 0.06)
@@ -270,8 +270,8 @@ function castellated(b, spec) {
     lancet(doors, baseFace, along, d, 0, 0, 0.2 * H, 1.6)
     for (const s of [-0.28 * m0, 0.28 * m0]) lancet(lancets, baseFace, along, d, s, 0.08 * H, 0.24 * H, 0.5)
   }
-  meshes.push({ mesh: lancets, facade: F.paint, seed: 0.5, style: 'gothic-shadow', part: 'lancets' })
-  meshes.push({ mesh: doors, facade: F.paint, seed: 0.5, style: 'gothic-shadow', part: 'doorways' })
+  meshes.push({ mesh: lancets, facade: F.paint, seed: 0.5, style: 'gothic-shadow', part: 'lancets', lod0Only: true })
+  meshes.push({ mesh: doors, facade: F.paint, seed: 0.5, style: 'gothic-shadow', part: 'doorways', lod0Only: true })
   // the open lantern: an octagonal drum with a round-headed opening on each face, then the cupola and finial
   meshes.push({ mesh: drum({ at: c, base: yOct, top: yLan, r: rLan, sides: 8 }), facade: F.wall, seed: stone, part: 'lantern' })
   const arches = mesh()
@@ -281,7 +281,7 @@ function castellated(b, spec) {
     for (let j = 0; j <= 6; j++) { const t = (j / 6) * Math.PI; pts.push([hw * Math.cos(t), yLan - 1.2 - hw + hw * Math.sin(t)]) }
     wallPolygon(arches, add2(c, mul2(d, apo)), left(d), d, pts, 0.05)
   }
-  meshes.push({ mesh: arches, facade: F.paint, seed: 0.5, style: 'gothic-shadow', part: 'lantern-arches' })
+  meshes.push({ mesh: arches, facade: F.paint, seed: 0.5, style: 'gothic-shadow', part: 'lantern-arches', lod0Only: true })
   const rc = rLan * 0.85
   meshes.push({ mesh: lathe(c, yLan, rc, DOME, 16), facade: F.wall, seed: stone, part: 'cupola' })
   meshes.push({ mesh: spire({ at: c, base: yLan + rc * 1.4, top: H, r0: 0.3, sides: 8 }), facade: F.wall, seed: stone, part: 'finial' })

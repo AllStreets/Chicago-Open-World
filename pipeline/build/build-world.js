@@ -265,8 +265,12 @@ async function main() {
     }
   }
   const railIdx = buildGridIndex(railSegs, 100, (s) => s.c)
-  const { kept: keptTrees, removed } = filterTrees(treeNodes, { zones: zones.map((z) => z.ring), clearings, nearBuildings: (p) => footIdx.query(p, 400), plazas: landmarkRuntime.plazas, rails: (p) => railIdx.query(p, 100).map((s) => s.line) })
-  log(`trees removed (canopy test) — venues ${removed.venue}, clearings ${removed.clearing}, plazas ${removed.plaza}, railways ${removed.rail}, footprints ${removed.building}; kept ${keptTrees.length}; venue zones: ${zones.map((z) => z.key).join(', ')}`)
+  // paved squares and plazas (the same areas the paving layer draws): no trunk stands on the paving
+  const pavedAreas = osmPolys(uniq([...chunks('paving'), ...chunks('trails')]).filter((e) => isPavingArea(e.tags || {}))).filter((p) => pavingKind(p.tags))
+  const pavedIdx = buildGridIndex(pavedAreas, 200, (p) => [(p.bbox.minX + p.bbox.maxX) / 2, (p.bbox.minZ + p.bbox.maxZ) / 2])
+  const pavedNear = (p) => pavedIdx.query(p, 600).filter((q) => p[0] >= q.bbox.minX && p[0] <= q.bbox.maxX && p[1] >= q.bbox.minZ && p[1] <= q.bbox.maxZ).map((q) => q.outer)
+  const { kept: keptTrees, removed } = filterTrees(treeNodes, { zones: zones.map((z) => z.ring), clearings, nearBuildings: (p) => footIdx.query(p, 400), plazas: landmarkRuntime.plazas, rails: (p) => railIdx.query(p, 100).map((s) => s.line), paved: pavedNear })
+  log(`trees removed (canopy test) — venues ${removed.venue}, clearings ${removed.clearing}, plazas ${removed.plaza}, railways ${removed.rail}, footprints ${removed.building}, paving ${removed.paved}; kept ${keptTrees.length}; venue zones: ${zones.map((z) => z.key).join(', ')}`)
   treeNodes.length = 0
   for (const p of keptTrees) treeNodes.push(p)
   log(`parks ${parks.length}, water ${water.length}, roads ${roads.length}, rail ${rail.length}, trees ${treeNodes.length}`)
@@ -464,7 +468,7 @@ async function main() {
       for (const pc of parapets) appendBuilding(L0, extrudeBuilding(pc), PARAPET_FACADE, seed, i, st)
       const crownStyle = (m) => (m.style ? styleIndex(m.style) : m.facade != null ? meshStyle(b, 'crown') : st) // own-surface crowns skip the wall recolour; sculpted detail names its material row
       for (const m of b.extraMeshes || []) appendBuilding(L0, m, m.facade ?? family, m.seed ?? seed, i, crownStyle(m))
-      for (const v of b.venueMeshes || []) { const vs = partStyle(b, v); appendBuilding(L0, v.mesh, v.facade, v.seed, i, vs); appendBuilding(L1, v.mesh, v.facade, v.seed, i, vs) }
+      for (const v of b.venueMeshes || []) { const vs = partStyle(b, v); appendBuilding(L0, v.mesh, v.facade, v.seed, i, vs); if (!v.lod0Only) appendBuilding(L1, v.mesh, v.facade, v.seed, i, vs) } // fine landmark detail (merlons, ledges, carving) is close-range only
       // LOD1: heroes and part-buildings keep their shape (they are the skyline); plain footprints simplify
       if (keepsShapeAtDistance(b)) { for (const pc of b.pieces) appendBuilding(L1, extrudeBuilding(pc), family, seed, i, st); for (const m of b.extraMeshes || []) if (!m.lod0Only) appendBuilding(L1, m, m.facade ?? family, m.seed ?? seed, i, crownStyle(m)) }
       else if (b.area >= 80) for (const pc of lod1Pieces(b)) appendBuilding(L1, extrudeBuilding(pc), family, seed, i, st)

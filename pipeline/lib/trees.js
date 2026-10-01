@@ -49,8 +49,8 @@ export function canopyOverFootprint(p, b, r) {
   return Boolean(b.treeHull && nearRing(p, b.treeHull, r))
 }
 
-export function filterTrees(points, { zones = [], clearings = [], nearBuildings = () => [], plazas = [], rails = () => [] } = {}) {
-  const kept = [], removed = { venue: 0, clearing: 0, building: 0, plaza: 0, rail: 0 }
+export function filterTrees(points, { zones = [], clearings = [], nearBuildings = () => [], plazas = [], rails = () => [], paved = () => [] } = {}) {
+  const kept = [], removed = { venue: 0, clearing: 0, building: 0, plaza: 0, rail: 0, paved: 0 }
   for (const raw of points) {
     const p = roundTree(raw), r = canopyRadius(p)
     if (zones.some((z) => nearRing(p, z, r + VENUE_MARGIN_M))) removed.venue++
@@ -58,6 +58,7 @@ export function filterTrees(points, { zones = [], clearings = [], nearBuildings 
     else if (plazas.some((q) => Math.hypot(p[0] - q.c[0], p[1] - q.c[1]) < q.r + r)) removed.plaza++
     else if (rails(p).some((line) => line.some((a, i) => i + 1 < line.length && segDist(p, a, line[i + 1]) < r + RAIL_CLEAR_M))) removed.rail++
     else if (nearBuildings(p).some((b) => canopyOverFootprint(p, b, r))) removed.building++
+    else if (paved(p).some((q) => pointInRing(p, q))) removed.paved++
     else kept.push(p)
   }
   return { kept, removed }
