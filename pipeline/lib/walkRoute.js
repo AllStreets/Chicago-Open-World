@@ -1,7 +1,7 @@
 // pipeline/lib/walkRoute.js — a walk leg found on a fine grid of open ground (P7): never inside a building, never on
 // the water, and cheapest along the preferred line (the walk graph's paths, or a street's sidewalk), so it follows the
 // real paths where OSM has them and steps across the small gaps where it doesn't.
-export function gridRoute(from, to, { blocked, preferred = () => false, cell = 3, margin = 150, offPath = 4, snapM = 60 }) {
+export function gridRoute(from, to, { blocked, preferred = () => false, cell = 3, margin = 150, offPath = 4, snapM = 60, cornerCut = false }) {
   const minX = Math.min(from[0], to[0]) - margin, minZ = Math.min(from[1], to[1]) - margin
   const W = Math.ceil((Math.max(from[0], to[0]) + margin - minX) / cell) + 1, H = Math.ceil((Math.max(from[1], to[1]) + margin - minZ) / cell) + 1
   const at = (i, j) => [minX + i * cell, minZ + j * cell]
@@ -43,7 +43,7 @@ export function gridRoute(from, to, { blocked, preferred = () => false, cell = 3
       if (vi < 0 || vj < 0 || vi >= W || vj >= H) continue
       const v = idx(vi, vj), c = cost[v]
       if (!Number.isFinite(c)) continue
-      if (di && dj && (!Number.isFinite(cost[idx(ui + di, uj)]) || !Number.isFinite(cost[idx(ui, uj + dj)]))) continue // no corner cutting
+      if (!cornerCut && di && dj && (!Number.isFinite(cost[idx(ui + di, uj)]) || !Number.isFinite(cost[idx(ui, uj + dj)]))) continue // no corner cutting (a floor walk keeps its own 1 m margin instead)
       const nd = g[u] + dl * (c + cost[u]) / 2
       if (nd < g[v]) { g[v] = nd; prev[v] = u; push([nd + h(v), v]) }
     }

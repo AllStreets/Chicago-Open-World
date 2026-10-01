@@ -69,7 +69,8 @@ export function lRides(sim, transit) {
   return out.sort((a, b) => a.name.localeCompare(b.name))
 }
 
-const toPath = (pts, y) => makePath(pts.map(([x, z]) => [x, y, z]))
+// a point is [x, z], or [x, z, y] where the walk leaves the street (D1-7: the Riverwalk at river level)
+export const toPath = (pts, y) => makePath(pts.map((p) => [p[0], p.length > 2 && Number.isFinite(p[2]) ? p[2] : y, p[1]]))
 // arc length of the nearest point of a polyline to (x, z)
 export function projectS(path, x, z) {
   let best = Infinity, bestS = 0

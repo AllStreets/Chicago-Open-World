@@ -1,0 +1,31 @@
+{
+  "note": "Workstream D1-2: the Chicago Riverwalk at river level (levels.json RIVERWALK_Y), its rooms between the bridges along the Main Branch's south bank. A room runs between the piers of its two bridges (bridges.json keys; null = the Riverwalk's own end). The floor is the OSM Riverwalk polygon (way 504093803) minus the bascule piers, plus a passage in front of each pier; the rooms' own OSM polygons, where mapped, name and place their features. Built by pipeline/lib/riverwalk.js.",
+  "parkOsmId": 504093803,
+  "sources": [
+    "https://en.wikipedia.org/wiki/Chicago_Riverwalk",
+    "https://www.chicagoriverwalk.us/ (the rooms and their uses)",
+    "https://www.rossbarney.com/projects/chicago-riverwalk (Ross Barney Architects with Sasaki: Marina Plaza, the Cove, River Theater, Water Plaza, the Jetty, the Boardwalk)",
+    "https://www.chicago.gov/city/en/depts/dcd/supp_info/chicago_river_corridordesignguidelinesandstandards.html (Chicago River Main Branch framework plan)",
+    "OpenStreetMap (ODbL) — the Riverwalk polygon, the rooms (ways 747184081 The Marina, 747184053 The Cove, 747184016 The River Theater, 747171913 The Water Plaza, 747168489 The Jetty, 747168477 The Boardwalk - Confluence, 860267019 Riverwalk East) and the floating wetland gardens (863109949–52)"
+  ],
+  "rooms": [
+    { "key": "east", "name": "Riverwalk East", "street": "Lake Shore Drive → Michigan Avenue", "east": null, "west": "dusable", "kind": "promenade", "osm": 860267019,
+      "about": "The east section past the Columbus Drive bridge to the DuSable (Michigan Avenue) bridge and the McCormick Bridgehouse; planted terraces and the Limestone Glade" },
+    { "key": "michigan", "name": "Michigan–Wabash", "street": "Michigan Avenue → Wabash Avenue", "east": "dusable", "west": "wabash", "kind": "promenade",
+      "about": "Planted beds and seating under the Wabash and Michigan bridges" },
+    { "key": "memorial", "name": "Vietnam Veterans Memorial Plaza", "street": "Wabash Avenue → State Street", "east": "wabash", "west": "state", "kind": "memorial",
+      "about": "The Chicago Vietnam Veterans Memorial: a fountain and a black granite wall with the names of the Illinois dead" },
+    { "key": "marina", "name": "Marina Plaza", "street": "State Street → Dearborn Street", "east": "state", "west": "dearborn", "kind": "marina", "osm": 747184081,
+      "about": "Restaurants in the vaults under Wacker, tiered seating facing Marina City, and boat slips" },
+    { "key": "cove", "name": "The Cove", "street": "Dearborn Street → Clark Street", "east": "dearborn", "west": "clark", "kind": "cove", "osm": 747184053,
+      "about": "Kayak and canoe rentals on a floating dock at the water's edge" },
+    { "key": "theater", "name": "River Theater", "street": "Clark Street → LaSalle Street", "east": "clark", "west": "lasalle", "kind": "theater", "osm": 747184016,
+      "about": "A sculptural staircase of seating that links Upper Wacker Drive to the river, about 5 m down" },
+    { "key": "waterplaza", "name": "Water Plaza", "street": "LaSalle Street → Wells Street", "east": "lasalle", "west": "wells", "kind": "waterPlaza", "osm": 747171913,
+      "about": "A water feature for children to play in, beside the river" },
+    { "key": "jetty", "name": "The Jetty", "street": "Wells Street → Franklin Street", "east": "wells", "west": "franklin-orleans", "kind": "jetty", "osm": 747168489,
+      "about": "Piers out over the river and floating wetland gardens for fish and birds" },
+    { "key": "boardwalk", "name": "The Boardwalk", "street": "Franklin Street → Lake Street (the Confluence)", "east": "franklin-orleans", "west": null, "kind": "boardwalk", "osm": 747168477,
+      "about": "A wide wooden walk with an accessible slope, round to the Confluence at Wolf Point and Lake Street" }
+  ]
+}

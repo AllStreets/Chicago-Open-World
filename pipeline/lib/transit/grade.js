@@ -43,6 +43,23 @@ export function refineGrades(segs) {
 
 export const targetY = (grade, operator) => (grade === 'subway' ? SUBWAY_Y : grade === 'at_grade' ? AT_GRADE_Y : RAIL_TOP_Y[operator] ?? RAIL_TOP_Y.metra)
 
+// D1-5: the tubes dive under the sunken river (and under the lower decks). Each subway vertex may go down to its dip
+// target (`target(p)`, Infinity where there is none), the deep run spreading out along the line at RAMP_SLOPE — but
+// never into a station (`fixed(i)`: the platforms stay level at SUBWAY_Y) and never into a portal ramp: from every
+// fixed vertex the line may only fall away at RAMP_SLOPE. So a crossing close to a station dips as deep as the 4 %
+// ramp from its platform end allows, and a crossing far from one reaches its full target.
+export function dipProfile(pts, ys, { target, fixed, slope = RAMP_SLOPE }) {
+  const n = pts.length, cap = Array(n), floor = Array(n)
+  for (let i = 0; i < n; i++) {
+    const subway = ys[i] <= SUBWAY_Y + 1e-6
+    cap[i] = subway ? target(pts[i], i) : Infinity
+    floor[i] = !subway || fixed(pts[i], i) ? ys[i] : -Infinity
+  }
+  for (let i = 1; i < n; i++) { const d = slope * segLen(pts[i - 1], pts[i]); cap[i] = Math.min(cap[i], cap[i - 1] + d); floor[i] = Math.max(floor[i], floor[i - 1] - d) }
+  for (let i = n - 2; i >= 0; i--) { const d = slope * segLen(pts[i], pts[i + 1]); cap[i] = Math.min(cap[i], cap[i + 1] + d); floor[i] = Math.max(floor[i], floor[i + 1] - d) }
+  return ys.map((y, i) => +Math.min(y, Math.max(cap[i], floor[i])).toFixed(2))
+}
+
 // each vertex takes the higher target of its two segments; a forward and a backward pass limit the slope,
 // so ramps always fall on the lower side (the at-grade approach, or the subway portal)
 export function heightProfile(pts, segGrades, operator) {

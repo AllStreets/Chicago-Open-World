@@ -98,6 +98,10 @@ export function cutPolyline(points, rect) {
 // Chicago-type trunnion bascule: each leaf turns about a fixed trunnion at the bank; a counterweight on the
 // short tail behind the trunnion drops into a pit as the leaf rises (https://en.wikipedia.org/wiki/Bascule_bridge).
 export const DECK = { sidewalkW: 3, slabT: 0.35, trunnionDrop: 1.2, gap: 0.04, tailFrac: 0.32 }
+// app/src/bridges/lift.js MAX_LIFT_DEG: the pits are sized for the leaves' whole sweep up to this angle (D1-4)
+export const LIFT_MAX_DEG = 75
+// D1 (river at RIVER_Y): no steel hangs lower than this over the water at the trunnion
+export const WATER_CLEAR_M = 1.0
 // The L crossing a double-deck bascule rides V3's own transit structure (rail top RAIL_TOP_Y.cta = 7.2 m); the leaf
 // carries no upper slab of its own, and its through trusses rise clear of a 3.66 m car (CTA 5000/7000 series).
 export const L_DECK_Y = RAIL_TOP_Y.cta
@@ -114,11 +118,14 @@ export function leafGeometry(b, deckY) {
 const frameOf = (g) => { const v = left(g.d); return (a, o = 0) => add2(add2(g.p2, mul2(g.d, a)), mul2(v, o)) }
 const panels = (g, N = 8) => Array.from({ length: N + 1 }, (_, i) => -g.Lt + ((g.Lf + g.Lt) * i) / N)
 
-function deckTrusses(b, g, deckY) {
-  const out = mesh(), at = frameOf(g), W = b.width, top = deckY - DECK.slabT
+// the deepest a leaf's steel may hang below its deck: clear of the river by WATER_CLEAR_M (none over the flat world)
+const depthCap = (deckY, riverY) => (riverY == null ? Infinity : deckY - DECK.slabT - (riverY + WATER_CLEAR_M) - 0.3) // 0.3: the chord tube's radius
+
+function deckTrusses(b, g, deckY, riverY) {
+  const out = mesh(), at = frameOf(g), W = b.width, top = deckY - DECK.slabT, cap = depthCap(deckY, riverY)
   const offs = W > 26 ? [-(W / 2 - 2.5), -W / 6, W / 6, W / 2 - 2.5] : [-(W / 2 - 2.5), W / 2 - 2.5]
   const [d0, d1] = b.decks === 2 ? [7.5, 6.6] : [5.5, 1.8]
-  const depth = (a) => (a <= 0 ? d0 : d0 + ((d1 - d0) * a) / g.Lf)
+  const depth = (a) => Math.min(cap, a <= 0 ? d0 : d0 + ((d1 - d0) * a) / g.Lf)
   const A = panels(g)
   for (const o of offs) for (let i = 0; i < A.length - 1; i++) {
     const T0 = at3(at(A[i], o), top), T1 = at3(at(A[i + 1], o), top)
@@ -144,10 +151,10 @@ function throughTrusses(b, g, deckY) {
   return out
 }
 
-function girders(b, g, deckY) {
-  const out = mesh(), at = frameOf(g), W = b.width, top = deckY - DECK.slabT
+function girders(b, g, deckY, riverY) {
+  const out = mesh(), at = frameOf(g), W = b.width, top = deckY - DECK.slabT, cap = depthCap(deckY, riverY)
   const offs = W > 20 ? [-(W / 2 - 2), -W / 6, W / 6, W / 2 - 2] : [-(W / 2 - 2), W / 2 - 2]
-  const depth = (a) => (a <= 0 ? 3.5 : 3.5 - (2.1 * a) / g.Lf)
+  const depth = (a) => Math.min(cap, a <= 0 ? 3.5 : 3.5 - (2.1 * a) / g.Lf)
   const A = panels(g)
   for (const o of offs) for (let i = 0; i < A.length - 1; i++) {
     const m = (A[i] + A[i + 1]) / 2
@@ -156,8 +163,10 @@ function girders(b, g, deckY) {
   return out
 }
 
-export function buildLeaves(b, deckY) {
-  const W = b.width
+// levels (D1): { river: RIVER_Y, lower: LOWER_Y } — the trusses stay clear of the water and a double deck's lower
+// roadway hangs at the Lower Wacker level; without it (the flat world) the leaves are as before.
+export function buildLeaves(b, deckY, levels = null) {
+  const W = b.width, riverY = levels?.river ?? null
   return leafGeometry(b, deckY).map((g) => {
     const at = frameOf(g), len = g.Lf + g.Lt, mid = (g.Lf - g.Lt) / 2, meshes = []
     const push = (m, facade, style, part) => meshes.push({ mesh: m, facade, seed: 0.5, style, part })
@@ -170,11 +179,15 @@ export function buildLeaves(b, deckY) {
     push(walks, F.stone, 'sidewalk-concrete', 'sidewalk')
     push(rails, F.grid, STEEL, 'railing')
     if (b.leaf === 'through-truss') push(throughTrusses(b, g, deckY), F.steel, STEEL, 'truss')
-    else if (b.leaf === 'girder') push(girders(b, g, deckY), F.steel, STEEL, 'girder')
-    else push(deckTrusses(b, g, deckY), F.steel, STEEL, 'truss')
+    else if (b.leaf === 'girder') push(girders(b, g, deckY, riverY), F.steel, STEEL, 'girder')
+    else push(deckTrusses(b, g, deckY, riverY), F.steel, STEEL, 'truss')
     // a double-deck through truss carries the L on V3's transit structure; other double decks hang a lower roadway
-    if (b.decks === 2 && b.leaf !== 'through-truss') push(slab(mesh(), at(mid), g.d, len, W - 4, deckY - 6.3, deckY - 5.95), F.stone, 'sidewalk-concrete', 'lower-deck')
-    push(slab(mesh(), at(-g.Lt / 2 - 0.5), g.d, Math.max(1, g.Lt - 1), W - 4, deckY - 9, deckY - 3), F.stone, 'pit-concrete', 'counterweight')
+    // (at LOWER_Y over the sunken river: DuSable's lower deck is Lower Michigan, the Outer Drive's its lower level)
+    const low = levels?.lower != null ? [levels.lower - 0.35, levels.lower] : [deckY - 6.3, deckY - 5.95]
+    if (b.decks === 2 && b.leaf !== 'through-truss') push(slab(mesh(), at(mid), g.d, len, W - 4, low[0], low[1]), F.stone, 'sidewalk-concrete', 'lower-deck')
+    // the counterweight: a concrete block under the tail's end (over the sunken river), or the old hanging slab
+    if (levels) push(slab(mesh(), at(-g.Lt + Math.min(5, 0.45 * g.Lt) / 2), g.d, Math.min(5, 0.45 * g.Lt), W - 4, deckY - 4.5, deckY - DECK.slabT - 0.02), F.stone, 'pit-concrete', 'counterweight')
+    else push(slab(mesh(), at(-g.Lt / 2 - 0.5), g.d, Math.max(1, g.Lt - 1), W - 4, deckY - 9, deckY - 3), F.stone, 'pit-concrete', 'counterweight')
     const nav = mesh()
     for (const o of [-1, 1]) slab(nav, at(g.Lf - 0.3, o * (W / 2 - 0.3)), g.d, 0.35, 0.35, deckY + 1.0, deckY + 1.45)
     push(nav, F.signal, 'nav-red', 'nav')
@@ -182,8 +195,61 @@ export function buildLeaves(b, deckY) {
   })
 }
 
+// The leaf's tail-side sweep (D1-4): every vertex behind the trunnion (along < 0.4 at rest), turned through 0…LIFT_MAX_DEG
+// about the trunnion, in the leaf's own frame (along a from the trunnion toward the river, y up). The pit holds it all.
+export function rotateLeafPoint([a, y], pivotY, deg) {
+  const t = (deg * Math.PI) / 180, r = y - pivotY
+  return [a * Math.cos(t) - r * Math.sin(t), pivotY + a * Math.sin(t) + r * Math.cos(t)]
+}
+export function leafFramePoints(g, meshes) {
+  const v = left(g.d), out = []
+  for (const m of meshes) for (let i = 0; i < m.mesh.positions.length; i += 3) {
+    const d = [m.mesh.positions[i] - g.p2[0], m.mesh.positions[i + 2] - g.p2[1]]
+    out.push([dot2(d, g.d), m.mesh.positions[i + 1], dot2(d, v)])
+  }
+  return out
+}
+export function tailSweep(b, deckY, levels, step = 2.5) {
+  const leaves = buildLeaves(b, deckY, levels)
+  return leafGeometry(b, deckY).map((g, i) => {
+    const pts = leafFramePoints(g, leaves[i].meshes).filter(([a]) => a < 0.4)
+    let a0 = Infinity, a1 = -Infinity, y0 = Infinity, w = 0
+    for (let deg = 0; deg <= LIFT_MAX_DEG + 1e-9; deg += step) for (const [a, y, o] of pts) {
+      const [ra, ry] = rotateLeafPoint([a, y], g.pivot[1], deg)
+      if (ry > deckY - 0.4) continue // above the street: out of the pit
+      a0 = Math.min(a0, ra); a1 = Math.max(a1, ra); y0 = Math.min(y0, ry); w = Math.max(w, Math.abs(o))
+    }
+    return { a0, a1, y0, halfW: w }
+  })
+}
+
+// The pit and pier under each trunnion (D1-4, over the sunken river): an open concrete box sized from the tail's sweep,
+// its walls running down to the riverbed so the pier stands in the water; the pier's river face is its front wall.
+export const PIT = { wall: 0.5, margin: 0.6, floorT: 0.4 }
+export function pierBoxes(b, deckY, levels) {
+  const sw = tailSweep(b, deckY, levels)
+  return leafGeometry(b, deckY).map((g, i) => {
+    const s = sw[i], a0 = s.a0 - PIT.margin, a1 = Math.max(0.4, s.a1 + PIT.margin), floor = s.y0 - 0.5
+    const inner = Math.max(b.width / 2, s.halfW) + 0.1
+    return { g, a0, a1, floor, inner, outer: inner + PIT.wall, top: deckY - 0.4, bottom: Math.min(floor - PIT.floorT, levels.river - 0.5) }
+  })
+}
+// the footprint of a pier box (outer walls) or of its open pit (inner), as a ring in world xz
+export function pierRing(p, which = 'outer') {
+  const at = frameOf(p.g), w = which === 'outer' ? p.outer : p.inner, e = which === 'outer' ? PIT.wall : 0
+  return [[p.a0 - e, -w], [p.a1 + e, -w], [p.a1 + e, w], [p.a0 - e, w]].map(([a, o]) => at(a, o))
+}
+
 // Open pit behind each trunnion: the tail and counterweight swing down into it as the leaf rises.
-export function buildPits(b, deckY) {
+export function buildPits(b, deckY, levels = null) {
+  if (levels) return pierBoxes(b, deckY, levels).map((p) => {
+    const at = frameOf(p.g), m = mesh(), L = p.a1 - p.a0 + 2 * PIT.wall, mid = (p.a0 + p.a1) / 2
+    slab(m, at(mid), p.g.d, L, 2 * p.outer, p.floor - PIT.floorT, p.floor)                      // floor
+    for (const o of [-1, 1]) slab(m, at(mid, o * (p.inner + PIT.wall / 2)), p.g.d, L, PIT.wall, p.bottom, p.top)   // side walls
+    slab(m, at(p.a0 - PIT.wall / 2), p.g.d, PIT.wall, 2 * p.inner, p.bottom, p.top)               // back wall
+    slab(m, at(p.a1 + PIT.wall / 2), p.g.d, PIT.wall, 2 * p.inner, p.bottom, p.top)               // river face of the pier
+    return { mesh: m, facade: F.stone, seed: 0.5, style: 'pit-concrete', part: 'pit' }
+  })
   return leafGeometry(b, deckY).map((g) => {
     const at = frameOf(g), m = mesh(), a0 = -g.Lt - 0.6, a1 = 0.4, L = a1 - a0, W = b.width, y0 = deckY - 9.4, y1 = deckY - 0.4
     slab(m, at((a0 + a1) / 2), g.d, L, W, y0, y0 + 0.4)                       // floor
@@ -274,8 +340,8 @@ export function bridgeLights(b, deckY) {
   return out
 }
 
-export function buildBridge(b, { deckY }) {
-  const fixed = [...buildPits(b, deckY)]
+export function buildBridge(b, { deckY, levels = null }) {
+  const fixed = [...buildPits(b, deckY, levels)]
   for (const spot of houseSpots(b)) fixed.push(...buildHouse(spot, b.houses.style, b.reliefs?.[spot.corner] ?? null))
   if (b.houses?.style === 'dusable') fixed.push(buildBalustrades(b, deckY))
   const posts = mesh(), glass = mesh()
@@ -285,7 +351,7 @@ export function buildBridge(b, { deckY }) {
   }
   fixed.push({ mesh: posts, facade: F.steel, seed: 0.5, style: 'lamp-post-black', part: 'lamp-post' })
   fixed.push({ mesh: glass, facade: F.signal, seed: 0.5, style: 'lantern-warm', part: 'lantern' })
-  return { fixed, leaves: buildLeaves(b, deckY), lights: bridgeLights(b, deckY) }
+  return { fixed, leaves: buildLeaves(b, deckY, levels), lights: bridgeLights(b, deckY), piers: levels ? pierBoxes(b, deckY, levels) : [] }
 }
 
 // ── World integration ────────────────────────────────────────────────────────
