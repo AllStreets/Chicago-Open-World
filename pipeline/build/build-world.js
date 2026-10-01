@@ -28,6 +28,8 @@ import { bAcc, appendBuilding, appendLayer, asLayer } from '../lib/layers.js'
 import { preloadStatue } from '../lib/statues.js'
 import { poiRecord, dedupePois, anchorPoi, POI_CATEGORIES, POI_CAT_IDS } from '../lib/pois.js'
 import { buildNeighborhoods } from '../lib/zones.js'
+import { buildingsOverTracks } from '../lib/trackClearance.js'
+import { isPavingArea, pavingKind, pathHalfWidth, synthPlazas } from '../lib/paving.js'
 import { loadBlenderMesh } from '../lib/blenderMesh.js'
 import { setSeahorseMesh } from '../lib/landmarks.js'
 import { createStyleRegistry, assignHeroStyles, meshStyle, writeStylePalettePng, addMaterialStyles, styleIndex, partStyle } from '../lib/styles.js'
@@ -297,14 +299,18 @@ async function main() {
   const transit = buildTransit({ ...loadTransitCache(CACHE), catalog: loadCatalog(), styles })
   assertTransit(transit.validation)
   log(`transit: lines ${transit.json.lines.length} · routes ${transit.json.routes.length} · stations ${transit.json.stations.length} · tiles ${transit.tiles.size}`)
-   
+  // no building stands on an at-grade or elevated track (user, 2026-09-30): footprints over the right-of-way go
+  const onTracks = new Set(buildingsOverTracks(buildings, transit.json.routes))
+  if (onTracks.size) { const kept = buildings.filter((b) => !onTracks.has(b)); buildings.length = 0; for (const b of kept) buildings.push(b) }
+  log(`buildings over tracks removed: ${onTracks.size}; e.g. ${[...onTracks].slice(0, 6).map((b) => `${b.id}@${b.centroid.map(Math.round).join(",")}`).join(" ")}`)
+
   log(`styles: ${styles.size - 1} rows`)
 
   // ── Per-tile assembly ──────────────────────────────────────────────────────
   rmSync(join(OUT, 'tiles'), { recursive: true, force: true })
   mkdirSync(join(OUT, 'tiles'), { recursive: true })
   const T = new Map()
-  const tile = (k) => { if (!T.has(k)) T.set(k, { b: [], roads: acc(), walks: acc(), roadsLod1: acc(), rail: acc(), trees: [], props: [], bridges: [] }); return T.get(k) }
+  const tile = (k) => { if (!T.has(k)) T.set(k, { b: [], roads: acc(), walks: acc(), paving: acc(), roadsLod1: acc(), rail: acc(), trees: [], props: [], bridges: [] }); return T.get(k) }
   for (const b of buildings) tile(tileKeyFor(b.centroid)).b.push(b)
   bridges.forEach((br, i) => tile(tileKeyFor(br.centre)).bridges.push({ br, built: builtBridges[i], leafIds: bridgeSide.bridges[i].leaves }))
   // tiles that hold only water or park (the middle of Monroe Harbor) must exist too, or the lake shows a hole
@@ -330,6 +336,24 @@ async function main() {
       append(tile(k).rail, bufferPolyline(l, t.railway === 'rail' ? 2.4 : 1.8, GROUND_Y.rail, { before, after }))
     }
   }
+  // ── Plazas and park paths (user, 2026-09-30): Grant Park's brick, the promenades, every pedestrian plaza ──
+  const pavingEls = uniq(chunks('paving'))
+  const plazas = [
+    ...osmPolys(pavingEls.filter((e) => isPavingArea(e.tags || {}))).map((p) => ({ ...p, kind: pavingKind(p.tags) })).filter((p) => p.kind),
+    ...synthPlazas(existsSync(join(ROOT, 'data', 'plazas.json')) ? loadJson(join(ROOT, 'data', 'plazas.json')).plazas : [], project), // OSM leaves these unmapped
+  ]
+  let pathsLaid = 0
+  for (const e of pavingEls) {
+    const tg = e.tags || {}, kind = pavingKind(tg)
+    if (e.type !== 'way' || !e.geometry || isPavingArea(tg) || !kind) continue
+    const hw = pathHalfWidth(tg)
+    for (const [k, pieces] of splitLineWithContext(e.geometry.map((p) => project(p.lon, p.lat)))) for (const { line: l, before, after } of pieces) {
+      if (kind === 'brick') append(tile(k).paving, bufferPolyline(l, hw, GROUND_Y.paving, { before, after }))
+      else append(tile(k).walks, bufferPolyline(l, hw, GROUND_Y.sidewalks, { before, after }))
+    }
+    pathsLaid++
+  }
+  log(`paving: ${plazas.length} plazas (${plazas.filter((p) => p.kind === 'brick').length} brick), ${pathsLaid} paths`)
   for (const k of transit.tiles.keys()) tile(k) // a tile that holds only track still gets written
   for (const [x, z] of treeNodes) {
     const t = tile(tileKeyFor([x, z]))
@@ -338,7 +362,8 @@ async function main() {
     t.trees.push([+x.toFixed(1), +z.toFixed(1), +(0.8 + h * 0.6).toFixed(2), Math.floor(h * 4)])
   }
   const polyIdx = (polys) => buildGridIndex(polys.map((p) => ({ p, c: [(p.bbox.minX + p.bbox.maxX) / 2, (p.bbox.minZ + p.bbox.maxZ) / 2] })), TILE_SIZE, (i) => i.c)
-  const polyIndexes = { parks: polyIdx(parks), pitches: polyIdx(pitches), beaches: polyIdx(beaches), water: polyIdx(water) }
+  const polyIndexes = { parks: polyIdx(parks), pitches: polyIdx(pitches), beaches: polyIdx(beaches), water: polyIdx(water),
+    brickPlazas: polyIdx(plazas.filter((p) => p.kind === 'brick')), concretePlazas: polyIdx(plazas.filter((p) => p.kind === 'concrete')) }
   const polysFor = (name, bounds) => polyIndexes[name].rect({ minX: bounds.minX - 6000, maxX: bounds.maxX + 6000, minZ: bounds.minZ - 6000, maxZ: bounds.maxZ + 6000 })
     .map((i) => i.p).filter((p) => p.bbox.maxX > bounds.minX && p.bbox.minX < bounds.maxX && p.bbox.maxZ > bounds.minZ && p.bbox.minZ < bounds.maxZ)
 
@@ -396,8 +421,13 @@ async function main() {
     const waterM = waterLayer(clipPolysToTile(polysFor('water', bounds), bounds), GROUND_Y.water)
     const hasContent = L0.positions.length || LV.positions.length || t.roads.positions.length || parksM.positions.length || waterM.positions.length || transit.tiles.has(key)
     if (!hasContent) continue
-    const ground0 = mergeGroundLayers({ roads: t.roads, sidewalks: t.walks, parks: parksM, pitches: pitchesM, beaches: beachesM, rail: t.rail })
-    const ground1 = mergeGroundLayers({ roads: t.roadsLod1, parks: parksM, pitches: pitchesM, beaches: beachesM })
+    // plazas: brick ones on the paving layer, concrete ones join the walks; LOD1 keeps the plazas (not the thin paths)
+    const brickM = flatMesh(clipPolysToTile(polysFor('brickPlazas', bounds), bounds), GROUND_Y.paving)
+    const walksAll = acc(), pavingAll = acc()
+    append(walksAll, t.walks); append(walksAll, flatMesh(clipPolysToTile(polysFor('concretePlazas', bounds), bounds), GROUND_Y.sidewalks))
+    append(pavingAll, t.paving); append(pavingAll, brickM)
+    const ground0 = mergeGroundLayers({ roads: t.roads, sidewalks: walksAll, parks: parksM, pitches: pitchesM, beaches: beachesM, rail: t.rail, paving: pavingAll })
+    const ground1 = mergeGroundLayers({ roads: t.roadsLod1, parks: parksM, pitches: pitchesM, beaches: beachesM, paving: brickM })
     const tr = transit.tiles.get(key) ?? {}
     const asLeafLayer = (a) => { const l = asLayer(a); l.extra.LEAF = new Float32Array(a.leaf); return l }
     await writeTileGlb(join(OUT, 'tiles', `${key}.glb`), { buildings: asLayer(L0), leaves: LV.positions.length ? asLeafLayer(LV) : null, ground: ground0, water: waterM, transit: tr.transit, ties: tr.ties, stations: tr.stations, glow: tr.glow })
