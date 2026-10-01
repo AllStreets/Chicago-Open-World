@@ -4,6 +4,7 @@ import { RiPlaneLine } from 'react-icons/ri'
 import { useStore } from '../../state/store.js'
 import { ensureClear } from '../../lib/poseClearance.js'
 import NearestL from './NearestL.jsx'
+import VenueActions from '../VenueActions.jsx'
 
 export function buildingPose({ x, z, heightM = 20 }) {
   const d = Math.max(160, heightM * 2.2)
@@ -23,6 +24,7 @@ export default function BuildingCard({ selection }) {
       {d.name && d.address && <p className="cp-sub">{d.address}</p>}
       {facts.length > 0 && <p className="cp-facts">{facts.join(' · ')}</p>}
       {Number.isFinite(d.x) && <NearestL x={d.x} z={d.z} />}
+      <VenueActions venueKey={selection.id} />
       {Number.isFinite(d.x) && <button type="button" className="hud-pill" onClick={() => useStore.getState().startFlight(buildingPose(d), d.name || 'Building')}><RiPlaneLine aria-hidden="true" /> Fly here</button>}
     </>
   )

@@ -8,6 +8,7 @@ import { LANDMARKS, CATEGORY_COLOR } from '../../data/landmarks.js'
 import { poseForPlace } from '../../lib/flight.js'
 import NearestL from './NearestL.jsx'
 import BuildingCard from './BuildingCard.jsx'
+import VenueActions from '../VenueActions.jsx'
 
 const KEY = 'chi-ow-saved'
 const readSaved = () => { try { return JSON.parse(localStorage.getItem(KEY) ?? '[]') } catch { return [] } }
@@ -26,6 +27,7 @@ export default function LandmarkCard({ selection }) {
       <p className="cp-sub">{lm.desc}</p>
       <p className="cp-tip"><span className="hud-label">Tip</span> {lm.tip}</p>
       {Number.isFinite(x) && <NearestL x={x} z={z} />}
+      <VenueActions venueKey={lm.heroKey ?? selection.id} />
       <div className="cp-actions">
         <button type="button" className={`hud-pill${isSaved ? ' active' : ''}`} aria-pressed={isSaved} onClick={toggle}>{isSaved ? <RiBookmarkFill aria-hidden="true" /> : <RiBookmarkLine aria-hidden="true" />} {isSaved ? 'Saved' : 'Save'}</button>
         {Number.isFinite(x) && <button type="button" className="hud-pill" onClick={() => useStore.getState().startFlight(poseForPlace({ x, z, top: 60 }), lm.name)}><RiPlaneLine aria-hidden="true" /> Fly here</button>}

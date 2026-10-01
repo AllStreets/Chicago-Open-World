@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { shuffled } from '../lib/sportsSites.js'
-import { encodeAnchors, plazaAnchors, venueRecord } from '../lib/sportsSites.js'
+import { encodeAnchors, plazaAnchors, venueRecord, crownRecord } from '../lib/sportsSites.js'
 import { pointInRing, distToRing } from '../lib/geom.js'
 
 describe('shuffled', () => {
@@ -55,5 +55,35 @@ describe('venueRecord', () => {
   it('arena: no frame, no seats', () => {
     const r = venueRecord({ key: 'unitedcenter', name: 'United Center', sports: { kind: 'arena', slot: 3, teams: ['bulls', 'blackhawks'], capacity: 20917 } }, hull, undefined)
     expect(r).toMatchObject({ frame: null, boards: [], seats: null, seatCount: 0 })
+  })
+})
+
+// E3-1: the United Center's guide board — a crown on a mast at the roof centre and an LED ribbon round the parapet.
+describe('crownRecord', () => {
+  const hull = [[0, 0], [160, 0], [165, -60], [160, -120], [0, -120], [-5, -60]]
+  const crown = { roofM: 39, faceM: [20, 10], mastM: 5, ribbon: { topM: 29.4, hM: 2.2, outM: 0.7 } }
+  const r = crownRecord(crown, hull, [80, -60])
+  it('stands the cube on a mast above the roof, inside the hull', () => {
+    expect(pointInRing(r.center, hull)).toBe(true)
+    expect(r.roofY).toBe(39)
+    expect(r.mast).toBe(5)
+    expect(r.face).toEqual({ w: 20, h: 10 })
+    expect(r.faceY - r.face.h / 2 - r.roofY).toBeCloseTo(crown.mastM, 6)
+    for (const [sx, sz] of [[1, 1], [1, -1], [-1, 1], [-1, -1]]) expect(pointInRing([r.center[0] + sx * 10, r.center[1] + sz * 10], hull)).toBe(true)
+  })
+  it('rings the ribbon just outside the walls, under the parapet top', () => {
+    expect(r.ribbon.ring.length).toBe(hull.length)
+    for (const p of r.ribbon.ring) {
+      expect(pointInRing(p, hull)).toBe(false)
+      expect(distToRing(p, hull)).toBeGreaterThan(0.5); expect(distToRing(p, hull)).toBeLessThan(1.5)
+    }
+    expect(r.ribbon.top).toBe(29.4); expect(r.ribbon.h).toBe(2.2)
+  })
+  it('venueRecord carries it only when the hero has one', () => {
+    const base = { key: 'unitedcenter', name: 'United Center', sports: { kind: 'arena', slot: 3, teams: ['bulls'], capacity: 20917 } }
+    expect(venueRecord(base, hull, undefined).crown).toBeUndefined()
+    const v = venueRecord({ ...base, sports: { ...base.sports, crown } }, hull, undefined)
+    expect(v.crown.center).toEqual(v.center)
+    expect(v.crown.faceY).toBe(49)
   })
 })

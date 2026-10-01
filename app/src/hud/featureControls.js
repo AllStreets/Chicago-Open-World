@@ -1,11 +1,13 @@
 // app/src/hud/featureControls.js — every city-life feature and every way to reach it (backlog G3).
 // The dock row, the keyboard, ⌘K, the help card and the hint bar all read this list, so a control can never be added
 // in one place and forgotten in another. The adapters (use/isOn/toggle/available) are the only lines naming feature state.
-import { RiTrainLine, RiTrophyLine, RiVolumeUpLine, RiVolumeMuteLine, RiShip2Line, RiDropLine, RiMapPin2Line, RiSparkling2Line, RiCarLine, RiRadarLine, RiRouteLine } from 'react-icons/ri'
+import { RiTrainLine, RiTrophyLine, RiVolumeUpLine, RiVolumeMuteLine, RiShip2Line, RiDropLine, RiMapPin2Line, RiSparkling2Line, RiCarLine, RiRadarLine, RiRouteLine, RiPlayCircleLine } from 'react-icons/ri'
 import { useStore } from '../state/store.js'
 import { useSoundStore } from '../audio/soundStore.js'
 import { fountainShow } from '../landmarks/fountainSchedule.js'
 import { fireworksShow } from '../landmarks/fireworksSchedule.js'
+import { useSports } from '../sports/sportsStore.js'
+import { toggleShowcase } from '../sports/showcaseActions.js'
 
 const storeFlag = (field, setter) => ({
   use: () => useStore((s) => Boolean(s[field])),
@@ -77,6 +79,12 @@ export const FEATURE_CONTROLS = [
       if (s.ride) { import('../ride/rideActions.js').then((m) => m.stopRide()); return }
       s.setRidePanelOpen(!s.ridePanelOpen)
     }, ...always },
+  // E4: "Play a game" — Y, the ▶ button on a ballpark's card, ⌘K and the help card; not in the dock (it stays at six)
+  { id: 'showcase', label: 'Play', key: 'KeyY', keyLabel: 'Y', icon: RiPlayCircleLine, hint: 'play a game', hintP: 3, commandName: 'Play a game at the nearest ballpark',
+    help: 'play a game — a 90-second Cubs, White Sox or Bears game at the ballpark whose card is open (else the nearest): the crowd, the lights, the players and the score; press again to stop it, and a real live game always wins',
+    use: () => useSports((s) => s.showcase != null),
+    isOn: () => useSports.getState().showcase != null,
+    toggle: () => toggleShowcase(), ...always },
 ]
 
 export const featureById = (id) => FEATURE_CONTROLS.find((c) => c.id === id)

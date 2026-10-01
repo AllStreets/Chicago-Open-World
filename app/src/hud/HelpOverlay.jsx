@@ -15,6 +15,10 @@ const GROUPS = [
     ['Click', 'a train, a station or a ballpark for its card'],
     ['⌘K', '“Follow a train” rides along — {Esc} or a move key stops, {K} changes the view, and {M}, {X} and the other toggles keep following · “Go to Clark/Lake” · type “tonight” for tonight’s game'],
   ]],
+  // E5-2: what the ballparks do by themselves, and how to see it any time
+  ['Games', [['Live', 'when a real game is on at Wrigley, Rate Field, Soldier Field, the United Center or Wintrust, the place comes alive by itself — the crowd, the lights, the players and the live score on the board (the United Center’s is on its roof)'],
+    ['Y', 'Play a game — a 90-second preview at Wrigley, Rate Field or Soldier Field (also the ▶ button on the ballpark’s card, or {⌘K} “Play a Cubs game”); {Y} again or {Esc} stops it, and a real live game always wins'],
+    ['Data', 'schedules and scores come from ESPN and refresh on the live site by themselves; live CTA trains stay simulated for now']]],
   ['Guide', [['Lenses', 'the lens rail at the top — Visit, Live, Work (also {⌘K} “Lens: Visit”)'], ['Hover', 'hover a building for its name and year; click it for its card'], ['P', 'places — pins for food, bars, venues and more; click one for its hours and website'], ['Tours', 'in the Visit lens or {⌘K} “Tour:” — {Space} pauses, {,} and {.} step, any arrow key takes back the camera'],
     ['Rides', 'in a ride {Space} pauses, {.} {,} next or previous stop, {>} {<} faster or slower, {Drag} looks around, {Esc} gets off'],
     ['K', 'change the view — in a ride, or while following a train'],

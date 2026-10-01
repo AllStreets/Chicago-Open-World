@@ -57,5 +57,28 @@ export function venueRecord(hero, hull, info) {
     marquee: info?.marquee ?? null,
     seats: info ? `venues/${hero.key}.seats.bin` : null, seatCount: info?.seats?.length ?? 0,
     plaza: null, plazaCount: 0,
+    ...(s.crown ? { crown: crownRecord(s.crown, hull, center) } : {}),
   }
+}
+
+// E3-1: a guide board on an arena roof (heroes.json sports.crown) — a four-faced LED cube on a mast at the roof
+// centre, and an LED ribbon ring pushed `outM` outside the walls (each vertex along its corner bisector, so every
+// side sits exactly outM out). Heights in metres above grade; the app draws it (sports/ArenaCrown.jsx).
+export function crownRecord(c, hull, center) {
+  const [w, h] = c.faceM
+  const r1 = (v) => +v.toFixed(1)
+  const out = { center: [...center], roofY: c.roofM, mast: c.mastM, face: { w, h }, faceY: c.roofM + c.mastM + h / 2 }
+  if (c.ribbon) {
+    let area = 0
+    for (let i = 0; i < hull.length; i++) { const a = hull[i], b = hull[(i + 1) % hull.length]; area += a[0] * b[1] - b[0] * a[1] }
+    const sgn = area > 0 ? 1 : -1, n = hull.length
+    // outward unit normal of edge i → i+1 (for a ring with the given winding)
+    const normal = (i) => { const a = hull[i], b = hull[(i + 1) % n], dx = b[0] - a[0], dz = b[1] - a[1], L = Math.hypot(dx, dz) || 1; return [(sgn * dz) / L, (-sgn * dx) / L] }
+    const ring = hull.map((p, i) => {
+      const n0 = normal((i - 1 + n) % n), n1 = normal(i), k = c.ribbon.outM / (1 + n0[0] * n1[0] + n0[1] * n1[1])
+      return [r1(p[0] + (n0[0] + n1[0]) * k), r1(p[1] + (n0[1] + n1[1]) * k)]
+    })
+    out.ribbon = { ring, top: c.ribbon.topM, h: c.ribbon.hM }
+  }
+  return out
 }

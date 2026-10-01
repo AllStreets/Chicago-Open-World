@@ -9,6 +9,8 @@ import { swellNow } from '../audio/cheerMath.js'
 import Crowd from './Crowd.jsx'
 import Scoreboard from './Scoreboard.jsx'
 import WrigleyMarquee from './WrigleyMarquee.jsx'
+import ArenaCrown from './ArenaCrown.jsx'
+import { fieldClock } from './showcase.js'
 import WinFlag from './WinFlag.jsx'
 import { flagKind } from './winFlag.js'
 import { boardLines } from './scoreboard.js'
@@ -55,23 +57,28 @@ function RoofCrowd({ venue, st }) {
 }
 
 const BOARD_RANGE_M = 3000
-function Boards({ venue, st }) {
+function Boards({ venue, st, quality }) {
   const override = useSports((s) => s.boardOverrides[venue.key])
   const [now, setNow] = useState(() => Date.now())
   useEffect(() => { const id = setInterval(() => setNow(Date.now()), 5000); return () => clearInterval(id) }, [])
   const group = useRef()
   useFrame(({ camera }) => { if (group.current) group.current.visible = lifeVisible([camera.position.x, 0, camera.position.z], venue.center, 'HIGH', BOARD_RANGE_M) })
-  if (!venue.boards?.length) return null
-  const lines = boardLines(venue, st, now, override)
+  if (!venue.boards?.length && !venue.crown) return null
+  const at = st?.virtualNow ?? now // E4: a "Play a game" showcase runs on its own clock
+  const lines = boardLines(venue, st, at, override)
   const kind = venue.flagPole ? flagKind(st) : null
   return (
     <group ref={group}>
       {venue.boards.map((b, i) => <Scoreboard key={i} board={b} lines={lines} />)}
-      {venue.marquee && <WrigleyMarquee marquee={venue.marquee} st={st} now={now} />}
-      {kind && <WinFlag pole={venue.flagPole} normal={venue.boards[0].normal} kind={kind} />}
+      {venue.marquee && <WrigleyMarquee marquee={venue.marquee} st={st} now={at} />}
+      {kind && venue.boards?.[0] && <WinFlag pole={venue.flagPole} normal={venue.boards[0].normal} kind={kind} />}
+      {venue.crown && <ArenaCrown venue={venue} st={st} now={at} quality={quality} />}
     </group>
   )
 }
+
+// E4: during a showcase the players move at three times speed, in the half-inning the board shows
+const showClock = (key, sport) => () => { const sc = useSports.getState().states[key]?.showcase; return sc ? fieldClock(sport, sc, Date.now()) : Date.now() / 1000 }
 
 function VenueLife({ venue }) {
   const st = useSports((s) => s.states[venue.key])
@@ -85,12 +92,12 @@ function VenueLife({ venue }) {
         {quality !== 'LOW' && venue.rooftops && <RoofCrowd venue={venue} st={st} />}
         {quality !== 'LOW' && venue.frame && st?.state === 'live' && st.game && (
           <>
-            <Players frame={venue.frame} sport={st.game.sport} colors={uniformColors(st.game.sport, homeTeamFor(venue, st))} />
-            <Ball frame={venue.frame} sport={st.game.sport} />
+            <Players frame={venue.frame} sport={st.game.sport} colors={uniformColors(st.game.sport, homeTeamFor(venue, st))} clock={st.showcase ? showClock(venue.key, st.game.sport) : undefined} />
+            <Ball frame={venue.frame} sport={st.game.sport} clock={st.showcase ? showClock(venue.key, st.game.sport) : undefined} />
           </>
         )}
       </group>
-      <Boards venue={venue} st={st} />
+      <Boards venue={venue} st={st} quality={quality} />
     </>
   )
 }

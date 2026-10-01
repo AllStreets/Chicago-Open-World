@@ -6,7 +6,7 @@ export function tonightsGame(venues, states, nowMs) {
   let best = null
   for (const v of venues) {
     const st = states[v.key]
-    if (st?.game && RANK[st.state] && (!best || RANK[st.state] > RANK[best.state])) best = { venue: v, game: st.game, state: st.state }
+    if (st?.game && !st.game.showcase && RANK[st.state] && (!best || RANK[st.state] > RANK[best.state])) best = { venue: v, game: st.game, state: st.state }
   }
   if (best) return best
   const today = chicagoDate(nowMs)
@@ -29,10 +29,10 @@ export const gameLabel = (g) => `${g.away.abbr} @ ${g.home.abbr}`
 // E1-4: ESPN data older than this means the refresh (/api/schedule) isn't getting through — say so, in amber.
 export const STALE_AFTER_MS = 6 * 3600000
 const isOld = (generatedAt, nowMs) => { const t = Date.parse(generatedAt ?? ''); return Number.isFinite(t) && nowMs - t > STALE_AFTER_MS }
-// Provenance chip: 'LIVE' only for a game in progress; 'ESPN' for a fresh ESPN schedule (the /api/schedule proxy or
+// Provenance chip: 'PREVIEW' for a "Play a game" showcase (E4); 'LIVE' only for a game in progress; 'ESPN' for a fresh ESPN schedule (the /api/schedule proxy or
 // the build-time file), 'STALE' when that schedule is over 6 h old, 'SIMULATED' for the fallback calendar.
 export const dataChip = (st, source, generatedAt = null, nowMs = Date.now()) =>
-  st?.game?.live?.state === 'in' ? 'LIVE' : (st?.game ?? st?.next)?.simulated || source !== 'LIVE' ? 'SIMULATED' : isOld(generatedAt, nowMs) ? 'STALE' : 'ESPN'
+  st?.game?.showcase ? 'PREVIEW' : st?.game?.live?.state === 'in' ? 'LIVE' : (st?.game ?? st?.next)?.simulated || source !== 'LIVE' ? 'SIMULATED' : isOld(generatedAt, nowMs) ? 'STALE' : 'ESPN'
 const ago = (ms) => { const m = Math.floor(ms / 60000); return m < 1 ? 'just now' : m < 60 ? `${m} min ago` : `${Math.floor(m / 60)} h ago` }
 const dayOf = (t) => new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'America/Chicago' })
 // Where the schedule came from and how old it is, in words (the VenueCard and Games panel feet).

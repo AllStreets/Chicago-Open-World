@@ -1,6 +1,7 @@
 // app/src/sports/marquee.js — the red marquee over the main gate at Clark & Addison (1934): its shaped outline,
 // what the message board says, and how the face is lettered. Lettering only — no club or sponsor logos.
 import { whenChicago } from './chicagoTime.js'
+import { periodLabel } from './scoreboard.js'
 
 export const MARQUEE_RED = '#a3121c'
 const CREST_AT = 0.72, SIDE_AT = 0.6, CREST_HALF = 0.34 // fractions of the sign's height / width
@@ -24,6 +25,8 @@ export function marqueeOutline(w, h, n = 24) {
 // Two lines for the message board.
 export function marqueeMessage(st, nowMs = Date.now()) {
   const g = st?.game, vs = g && `${g.away.abbr} @ ${g.home.abbr}`
+  // E4: during "Play a game" the board ticks with the score and the inning, on the game's own clock
+  if (g?.showcase && st.state === 'live') return ['GO CUBS GO', `${g.away.abbr} ${g.away.score ?? 0} · ${g.home.abbr} ${g.home.score ?? 0} · ${periodLabel(g, nowMs, 'live')}`]
   if (g && st.state === 'live') return ['GO CUBS GO', `${vs} · TODAY`]
   if (g && st.state === 'pregame') return ['GAME TODAY', `${vs} · ${whenChicago(Date.parse(g.start), nowMs).toUpperCase()}`]
   if (g && st.state === 'postgame') {

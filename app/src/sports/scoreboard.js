@@ -4,6 +4,7 @@ import { hashFrac } from './simSchedule.js'
 import { whenChicago } from './chicagoTime.js'
 import { teamByKey } from '../../../shared/teams.js'
 import { useSports } from './sportsStore.js'
+import { drawCrownFace } from './arenaCrown.js'
 
 const frac = (g, nowMs) => { const w = gameWindow(g); return Math.max(0, Math.min(1, (nowMs - w.start) / (w.end - w.start))) }
 
@@ -43,13 +44,15 @@ export function boardLines(venue, st, nowMs, override = null) {
   else if (g.simulated) score = st.state === 'live' ? simScore(g, nowMs) : st.state === 'postgame' ? { home: g.home.score, away: g.away.score } : null
   else if (g.home.score != null && g.away.score != null) score = { home: g.home.score, away: g.away.score }
   const liveStatus = st.state === 'live' && g.live?.status ? String(g.live.status).toUpperCase() : null // P5: ESPN's own words ("TOP 3RD")
-  return { title, rows: [{ abbr: g.away.abbr, score: score?.away ?? null }, { abbr: g.home.abbr, score: score?.home ?? null }], status: override?.status ?? liveStatus ?? periodLabel(g, nowMs, st.state) }
+  const showStatus = st.state === 'pregame' && g.pregameStatus ? g.pregameStatus : null // E4: a showcase's warm-up ("FIRST PITCH SOON")
+  return { title, rows: [{ abbr: g.away.abbr, score: score?.away ?? null }, { abbr: g.home.abbr, score: score?.home ?? null }], status: override?.status ?? liveStatus ?? showStatus ?? periodLabel(g, nowMs, st.state) }
 }
 
 // Phase 5 hook: live numbers from the CHI API replace the board's numbers until cleared with null.
 export function setScoreboard(venueKey, lines) { useSports.getState().setBoardOverride(venueKey, lines) }
 
 export function drawBoard(ctx, lines, style, W, H) {
+  if (style === 'bulls' || style === 'blackhawks') { drawCrownFace(ctx, lines, style, W, H); return } // E3: the United Center board
   const manual = style === 'manual'
   ctx.fillStyle = manual ? '#1F4D33' : '#050608'; ctx.fillRect(0, 0, W, H)
   ctx.fillStyle = manual ? '#F2F2EC' : '#FFB347'

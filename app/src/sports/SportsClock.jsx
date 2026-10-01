@@ -8,6 +8,8 @@ import { overlayLive, scoreEvents } from './liveScores.js'
 import { SPORT_MINUTES } from './gameState.js'
 import { teamByKey } from '../../../shared/teams.js'
 import { cheer } from '../audio/cheers.js'
+import { applyShowcase } from './showcase.js'
+import { useStore } from '../state/store.js'
 
 const LIVE_STALE_MS = 20 * 60000
 const likelyEnd = (g) => g.startMs + (SPORT_MINUTES[teamByKey(g.team)?.sport] ?? 150) * 60000
@@ -39,7 +41,16 @@ export function tick(nowMs = Date.now()) {
   const s = useSports.getState()
   const fresh = s.liveGames.length && nowMs - (s.liveAt ?? 0) < LIVE_STALE_MS // a feed gone quiet hands back to the schedule
   const games = fresh ? overlayLive(s.games, s.liveGames, s.liveAt) : s.games
-  const states = s.override ? overrideStates(s.venues, s.override, nowMs) : computeStates(s.venues, nowMs, games)
+  const real = s.override ? overrideStates(s.venues, s.override, nowMs) : computeStates(s.venues, nowMs, games)
+  // E4: "Play a game" over its venue's real state — only while that venue is idle or in its postgame hour
+  const sc = applyShowcase(real, s.venues, s.showcase, nowMs, s.states)
+  if (sc.stop) {
+    s.stopShowcase()
+    if (sc.stop === 'live') useStore.getState().showToast('The real game is starting — showing it live')
+    else if (sc.stop === 'pregame') useStore.getState().showToast('The gates are open for the real game — showing it instead')
+  }
+  for (const e of sc.scored) if (e.side === 'home') cheer(s.showcase.venueKey, Math.min(1, 0.6 + 0.2 * e.delta)) // the crowd stands (heard with Sound on)
+  const states = sc.states
   s.setStates(states)
   setVenueLights(s.venues.map((v) => ({ slot: v.slot, center: v.center, radius: v.radius, level: lightLevel(states[v.key]?.state) })))
 }
@@ -57,7 +68,13 @@ export default function SportsClock() {
       tick()
     })
     const id = setInterval(() => tick(), 15000)
-    return () => { alive = false; clearInterval(id) }
+    // a showcase moves every second (the board, the marquee, the score); it re-ticks at once when started or stopped
+    const fast = setInterval(() => { if (useSports.getState().showcase) tick() }, 1000)
+    const unsub = useSports.subscribe((st, prev) => { if (st.showcase !== prev.showcase && st.venues.length) tick() })
+    // Esc ends a showcase, like the fireworks (not while typing in ⌘K or a field)
+    const esc = (e) => { if (e.key === 'Escape' && useSports.getState().showcase && !['INPUT', 'TEXTAREA'].includes(e.target?.tagName)) useSports.getState().stopShowcase() }
+    window.addEventListener('keydown', esc)
+    return () => { alive = false; clearInterval(id); clearInterval(fast); unsub(); window.removeEventListener('keydown', esc) }
   }, [])
   return null
 }

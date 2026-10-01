@@ -218,15 +218,48 @@ A progressive gallery, oldest first. Each phase adds its own shots; when a build
 </tr>
 <tr>
 <td width="50%"><img src="docs/screenshots/v5-w-flag-day.png" alt="V5 — the W flag over Wrigley's scoreboard" width="100%"/></td>
-<td width="50%"><img src="docs/screenshots/v5-united-center-night.png" alt="V5 — United Center game night" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/sports-united-center-plaza-night.png" alt="United Center game night, the Bulls ribbon round the roof" width="100%"/></td>
 </tr>
 <tr>
 <td><em>After a Cubs win the W flies over the scoreboard, the board reads FINAL, and the fans wave W flags — on the rooftops across Sheffield too.</em></td>
-<td><em>United Center game night: lit fascia, a stepped grey dome and the plaza crowd in Bulls red.</em></td>
+<td><em>United Center game night: lit fascia, a stepped grey dome and, round the parapet, the scrolling Bulls ribbon with the game (a guide display, not a real fixture).</em></td>
 </tr>
 </table>
 
 Game days come from the real ESPN schedules of all seven Chicago teams. A copy is built with the world, and on the live site our own cached `/api/schedule` function refreshes it every 10 minutes (every minute around a game), so new games, reschedules, results and live scores arrive without a redeploy. The browser never calls ESPN; our own cached /api/schedule does. Without either, the city falls back to a simulated calendar and says so; the game card and the Games panel say where the schedule came from and how old it is.
+
+### Sports pass · *the Bulls board and Play a game*
+
+The United Center now carries the same game information as the open-air boards, in Bulls colours: a four-faced LED board on a mast at the roof centre and a ribbon that scrolls round the parapet (Blackhawks colours on a Blackhawks game night). And any card for Wrigley, Rate Field or Soldier Field has **▶ Play a game** (also `Y` and ⌘K): a 90-second game — the crowd fills, the lights come up, the teams take the field, the board and the marquee tick through the innings, and the crowd stands for every home score. A real live game always wins: during one the button is hidden and the card says "Live now — this is the real game".
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/sports-united-center-day.png" alt="United Center by day — the Bulls board on the roof showing the next game" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/sports-united-center-night.png" alt="United Center at night — the Bulls board showing a live score" width="100%"/></td>
+</tr>
+<tr>
+<td colspan="2"><em>United Center — the Bulls board on the roof, showing the same next game and live score as the other venues (a guide display, not a real fixture). By day the next game; at night a game in progress, its score round the parapet too.</em></td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/sports-showcase-wrigley-day.png" alt="Play a game at Wrigley — mid-game, the card's Stop button" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/sports-showcase-rate-field-day.png" alt="Play a game at Rate Field — a full bowl, the board mid-game" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Wrigley mid-game: a full bowl, both teams on the field, the board and the card on the same inning — ■ Stop the game (or <code>Esc</code>) hands back the real ballpark.</em></td>
+<td><em>Rate Field: the White Sox at home, the video board counting the runs as they come.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/sports-showcase-soldier-field-day.png" alt="Play a game at Soldier Field — the Bears mid-game" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/sports-wrigley-w-final-day.png" alt="The W flies over Wrigley's scoreboard at the final" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Soldier Field: the Bears in navy at the line of scrimmage under a full bowl (⌘K also plays a Fire match).</em></td>
+<td><em>The final at Wrigley: FINAL on the board, the W up the mast and the fans waving W flags — then the ballpark goes back to its real day.</em></td>
+</tr>
+</table>
 
 ### Vision pass · V6 landmarks and bridges — *bascules, Buckingham, the Bean, the civic icons*
 
@@ -518,6 +551,7 @@ Everything is reachable with the keyboard, the mouse and the on-screen dock — 
 | `⌘K` "Follow a … train" · "Go to …" · "Show … Line" | transit from the search |
 | `M` · ⌘K "Sound" | music for the fountain and bridge shows, crowd cheers, passing trains and your ride (the L's rumble and door chime, a bus engine, the glider's wind, the city on a walk) — off until you turn it on; a green speaker (on) or a red one with a slash (off) shows in the middle of the screen for a second, then fades |
 | `G` · Games button · `⌘K` "tonight" | tonight's game, scores and the next game at every venue |
+| `Y` · ▶ Play a game (a ballpark's card) | a 90-second game at Wrigley, Rate Field or Soldier Field — the card's ballpark, else the nearest; `Y` again or `Esc` stops it (⌘K "Play a Cubs game", "Play a Fire match", "Stop the game"); a real live game always wins |
 | `B` · Bridges button | raise the river bridges — a boat-run lift with gate bells, flashers and music; press again and they come down within seconds |
 | `J` · Fountain button | Buckingham Fountain water show — jets dance to music, lit in colour after dusk; press again to stop any show |
 | `X` · Fireworks button | Navy Pier fireworks — flies you to the harbour view; press again to stop (real shows: Wed 9 pm, Sat 10 pm in summer) |
@@ -711,6 +745,21 @@ It wasn't made right in one attempt. Here are the same places through each pass,
 <td><sub>V7 · Sep 29<br/>one dock, one key each</sub></td>
 <td><sub>Phase 4 · Sep 30<br/>VISIT · LIVE · WORK</sub></td>
 <td><sub>Phase 4 · Sep 30<br/>hours, address, website</sub></td>
+</tr>
+</table>
+
+**United Center**
+
+<table>
+<tr>
+<td width="33%"><img src="docs/screenshots/evolution/v5-united-center-night.png" alt="V5 — United Center game night, the plaza crowd" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/sports-united-center-plaza-night.png" alt="Sports pass — the same pose, the Bulls ribbon round the parapet" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/sports-united-center-night.png" alt="Sports pass — the Bulls board on the roof" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>V5 · Sep 29<br/>lit fascia, a plain roof</sub></td>
+<td><sub>Sports pass · Oct 1<br/>the ribbon round the parapet</sub></td>
+<td><sub>Sports pass · Oct 1<br/>the Bulls board on the roof</sub></td>
 </tr>
 </table>
 

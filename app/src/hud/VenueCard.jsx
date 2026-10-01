@@ -6,6 +6,7 @@ import { useSports } from '../sports/sportsStore.js'
 import { boardLines } from '../sports/scoreboard.js'
 import { stateLabel, gameLabel, dataChip, sourceNote } from '../sports/tonight.js'
 import { whenChicago } from '../sports/chicagoTime.js'
+import VenueActions from './VenueActions.jsx'
 
 export default function VenueCard() {
   const key = useSports((s) => s.cardVenue)
@@ -20,7 +21,7 @@ export default function VenueCard() {
     return () => window.removeEventListener('keydown', k)
   }, [key])
   if (!venue) return null
-  const lines = boardLines(venue, st, Date.now(), override)
+  const lines = boardLines(venue, st, st?.virtualNow ?? Date.now(), override) // a showcase runs on its own clock
   const now = Date.now(), chip = dataChip(st, source, generatedAt, now), note = sourceNote({ source, generatedAt }, now)
   return (
     <div className="hud-panel venue-card" role="dialog" aria-label={venue.name}>
@@ -34,8 +35,10 @@ export default function VenueCard() {
       )}
       <p className="vc-status">{lines.status}</p>
       {st?.next && <p className="vc-next">Next: {gameLabel(st.next)} · {whenChicago(Date.parse(st.next.start))}</p>}
+      <VenueActions venueKey={key} />
       <p className="vc-foot"><span className={`chip chip-${chip.toLowerCase()}`}>{chip}</span>{' '}
         {chip === 'LIVE' && <span>Live score from ESPN · </span>}
+        {chip === 'PREVIEW' && <span>A 90-second preview, not a real game · </span>}
         <span className={`data-note${note.stale ? ' data-stale' : ''}`}>{note.text}</span></p>
     </div>
   )

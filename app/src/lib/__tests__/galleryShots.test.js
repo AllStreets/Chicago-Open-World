@@ -23,3 +23,11 @@ describe('gallery shots', () => {
     expect(refuseOverwrite('docs/screenshots/v6-new-day.png', () => false)).toBe('docs/screenshots/v6-new-day.png')
   })
 })
+
+import { SPORTS_GALLERY, sportsShotQuery } from '../galleryShots.js'
+describe('sports gallery poses (E3-4 / E4-6)', () => {
+  it('every subject is kebab-case with a full pose; the query pins the pose, time and venue state', () => {
+    for (const [k, v] of Object.entries(SPORTS_GALLERY)) { expect(k).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/); expect(v.pose.position).toHaveLength(3); expect(v.pose.target).toHaveLength(3) }
+    expect(sportsShotQuery(SPORTS_GALLERY['united-center-live'], 'night')).toBe('pose=-3655,88,375,-3846,44,150&time=night&stats&sports=live:bulls')
+  })
+})
