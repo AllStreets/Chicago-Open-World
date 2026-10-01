@@ -40,6 +40,7 @@ import { createStyleRegistry, assignHeroStyles, meshStyle, writeStylePalettePng,
 import { applyOsmLooks, applyTagOverrides } from '../lib/osmLook.js'
 import { applyRooftops, rooftopLots } from '../lib/rooftops.js'
 import { lakePolygons, landMinusWater, joinLines, lakeSide } from '../lib/lake.js'
+import { lakefrontBeaches, isSandPitch } from '../lib/beaches.js'
 import { bakeShore, SHORE } from '../lib/shore.js'
 import { bakeHeightfield, meshPoints, boundsUnion, HEIGHTFIELD } from '../lib/heightfield.js'
 import { encodeHeights } from '../lib/raster.js'
@@ -227,8 +228,19 @@ async function main() {
   assertSkyline(sky)
 
   // ── Ground sources ─────────────────────────────────────────────────────────
-  const parks = greens.filter((p) => p.tags.natural !== 'beach' && p.tags.leisure !== 'pitch'), beaches = greens.filter((p) => p.tags.natural === 'beach')
-  const pitches = greens.filter((p) => p.tags.leisure === 'pitch')
+  const parks = greens.filter((p) => p.tags.natural !== 'beach' && p.tags.leisure !== 'pitch'), beaches = greens.filter((p) => p.tags.natural === 'beach' || (p.tags.leisure === 'pitch' && isSandPitch(p.tags)))
+  const pitches = greens.filter((p) => p.tags.leisure === 'pitch' && !isSandPitch(p.tags))
+  // the lake side of the shore (also cuts the land below), and Lincoln Park's unmapped beaches: sand from the
+  // Lakefront Trail to the water (data/beaches.json)
+  const coastEls = uniq(chunks('coast'))
+  const lakeRel = coastEls.find((e) => e.type === 'relation')
+  const outerIds = new Set((lakeRel?.members || []).filter((m) => m.role === 'outer').map((m) => m.ref))
+  const shoreLines = coastEls.filter((e) => e.type === 'way' && e.geometry && (!lakeRel || outerIds.has(e.id))).map((e) => e.geometry.map((p) => project(p.lon, p.lat)))
+  const lakeSideP = lakeSide(joinLines(shoreLines, 5), 60000)
+  const trailLines = uniq(chunks('trails')).filter((e) => e.geometry && e.tags?.name === 'Lakefront Trail').map((e) => e.geometry.map((p) => project(p.lon, p.lat)))
+  const sand = lakefrontBeaches(loadJson(join(ROOT, 'data', 'beaches.json')).beaches, { trail: trailLines, lake: lakeSideP })
+  for (const b of sand) beaches.push(b)
+  log(`beaches: ${beaches.length} (${sand.length} lakefront bands from data/beaches.json, ${beaches.filter((b) => b.tags.leisure === 'pitch').length} volleyball courts as sand)`)
   const water = osmPolys(uniq(chunks('water'))).filter((p) => keepWater(p.tags))
   const roads = uniq(chunks('roads')).filter((e) => e.geometry && roadHalfWidth(e.tags || {}))
   const rail = uniq(chunks('rail')).filter((e) => e.geometry)
@@ -587,11 +599,6 @@ async function main() {
   // Land is solid: enclave holes in the city boundary (other municipalities) are still land, never lake.
   const landLimits = [...landPolys, ...region].map((p) => ({ outer: p.outer, holes: [] }))
   // The city limits run out into the lake; the real shore is Lake Michigan's own outline (its outer member ways).
-  const coastEls = uniq(chunks('coast'))
-  const lakeRel = coastEls.find((e) => e.type === 'relation')
-  const outerIds = new Set((lakeRel?.members || []).filter((m) => m.role === 'outer').map((m) => m.ref))
-  const shoreLines = coastEls.filter((e) => e.type === 'way' && e.geometry && (!lakeRel || outerIds.has(e.id))).map((e) => e.geometry.map((p) => project(p.lon, p.lat)))
-  const lakeSideP = lakeSide(joinLines(shoreLines, 5), 60000)
   const landSolid = lakeSideP.length ? landMinusWater({ land: landLimits, water: lakeSideP }) : landLimits
   log(`shoreline: ${shoreLines.length} ways, lake side ${lakeSideP.length ? 'cut' : 'MISSING — using city limits'}`)
   rmSync(join(OUT, 'ground'), { recursive: true, force: true }) // X-0b: drops the unused Phase-2 ground layers (roads, parks, …: 8 MB nothing loads)

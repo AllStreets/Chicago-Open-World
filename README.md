@@ -563,7 +563,7 @@ Every building, monument and landmark in Lincoln Park from North Avenue to Irvin
 <td width="50%"><img src="docs/screenshots/v10-lp-north-avenue-beach-night.png" alt="North Avenue Beach at night" width="100%"/></td>
 </tr>
 <tr>
-<td><em>The North Avenue Beach House as the ocean liner it was built to be: portholes, the blue-railed decks, the Castaways canopy and two red-banded funnels; the Chess Pavilion beyond.</em></td>
+<td><em>The North Avenue Beach House as the ocean liner it was built to be, aground on the sand: portholes, the blue-railed decks, the Castaways canopy and two red-banded funnels. The beach runs from North Avenue to Fullerton between the lake and the Lakefront Trail.</em></td>
 <td><em>At night the portholes glow along the hull.</em></td>
 </tr>
 <tr>
