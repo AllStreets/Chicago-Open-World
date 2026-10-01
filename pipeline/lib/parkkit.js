@@ -157,9 +157,16 @@ export function boxFaces(c, u, L, W) {
 // A string course or cornice round an oriented box: a slab `proud` m bigger each side, from y0 to y1.
 export const band = (out, c, u, L, W, y0, y1, proud = 0.15) => slab(out, c, u, L + 2 * proud, W + 2 * proud, y0, y1)
 // …and round a real outline.
-export function ringBand(out, ring, y0, y1, proud = 0.15) {
-  const r = offsetRing(ring, proud), p = prism(r, y0, y1, { top: true, bottom: true })
-  for (const m of [p.walls, p.top]) for (const k of ['positions', 'normals', 'uvs']) out[k].push(...m[k])
+// Only its face and a rim on top and below (`rim` m wide, back over the wall) — never a cap over the whole outline,
+// which would lie on a flat roof and fight it.
+export function ringBand(out, ring, y0, y1, proud = 0.15, rim = 0.35) {
+  const r = offsetRing(ring, proud), inner = offsetRing(ring, -rim)
+  into(out, prism(r, y0, y1, { top: false }).walls)
+  for (let i = 0; i < r.length; i++) {
+    const j = (i + 1) % r.length
+    quad(out, at3(r[i], y1), at3(r[j], y1), at3(inner[j], y1), at3(inner[i], y1), [0, 1, 0])
+    if (y0 > 0.01) quad(out, at3(r[i], y0), at3(r[j], y0), at3(inner[j], y0), at3(inner[i], y0), [0, -1, 0])
+  }
   return out
 }
 
@@ -191,7 +198,7 @@ export function masonryHall(ring, { eave, plinth = 0.9, belts = [], cornice = 0.
   const walls = prism(ring, 0, eave, { top }), trim = mesh(), glass = mesh(), sills = mesh()
   if (plinth > 0) ringBand(trim, ring, 0, plinth, 0.1)
   for (const y of belts) ringBand(trim, ring, y, y + 0.3, 0.06)
-  if (cornice > 0) ringBand(trim, ring, eave - cornice, eave, corniceProud)
+  if (cornice > 0) ringBand(trim, ring, eave - cornice, eave + 0.06, corniceProud) // its rim just above a flat roof
   if (windows) {
     for (let i = 0; i < ring.length; i++) {
       const a = ring[i], b = ring[(i + 1) % ring.length], L = len2(sub2(b, a))

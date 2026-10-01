@@ -57,6 +57,51 @@ describe('the Nature Boardwalk pavilion (Studio Gang, 2010) — B-3', () => {
   })
 })
 
+import { buildLandmark as build } from '../lib/landmarks.js'
+import { project } from '../../shared/project.js'
+import { offsetRing } from '../lib/parkkit.js'
+import { pointInRing } from '../lib/geom.js'
+describe('the zoo houses, habitats and farm (B-4)', () => {
+  const zooKeys = ['lincolnparkzoo', 'primatehouse', 'birdhouse', 'apescenter', 'smallmammal', 'africanjourney', 'birdsofprey', 'macaqueforest', 'penguincove', 'childrenszoo', 'zooadmin', 'zoohospital', 'visitorcenter', 'carousel', 'sealionpool', 'mainbarn', 'dairybarn', 'livestockbarn', 'holdingbarn', 'farmhouse']
+  const L = (k) => heroes.find((h) => h.key === k)
+  it('each is a hero with ⌘K aliases, sources and a note that says what is approximate', () => {
+    for (const k of zooKeys) {
+      const h = L(k)
+      expect(h, k).toBeTruthy()
+      expect(h.aliases.length, k).toBeGreaterThan(0)
+      expect(h.sources.some((s) => s.startsWith('https://')), k).toBe(true)
+      expect(h.landmark.note, k).toMatch(/approximate|sources/)
+    }
+    for (const q of ['Lion House', 'Farm-in-the-Zoo', 'penguins', 'Sea Lion Pool', 'Primate House', 'Bird House', 'Carousel']) expect(zooKeys.some((k) => L(k).aliases.includes(q)), q).toBe(true)
+  })
+  // every part stays on its outline: nothing beyond the footprint but eaves (≤ 1.7 m), and nothing floats
+  const outline = { brickHouse: [[0, 0], [40, 0], [40, 24], [0, 24]], modernPavilion: [[0, 0], [50, 0], [56, 20], [0, 30]], meshHabitat: [[0, 0], [12, 0], [12, 8], [0, 8]], rockHabitat: [[0, 0], [17, 0], [17, 12], [0, 12]], barn: [[0, 0], [30, 0], [30, 20], [0, 20]], carousel: [[0, 0], [32, 0], [32, 32], [0, 32]], lionHouse: [[0, 0], [66, 0], [66, 20], [40, 24], [26, 24], [0, 20]] }
+  for (const [type, ring] of Object.entries(outline)) {
+    it(`${type}: every part on the outline (eaves aside), within budget`, () => {
+      const spec = { ...(heroes.find((h) => h.landmark?.type === type)?.landmark ?? {}), roofs: undefined, silo: undefined }
+      const cx = ring.reduce((a, p) => a + p[0], 0) / ring.length, cz = ring.reduce((a, p) => a + p[1], 0) / ring.length
+      const r = build({ id: 't', height: 8, polygons: [{ outer: ring, holes: [] }], centroid: [cx, cz], area: 1 }, { ...spec, type })
+      const grown = offsetRing(ring, 1.8), porch = offsetRing(ring, 5) // a portico stands out from its wall
+      for (const m of r.meshes) for (const [x, y, z] of pts([m])) { expect(pointInRing([x, z], m.part === 'portico' ? porch : grown), `${type} ${m.part} ${x.toFixed(1)},${z.toFixed(1)}`).toBe(true); expect(y).toBeGreaterThan(-0.5) }
+      expect(tris(r)).toBeLessThan(15000)
+    })
+  }
+  it('the Farm-in-the-Zoo main barn: red walls, white trim, gambrel roof, the silo where the outline rounds it', () => {
+    const h = L('mainbarn'), ring = [[-16, -19], [16, -19], [16, 0.6], [8.7, 0.6], [8.8, 19], [-9, 19], [-9, -1.9], [-16, -4]]
+    const r = build({ id: 't', height: 5, polygons: [{ outer: ring, holes: [] }], centroid: [0, 0], area: 1 }, h.landmark)
+    expect(part(r, 'walls')[0].style).toBe('lp-barn-red'); expect(part(r, 'trim')[0].style).toBe('lp-trim-white')
+    const silo = pts(part(r, 'silo')), cb = [0, 0]
+    expect(hi(silo.map((q) => q[1]))).toBeCloseTo(12, 1)
+    for (const [x, , z] of silo) expect(Math.hypot(x - (cb[0] - 10.7), z - (cb[1] + 2.6))).toBeLessThan(2.4)
+  })
+  it('the Sea Lion Pool sits west of the Lion House, the carousel ring is open (columns, no walls)', () => {
+    const sl = L('sealionpool').match, lh = project(-87.63332, 41.92128)
+    expect(project(sl.lon, sl.lat)[0]).toBeLessThan(lh[0] - 50)
+    const r = build({ id: 't', height: 5, polygons: [{ outer: outline.carousel, holes: [] }], centroid: [16, 16], area: 1 }, L('carousel').landmark)
+    expect(part(r, 'columns').length).toBe(1); expect(r.meshes.some((m) => m.part === 'walls')).toBe(false)
+  })
+})
+
 describe('zoo.js (B-1)', () => {
   it('routes the Lion House through the zoo module', () => {
     expect(Object.keys(ZOO_BUILDERS)).toContain('lionHouse')

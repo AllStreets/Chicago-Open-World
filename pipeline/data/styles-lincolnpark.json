@@ -7,7 +7,7 @@
     { "key": "lp-tile-green", "base": "#55705b", "finish": "terracotta", "source": "https://en.wikipedia.org/wiki/Caf%C3%A9_Brauer (green tile roof; photo-matched)" },
     { "key": "lp-tile-red", "base": "#9a5136", "finish": "terracotta", "source": "https://webapps1.chicago.gov/landmarksweb/web/landmarkdetails.htm?lanId=11382 (clay tile roof; photo-matched)" },
     { "key": "lp-slate", "base": "#4d5258", "finish": "concrete", "source": "photo-matched, slate and dark shingle roofs of the park's Georgian and barn buildings" },
-    { "key": "lp-trim-white", "base": "#ebe7dc", "finish": "concrete", "source": "photo-matched, painted white trim, columns and fences" },
+    { "key": "lp-trim-white", "base": "#d3cec2", "finish": "concrete", "source": "photo-matched, painted white trim, columns and fences" },
     { "key": "lp-barn-red", "base": "#9b3026", "finish": "concrete", "source": "https://www.alamy.com/stock-photo-chicago-illinois-red-barn-at-farm-in-the-zoo-section-of-lincoln-park-12079437.html (red barn)" },
     { "key": "lp-iron-white", "base": "#d6dad4", "finish": "metal", "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory (iron framework; white paint photo-matched)" },
     { "key": "lp-glasshouse", "base": "#94afa8", "finish": "glass", "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory (glass houses; photo-matched; unlit at night — it closes at 5 pm)" },

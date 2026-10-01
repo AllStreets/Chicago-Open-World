@@ -7,14 +7,14 @@
 import { mesh, merge, slab, add2, mul2, sub2, len2, norm2, revolve, tube, tri, quad, at3 } from './meshkit.js'
 import { wallPolygon } from './icons.js'
 import { pointInRing } from './geom.js'
-import { frameOf, at, rectRing, hipRoof, masonryHall, roundHead, flatHead, archivolt, edgeNormal, into, ringBand, offsetRing, siteWater } from './parkkit.js'
+import { frameOf, at, rectRing, hipRoof, gableRoof, gambrelRoof, bellRoof, prism, masonryHall, roundHead, flatHead, archivolt, edgeNormal, into, ringBand, offsetRing, siteWater, column, pediment } from './parkkit.js'
 import { LANDMARK_FACADES as F } from './facadeIds.js'
 // a flat styled colour that stays dark at night (the paint façade, 12, glows after dark like a floodlit field)
 const FLAT = F.steel
 import { project } from '../../shared/project.js'
 
 // close-range detail stays out of LOD1 (the size budget); the silhouette parts draw at every distance
-const FINE = new Set(['trim', 'windows', 'sills', 'archivolt', 'door', 'lions', 'monitor-glass', 'mullions', 'lettering', 'pods', 'prairie'])
+const FINE = new Set(['trim', 'windows', 'sills', 'archivolt', 'door', 'doors', 'lions', 'monitor-glass', 'mullions', 'lettering', 'pods', 'prairie', 'frames', 'posts', 'animals', 'gallery'])
 const P = (m, facade, style, part, seed = 0.5) => ({ mesh: m, facade, seed, style, part, lod0Only: FINE.has(part) })
 const polyArea = (r) => r.reduce((s, p, i) => { const q = r[(i + 1) % r.length]; return s + p[0] * q[1] - q[0] * p[1] }, 0) / 2
 const area = (r) => r.reduce((s, p, i) => { const q = r[(i + 1) % r.length]; return s + p[0] * q[1] - q[0] * p[1] }, 0) / 2
@@ -215,4 +215,214 @@ export function natureBoardwalk(b, spec = {}) {
   ], clear: [rectRing(fr.c, fr.u, fr.L + 4, fr.W + 3)] }
 }
 
-export const ZOO_BUILDERS = { lionHouse, cafeBrauer, natureBoardwalk }
+// ── The zoo's other houses (B-4) ─────────────────────────────────────────────────────────────────────────────────────
+// A brick house on its OSM outline (the Helen Brach Primate House, 1927, Georgian; the McCormick Bird House, 1904; the
+// administration building): walls to the eave, stone courses, a hipped roof over the main block (spec.roofStyle), an
+// optional glazed monitor along the ridge, windows (round-headed or flat with white frames), and an optional columned
+// portico with a pediment on the face spec.portico.faceDeg looks toward.
+export function brickHouse(b, spec = {}) {
+  const ring = mainRing(b), fr = frameOf(b), eave = spec.eaveM ?? 8, wallStyle = spec.wallStyle ?? 'lp-brick'
+  const win = spec.windows === 'flat' ? flatHead(0.9, 1.4, eave - 2.2) : roundHead(1.0, 1.6, eave - 3.0)
+  const pf = spec.portico ? frameOf(b, { faceDeg: spec.portico.faceDeg }) : null
+  const pOut = pf ? pf.v : null, pFace = pf ? add2(pf.c, mul2(pOut, reach(ring, pf.c, pOut))) : null
+  const pSpan = spec.portico?.spanM ?? 9
+  const hall = masonryHall(ring, { eave, plinth: 0.8, belts: spec.beltM ? [spec.beltM] : [], cornice: 0.6, corniceProud: 0.3, windows: { spacing: spec.windowEveryM ?? 4, margin: 2, minEdge: 5, outline: win }, skip: (p) => pFace && len2(sub2(p, pFace)) < pSpan / 2 + 1 })
+  const rise = spec.roofRiseM ?? Math.min(fr.W / 2, 9) * 0.55, over = spec.overM ?? 0.7
+  const roof = hipRoof(fr.c, fr.u, fr.L, fr.W, eave, rise, over), trim = hall.trim, frames = mesh(), portico = mesh()
+  if (spec.windows === 'flat') {
+    // a white frame round each opening, drawn as four bars proud of the brick
+    for (let i = 0; i < ring.length; i++) {
+      const a = ring[i], c = ring[(i + 1) % ring.length], L = len2(sub2(c, a))
+      if (L < 5) continue
+      const t = norm2(sub2(c, a)), n = edgeNormal(ring, i), k = Math.max(1, Math.floor((L - 4) / (spec.windowEveryM ?? 4)) + 1)
+      for (let j = 0; j < k; j++) {
+        const o = add2(a, mul2(t, k === 1 ? L / 2 : 2 + ((L - 4) * j) / (k - 1)))
+        if (pFace && len2(sub2(o, pFace)) < pSpan / 2 + 1) continue
+        const f = add2(o, mul2(n, 0.07))
+        for (const [s, y0, y1, w] of [[-0.95, 1.4, eave - 2.2, 0.12], [0.95, 1.4, eave - 2.2, 0.12], [0, (1.4 + eave - 2.2) / 2 - 0.05, (1.4 + eave - 2.2) / 2 + 0.05, 1.9]]) slab(frames, add2(f, mul2(t, s)), t, w, 0.08, y0, y1)
+        slab(frames, add2(o, mul2(n, 0.12)), t, 2.3, 0.24, eave - 2.2, eave - 1.8) // the lintel
+      }
+    }
+  }
+  let monitor = null
+  if (spec.monitor) {
+    const mL = Math.max(6, (fr.L - fr.W) * 0.7), mW = spec.monitor.widthM ?? 3.6, ridge = eave + rise
+    monitor = slab(mesh(), fr.c, fr.u, mL, mW, ridge - 0.9, ridge + (spec.monitor.heightM ?? 1.2))
+    into(roof, hipRoof(fr.c, fr.u, mL, mW, ridge + (spec.monitor.heightM ?? 1.2), 0.7, 0.3))
+  }
+  if (pf) {
+    // the portico: columns on a stone stylobate, an entablature and a pediment, against the front wall
+    const along = mul2(pf.u, -1), n = spec.portico.columns ?? 4, depth = spec.portico.depthM ?? 3.2, colH = eave - 1.4
+    slab(portico, add2(pFace, mul2(pOut, depth / 2)), along, pSpan + 1.2, depth + 0.6, 0, 0.6)
+    for (let k = 0; k < n; k++) column(portico, add2(pFace, add2(mul2(along, -pSpan / 2 + (pSpan * k) / (n - 1)), mul2(pOut, depth - 0.5))), 0.6, colH, 0.38, 12)
+    slab(portico, add2(pFace, mul2(pOut, depth / 2)), along, pSpan + 1.0, depth + 0.2, colH, eave)
+    pediment(portico, add2(pFace, mul2(pOut, -0.1)), along, pOut, pSpan + 1.0, depth + 0.3, eave, spec.portico.pedimentM ?? 2.2)
+    wallPolygon(portico, pFace, along, pOut, flatHead(1.3, 0.6, 3.8), 0.04) // the door, in shadow under the portico
+  }
+  return { replace: true, pieces: [], meshes: [
+    P(hall.walls, F.brick, wallStyle, 'walls'),
+    P(trim, F.stone, 'lp-limestone', 'trim'),
+    P(hall.glass, FLAT, 'gothic-shadow', 'windows'),
+    P(hall.sills, F.stone, 'lp-limestone', 'sills'),
+    P(frames, FLAT, 'lp-trim-white', 'frames'),
+    P(roof, spec.roofStyle === 'lp-slate' ? FLAT : F.stone, spec.roofStyle ?? 'lp-slate', 'roof'),
+    ...(monitor ? [P(monitor, FLAT, 'lp-glass', 'monitor-glass')] : []),
+    ...(pf ? [P(portico, F.stone, 'lp-trim-white', 'portico')] : []),
+  ] }
+}
+
+// A modern zoo building on its OSM outline (the Regenstein houses, the Children's Zoo, the hospital, the visitor
+// centre): walls in its material to the eave, a glass band, a planted or membrane roof with skylights, and an optional
+// glass dome (the Small Mammal–Reptile House's 45 ft rain-forest dome) or a sawtooth of north lights.
+export function modernPavilion(b, spec = {}) {
+  const ring = mainRing(b), fr = frameOf(b), eave = spec.eaveM ?? 7, meshes = []
+  const p = prism(ring, 0, eave), roofTop = mesh(), glass = mesh(), coping = mesh(), sky = mesh()
+  into(roofTop, p.top)
+  ringBand(coping, ring, eave - 0.05, eave + 0.45, 0.12)
+  const gb = spec.glassBand // [y0, y1]: a continuous glazed band round the walls (mullions in steel)
+  const mull = mesh()
+  if (gb) for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], c = ring[(i + 1) % ring.length], L = len2(sub2(c, a))
+    if (L < 2) continue
+    const t = norm2(sub2(c, a)), n = edgeNormal(ring, i)
+    wallPolygon(glass, add2(add2(a, mul2(t, L / 2)), [0, 0]), t, n, [[-L / 2 + 0.6, gb[0]], [L / 2 - 0.6, gb[0]], [L / 2 - 0.6, gb[1]], [-L / 2 + 0.6, gb[1]]], 0.04)
+    for (let s = 0.6; s <= L - 0.6; s += 1.8) slab(mull, add2(add2(a, mul2(t, s)), mul2(n, 0.08)), t, 0.1, 0.1, gb[0], gb[1])
+  }
+  // skylights: glazed boxes on the roof, along the long axis
+  for (let k = 0; k < (spec.skylights ?? 0); k++) {
+    const a = -fr.L / 2 + ((k + 0.5) * fr.L) / spec.skylights
+    const at0 = add2(fr.c, mul2(fr.u, a))
+    if (!pointInRing(at0, ring)) continue
+    into(sky, hipRoof(at0, fr.v, Math.min(5, fr.W * 0.4), Math.min(3, fr.L / spec.skylights - 1), eave + 0.3, 1.1, 0))
+  }
+  if (spec.dome) {
+    const r = spec.dome.r, c = spec.dome.at ? at(fr, ...spec.dome.at) : fr.c, top = spec.dome.topM
+    const prof = Array.from({ length: 9 }, (_, k) => { const a = (k / 8) * (Math.PI / 2); return [Math.max(0.05, r * Math.cos(a)), eave + (top - eave) * Math.sin(a)] })
+    const d = bellRoof(c, fr.u, 0, prof, { K: 2, M: 14, purlins: [2, 5] })
+    into(sky, d.glass); meshes.push(P(d.ribs, FLAT, 'lp-steel', 'mullions'))
+  }
+  meshes.push(
+    P(p.walls, spec.wallFacade === 'brick' ? F.brick : spec.wallFacade === 'stone' ? F.stone : FLAT, spec.wallStyle ?? 'lp-rock', 'walls'),
+    P(roofTop, FLAT, spec.roofStyle ?? 'lp-green-roof', 'roof'),
+    P(coping, FLAT, spec.copingStyle ?? 'lp-steel', 'coping'),
+  )
+  if (glass.positions.length) meshes.push(P(glass, FLAT, 'lp-glass', 'windows'), P(mull, FLAT, 'lp-steel', 'mullions'))
+  if (sky.positions.length) meshes.push(P(sky, FLAT, 'lp-glasshouse', 'skylights'))
+  return { replace: true, pieces: [], meshes }
+}
+
+// An open-air habitat under mesh (the Regenstein Birds of Prey aviaries, the Macaque Forest): steel posts round the
+// outline and a stainless mesh skin over a gabled frame — the grid façade draws the mesh as open lattice.
+export function meshHabitat(b, spec = {}) {
+  const ring = mainRing(b), fr = frameOf(b), h = spec.heightM ?? 6, ridge = h + (spec.ridgeM ?? 2.5)
+  const posts = mesh(), skin = mesh()
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], c = ring[(i + 1) % ring.length], L = len2(sub2(c, a)), t = norm2(sub2(c, a)), k = Math.max(1, Math.round(L / 3))
+    for (let j = 0; j < k; j++) tube(posts, at3(add2(a, mul2(t, (j * L) / k)), 0), at3(add2(a, mul2(t, (j * L) / k)), h), 0.09, 6)
+  }
+  const pr = prism(ring, 0, h, { top: false }), g = gableRoof(fr.c, fr.u, fr.L, fr.W, h, ridge - h, 0)
+  into(skin, pr.walls, g.roof, g.gables)
+  tube(posts, at3(add2(fr.c, mul2(fr.u, -fr.L / 2)), ridge), at3(add2(fr.c, mul2(fr.u, fr.L / 2)), ridge), 0.1, 6)
+  return { replace: true, pieces: [], meshes: [P(posts, FLAT, 'lp-steel', 'posts'), P(skin, F.grid, 'lp-mesh', 'mesh')] }
+}
+
+// Pritzker Penguin Cove (2016, after Boulders Beach): granite-like rock outcrops round a pool with an underwater
+// viewing window, on the outline (the rock is the building).
+export function rockHabitat(b, spec = {}) {
+  const ring = mainRing(b), fr = frameOf(b), rock = mesh(), pool = mesh(), glass = mesh()
+  let k = 0
+  const rnd = (i) => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x) }
+  // boulders: a ring of irregular blocks round the outline's edge, stepping down toward the pool
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], c = ring[(i + 1) % ring.length], L = len2(sub2(c, a)), t = norm2(sub2(c, a)), n = edgeNormal(ring, i)
+    for (let s = 0; s < L; s += 2.2) {
+      const h = (spec.rockM ?? 3.2) * (0.5 + 0.6 * rnd(++k)), w = 1.8 + rnd(++k) * 0.9, d = 1.6 + rnd(++k) * 0.8
+      const o = add2(add2(a, mul2(t, Math.min(s + 1, L - 1))), mul2(n, -d / 2 - 0.4))
+      slab(rock, o, norm2(add2(t, mul2(n, (rnd(++k) - 0.5) * 0.3))), w, d, 0, h)
+    }
+  }
+  const inner = offsetRing(ring, -2.6)
+  if (Math.abs(polyArea(inner)) > 4) { const p = prism(inner, 0, 0.45); into(pool, p.top); into(glass, p.walls) }
+  return { replace: true, pieces: [], meshes: [P(rock, F.stone, 'lp-rock', 'rock'), P(pool, FLAT, 'lp-pool', 'pool'), P(glass, FLAT, 'lp-glass', 'windows')] }
+}
+
+// A Farm-in-the-Zoo barn: red board walls with white corner boards, a gambrel (or gable) roof in dark shingle over
+// each spec.roofs block, the big doors with their white cross-bracing on the gable ends, a ventilator cupola on the
+// ridge, and the silo where the outline has one. Roof blocks are local to the outline's bbox centre.
+export function barn(b, spec = {}) {
+  const ring = mainRing(b), cb = bboxCentre(ring), eave = spec.eaveM ?? 4.6
+  const walls = prism(ring, 0, eave), white = mesh(), roof = mesh(), gables = mesh(), doors = mesh(), silo = mesh(), siloCap = mesh()
+  for (const p of ring) slab(white, p, [1, 0], 0.3, 0.3, 0, eave) // corner boards
+  ringBand(white, ring, eave - 0.25, eave, 0.08)
+  const f0 = frameOf(b), blocks = spec.roofs ?? [{ at: sub2(f0.c, cb), L: f0.L, W: f0.W, bearingDeg: (Math.atan2(f0.u[0], -f0.u[1]) * 180) / Math.PI }]
+  for (const r of blocks) {
+    const c = [cb[0] + r.at[0], cb[1] + r.at[1]], u = r.bearingDeg != null ? [Math.sin((r.bearingDeg * Math.PI) / 180), -Math.cos((r.bearingDeg * Math.PI) / 180)] : r.alongZ ? [0, 1] : [1, 0], L = r.L, W = r.W
+    const g = (r.kind ?? spec.roof ?? 'gambrel') === 'gambrel' ? gambrelRoof(c, u, L, W, eave, W * 0.3, W * 0.42, { kneeIn: 0.18, over: 0.4 }) : gableRoof(c, u, L, W, eave, W * 0.36, 0.5)
+    into(roof, g.roof); into(gables, g.gables)
+    // the doors on each gable end: dark red boards in a white frame with the white X
+    for (const e of [-1, 1]) {
+      const o = add2(c, mul2(u, (e * L) / 2)), dir = mul2(u, e), al = [-u[1], u[0]], dw = Math.min(3.6, W * 0.35)
+      wallPolygon(doors, o, al, dir, flatHead(dw / 2, 0, 3.6), 0.06)
+      for (const [s, y0, y1, w] of [[-dw / 2, 0, 3.7, 0.16], [dw / 2, 0, 3.7, 0.16], [0, 3.6, 3.76, dw + 0.16]]) slab(white, add2(add2(o, mul2(al, s)), mul2(dir, 0.09)), al, w, 0.06, y0, y1)
+      // the X: two thin bars corner to corner
+      const P0 = add2(add2(o, mul2(al, -dw / 2)), mul2(dir, 0.1)), P1 = add2(add2(o, mul2(al, dw / 2)), mul2(dir, 0.1))
+      tube(white, at3(P0, 0.1), at3(P1, 3.5), 0.07, 4); tube(white, at3(P1, 0.1), at3(P0, 3.5), 0.07, 4)
+      wallPolygon(doors, add2(o, mul2(dir, 0.01)), al, dir, flatHead(0.7, eave + 0.6, eave + 2.0), 0.06) // the hay door above
+    }
+    if (r.cupola) { const top = eave + W * 0.42; into(white, slab(mesh(), c, u, 1.6, 1.6, top - 0.4, top + 1.3)); into(roof, hipRoof(c, u, 1.6, 1.6, top + 1.3, 1.0, 0.3)); tube(white, at3(c, top + 2.3), at3(c, top + 3.4), 0.04, 4) }
+  }
+  if (spec.silo) {
+    const c = [cb[0] + spec.silo.at[0], cb[1] + spec.silo.at[1]], r = spec.silo.r, h = spec.silo.heightM
+    into(silo, revolve(c, [[r, 0], [r, h]], { sides: 20 }))
+    for (let y = 1.5; y < h; y += 1.5) into(white, revolve(c, [[r + 0.05, y], [r + 0.05, y + 0.12]], { sides: 20 })) // the hoops
+    into(siloCap, revolve(c, [[r + 0.15, h], [r * 0.8, h + r * 0.55], [r * 0.4, h + r * 0.85], [0.05, h + r * 0.95]], { sides: 20 }))
+  }
+  return { replace: true, pieces: [], meshes: [
+    P(into(mesh(), walls.walls, gables), FLAT, 'lp-barn-red', 'walls'),
+    P(white, FLAT, 'lp-trim-white', 'trim'),
+    P(doors, FLAT, 'gothic-shadow', 'doors'),
+    P(roof, FLAT, 'lp-slate', 'roof'),
+    ...(spec.silo ? [P(silo, FLAT, 'lp-barn-red', 'silo'), P(siloCap, FLAT, 'lp-copper', 'silo-cap')] : []),
+  ] }
+}
+
+// The Kovler Sea Lion Pool: a free-form pool with rockwork shores, a rock haul-out island, and the curved underwater
+// viewing gallery on its south side (synthetic anchor at the pool's centre; plan approximate).
+export function seaLionPool(b, spec = {}) {
+  const c = b.centroid, rx = spec.rxM ?? 17, rz = spec.rzM ?? 12, N = 40, outline = []
+  for (let k = 0; k < N; k++) { const a = (k / N) * Math.PI * 2, w = 1 + 0.08 * Math.sin(3 * a) + 0.05 * Math.cos(5 * a); outline.push([c[0] + rx * w * Math.cos(a), c[1] + rz * w * Math.sin(a)]) }
+  const water = prism(outline, 0.15, 0.4).top, rock = mesh(), glass = mesh(), wall = mesh()
+  let k = 0
+  const rnd = (i) => { const x = Math.sin(i * 91.7 + 17.3) * 43758.5453; return x - Math.floor(x) }
+  for (let i = 0; i < N; i++) {
+    const a = outline[i], q = outline[(i + 1) % N], t = norm2(sub2(q, a)), n = edgeNormal(outline, i)
+    const south = n[1] > 0.55 // the viewing gallery's glass on the south shore
+    if (south) { wallPolygon(glass, a, t, n, [[0, -0.2], [len2(sub2(q, a)), -0.2], [len2(sub2(q, a)), 1.1], [0, 1.1]], 0.02); slab(wall, add2(mul2(add2(a, q), 0.5), mul2(n, 0.4)), t, len2(sub2(q, a)) + 0.1, 0.8, 0, 1.25); continue }
+    slab(rock, add2(mul2(add2(a, q), 0.5), mul2(n, 0.9)), t, len2(sub2(q, a)) + 0.6, 1.8 + rnd(++k), 0, 0.8 + 1.4 * rnd(++k))
+  }
+  for (let i = 0; i < 6; i++) slab(rock, add2(c, [(rnd(++k) - 0.5) * rx * 0.5, (rnd(++k) - 0.5) * rz * 0.4]), norm2([rnd(++k) - 0.5, rnd(++k) - 0.5]), 2 + 2 * rnd(++k), 1.5 + rnd(++k), 0, 1.2 + 1.5 * rnd(++k))
+  return { replace: true, pieces: [], clear: [outline], meshes: [P(water, FLAT, 'lp-pool', 'water'), P(rock, F.stone, 'lp-rock', 'rock'), P(wall, F.stone, 'lp-limestone', 'gallery'), P(glass, FLAT, 'lp-glass', 'windows')] }
+}
+
+// The AT&T Endangered Species Carousel: forty-eight carved endangered animals on a turntable under a round, open
+// pavilion — a ring of slender columns carrying a shallow conical roof with a lantern and its flag.
+export function carousel(b, spec = {}) {
+  const fr = frameOf(b), c = fr.c, R = spec.radiusM ?? Math.min(fr.L, fr.W) / 2 - 1, eave = spec.eaveM ?? 4.6
+  const cols = mesh(), roof = mesh(), deck = mesh(), animals = mesh(), lantern = mesh()
+  for (let k = 0; k < 16; k++) { const a = (k / 16) * Math.PI * 2, p = add2(c, [R * Math.cos(a), R * Math.sin(a)]); tube(cols, at3(p, 0), at3(p, eave), 0.16, 8) }
+  into(roof, revolve(c, [[R + 1.2, eave], [R + 1.2, eave + 0.4], [R * 0.25, eave + R * 0.38], [R * 0.25, eave + R * 0.38 + 0.01]], { sides: 32 }))
+  into(roof, revolve(c, [[R + 1.2, eave], [0.001, eave]], { sides: 32 })) // the ceiling
+  into(lantern, revolve(c, [[R * 0.25, eave + R * 0.38], [R * 0.25, eave + R * 0.38 + 1.6], [0.001, eave + R * 0.38 + 2.6]], { sides: 16 }))
+  tube(lantern, at3(c, eave + R * 0.38 + 2.6), at3(c, eave + R * 0.38 + 4.2), 0.05, 4)
+  const rr = R * 0.82
+  into(deck, revolve(c, [[rr, 0], [rr, 0.5], [0.001, 0.5]], { sides: 32 }))
+  tube(deck, at3(c, 0.5), at3(c, eave), rr * 0.18, 12) // the centre column with its mirrors and organ
+  for (let k = 0; k < 24; k++) {
+    const a = (k / 24) * Math.PI * 2, p = add2(c, [rr * 0.78 * Math.cos(a), rr * 0.78 * Math.sin(a)]), t = [-Math.sin(a), Math.cos(a)]
+    tube(animals, at3(p, 0.5), at3(p, eave - 0.2), 0.03, 4) // the brass pole
+    tube(animals, at3(add2(p, mul2(t, -0.6)), 1.4 + 0.3 * (k % 2)), at3(add2(p, mul2(t, 0.6)), 1.4 + 0.3 * (k % 2)), 0.28, 6) // the animal
+  }
+  return { replace: true, pieces: [], meshes: [P(cols, FLAT, 'lp-trim-white', 'columns'), P(roof, FLAT, 'lp-copper', 'roof'), P(lantern, FLAT, 'lp-trim-white', 'lantern'), P(deck, FLAT, 'bp-deck-wood', 'deck'), P(animals, FLAT, 'gate-gold', 'animals')] }
+}
+
+export const ZOO_BUILDERS = { lionHouse, cafeBrauer, natureBoardwalk, brickHouse, modernPavilion, meshHabitat, rockHabitat, barn, seaLionPool, carousel }

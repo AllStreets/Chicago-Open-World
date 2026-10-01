@@ -15,7 +15,7 @@ import { extrudeBuilding } from '../lib/extrude.js'
 import { tileKeyFor, tileBounds, TILE_SIZE, tileKeysForBBox } from '../lib/tiles.js'
 import { writeMeshGlb } from '../lib/glb.js'
 import { shapePieces } from '../lib/shapes.js'
-import { applyHero, findByOsm, matchesOsm } from '../lib/heroes.js'
+import { applyHero, findByOsm, matchesOsm, expandHeroGroups } from '../lib/heroes.js'
 import { VENUE_FACADES, STYLE, convexHull } from '../lib/venue.js'
 import { venueRecord, encodeAnchors, plazaAnchors } from '../lib/sportsSites.js'
 import { collectRuntime, validateLandmarkRegistry, landmarkEntry } from '../lib/landmarkRuntime.js'
@@ -141,7 +141,7 @@ async function main() {
   const waterOf = (id) => { waterById ??= Map.groupBy(osmPolys(uniq(chunks('water'))), (w) => w.id); return waterById.get(id) ?? [] }
   setSiteLookup({ building: (ref) => findByOsm(buildings, ref), green: (id) => greenById.get(id) ?? null, water: waterOf })
   // ── Heroes + pieces ────────────────────────────────────────────────────────
-  const heroes = existsSync(join(ROOT, 'data', 'heroes.json')) ? loadJson(join(ROOT, 'data', 'heroes.json')).heroes : []
+  const heroes = existsSync(join(ROOT, 'data', 'heroes.json')) ? expandHeroGroups(loadJson(join(ROOT, 'data', 'heroes.json')).heroes) : []
   validateLandmarkRegistry(heroes)
   const heroFor = new Map()
   const seahorse = await loadBlenderMesh(join(ROOT, 'heroes', 'out', 'seahorse.glb'), { at: [0, 0], maxTris: 6000 })
@@ -186,7 +186,7 @@ async function main() {
   for (const b of buildings) if (!heroFor.has(b) && /\b(screen|scoreboard)\b/i.test(b.name ?? '')) { b.facadeOverride = 'screen'; b.seedOverride = STYLE.screen.video }
   for (const b of buildings) {
     const h = heroFor.get(b)
-    if (h) { const r = applyHero(b, h); b.pieces = r.pieces; b.extraMeshes = r.extraMeshes; b.venueMeshes = r.venueMeshes; b.clearPolys = r.clear; b.sculptReplaces = r.sculptReplaces; b.detached = r.detached; b.runtime = r.runtime; b.venueTop = (r.venueMeshes || []).reduce((t, v) => { for (let k = 1; k < v.mesh.positions.length; k += 3) t = Math.max(t, v.mesh.positions[k]); return t }, 0); b.venueTop = Math.max(b.venueTop, ...(r.detached ?? []).flatMap((d) => d.mesh.positions.filter((_, k) => k % 3 === 1))); b.hero = h.key; b.heroSacred = Boolean(h.sacred); b.crownTop = Math.max(0, ...r.extraMeshes.map((m) => m.positions.reduce((t, y, i) => (i % 3 === 1 && y > t ? y : t), 0)), ...(h.spireCounts ? r.pieces.map((q) => q.top) : [])) }
+    if (h) { const r = applyHero(b, h); b.pieces = r.pieces; b.extraMeshes = r.extraMeshes; b.venueMeshes = r.venueMeshes; b.clearPolys = r.clear; b.sculptReplaces = r.sculptReplaces; b.detached = r.detached; b.runtime = r.runtime; b.venueTop = (r.venueMeshes || []).reduce((t, v) => { for (let k = 1; k < v.mesh.positions.length; k += 3) t = Math.max(t, v.mesh.positions[k]); return t }, 0); b.venueTop = Math.max(b.venueTop, ...(r.detached ?? []).flatMap((d) => d.mesh.positions.filter((_, k) => k % 3 === 1))); b.hero = h.quiet ? null : h.key; b.heroSacred = Boolean(h.sacred); b.crownTop = Math.max(0, ...r.extraMeshes.map((m) => m.positions.reduce((t, y, i) => (i % 3 === 1 && y > t ? y : t), 0)), ...(h.spireCounts ? r.pieces.map((q) => q.top) : [])) }
     else b.pieces = shapePieces(b)
     if (h && (h.sculpt || h.bodyTopM)) { const tw = b.pieces.reduce((a, p) => (p.top > a.top ? p : a), { top: 0 }), bb = tw.outer ? ringBBox(tw.outer) : null; log(`hero ${h.key}: ${b.pieces.length} pieces, tower top ${tw.top.toFixed(1)} m, ${bb ? `${(bb.maxX - bb.minX).toFixed(1)} × ${(bb.maxZ - bb.minZ).toFixed(1)} m` : 'no ring'}, crown top ${b.crownTop.toFixed(1)} m; pieces ${b.pieces.map((q) => { const bb = ringBBox(q.outer); return `${q.base ?? 0}–${q.top.toFixed(0)}:${(bb.maxX - bb.minX).toFixed(0)}×${(bb.maxZ - bb.minZ).toFixed(0)}` }).join(' ')}`) }
   }

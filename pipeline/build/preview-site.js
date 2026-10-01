@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url'
 import { execFileSync } from 'node:child_process'
 import { project } from '../../shared/project.js'
 import { osmToBuilding } from '../lib/osm.js'
-import { applyHero, findByOsm } from '../lib/heroes.js'
+import { applyHero, findByOsm, expandHeroGroups } from '../lib/heroes.js'
 import { extrudeBuilding } from '../lib/extrude.js'
 import { writeMeshGlb } from '../lib/glb.js'
 import { materialRows } from '../lib/styles.js'
@@ -23,13 +23,13 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const CACHE = join(ROOT, 'cache', 'world')
 const [key, outDir = '/tmp/site-preview'] = process.argv.slice(2)
 if (!key) { console.error('usage: node build/preview-site.js <heroKey> [outDir]'); process.exit(2) }
-const heroes = JSON.parse(readFileSync(join(ROOT, 'data', 'heroes.json'), 'utf8')).heroes
+const heroes = expandHeroGroups(JSON.parse(readFileSync(join(ROOT, 'data', 'heroes.json'), 'utf8')).heroes)
 const h = heroes.find((x) => x.key === key)
 if (!h) { console.error(`no hero ${key}`); process.exit(2) }
 for (const s of [h.statue, ...(h.landmark?.type === 'statues' ? h.landmark.items : [])].filter(Boolean)) s.preloaded = await preloadStatue(s)
 
 const els = (kind) => sortCacheFiles(readdirSync(CACHE), `osm-${kind}-`).flatMap((f) => JSON.parse(readFileSync(join(CACHE, f), 'utf8')).data.elements)
-const all = els('allbuildings').map(osmToBuilding).filter(Boolean)
+const all = [...new Map(els('allbuildings').map((e) => [e.type + e.id, e])).values()].map(osmToBuilding).filter(Boolean)
 const greens = new Map(els('parks').filter((e) => e.geometry).map((e) => { const o = openRing(e.geometry.map((p) => project(p.lon, p.lat))); return [e.id, { id: e.id, outer: o, holes: [], tags: e.tags ?? {}, bbox: ringBBox(o) }] }))
 const waterEls = els('water')
 const waterOf = (id) => {
