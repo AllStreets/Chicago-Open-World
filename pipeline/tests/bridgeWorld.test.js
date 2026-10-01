@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { readFileSync, existsSync } from 'node:fs'
 import { makeRibbonCutter, spanRect, bridgeSidecar, buildBridge } from '../lib/bridges.js'
 
 const B = (o = {}) => ({ key: 'b', name: 'B', leaf: 'deck-truss', decks: 1, span: 70, width: 22, centre: [0, 0], axis: [0, -1], houses: { count: 2, style: 'beaux-arts' }, liftable: true, wayIds: [1], railWayIds: [], ...o })
@@ -32,5 +33,32 @@ describe('bridges sidecar', () => {
     expect(s.lights.filter((l) => l.kind === 'nav').map((l) => l.leaf).sort()).toEqual([0, 0, 1, 1, 2, 2, 3, 3])
     expect(s.liftOrder).toEqual(['a'])
     expect(s.leaves[0].k[1]).toBe(0)
+  })
+})
+
+// D2-4: the double decks carry two roadways — the street on top, the lower street (DuSable's is Lower Michigan, the Outer
+// Drive's is its lower level) at LOWER_Y, the height lower-levels.json brings those streets to the bridge at
+describe('D2-4: double-deck bascules — both deck heights', () => {
+  const data = JSON.parse(readFileSync(new URL('../data/bridges.json', import.meta.url), 'utf8'))
+  const L = JSON.parse(readFileSync(new URL('../data/levels.json', import.meta.url), 'utf8')).levels
+  const deckY = 0.14, levels = { river: L.RIVER_Y, lower: L.LOWER_Y }
+  const ys = (parts) => parts.flatMap((p) => { const o = []; for (let i = 1; i < p.mesh.positions.length; i += 3) o.push(p.mesh.positions[i]); return o })
+  for (const key of ['dusable', 'lakeshore']) {
+    it(`${key}: the upper roadway at the street (deckY), the lower one at LOWER_Y`, () => {
+      const spec = data.bridges.find((b) => b.key === key)
+      expect(spec.decks).toBe(2)
+      const leaves = buildBridge(B({ key, leaf: spec.leaf, decks: 2, span: spec.clearSpan, width: spec.width }), { deckY, levels }).leaves
+      for (const lf of leaves) {
+        expect(Math.max(...ys(lf.meshes.filter((m) => m.part === 'deck')))).toBeCloseTo(deckY)
+        expect(Math.max(...ys(lf.meshes.filter((m) => m.part === 'lower-deck')))).toBeCloseTo(L.LOWER_Y)
+      }
+    })
+  }
+  const lowerFile = new URL('../../app/public/world/lower-levels.json', import.meta.url)
+  it.skipIf(!existsSync(lowerFile))('Lower Michigan reaches the DuSable Bridge at the lower deck’s height', () => {
+    const j = JSON.parse(readFileSync(lowerFile, 'utf8'))
+    const ends = j.ways.filter((w) => /Lower Michigan/.test(w.n ?? '')).flatMap((w) => [w.p[0], w.p.at(-1)])
+    const nearest = ends.reduce((a, q) => (Math.hypot(q[0] - 287, q[1] + 757) < Math.hypot(a[0] - 287, a[1] + 757) ? q : a)) // DuSable's centre (287, −757)
+    expect(nearest[2]).toBeCloseTo(L.LOWER_Y, 1)
   })
 })

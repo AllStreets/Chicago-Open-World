@@ -9,6 +9,7 @@ import { worldUrl } from '../lib/manifest.js'
 import { QUALITY } from '../lib/quality.js'
 import { chicagoClock } from '../lib/chicagoTime.js'
 import { presetDate } from '../lib/sun.js'
+import { isCutOpen } from '../world/materials/cutaway.js'
 import { facadeUniforms } from '../world/materials/facadeMaterial.js'
 import { decodeRoadGraph, buildNetwork, pointOnLink } from './graph.js'
 import { createTraffic, TYPES, CAP, RANGE_M } from './sim.js'
@@ -142,7 +143,7 @@ export default function Traffic({ file, version }) {
     const lk = meshes.lamps.geometry.attributes.aKind, lg = meshes.lamps.geometry.attributes.aGain
     for (const v of sim.vehicles) {
       const mesh = meshes[v.type], i = buckets[v.type]
-      if (i >= VEHICLE_CAP[v.type]) continue
+      if (i >= VEHICLE_CAP[v.type] || isCutOpen(v.x, v.z)) continue // D2-3: none on the street the U cut-away has opened
       buckets[v.type]++
       mesh.setMatrixAt(i, m4.compose(P.set(v.x, ROAD_Y, v.z), q.setFromEuler(e.set(0, v.yaw, 0)), S.set(1, 1, 1)))
       if (v.type === 'bus') col.setRGB(0.92, 0.92, 0.9); else if (v.type === 'truck') col.copy(paints[(v.colour >> 3) % paints.length]); else col.copy(paints[v.colour % paints.length])

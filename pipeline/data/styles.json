@@ -1188,6 +1188,78 @@
       "base": "#f2c230",
       "finish": "metal",
       "source": "https://www.architectmagazine.com/project-gallery/ping-tom-park-boathouse/ (yellow canopy; photo-matched)"
+    },
+    {
+      "key": "arcade-shadow",
+      "base": "#2a2c2e",
+      "finish": "concrete",
+      "source": "the dark of an arched opening or between balusters (A-8, river plinths; photo-matched)"
+    },
+    {
+      "key": "boat-hull-white",
+      "base": "#e8e6e0",
+      "finish": "metal",
+      "source": "pleasure-craft hulls in the Marina City and River City marinas (A-8; photo-matched)"
+    },
+    {
+      "key": "boat-cabin-glass",
+      "base": "#3e4c56",
+      "finish": "glass",
+      "source": "pleasure-craft cabins and windscreens (A-8; photo-matched)"
+    },
+    {
+      "key": "storefront-glass-lit",
+      "base": "#8f9ea6",
+      "finish": "glass",
+      "source": "Marina City river-level restaurant glass, lit at night (A-8; photo-matched)"
+    },
+    {
+      "key": "apple-glass",
+      "base": "#6f8590",
+      "finish": "glass",
+      "source": "https://www.e-architect.com/chicago/apple-on-michigan-avenue (32 ft glass walls; the lit store glows at night; photo-matched)"
+    },
+    {
+      "key": "apple-roof",
+      "base": "#cfd3d6",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Apple_Michigan_Avenue (silvery carbon-fibre roof; photo-matched)"
+    },
+    {
+      "key": "apple-steel",
+      "base": "#b9bec2",
+      "finish": "metal",
+      "source": "https://www.architectsjournal.co.uk/buildings/foster-partners-chicago-apple-store-cascades-down-to-meet-the-river (slender stainless-steel columns)"
+    },
+    {
+      "key": "apple-granite",
+      "base": "#b7b2a8",
+      "finish": "granite",
+      "source": "Apple Michigan Avenue river steps (light granite; photo-matched)"
+    },
+    {
+      "key": "trump-granite",
+      "base": "#8e8a86",
+      "finish": "granite",
+      "source": "https://en.wikipedia.org/wiki/Trump_International_Hotel_and_Tower_(Chicago) (riverwalk granite and balustrade; photo-matched)"
+    },
+    {
+      "key": "riverside-limestone",
+      "base": "#d0c7b2",
+      "finish": "limestone",
+      "source": "https://en.wikipedia.org/wiki/Chicago_Daily_News_Building (Indiana limestone; photo-matched)"
+    },
+    {
+      "key": "bridgehouse-window",
+      "base": "#1d252c",
+      "finish": "glass",
+      "source": "dark window glass of the bridge-tender houses, read from photographs (https://www.chicagoloopbridges.com/)"
+    },
+    {
+      "key": "bridgehouse-granite",
+      "base": "#a59f94",
+      "finish": "granite",
+      "source": "the granite and rusticated limestone bases of the bridgehouses where they meet the river, read from photographs (https://www.chicagoloopbridges.com/)"
     }
   ]
 }

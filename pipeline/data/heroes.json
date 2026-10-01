@@ -7806,6 +7806,89 @@
         "https://en.wikipedia.org/wiki/Lincoln_Park_(Chicago)"
       ],
       "p2": true
+    },
+    {
+      "key": "applemichigan",
+      "name": "Apple Michigan Avenue",
+      "aliases": [
+        "Apple Store Michigan Avenue",
+        "Apple Store",
+        "401 North Michigan Avenue"
+      ],
+      "match": {
+        "osmId": "w685480593"
+      },
+      "look": {
+        "material": "32 ft structural glass walls under a thin carbon-fibre roof on stainless columns; granite steps down to the river",
+        "finish": "glass",
+        "base": "#c9ced0",
+        "glass": "#9fb0b8",
+        "mullion": "#d8dcdd",
+        "spandrel": "#c9ced0",
+        "note": "glass and roof colours read from photographs",
+        "source": [
+          "https://en.wikipedia.org/wiki/Apple_Michigan_Avenue",
+          "https://www.e-architect.com/chicago/apple-on-michigan-avenue"
+        ]
+      },
+      "heightM": 10.1,
+      "note": "Foster + Partners, 2017. Built by riverbases.js (A-8): the pavilion from the river landing (RIVERWALK_Y) to the roof at 4.8 m, the steps either side down from Pioneer Court.",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Apple_Michigan_Avenue",
+        "https://www.architectsjournal.co.uk/buildings/foster-partners-chicago-apple-store-cascades-down-to-meet-the-river",
+        "https://www.e-architect.com/chicago/apple-on-michigan-avenue"
+      ]
+    },
+    {
+      "key": "healdsquare",
+      "name": "Heald Square Monument",
+      "aliases": [
+        "Heald Square",
+        "Washington, Morris and Salomon",
+        "Haym Salomon monument",
+        "Robert Morris monument"
+      ],
+      "match": {
+        "synthetic": true,
+        "lat": 41.887135,
+        "lon": -87.626117,
+        "radius": 4
+      },
+      "landmark": {
+        "type": "statues",
+        "items": [
+          {
+            "kind": "heald",
+            "heightM": 3.4,
+            "tiers": [
+              [
+                5.2,
+                2.8,
+                0.45
+              ],
+              [
+                4.4,
+                2,
+                1.75
+              ]
+            ],
+            "bearingDeg": 315,
+            "file": "heroes/out/statue_heald.glb",
+            "source": "https://en.wikipedia.org/wiki/Heald_Square_Monument"
+          }
+        ],
+        "note": "Lorado Taft (completed by Leonard Crunelle), 1941: George Washington between Robert Morris and Haym Salomon, bronze on a granite pedestal in Heald Square, Wacker Drive at Wabash Avenue. The group's height, the pedestal and the facing are read from photographs (approximate); the site is the small plaza OSM maps east of the Wacker–Wabash intersection."
+      },
+      "beacon": {
+        "lat": 41.887135,
+        "lon": -87.626117,
+        "y": 10
+      },
+      "source": "https://en.wikipedia.org/wiki/Heald_Square_Monument",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Heald_Square_Monument",
+        "https://en.wikipedia.org/wiki/Lorado_Taft"
+      ]
     }
   ]
 }

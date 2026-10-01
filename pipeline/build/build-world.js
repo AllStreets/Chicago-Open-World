@@ -62,8 +62,12 @@ import { encodeTileMeta } from '../../shared/tileMeta.js'
 import { BUDGET, worldLedger, ledgerReport, checkBudget, sweepStale } from '../lib/budget.js'
 import { riverLevels, sunkWater, wallRuns, wallMesh, runsByTile, cutMeshOutside, soffitOver, corridorMask, polyIndex, applySkirts, tubeDipTarget, wallTone } from '../lib/riverLevel.js'
 import { buildRiverwalk, meshByTile } from '../lib/riverwalk.js'
+import { buildRiverBases, checkReachesWater } from '../lib/riverbases.js'
+import { merge } from '../lib/meshkit.js'
+import { dressBridgehouses, loadReliefs } from '../lib/bridgehouses.js'
 import { pierRing } from '../lib/bridges.js'
 import { setRiverwalkAtRiverLevel } from '../lib/civic.js'
+import { buildLowerLevels, lowerLevelsOn, lowerManifestEntry, LOWER_LEVELS_FILE, MAX_BYTES as LOWER_MAX_BYTES } from '../lib/lowerLevels.js'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const CACHE = join(ROOT, 'cache', 'world')
@@ -265,6 +269,11 @@ async function main() {
   const deckY = GROUND_Y.roads + 0.02
   const bridgeLevels = lv ? { river: lv.river, lower: lv.lower } : null
   const builtBridges = bridges.map((b) => buildBridge(b, { deckY, levels: bridgeLevels }))
+  // ── A-9: the bridge-tender houses on their OSM footprints (bridgehouses.js), down to the water; the guessed houses
+  // of bridges.js give way wherever OSM maps the real ones ──
+  const bh = dressBridgehouses({ buildings, bridges, waterIdx: lv ? polyIndex(sunk) : null, levels: lv ? { river: lv.river, riverwalk: lv.riverwalk } : null, data: loadJson(join(ROOT, 'data', 'bridgehouses.json')), reliefs: await loadReliefs(join(ROOT, 'heroes', 'out')) })
+  bridges.forEach((b, i) => { if (bh.bridgeKeys.has(b.key)) builtBridges[i].fixed = builtBridges[i].fixed.filter((p) => !/^(house|roof|relief)/.test(p.part)) })
+  log(`bridgehouses (A-9): ${bh.matched} OSM houses dressed on ${bh.bridgeKeys.size} bridges; guessed houses kept on ${bridges.filter((b) => !bh.bridgeKeys.has(b.key) && b.houses?.count).map((b) => b.key).join(', ') || 'none'}`)
   const bridgeSide = bridgeSidecar(bridges, builtBridges, bridgeData.liftOrder)
   const cutRibbon = makeRibbonCutter(bridges)
   const sIdx = (k) => (k ? styleIndex(k) : 0)
@@ -278,7 +287,13 @@ async function main() {
     rw = buildRiverwalk({ ring: rwPark.outer, water: sunk, bridges, greens, spec: rwSpec, deckY, levels: { river: lv.river, riverwalk: lv.riverwalk, lower: lv.lower } })
     log(`Riverwalk at ${lv.riverwalk} m: ${rw.zones.length} floor polygons (${rw.zones.reduce((t, z) => t + Math.abs(signedArea(z.outer)), 0).toFixed(0)} m²), ${rw.piers.length} piers passed, ${rw.rooms.map((r) => r.name).join(' · ')}`)
   }
-  const floors = rw ? rw.zones : []
+  // ── A-8: the river icons' river-level bases (riverbases.js): walks, stairs, plinths, Marina City's platform and slips,
+  // Apple's steps — attached to their buildings; their sunken zones (Apple's landing and steps) join the floors ──
+  const rbSpec = loadJson(join(ROOT, 'data', 'riverbases.json'))
+  const rb = lv ? buildRiverBases({ spec: rbSpec, buildings, water: sunk, levels: { river: lv.river, riverwalk: lv.riverwalk }, findBuilding: (ref) => findByOsm(buildings, ref) }) : null
+  for (const { building, meshes } of rb?.attach ?? []) building.extraMeshes = [...(building.extraMeshes ?? []), ...meshes]
+  if (rb) log(`river bases (A-8): ${rb.report.map((r) => `${r.key} ${r.frontageM} m [${r.parts.join(' ')}] ${(r.tris / 1000).toFixed(1)} k`).join(' · ')}`)
+  const floors = rw ? [...rw.zones, ...(rb?.zones ?? [])] : []
   const pitOpenings = builtBridges.flatMap((bb) => bb.piers.map((p) => ({ outer: pierRing(p, 'inner'), holes: [] })))
   const groundCuts = [...floors, ...pitOpenings].map((z) => ({ ...z, bbox: ringBBox(z.outer) }))
   const cutsBox = groundCuts.length ? groundCuts.reduce((a, z) => ({ minX: Math.min(a.minX, z.bbox.minX), minZ: Math.min(a.minZ, z.bbox.minZ), maxX: Math.max(a.maxX, z.bbox.maxX), maxZ: Math.max(a.maxZ, z.bbox.maxZ) }), { minX: Infinity, minZ: Infinity, maxX: -Infinity, maxZ: -Infinity }) : null
@@ -445,6 +460,18 @@ async function main() {
   // D1-3: river-front buildings run down to the water (or to the Riverwalk's floor beside them)
   const floorIdx = floors.length ? polyIndex(floors) : null
   if (lv) log(`river-front skirts: ${applySkirts(buildings, { waterIdx: polyIndex(sunk), zoneIdx: floorIdx, riverY: lv.river })} buildings reach the water`)
+  if (rb) { // A-8 done-when: every river-base building near the river reaches down to the water
+    const wIdx = polyIndex(sunk), short = []
+    for (const site of rbSpec.sites) { const b = findByOsm(buildings, site.osm), c = checkReachesWater(b, { waterIdx: wIdx, riverY: lv.river }); if (c.near && !c.ok) short.push(`${site.key} (${c.low})`) }
+    if (short.length) throw new Error(`river bases: buildings at the river that stop short of the water: ${short.join(', ')}`)
+    log(`river bases: ${rbSpec.sites.length} sites, all reach the water where they meet it`)
+    // the triangle cost of the river level (A-8 bases, A-9 houses, A41 Wacker balustrade), LOD0 and LOD1, by part
+    const cost = new Map(), tally = (m, k) => { const c = cost.get(k) ?? [0, 0]; c[0] += m.positions.length / 9; if (m.lod0Only === false) c[1] += m.positions.length / 9; cost.set(k, c) }
+    for (const { meshes } of rb.attach) for (const m of meshes) tally(m, `base:${m.part}`)
+    for (const b of buildings) if (b.bridgehouse) for (const m of b.extraMeshes ?? []) tally(m, `house:${b.bridgehouse.style}:${m.part}`)
+    for (const m of rw?.meshes ?? []) if (/^wacker-/.test(m.part)) tally(m.mesh, `a41:${m.part}`)
+    log(`river-level triangles (lod0/lod1): ${[...cost].sort((a, b) => b[1][0] - a[1][0]).map(([k, [t0, t1]]) => `${k} ${(t0 / 1000).toFixed(1)}k/${(t1 / 1000).toFixed(1)}k`).join(' · ')}`)
+  }
 
   // ── Per-tile assembly ──────────────────────────────────────────────────────
   rmSync(join(OUT, 'tiles'), { recursive: true, force: true })
@@ -603,7 +630,7 @@ async function main() {
     const runsHere = wallsByTile.get(key) ?? []
     const dockM = wallMesh(runsHere.filter((r) => r.tone !== 'riprap')), riprapM = wallMesh(runsHere.filter((r) => r.tone === 'riprap'))
     append(dockM, t.soffit)
-    const floorM = floors.length ? flatMesh(clipPolysToTile(floors, bounds), lv.riverwalk) : acc()
+    const floorM = floors.length ? merge(...[...new Set(floors.map((z) => z.y ?? lv.riverwalk))].map((fy) => flatMesh(clipPolysToTile(floors.filter((z) => (z.y ?? lv.riverwalk) === fy), bounds), fy))) : acc() // the Riverwalk, Apple's landing and steps, each at its own level
     const hasContent = L0.positions.length || LV.positions.length || t.roads.positions.length || parksM.positions.length || waterM.positions.length || transit.tiles.has(key) || dockM.positions.length || riprapM.positions.length
     if (!hasContent) continue
     // plazas: brick ones on the paving layer, concrete ones join the walks; LOD1 keeps the plazas (not the thin paths)
@@ -734,6 +761,18 @@ async function main() {
     }))
     log(`${RIVER_LEVELS_FILE}: ${(statSync(join(OUT, RIVER_LEVELS_FILE)).size / 1e3).toFixed(0)} kB`)
   }
+  // ── The multi-level streets (D2-1): Lower Wacker, Lower Michigan, Lower Columbus … as centrelines the app builds ──
+  rmSync(join(OUT, LOWER_LEVELS_FILE), { force: true })
+  let lowerEntry = null
+  if (lowerLevelsOn(levelsData, process.env)) {
+    const rr = (r) => simplifyRing(r, 1.5).map(([x, z]) => [r1(x), r1(z)]) // the river-levels.json rings, so build-lower-levels.js agrees
+    const lowerJson = buildLowerLevels({ roads: uniq(chunks('roads')), levels: levelsData.levels, water: sunk.map((p) => rr(p.outer)), tracks: transit.json.routes.map((r) => r.path), tubeClear: levelsData.tubeDips.tunnelClearM })
+    const raw = JSON.stringify(lowerJson)
+    if (raw.length > LOWER_MAX_BYTES) throw new Error(`${LOWER_LEVELS_FILE}: ${raw.length} B over its ${LOWER_MAX_BYTES} B budget`)
+    writeFileSync(join(OUT, LOWER_LEVELS_FILE), raw)
+    lowerEntry = lowerManifestEntry(lowerJson)
+    log(`${LOWER_LEVELS_FILE}: ${lowerJson.ways.length} lower-street pieces, ${(raw.length / 1e3).toFixed(1)} kB (D2)`)
+  } else log('lower levels: off (LEVELS_LOWER=0) — nothing under the street')
   // ── Neighbourhoods (P4 · I-4.3): official boundaries + curated profiles, measured for their feel ─────────
   const hoodFile = join(ROOT, 'cache', 'neighborhoods-y6yq.geojson')
   let hoods = null
@@ -777,7 +816,7 @@ async function main() {
     neighborhoods: hoods ? 'neighborhoods.json' : null,
     pois: poiIndex.length ? { index: 'pois-index.json', count: poiIndex.length, categories: POI_CATEGORIES } : null,
     venues: 'venues.json', bridges: 'bridges.json', landmarkRuntime: 'landmarks.json', schedules: existsSync(join(ROOT, 'data', 'schedules.json')) ? 'schedules.json' : null,
-    ...(lv ? { levels: { river: { y: lv.river, riverwalk: lv.riverwalk, file: RIVER_LEVELS_FILE } } } : {}), // D1-8: absent = the flat world
+    ...(lv || lowerEntry ? { levels: { ...(lv ? { river: { y: lv.river, riverwalk: lv.riverwalk, file: RIVER_LEVELS_FILE } } : {}), ...(lowerEntry ? { lower: lowerEntry } : {}) } } : {}), // D1-8 / D2: absent = the flat world
   })) // minified (X-0d)
   if (poiIndex.length) { writeFileSync(join(OUT, 'pois-index.json'), JSON.stringify(poiIndex)); log(`pois-index.json: ${(statSync(join(OUT, 'pois-index.json')).size / 1e6).toFixed(2)} MB`) }
   log('manifest written')

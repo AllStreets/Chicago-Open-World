@@ -4,6 +4,7 @@ import * as THREE from 'three'
 import { loadLayerArray } from './textureArray.js'
 import { facadeUniforms } from './facadeMaterial.js'
 import { scanUniforms, SCAN_HEAD, SCAN_GROUND, SCAN_GROUND_DERIV } from '../../scan/scanShader.js'
+import { patchCutaway } from './cutaway.js'
 
 // Order matches pipeline GROUND_LAYERS: roads, sidewalks, parks, pitches, beaches, rail, paving (brick plazas and
 // paths, user 2026-09-30 — the sidewalk texture gives its grain, the shader lays the brick), dockwall and riprap (D1:
@@ -75,8 +76,8 @@ if (li == 0) totalEmissiveRadiance += vec3(1.0, 0.68, 0.36) * uNight * 0.07; // 
 
 export function createGroundMaterial() {
   const m = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.92, metalness: 0, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 })
-  m.onBeforeCompile = patchGroundShader
-  m.customProgramCacheKey = () => 'ground-v6' // paving layer (user 2026-09-30); P5: Scan; D1: dockwall + riprap
+  m.onBeforeCompile = (shader) => patchCutaway(patchGroundShader(shader)) // D2-3: U opens the street over the lower levels
+  m.customProgramCacheKey = () => 'ground-v7' // paving layer (user 2026-09-30); P5: Scan; D1: dockwall + riprap; D2: cutaway
   return m
 }
 

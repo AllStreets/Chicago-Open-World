@@ -483,7 +483,7 @@ Forty-four buildings and structures along the main stem and both branches, each 
 <td width="50%"><img src="docs/screenshots/v9-river-dusable-night.png" alt="DuSable Bridge at night" width="100%"/></td>
 </tr>
 <tr>
-<td colspan="2"><em>At DuSable: the Wrigley Building and the Tribune with London Guarantee's tholos and 333 N Michigan across the bridge; Trump's stainless fins and setbacks behind.</em></td>
+<td colspan="2"><em>At DuSable: the Wrigley Building and the Tribune with London Guarantee's tholos and 333 N Michigan across the bridge; Trump's stainless fins and setbacks behind. Bennett's four bridgehouses now stand on their mapped corners, their stone run down to the water.</em></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/screenshots/v9-river-marina-trump-day.png" alt="Marina City, AMA Plaza and Trump" width="100%"/></td>
@@ -511,7 +511,7 @@ Forty-four buildings and structures along the main stem and both branches, each 
 <td width="50%"><img src="docs/screenshots/v9-river-opera-night.png" alt="The Civic Opera at night" width="100%"/></td>
 </tr>
 <tr>
-<td colspan="2"><em>The South Branch: the Civic Opera's armchair and Wacker portico, Riverside Plaza, 150 N Riverside on its 12 m core, 110 N Wacker on its tridents.</em></td>
+<td colspan="2"><em>The South Branch from over the water: the bridge-tender houses at every crossing in their bridge's style, the Civic Opera on the right bank, Riverside Plaza and 150 N Riverside on the left.</em></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/screenshots/v9-river-post-office-day.png" alt="The Old Post Office" width="100%"/></td>
@@ -550,6 +550,41 @@ Forty-four buildings and structures along the main stem and both branches, each 
 <tr>
 <td><em>77 West Wacker's glazed temple pediment, floodlit.</em></td>
 <td><em>MORTON SALT on the Salt Shed's roof, facing the Kennedy.</em></td>
+</tr>
+</table>
+
+#### At the water — *how the river icons meet the river, from a tour boat and the street*
+
+With the river at its real depth, each icon's riverfront is built where it meets the dockwall: Trump's and Wrigley's river walks on piles with stairs down the wall, Marina City's raised plaza over its marina with the restaurants and slips beneath, Apple Michigan Avenue's steps from Pioneer Court to the water, the Opera's arcade at the river, the walks at 300 N LaSalle, Wolf Point, River Point, 150 N Riverside and River City, and the balustrades of the Mart and Riverside Plaza. Sixty bridge-tender houses stand on their mapped footprints in their bridge's style, down to the water. DuSable's carry Fraser's and Hering's 1928 reliefs. Upper Wacker's parapet is Bennett's balustrade again, and Taft's Heald Square group stands at Wabash.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/v9-river-level-marina-day.png" alt="Marina City at the water" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-level-marina-dusk.png" alt="Marina City at the water at dusk" width="100%"/></td>
+</tr>
+<tr>
+<td colspan="2"><em>Marina City from a tour boat: the plaza deck on its columns over the marina, the restaurants' glass beneath it, a terrace at the water and the boat slips.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/v9-river-level-apple-day.png" alt="Apple Michigan Avenue at the water" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-level-apple-dusk.png" alt="Apple Michigan Avenue at dusk" width="100%"/></td>
+</tr>
+<tr>
+<td colspan="2"><em>Apple Michigan Avenue: 32 ft of glass under the 111 × 98 ft carbon-fibre roof, with the wide steps down from Pioneer Court on either side to a landing at the river.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/v9-river-level-dusable-day.png" alt="The DuSable southeast bridgehouse" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-level-dusable-dusk.png" alt="The DuSable southeast bridgehouse at dusk" width="100%"/></td>
+</tr>
+<tr>
+<td colspan="2"><em>DuSable's southeast bridgehouse and Henry Hering's <em>Regeneration</em> (1928), workers rebuilding after the Fire. Fraser's <em>The Discoverers</em> and <em>The Pioneers</em> are on the north houses, Hering's <em>Defense</em> on the McCormick Bridgehouse. The figures are read from photographs.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/v9-river-level-opera-day.png" alt="The Civic Opera at the water" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-level-opera-dusk.png" alt="The Civic Opera at the water at dusk" width="100%"/></td>
+</tr>
+<tr>
+<td colspan="2"><em>The Civic Opera's limestone carried down to the South Branch, with its arcade at the water.</em></td>
 </tr>
 </table>
 
@@ -687,6 +722,37 @@ The Chicago River now runs where it really does: 6.3 m below Upper Wacker Drive 
 </tr>
 </table>
 
+### Workstream D2 · The streets under the streets — *Lower Wacker, Lower Michigan and the U cut-away*
+
+Chicago's double- and triple-decker streets are now under the city where they really are: Lower Wacker Drive 5.1 m below Upper Wacker (4.2 m of clearance under a 0.9 m deck, the 2002 rebuild's 13′9″), Lower Michigan, Lower Columbus, Lower Randolph, Lower Stetson, South Water, Field Boulevard, Lower North Water and the service drives, and a third level 9.5 m down for Lower Lower Wacker and Lower Lower Randolph — 25 km of roadway from OpenStreetMap, each ramp climbing to the street at its real mouth. They have their lanes and worn yellow edge lines, a column every 32 ft (9.75 m) holding up the street above, and strip lights pooling warm light on the asphalt; the DuSable and Outer Drive bridges carry Lower Michigan and the lower Drive across the river on their lower decks. Press **U** (or ⌘K "Lower levels") and the street over them dissolves away, outlined by a thin cyan cut line like an architect's cut-away drawing, so you can look down into Lower Wacker from anywhere; press U again and the street closes. From far away U flies you over the river to see them. With U off, nothing at street level changes — the streets, buildings, traffic and the river are exactly as they were.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/d2-u-loop-day.png" alt="D2 — the U cut-away over the river: Lower Wacker and Lower Michigan opened" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/d2-u-loop-night.png" alt="D2 — the U cut-away at night: the lower streets' lights" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Press U over the river: the street opens along Wacker Drive and up Michigan Avenue, and the lower level shows underneath.</em></td>
+<td><em>The same view at night: Lower Wacker's strip lights glow under the opened street.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/d2-lower-wacker-day.png" alt="D2 — down into Lower Wacker between Michigan and Columbus" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/d2-lower-wacker-night.png" alt="D2 — Lower Wacker at night under the cut-away" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Down into Lower Wacker east of Michigan: its lanes, the column rows every 32 ft and a ramp leaving for the street.</em></td>
+<td><em>Lower Wacker at night: the lamps pool light on the roadway; the street above stays dark.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/d2-lower-michigan-river-day.png" alt="D2 — Lower Michigan at the river, beside the DuSable Bridge" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/d2-lower-wacker-riverwalk-day.png" alt="D2 — Lower Wacker behind the Riverwalk at Columbus Drive" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Lower Michigan meets the river at the DuSable Bridge, whose lower deck carries it across.</em></td>
+<td><em>Lower Wacker runs behind the Riverwalk's retaining wall, between the river and the towers.</em></td>
+</tr>
+</table>
+
 ## Quickstart
 
 ```bash
@@ -730,6 +796,7 @@ Everything is reachable with the keyboard, the mouse and the on-screen dock — 
 | `X` · Fireworks button | Navy Pier fireworks — flies you to the harbour view; press again to stop (real shows: Wed 9 pm, Sat 10 pm in summer) |
 | `P` · Places button | pins for restaurants, bars, venues and more — click one for its card and website |
 | `L` · Ride button | ride the city — an L line, a CTA bus, a street-level walk or the glide; `Space` pauses, `.` `,` next or previous stop, `>` `<` faster or slower, `K` view, drag to look, `Esc` gets off. `M`, `X` and the other toggles never end a ride, a tour or a train follow |
+| `U` · ⌘K "Lower levels" | the streets under the streets — the street over Lower Wacker, Lower Michigan, Lower Columbus and the other double-decker streets opens like a cut-away drawing; `U` again closes it (from far away it flies you over the river first) |
 | `V` · SCAN button | holographic Scan; in the Live lens, light columns for transit, nightlife, green space or rent |
 | Weather button | follows Chicago live, or pick clear, overcast, rain, snow or lake fog (also ⌘K "Weather") |
 | LIVE CTA / SIMULATED chip | click for the data sources and "Try live again" |
@@ -849,7 +916,7 @@ It wasn't made right in one attempt. Here are the same places through each pass,
 </tr>
 <tr>
 <td><sub>The Civic Opera · Oct 1, before<br/>OSM massing, generic façades</sub></td>
-<td><sub>The Civic Opera · Oct 1, after<br/>sourced crowns, rhythm and materials</sub></td>
+<td><sub>The Civic Opera · Oct 1, after<br/>sourced crowns, rhythm and materials; re-posed over the river (A-12)</sub></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/screenshots/evolution/v9-river-postoffice-before-day.png" alt="The Old Post Office before the river icons" width="100%"/></td>
@@ -871,6 +938,29 @@ It wasn't made right in one attempt. Here are the same places through each pass,
 <tr>
 <td><sub>Before · Oct 1<br/>plain glass and a stub spire</sub></td>
 <td><sub>After · Oct 1<br/>stainless fins, the 60 m podium, the 423 m spire, AMA Plaza's module</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/v9-river-level-marina-before-day.png" alt="Marina City at the water before A-8" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-level-marina-day.png" alt="Marina City at the water after A-8" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>From a tour boat · Oct 1, before<br/>a bare dockwall, a stray box in the marina</sub></td>
+<td><sub>From a tour boat · Oct 1, after (A-8)<br/>the raised plaza on columns, restaurants, terrace and slips</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/v9-river-dusable-before-a8-day.png" alt="DuSable before the bridgehouses" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-dusable-day.png" alt="DuSable with the bridgehouses" width="100%"/></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/v9-river-dusable-before-a8-night.png" alt="DuSable at night before the bridgehouses" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-dusable-night.png" alt="DuSable at night with the bridgehouses" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>DuSable · Oct 1, before A-9<br/>guessed tender houses beside OSM boxes</sub></td>
+<td><sub>DuSable · Oct 1, after A-9<br/>the four bridgehouses on their mapped corners, down to the water</sub></td>
+</tr>
+</table>
+
 **The river** — from flat water at street level to the river at its real depth
 
 <table>

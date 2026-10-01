@@ -13,6 +13,7 @@ import { openRing, signedArea, ringBBox, ringCentroid, pointInRing } from './geo
 import { wallRuns, polyIndex, inPoly } from './riverLevel.js'
 import { pierBoxes, pierRing, PIT } from './bridges.js'
 import { flatMesh } from './ground.js'
+import { openingsAlong } from './rivericons.js'
 
 export const RW = {
   passageW: 5.5,       // the walk in front of a bascule pier (m)
@@ -332,7 +333,7 @@ export function buildRiverwalk({ ring, water, bridges, greens = [], spec, deckY,
   }
   meshes.push(P(stairs, F.stone, STY.granite, 'stairs', { lod0Only: false }))
   // the limestone parapet along Upper Wacker, open where a stair comes up
-  const para = mesh()
+  const para = mesh(), balusters = mesh(), coping = mesh()
   for (const r of retaining.filter((q) => q.top === 0)) {
     const u = norm2(sub2(r.b, r.a)), L = runLen(r)
     if (L < 0.3) continue
@@ -341,9 +342,28 @@ export function buildRiverwalk({ ring, water, bridges, greens = [], spec, deckY,
       const c = add2(r.a, mul2(u, (L * (i + 0.5)) / k))
       if (stairTops.some((t) => len2(sub2(t, c)) < RW.stair.width)) continue // the stair comes up here
       slab(para, add2(c, mul2(r.n, RW.parapetT / 2)), u, L / k + 0.02, RW.parapetT, 0, RW.parapetH)
+      // A41: Bennett's 1926 Wacker Drive balustrade — a coping rail over balusters (their gaps drawn dark on the river face)
+      // (lean: the coping is its top and river face only, the gaps plain slots — ≈ 12 triangles a 3 m panel)
+      const h = (L / k + 0.02) / 2, A = add2(c, mul2(u, -h)), B = add2(c, mul2(u, h)), o = mul2(r.n, -0.08), back = mul2(r.n, RW.parapetT + 0.08), y0 = RW.parapetH, y1 = RW.parapetH + 0.12
+      quad(coping, at3(add2(A, o), y1), at3(add2(B, o), y1), at3(add2(B, back), y1), at3(add2(A, back), y1), [0, 1, 0])
+      quad(coping, at3(add2(A, o), y0), at3(add2(B, o), y0), at3(add2(B, o), y1), at3(add2(A, o), y1), [-r.n[0], 0, -r.n[1]])
+      const nb = Math.floor(L / k / 1.5)
+      if (nb >= 1) openingsAlong(balusters, { a: A, t: u, n: mul2(r.n, -1), len: L / k }, nb, 0.22, RW.parapetH - 0.16, 0.7, { arch: false })
     }
   }
-  meshes.push(P(para, F.stone, STY.limestone, 'wacker-parapet', { lod0Only: false }))
+  // …and its limestone light pylons either side of every stair head (read from photographs; approximate)
+  const pylons = mesh(), pylonLamps = mesh()
+  for (const t of stairTops) {
+    const r = retaining.filter((q) => q.top === 0).map((x) => ({ x, d: segDist(t, x.a, x.b) })).sort((a, b) => a.d - b.d)[0]?.x
+    if (!r) continue
+    const u = norm2(sub2(r.b, r.a))
+    for (const s of [-1, 1]) {
+      const p = add2(add2(t, mul2(u, s * (RW.stair.width / 2 + 0.75))), mul2(r.n, RW.parapetT / 2))
+      slab(pylons, p, u, 1.2, 1.2, 0, 1.3); slab(pylons, p, u, 0.9, 0.9, 1.3, 4.3); slab(pylons, p, u, 1.1, 1.1, 4.3, 4.6)
+      slab(pylonLamps, p, u, 0.6, 0.6, 4.6, 5.4)
+    }
+  }
+  meshes.push(P(para, F.stone, STY.limestone, 'wacker-parapet', { lod0Only: false }), P(balusters, F.stone, 'arcade-shadow', 'wacker-balusters'), P(coping, F.stone, STY.limestone, 'wacker-balusters'), P(pylons, F.stone, STY.limestone, 'wacker-pylons'), P(pylonLamps, F.signal, 'lantern-warm', 'wacker-pylon-lamp'))
   // the railing at the water: steel posts every 3 m and a top rail, on every floor edge over the river
   const rail = mesh()
   for (const r of riverEdge) {

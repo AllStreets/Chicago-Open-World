@@ -10,6 +10,12 @@ for (const [name, pose] of Object.entries(PERF_POSES)) {
     await page.goto(`/?pose=${[...pose.position, ...pose.target].join(',')}&time=dusk&perf&stats`)
     await page.waitForFunction(() => window.__worldReady === true, null, { timeout: 90_000 })
     await page.waitForFunction(() => window.__camRest === true && window.__tilesIdle === true, null, { timeout: 90_000 }) // far poses stream tiles in
+    if (pose.lowerLevels) { // D2: the U cut-away, pressed the way a person does, fully open before measuring
+      await page.waitForFunction(() => Boolean(window.__lowerLevels), null, { timeout: 30_000 })
+      await page.keyboard.press('u')
+      await page.waitForFunction(() => window.__store?.getState().lowerLevelsOn === true, null, { timeout: 5_000 })
+      await page.waitForTimeout(2500) // the 0.6 s dissolve, then the probe's window holds only cut-away frames
+    }
     if (pose.showcase) { // E4: mid-game (the clock is pinned, so the showcase holds still at msIn)
       await page.waitForFunction(() => window.__sports?.getState().venues.length > 0, null, { timeout: 30_000 })
       await page.evaluate(([k, t, ms]) => window.__sports.getState().startShowcase(k, t, Date.now() - ms), pose.showcase)

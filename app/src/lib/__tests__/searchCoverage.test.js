@@ -5,6 +5,7 @@ import { readFileSync, existsSync } from 'node:fs'
 import { buildPlaces, searchPlaces } from '../places.js'
 import { BOOKMARKS } from '../bookmarks.js'
 import { gamePlaces } from '../../sports/palette.js'
+import { featureCommands } from '../paletteSources.js'
 
 const APP = existsSync(`${process.cwd()}/public/world`) ? process.cwd() : `${process.cwd()}/app` // run from app/ or the repo root
 const manifest = JSON.parse(readFileSync(`${APP}/public/world/manifest.json`, 'utf8')) // the shipped world (tests run in app/)
@@ -24,6 +25,11 @@ describe('search coverage', () => {
     for (const n of names) expect(searchPlaces(n, rows)[0]?.name, n).toBe(n)
     expect(searchPlaces('play a game', rows).slice(0, 5).filter((r) => /^Play a /.test(r.name)).length).toBeGreaterThanOrEqual(3)
     expect(searchPlaces('cubs game', rows).slice(0, 5).map((r) => r.name)).toContain('Play a Cubs game at Wrigley Field')
+  })
+  // D2-3 / X-2: the U view is a ⌘K command by its own name and by the streets it shows
+  it('⌘K finds "Lower levels" (and "Lower Wacker") first', () => {
+    const rows = [...all, ...featureCommands()]
+    for (const q of ['Lower levels', 'lower wacker', 'lower level']) expect(searchPlaces(q, rows)[0]?.id, q).toBe('f:lowerLevels')
   })
   it('Flexport Chicago is the first result for "flexport" and for "333 north green"', () => {
     expect(searchPlaces('flexport', all)[0].name).toMatch(/Flexport/)

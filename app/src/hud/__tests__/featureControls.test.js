@@ -8,8 +8,8 @@ import { DOCK_FEATURES } from '../featureControls.js'
 
 describe('feature controls registry', () => {
   beforeEach(() => { useStore.setState(useStore.getInitialState()); useSoundStore.setState(useSoundStore.getInitialState()); useSports.setState(useSports.getInitialState()) })
-  it('lists Transit, Games, Sound, Bridges, Fountain, Fireworks, Places, Traffic, Scan, Ride and Play with unique keys and every path filled in', () => {
-    expect(FEATURE_CONTROLS.map((c) => c.id)).toEqual(['transit', 'games', 'sound', 'bridges', 'fountain', 'fireworks', 'places', 'traffic', 'scan', 'ride', 'showcase'])
+  it('lists Transit, Games, Sound, Bridges, Fountain, Fireworks, Places, Traffic, Scan, Ride, Play and Lower levels with unique keys and every path filled in', () => {
+    expect(FEATURE_CONTROLS.map((c) => c.id)).toEqual(['transit', 'games', 'sound', 'bridges', 'fountain', 'fireworks', 'places', 'traffic', 'scan', 'ride', 'showcase', 'lowerLevels'])
     expect(new Set(FEATURE_CONTROLS.map((c) => c.key)).size).toBe(FEATURE_CONTROLS.length)
     for (const c of FEATURE_CONTROLS) {
       expect(c.label).toMatch(/^[A-Z][a-z]+$/)
@@ -70,5 +70,29 @@ describe('Play a game (showcase) control', () => {
     featureById('showcase').toggle()
     expect(useSports.getState().showcase).toBeNull()
     expect(useStore.getState().toast.text).toMatch(/real game is on/)
+  })
+})
+
+// D2-3 (Decision 7): Lower levels on U, ⌘K and the help card — no dock button
+describe('Lower levels (U) control', () => {
+  beforeEach(() => { useStore.setState(useStore.getInitialState()) })
+  it('is on U, waits for the lower-levels data, and is not in the dock', () => {
+    const c = featureById('lowerLevels')
+    expect(c.key).toBe('KeyU'); expect(c.keyLabel).toBe('U')
+    expect(DOCK_FEATURES.map((d) => d.id)).not.toContain('lowerLevels')
+    expect(DOCK_FEATURES).toHaveLength(6)
+    useStore.setState({ manifest: { levels: { river: { y: -6.3 } } } }); expect(c.available()).toBe(false)
+    useStore.setState({ manifest: { levels: { lower: { file: 'lower-levels.json', y: -5.1, y2: -9.5 } } } }); expect(c.available()).toBe(true)
+  })
+  it('turning it on asks for the view over the lower levels; following, touring or riding it never moves the camera', () => {
+    let asked = 0
+    useStore.setState({ requestLowerLevelsView: () => { asked++ } })
+    const c = featureById('lowerLevels')
+    c.toggle(); expect(c.isOn()).toBe(true); expect(asked).toBe(1)
+    c.toggle(); expect(c.isOn()).toBe(false); expect(asked).toBe(1)
+    useStore.setState({ follow: { trainId: 't1', view: 'chase' } })
+    c.toggle(); expect(c.isOn()).toBe(true); expect(asked).toBe(1)
+    expect(useStore.getState().follow).not.toBeNull()
+    expect(useStore.getState().toast.text).toMatch(/Lower levels on/)
   })
 })

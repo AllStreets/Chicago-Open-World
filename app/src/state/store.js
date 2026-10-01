@@ -71,6 +71,8 @@ export const useStore = create((set) => ({
   follow: null,
   trafficOn: true, // cars, buses and trucks on the streets, and the traffic lights (C, ⌘K, help)
   setTrafficOn: (trafficOn) => set({ trafficOn }),
+  lowerLevelsOn: false, // D2-3: the U "Lower levels" cutaway — the street opens over Lower Wacker and the other lower decks
+  setLowerLevelsOn: (lowerLevelsOn) => set({ lowerLevelsOn }),
   underground: false, // the camera is in a subway tube (Tunnels.jsx): PostFX drops the city-scale AO there
   setUnderground: (underground) => set({ underground }),
   followEnded: null,

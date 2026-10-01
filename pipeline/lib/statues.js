@@ -83,6 +83,7 @@ const BUILD = {
 // Lincoln Park pass (B-6): stand-ins for the monuments whose Blender exports are heroes/out/statue_<kind>.glb
 for (const k of ['schiller', 'hamilton', 'franklin', 'altgeld', 'andersen']) BUILD[k] = BUILD.lincoln
 BUILD.signal = BUILD.grant
+BUILD.heald = BUILD.lincoln // A41: the Heald Square group's stand-in (its Blender export is heroes/out/statue_heald.glb)
 
 // The figure scaled so it spans exactly base..base + heightM (a stand-in's parts may fall short of the top).
 function fit(m, base, heightM, at) {
