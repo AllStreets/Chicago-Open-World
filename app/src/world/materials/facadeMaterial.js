@@ -146,6 +146,17 @@ vec3 venueAlbedo(int vi, float s, vec2 uv, vec3 wp, vec3 n, vec3 grain, vec3 roo
     float vein = smoothstep(0.55, 0.6, owHash(floor(uv * 3.0))) * 0.05;
     return styleBase(vStyle) * (0.92 + 0.12 * grain.r) * (1.0 - 0.14 * min(joint, 1.0)) + vein;
   }
+  if (vi == 34) {   // brick (Lincoln Park pass): running bond, 7.6 cm courses of 20 cm bricks in the row's colour, each
+                    // brick its own shade, light mortar joints; where a course is under a pixel it draws the wall's mean
+    vec3 base = styleBase(vStyle);
+    float cy = wp.y / 0.076, row = floor(cy), bx = uv.x / 0.2 + 0.5 * mod(row, 2.0);
+    float joint = max(step(fract(cy), 0.16), step(fract(bx), 0.07));
+    vec3 brick = base * (0.84 + 0.3 * owHash(vec2(floor(bx), row)));
+    vec3 mortar = mix(base, vec3(0.8, 0.77, 0.72), 0.6);
+    vec3 avg = mix(base, mortar, 0.2);
+    float far = smoothstep(0.3, 0.8, max(fwRow * 5.5, fwAisle * 5.0)); // courses (and bricks) per pixel, from the caller's footprints
+    return mix(mix(brick, mortar, joint), avg, far) * (0.93 + 0.12 * grain.r);
+  }
   if (vi == 26) {   // open steel grid deck / lattice: bars over the dark gap below
     vec2 g = abs(fract(wp.xz / 0.12) - 0.5);
     vec3 gap = vec3(0.05, 0.06, 0.07), bar = styleBase(vStyle);

@@ -35,6 +35,7 @@ import { isPavingArea, pavingKind, pathHalfWidth, synthPlazas, pathSurface, clip
 import { buildWalkGraph, encodeWalkGraph } from '../lib/walkGraph.js'
 import { loadBlenderMesh } from '../lib/blenderMesh.js'
 import { setSeahorseMesh } from '../lib/landmarks.js'
+import { setSiteLookup } from '../lib/parkkit.js'
 import { createStyleRegistry, assignHeroStyles, meshStyle, writeStylePalettePng, addMaterialStyles, styleIndex, partStyle } from '../lib/styles.js'
 import { applyOsmLooks, applyTagOverrides } from '../lib/osmLook.js'
 import { applyRooftops, rooftopLots } from '../lib/rooftops.js'
@@ -134,6 +135,9 @@ async function main() {
   log(`parts: ${parts.length}, buildings with parts: ${partsByB.size}`)
 
   const greens = osmPolys(uniq(chunks('parks')))
+  // the Lincoln Park sculpts read their neighbours (a conservatory's glass houses, a formal garden's beds) — B-2
+  const greenById = new Map(greens.map((g) => [g.id, g]))
+  setSiteLookup({ building: (ref) => findByOsm(buildings, ref), green: (id) => greenById.get(id) ?? null })
   // ── Heroes + pieces ────────────────────────────────────────────────────────
   const heroes = existsSync(join(ROOT, 'data', 'heroes.json')) ? loadJson(join(ROOT, 'data', 'heroes.json')).heroes : []
   validateLandmarkRegistry(heroes)

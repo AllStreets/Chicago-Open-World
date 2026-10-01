@@ -136,12 +136,5 @@ describe('Navy Pier, the Riverwalk, the Zoo and Conservatory', () => {
     expect(rail.every((q) => Math.abs(q[2]) < 0.2)).toBe(true)          // only the north (river) edge
     expect(ymax(r.meshes.filter((m) => m.part === 'river-theater'))).toBeCloseTo(0.16 + 0.45 * 5)
   })
-  it('Lion House: a hipped tile roof; Conservatory: the 50 ft glass palm house and vaulted wings', () => {
-    const lh = buildLandmark(box(-489, -4377, -423, -4352, 11), { type: 'lionHouse', roofRise: 5 })
-    expect(ymax(lh.meshes)).toBeCloseTo(16)
-    const gh = buildLandmark(box(-643, -4770, -553, -4642, 10), { type: 'glasshouse', domeR: 9 })
-    expect(gh.replace).toBe(true)
-    expect(ymax(gh.meshes.filter((m) => m.part === 'palm-dome'))).toBeCloseTo(15)
-    expect(gh.meshes.filter((m) => m.part === 'wing-vault')).toHaveLength(2)
-  })
+  // the Lion House and the Conservatory moved to the Lincoln Park pass: zoo.test.js and conservatory.test.js
 })

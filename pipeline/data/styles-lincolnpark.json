@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "note": "Lincoln Park pass (Workstream B, 2026-10-01) material rows, appended after styles.json (pipeline/lib/styles.js materialRows). Shared by the zoo, conservatory, museum, pavilion and monument sculpts (zoo.js, lincolnpark.js, statues.js). Colours read from photographs unless a source gives them; marked photo-matched.",
+  "styles": [
+    { "key": "lp-brick", "base": "#8e4c37", "finish": "terracotta", "source": "https://en.wikipedia.org/wiki/Caf%C3%A9_Brauer (red brick, Prairie School; photo-matched)" },
+    { "key": "lp-brick-dark", "base": "#73402f", "finish": "terracotta", "source": "https://webapps1.chicago.gov/landmarksweb/web/landmarkdetails.htm?lanId=11382 (Lion House decorative brickwork; tapestry brick photo-matched, approximate)" },
+    { "key": "lp-tile-green", "base": "#55705b", "finish": "terracotta", "source": "https://en.wikipedia.org/wiki/Caf%C3%A9_Brauer (green tile roof; photo-matched)" },
+    { "key": "lp-tile-red", "base": "#9a5136", "finish": "terracotta", "source": "https://webapps1.chicago.gov/landmarksweb/web/landmarkdetails.htm?lanId=11382 (clay tile roof; photo-matched)" },
+    { "key": "lp-slate", "base": "#4d5258", "finish": "concrete", "source": "photo-matched, slate and dark shingle roofs of the park's Georgian and barn buildings" },
+    { "key": "lp-trim-white", "base": "#ebe7dc", "finish": "concrete", "source": "photo-matched, painted white trim, columns and fences" },
+    { "key": "lp-barn-red", "base": "#9b3026", "finish": "concrete", "source": "https://www.alamy.com/stock-photo-chicago-illinois-red-barn-at-farm-in-the-zoo-section-of-lincoln-park-12079437.html (red barn)" },
+    { "key": "lp-iron-white", "base": "#d6dad4", "finish": "metal", "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory (iron framework; white paint photo-matched)" },
+    { "key": "lp-glasshouse", "base": "#94afa8", "finish": "glass", "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory (glass houses; photo-matched; unlit at night — it closes at 5 pm)" },
+    { "key": "lp-copper", "base": "#5f8f7c", "finish": "metal", "source": "photo-matched, verdigris copper lanterns and cupolas" },
+    { "key": "lp-green-roof", "base": "#6f8b50", "finish": "concrete", "source": "https://www.lpzoo.org/pressroom/ (planted roofs of the newer zoo buildings; photo-matched)" },
+    { "key": "lp-mesh", "base": "#40464b", "finish": "metal", "source": "photo-matched, stainless aviary and habitat mesh" },
+    { "key": "lp-rock", "base": "#a08f78", "finish": "limestone", "source": "https://www.lpzoo.org/pressroom/ (naturalistic rockwork; photo-matched)" },
+    { "key": "lp-pod", "base": "#e9e1c9", "finish": "glass", "source": "https://studiogang.com/projects/nature-boardwalk-at-lincoln-park-zoo/ (fibreglass pods)" },
+    { "key": "lp-glass", "base": "#5c7784", "finish": "glass", "source": "photo-matched, the zoo's and museums' modern glass walls" },
+    { "key": "lp-steel", "base": "#7c8489", "finish": "metal", "source": "photo-matched, painted steel frames" },
+    { "key": "lp-window-lit", "base": "#2b2c31", "finish": "glass", "source": "photo-matched, window glass in shadow by day", "crownLight": { "kind": "lantern", "color": "#ffcf8f", "fromM": 0, "toM": 24, "intensity": 0.55, "source": "https://en.wikipedia.org/wiki/Caf%C3%A9_Brauer (restaurants and event halls, lit in the evening)" } },
+    { "key": "lp-granite-red", "base": "#8c5a4c", "finish": "granite", "source": "https://www.loopnorth.com/news/hamilton0624.htm (red granite pedestal)" },
+    { "key": "lp-cedar", "base": "#8c5c3f", "finish": "concrete", "source": "https://en.wikipedia.org/wiki/Kwanusila (carved red cedar)" },
+    { "key": "lp-totem-teal", "base": "#2f6c70", "finish": "concrete", "source": "https://theclio.com/entry/142153 (Northwest Coast blue-green paint)" },
+    { "key": "lp-hedge", "base": "#3d5a33", "finish": "concrete", "source": "photo-matched, clipped boxwood and garden beds" },
+    { "key": "lp-flowers", "base": "#bf6f5c", "finish": "concrete", "source": "photo-matched, the formal garden's summer bedding" },
+    { "key": "lp-sand", "base": "#d9c49c", "finish": "concrete", "source": "https://www.chicagoparkdistrict.com/parks-facilities/north-avenue-beach (sand beach)" }
+  ]
+}

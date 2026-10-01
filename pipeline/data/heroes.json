@@ -2311,12 +2311,46 @@
       },
       "crowns": [],
       "landmark": {
-        "type": "glasshouse",
-        "domeR": 9
+        "type": "conservatoryGrounds",
+        "houses": [
+          "w1428865072",
+          "w1428865073",
+          "w1428865074",
+          "w1428865075"
+        ],
+        "rangeM": 3.4,
+        "garden": {
+          "beds": [
+            357240009,
+            524245315,
+            524245316,
+            524245317,
+            524245319,
+            524245320,
+            524245323,
+            524245324,
+            524245325,
+            524245327,
+            524245329,
+            524245331
+          ]
+        },
+        "fountain": {
+          "lat": 41.92276,
+          "lon": -87.63522,
+          "radiusM": 6,
+          "note": "the Eli Bates Fountain, OSM water way 210686594 (12 m across); the bronze group of three storks, merboys and reeds is a procedural stand-in"
+        },
+        "note": "the conservatory outline (OSM way 23986733) less its four display houses (heroes palmhouse, fernroom, showhouse, orchidhouse) is the propagation ranges, drawn as ridge-and-furrow glass 3.4 m to the eave (approximate); the French formal garden in front is the OSM leisure=garden beds, hedged; the Bates Fountain at its south end"
       },
       "aliases": [
         "Conservatory",
-        "palm house"
+        "palm house",
+        "Lincoln Park Conservatory",
+        "Bates Fountain",
+        "Storks at Play",
+        "Eli Bates Fountain",
+        "formal garden"
       ],
       "beacon": {
         "lat": 41.9243,
@@ -2325,6 +2359,9 @@
       },
       "sources": [
         "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory",
+        "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park-conservatory",
+        "https://www.lincolnparkconservancy.org/projects/conservatory-garden/",
+        "https://en.wikipedia.org/wiki/Eli_Bates_Fountain",
         "OpenStreetMap way 23986733"
       ]
     },
@@ -3335,6 +3372,169 @@
       "sources": [
         "https://historicalmarkerproject.com/markers/HM1S1M_waveland-clock-tower_Chicago-IL.html",
         "https://news.wttw.com/2025/10/31/it-s-time-set-clocks-back-weekend-let-s-look-some-chicago-s-iconic-timepieces"
+      ],
+      "p2": true
+    },
+    {
+      "key": "palmhouse",
+      "name": "Palm House",
+      "aliases": [
+        "Palm House",
+        "Lincoln Park Conservatory Palm House",
+        "conservatory dome"
+      ],
+      "match": {
+        "osmId": "w1428865072",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "glassHouse",
+        "wallM": 5.2,
+        "roofs": [
+          {
+            "at": [
+              0,
+              4.3
+            ],
+            "halfW": 10.3,
+            "spineHalf": 14.7,
+            "top": 10.5
+          },
+          {
+            "at": [
+              0,
+              4.3
+            ],
+            "halfW": 10.3,
+            "spineHalf": 2.5,
+            "eave": 7,
+            "top": 15.2
+          },
+          {
+            "at": [
+              1.5,
+              -9.8
+            ],
+            "halfW": 3.8,
+            "spineHalf": 6.4,
+            "top": 8.6
+          }
+        ],
+        "note": "Silsbee and Bell, 1892: the Palm House is 50 ft (15.2 m) high (Wikipedia); drawn as a tall central bell over long lower wings on its OSM outline, with the glazed entrance vestibule facing the formal garden; the bell profiles and the wings' 10.5 m crown are read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.92403,
+        "lon": -87.63527,
+        "y": 22
+      },
+      "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory",
+        "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park-conservatory",
+        "https://www.lincolnparkconservancy.org/projects/conservatory-garden/"
+      ],
+      "p2": true
+    },
+    {
+      "key": "fernroom",
+      "name": "Fern Room",
+      "aliases": [
+        "Fern Room",
+        "Lincoln Park Conservatory Fern Room"
+      ],
+      "match": {
+        "osmId": "w1428865073",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "glassHouse",
+        "wallM": 3.2,
+        "roofs": [
+          {
+            "top": 7.6
+          }
+        ],
+        "note": "opened 1895, its floor sunk 5.5 ft below grade (Wikipedia), so its glass walls stand lower outside; the bell roof's 7.6 m crown is approximate"
+      },
+      "beacon": {
+        "lat": 41.9243,
+        "lon": -87.6352,
+        "y": 16
+      },
+      "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory",
+        "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park-conservatory",
+        "https://www.lincolnparkconservancy.org/projects/conservatory-garden/"
+      ],
+      "p2": true
+    },
+    {
+      "key": "showhouse",
+      "name": "Show House",
+      "aliases": [
+        "Show House",
+        "Lincoln Park Conservatory Show House",
+        "flower shows"
+      ],
+      "match": {
+        "osmId": "w1428865074",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "glassHouse",
+        "wallM": 4.4,
+        "roofs": [
+          {
+            "top": 8.8
+          }
+        ],
+        "note": "the seasonal flower-show house; the bell roof's 8.8 m crown is approximate"
+      },
+      "beacon": {
+        "lat": 41.92436,
+        "lon": -87.63548,
+        "y": 16
+      },
+      "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory",
+        "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park-conservatory",
+        "https://www.lincolnparkconservancy.org/projects/conservatory-garden/"
+      ],
+      "p2": true
+    },
+    {
+      "key": "orchidhouse",
+      "name": "Orchid House",
+      "aliases": [
+        "Orchid House",
+        "Lincoln Park Conservatory Orchid House"
+      ],
+      "match": {
+        "osmId": "w1428865075",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "glassHouse",
+        "wallM": 3.8,
+        "roofs": [
+          {
+            "top": 6.4
+          }
+        ],
+        "note": "the smallest of the four houses; its 6.4 m crown is approximate"
+      },
+      "beacon": {
+        "lat": 41.92444,
+        "lon": -87.6353,
+        "y": 14
+      },
+      "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory",
+        "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park-conservatory",
+        "https://www.lincolnparkconservancy.org/projects/conservatory-garden/"
       ],
       "p2": true
     }

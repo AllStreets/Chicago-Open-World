@@ -16,7 +16,10 @@ import { pointInRing } from './geom.js'
 import earcut from 'earcut'
 import { spire } from './crowns.js'
 import { wallPolygon } from './icons.js'
-import { add2, mul2, left, mesh, merge, slab, revolve, ringAround, tri, quad, tube, at3 } from './meshkit.js'
+import { add2, sub2, mul2, left, len2, norm2, mesh, merge, slab, revolve, ringAround, tri, quad, tube, at3 } from './meshkit.js'
+import { frameOf, at, prism, ringBand, offsetRing, edgeNormal, bellRoof, hatch, siteBuilding, siteGreen, into } from './parkkit.js'
+import { project } from '../../shared/project.js'
+import polygonClipping from 'polygon-clipping'
 import { LANDMARK_FACADES as F } from './facadeIds.js'
 
 // close-range detail stays out of LOD1 (the size budget); the silhouette parts draw at every distance
@@ -280,4 +283,128 @@ export function wavelandClock(b, spec = {}) {
   ] }
 }
 
-export const LINCOLN_PARK_BUILDERS = { chessPavilion, couchTomb, lilyPool, wavelandClock }
+// ── Lincoln Park Conservatory (Joseph Lyman Silsbee with M. E. Bell, 1890–95; B-2) ─────────────────────────────────
+// Four Victorian glass houses on iron frames, white-painted: the Palm House at the front (50 ft, 15.2 m, its tall
+// central pavilion over lower wings and a glazed entrance vestibule facing the formal garden), the Fern Room (sunk
+// 5.5 ft below grade), the Orchid House and the Show House; propagation ranges behind them; the French formal garden in
+// front with the Bates Fountain ("Storks at Play", Saint-Gaudens and MacMonnies, 1887) at its far end. Every house is
+// its own hero (its OSM outline); the conservatory's outline carries the ranges, the garden and the fountain.
+const GLASS = 'lp-glasshouse', IRON = 'lp-iron-white'
+// a Victorian bell: steep at the eave, swelling, then flattening to the crown (fractions of half-width and rise)
+const BELL = [[1, 0], [0.985, 0.1], [0.94, 0.22], [0.86, 0.36], [0.74, 0.5], [0.59, 0.63], [0.43, 0.75], [0.27, 0.86], [0.13, 0.95], [0.02, 1]]
+const bellProfile = (hw, eave, top, shape = BELL) => shape.map(([f, g]) => [Math.max(0.05, f * hw), eave + g * (top - eave)])
+const GLASS_FINE = new Set(['ribs', 'stanchions', 'beds', 'hedges', 'fountain-group', 'reeds', 'rail', 'finials'])
+const PG = (m, facade, style, part) => ({ mesh: m, facade, seed: 0.5, style, part, lod0Only: GLASS_FINE.has(part) })
+
+// One glass house over its OSM outline: glass walls on a stone base with white iron stanchions, then each roof in
+// spec.roofs — a bell (`top`) over a stadium (`halfW`, `spineHalf`) at frame offset `at` [a along the long axis, s
+// across], spine along the long axis (or across, `across: true`), its eave raised on a glazed drum when `eave` is
+// above the walls'. Defaults: one bell over the whole frame.
+export function glassHouse(b, spec = {}) {
+  const ring = b.polygons.reduce((a, p) => (Math.abs(polyArea(p.outer)) > Math.abs(polyArea(a.outer)) ? p : a)).outer
+  const fr = frameOf(b), wallH = spec.wallM ?? 4.6, base = spec.baseM ?? 0.7
+  const walls = prism(ring, 0, wallH), glass = into(mesh(), walls.walls, walls.top), ribs = mesh(), stone = mesh(), finials = mesh()
+  ringBand(stone, ring, 0, base, 0.08)
+  ringBand(ribs, ring, wallH - 0.18, wallH + 0.04, 0.06) // the white eave rail
+  // stanchions: a white iron upright at every corner and every 1.6 m along each wall
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], c = ring[(i + 1) % ring.length], L = len2(sub2(c, a)), t = norm2(sub2(c, a)), n = edgeNormal(ring, i), k = Math.max(1, Math.round(L / 1.6))
+    for (let j = 0; j < k; j++) slab(ribs, add2(add2(a, mul2(t, (j * L) / k)), mul2(n, 0.03)), t, 0.1, 0.08, base, wallH - 0.1)
+  }
+  const roofs = spec.roofs ?? [{ top: spec.heightM ?? 8 }]
+  for (const r of roofs) {
+    const ax = r.across ? fr.v : fr.u, len = r.across ? fr.W : fr.L, wid = r.across ? fr.L : fr.W
+    const hw = r.halfW ?? wid / 2, sh = r.spineHalf ?? Math.max(0, len / 2 - hw), c = at(fr, ...(r.at ?? [0, 0])), eave = r.eave ?? wallH
+    const prof = bellProfile(hw, eave, r.top)
+    if (eave > wallH + 0.05) prof.unshift([hw, wallH]) // the glazed drum up to the raised eave
+    const bell = bellRoof(c, ax, sh, prof, { K: Math.max(4, Math.round((2 * sh) / 1.8)), M: r.M ?? 12, purlins: eave > wallH + 0.05 ? [0, 1, 4] : [0, 3] })
+    into(glass, bell.glass); into(ribs, bell.ribs)
+    // a finial at each end of the crown
+    for (const e of sh > 0.5 ? [-1, 1] : [0]) into(finials, spire({ at: add2(c, mul2(ax, e * sh)), base: r.top - 0.05, top: r.top + (r.finialM ?? 1.4), r0: 0.12, sides: 6 }))
+  }
+  return { replace: true, pieces: [], meshes: [
+    PG(glass, F.paint, GLASS, 'glass'),
+    PG(ribs, F.paint, IRON, 'ribs'),
+    PG(stone, F.stone, 'lp-limestone', 'base'),
+    PG(finials, F.paint, IRON, 'finials'),
+  ] }
+}
+const polyArea = (r) => r.reduce((s, p, i) => { const q = r[(i + 1) % r.length]; return s + p[0] * q[1] - q[0] * p[1] }, 0) / 2
+
+// The Bates Fountain ("Storks at Play"): a round granite basin, a low pedestal, and the bronze group — three storks
+// among bronze reeds with three merboys — at the centre (figures procedural stand-ins, approximate).
+export function batesFountain(at0, { r = 6, rim = 0.55 } = {}) {
+  const granite = revolve(at0, [[r, 0], [r, rim], [r - 0.45, rim], [r - 0.45, 0.25]], { sides: 40 })
+  const water = mesh()
+  for (let k = 0; k < 40; k++) {
+    const a0 = (k / 40) * Math.PI * 2, a1 = ((k + 1) / 40) * Math.PI * 2, y = 0.36
+    tri(water, [at0[0], y, at0[1]], [at0[0] + (r - 0.45) * Math.cos(a1), y, at0[1] + (r - 0.45) * Math.sin(a1)], [at0[0] + (r - 0.45) * Math.cos(a0), y, at0[1] + (r - 0.45) * Math.sin(a0)], [0, 1, 0])
+  }
+  const pedestal = revolve(at0, [[1.5, 0.2], [1.5, 0.55], [1.0, 0.75], [0.75, 1.3], [1.05, 1.45], [0.001, 1.5]], { sides: 20 })
+  const group = mesh(), reeds = mesh()
+  for (let i = 0; i < 3; i++) {
+    const a = (i / 3) * Math.PI * 2 + 0.3, d = [Math.cos(a), Math.sin(a)], p = add2(at0, mul2(d, 0.55)), f = [-d[1], d[0]]
+    // a stork: legs, a long body tilted up, the S of its neck and the beak raised to spout
+    for (const s of [-0.12, 0.12]) tube(group, at3(add2(p, mul2(f, s)), 1.5), at3(add2(p, mul2(f, s * 0.6)), 2.25), 0.04, 5)
+    tube(group, at3(add2(p, mul2(d, -0.2)), 2.35), at3(add2(p, mul2(d, 0.35)), 2.65), 0.22, 8)
+    tube(group, at3(add2(p, mul2(d, 0.35)), 2.65), at3(add2(p, mul2(d, 0.5)), 3.15), 0.07, 6)
+    tube(group, at3(add2(p, mul2(d, 0.5)), 3.15), at3(add2(p, mul2(d, 0.9)), 3.45), 0.04, 5)
+    // a merboy between the storks, sitting on the pedestal's edge
+    const q = add2(at0, mul2([Math.cos(a + Math.PI / 3), Math.sin(a + Math.PI / 3)], 1.1))
+    into(group, revolve(q, [[0.22, 1.45], [0.2, 1.75], [0.14, 2.05], [0.05, 2.1], [0.11, 2.2], [0.001, 2.38]], { sides: 8 }))
+    for (let k = 0; k < 4; k++) { const rr = add2(at0, mul2([Math.cos(a + 0.6 + k * 0.25), Math.sin(a + 0.6 + k * 0.25)], 0.85 + 0.1 * k)); tube(reeds, at3(rr, 1.45), at3(add2(rr, mul2(d, 0.15)), 2.4 + 0.25 * (k % 2)), 0.035, 4) }
+  }
+  return [PG(granite, F.stone, 'plinth-granite', 'basin'), PG(water, F.water, null, 'water'), PG(pedestal, F.stone, 'plinth-granite', 'pedestal'), PG(group, F.bronze, 'statue-bronze', 'fountain-group'), PG(reeds, F.bronze, 'statue-bronze', 'reeds')]
+}
+
+// The conservatory's own outline: the propagation ranges (the outline less the four display houses, which are heroes of
+// their own) as low ridge-and-furrow glass; the formal garden's beds (OSM leisure=garden ways, spec.garden.beds) as
+// clipped hedges round summer bedding; the Bates Fountain at spec.fountain.
+export function conservatoryGrounds(b, spec = {}) {
+  const ring = b.polygons[0].outer, houses = (spec.houses ?? []).map(siteBuilding).filter(Boolean).map((h) => h.polygons[0].outer)
+  const rangeH = spec.rangeM ?? 3.4, rise = 1.0, bay = 3.2, meshes = []
+  const close = (r) => [...r, r[0]]
+  const parts = houses.length ? polygonClipping.difference([close(ring)], ...houses.map((h) => [close(h)])) : [[close(ring)]]
+  const glass = mesh(), ribs = mesh(), stone = mesh()
+  for (const [outer] of parts) {
+    const r = outer.slice(0, -1)
+    if (Math.abs(polyArea(r)) < 30 || orientedBox(r).W < 4) continue // slivers where OSM's house outlines miss the compound's
+    const p = prism(r, 0, rangeH, { top: true })
+    into(glass, p.walls, p.top); ringBand(stone, r, 0, 0.6, 0.06)
+    // ridge-and-furrow: a ridge every 3.2 m along the range's long axis, clipped to its outline
+    const ob = orientedBox(r), n = left(ob.u)
+    for (const [a, c] of hatch(r, ob.u, bay)) {
+      if (len2(sub2(c, a)) < 1.5) continue
+      const A = at3(a, rangeH + rise), C = at3(c, rangeH + rise)
+      for (const s of [-1, 1]) quad(glass, at3(add2(a, mul2(n, (s * bay) / 2)), rangeH), at3(add2(c, mul2(n, (s * bay) / 2)), rangeH), C, A, [n[0] * s, 1.5, n[1] * s])
+      tube(ribs, A, C, 0.06, 4)
+    }
+  }
+  meshes.push(PG(glass, F.paint, GLASS, 'ranges'), PG(ribs, F.paint, IRON, 'ribs'), PG(stone, F.stone, 'lp-limestone', 'base'))
+  // the formal garden: hedge-edged beds of summer flowers
+  const beds = mesh(), hedges = mesh(), clearPts = []
+  for (const id of spec.garden?.beds ?? []) {
+    const g = siteGreen(id)
+    if (!g) continue
+    const r = g.outer, p = prism(offsetRing(r, -0.35), 0.08, 0.32, { top: true })
+    into(beds, p.top)
+    for (let i = 0; i < r.length; i++) {
+      const a = r[i], c = r[(i + 1) % r.length], L = len2(sub2(c, a))
+      if (L < 0.5) continue
+      const t = norm2(sub2(c, a)), nn = edgeNormal(r, i)
+      slab(hedges, add2(mul2(add2(a, c), 0.5), mul2(nn, -0.2)), t, L + 0.3, 0.4, 0.05, 0.6)
+    }
+    clearPts.push(...r)
+  }
+  if (beds.positions.length) meshes.push(PG(beds, F.paint, 'lp-flowers', 'beds'), PG(hedges, F.paint, 'lp-hedge', 'hedges'))
+  const clear = []
+  if (spec.fountain) {
+    const fc = project(spec.fountain.lon, spec.fountain.lat)
+    meshes.push(...batesFountain(fc, { r: spec.fountain.radiusM ?? 6 }))
+    clear.push(ringAround(fc, (spec.fountain.radiusM ?? 6) + 3, 20))
+  }
+  if (clearPts.length) clear.push(convexHull(clearPts))
+  return { replace: true, pieces: [], meshes, clear }
+}
+
+export const LINCOLN_PARK_BUILDERS = { chessPavilion, couchTomb, lilyPool, wavelandClock, glassHouse, conservatoryGrounds }
