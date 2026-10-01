@@ -22,7 +22,7 @@ import { collectRuntime, validateLandmarkRegistry, landmarkEntry } from '../lib/
 import { detectBridges, buildBridge, makeRibbonCutter, bridgeSidecar } from '../lib/bridges.js'
 import { shapeSacred } from '../lib/sacred.js'
 import { horizonBoxes } from '../lib/horizon.js'
-import { venueZones, filterTrees, assertNoVenueTrees, outsideZones, cutZones } from '../lib/trees.js'
+import { venueZones, filterTrees, assertNoVenueTrees, outsideZones, cutZones, cutWater } from '../lib/trees.js'
 import { createBlock, addTileToBlock, blockLayers, blockSidecar } from '../lib/blocks.js'
 import { bAcc, appendBuilding, appendLayer, asLayer } from '../lib/layers.js'
 import { preloadStatue } from '../lib/statues.js'
@@ -262,6 +262,16 @@ async function main() {
   log(`parks cut around venues: ${parks.length} → ${parksCut.length} polygons`)
   parks.length = 0
   for (const p of parksCut) parks.push(p)
+  // the park grass never covers a pond, lagoon, harbour or beach (Lincoln Park's water and North Avenue Beach's sand
+  // were all hidden under it)
+  const parksDry = cutWater(parks, [...water, ...beaches])
+  log(`parks cut around water: ${parks.length} → ${parksDry.length} polygons`)
+  parks.length = 0
+  for (const p of parksDry) parks.push(p)
+  // no tree stands in a pond or on a beach
+  const wetCells = new Map(), WC = 200, wck = (i, j) => `${i}:${j}`
+  for (const w of [...water, ...beaches]) for (let i = Math.floor(w.bbox.minX / WC); i <= Math.floor(w.bbox.maxX / WC); i++) for (let j = Math.floor(w.bbox.minZ / WC); j <= Math.floor(w.bbox.maxZ / WC); j++) { if (!wetCells.has(wck(i, j))) wetCells.set(wck(i, j), []); wetCells.get(wck(i, j)).push(w) }
+  const wetNear = (p) => wetCells.get(wck(Math.floor(p[0] / WC), Math.floor(p[1] / WC))) ?? []
   // a hero's built form can spill past its OSM outline (a podium drawn on the oriented box): its hull keeps trees off
   for (const b of buildings) {
     if (!b.hero || zones.some((z) => z.key === b.hero)) continue
@@ -288,8 +298,8 @@ async function main() {
   const pavedAreas = osmPolys(uniq([...chunks('paving'), ...chunks('trails')]).filter((e) => isPavingArea(e.tags || {}))).filter((p) => pavingKind(p.tags))
   const pavedIdx = buildGridIndex(pavedAreas, 200, (p) => [(p.bbox.minX + p.bbox.maxX) / 2, (p.bbox.minZ + p.bbox.maxZ) / 2])
   const pavedNear = (p) => pavedIdx.query(p, 600).filter((q) => p[0] >= q.bbox.minX && p[0] <= q.bbox.maxX && p[1] >= q.bbox.minZ && p[1] <= q.bbox.maxZ).map((q) => q.outer)
-  const { kept: keptTrees, removed } = filterTrees(treeNodes, { zones: zones.map((z) => z.ring), clearings, nearBuildings: (p) => footIdx.query(p, 400), plazas: landmarkRuntime.plazas, rails: (p) => railIdx.query(p, 100).map((s) => s.line), paved: pavedNear })
-  log(`trees removed (canopy test) — venues ${removed.venue}, clearings ${removed.clearing}, plazas ${removed.plaza}, railways ${removed.rail}, footprints ${removed.building}, paving ${removed.paved}; kept ${keptTrees.length}; venue zones: ${zones.map((z) => z.key).join(', ')}`)
+  const { kept: keptTrees, removed } = filterTrees(treeNodes, { zones: zones.map((z) => z.ring), clearings, nearBuildings: (p) => footIdx.query(p, 400), plazas: landmarkRuntime.plazas, rails: (p) => railIdx.query(p, 100).map((s) => s.line), paved: pavedNear, wet: wetNear })
+  log(`trees removed (canopy test) — venues ${removed.venue}, clearings ${removed.clearing}, plazas ${removed.plaza}, railways ${removed.rail}, footprints ${removed.building}, paving ${removed.paved}, water ${removed.water}; kept ${keptTrees.length}; venue zones: ${zones.map((z) => z.key).join(', ')}`)
   treeNodes.length = 0
   for (const p of keptTrees) treeNodes.push(p)
   log(`parks ${parks.length}, water ${water.length}, roads ${roads.length}, rail ${rail.length}, trees ${treeNodes.length}`)
