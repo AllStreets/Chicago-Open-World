@@ -17,7 +17,7 @@ import earcut from 'earcut'
 import { spire } from './crowns.js'
 import { wallPolygon } from './icons.js'
 import { add2, sub2, mul2, left, len2, norm2, mesh, merge, slab, revolve, ringAround, tri, quad, tube, at3 } from './meshkit.js'
-import { frameOf, at, prism, ringBand, offsetRing, edgeNormal, bellRoof, hatch, siteBuilding, siteGreen, into, column } from './parkkit.js'
+import { frameOf, at, prism, ringBand, offsetRing, edgeNormal, bellRoof, hatch, siteBuilding, siteGreen, into, column, hipRoof } from './parkkit.js'
 import { modernPavilion } from './zoo.js'
 import { project } from '../../shared/project.js'
 import polygonClipping from 'polygon-clipping'
@@ -474,4 +474,111 @@ export function natureMuseum(b, spec = {}) {
   return { ...base, meshes: [...base.meshes, ...extra] }
 }
 
-export const LINCOLN_PARK_BUILDERS = { chessPavilion, couchTomb, lilyPool, wavelandClock, glassHouse, conservatoryGrounds, elksMemorial, natureMuseum }
+// ── Recreation (B-7) ─────────────────────────────────────────────────────────────────────────────────────────────────
+// The North Avenue Beach House (Wheeler Kearns, 1999), built as an ocean liner: its OSM outline is the hull — white
+// walls with a blue band at the deck line and a row of portholes, an upper deck set in from the rails, the rooftop
+// deck (Castaways) under its blue railings and canopy, and two funnels (the stair towers), white with red bands.
+export function shipBeachHouse(b, spec = {}) {
+  const ring = b.polygons.reduce((a, p) => (Math.abs(polyArea(p.outer)) > Math.abs(polyArea(a.outer)) ? p : a)).outer
+  const fr = frameOf(b), h1 = spec.deckM ?? 4.4, h2 = spec.topM ?? 8.2
+  const white = mesh(), blue = mesh(), ports = mesh(), glass = mesh(), red = mesh(), roof = mesh()
+  const hull = prism(ring, 0, h1); into(white, hull.walls); into(roof, hull.top)
+  ringBand(blue, ring, h1 - 0.9, h1 - 0.35, 0.06)
+  ringBand(blue, ring, h1 + 0.05, h1 + 1.15, -0.02, 0.12) // the main deck's blue rail
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], q = ring[(i + 1) % ring.length], L = len2(sub2(q, a))
+    if (L < 2.4) continue
+    const t = norm2(sub2(q, a)), n = edgeNormal(ring, i), k = Math.floor(L / 2.4)
+    for (let j = 0; j < k; j++) {
+      const o = add2(a, mul2(t, (j + 0.5) * (L / k))), pts = Array.from({ length: 10 }, (_, m) => [0.42 * Math.cos((m / 10) * Math.PI * 2), 2.2 + 0.42 * Math.sin((m / 10) * Math.PI * 2)])
+      wallPolygon(ports, o, t, n, pts, 0.05)
+    }
+  }
+  const upper = offsetRing(ring, -(spec.insetM ?? 3.6))
+  if (Math.abs(polyArea(upper)) > 50) {
+    const u = prism(upper, h1, h2); into(white, u.walls); into(roof, u.top)
+    ringBand(glass, upper, h1 + 0.9, h2 - 0.7, 0.02, 0.0) // the upper deck's band of windows
+    ringBand(blue, upper, h2, h2 + 1.1, -0.02, 0.1) // the rooftop deck's railing
+  }
+  // two funnels on the upper deck (the stair towers), at a third and two thirds of the hull
+  for (const k of spec.funnels ?? [-0.18, 0.12]) {
+    const c = at(fr, k * fr.L), r = spec.funnelR ?? 1.8, top = h2 + (spec.funnelM ?? 4.6)
+    into(white, revolve(c, [[r, h2], [r, top - 1.2], [r * 0.98, top], [0.001, top]], { sides: 20 }))
+    into(red, revolve(c, [[r + 0.05, top - 1.1], [r + 0.05, top - 0.3], [0.001, top - 0.3]], { sides: 20 }))
+  }
+  // the rooftop bar's canopy at the stern
+  const cc = at(fr, (spec.canopyAt ?? 0.32) * fr.L)
+  into(blue, slab(mesh(), cc, fr.u, 14, Math.min(9, fr.W - 10), h2 + 3.0, h2 + 3.3))
+  for (const [a, s2] of [[-6.5, -1], [6.5, -1], [-6.5, 1], [6.5, 1]]) tube(blue, at3(add2(cc, add2(mul2(fr.u, a), mul2(fr.v, s2 * (Math.min(9, fr.W - 10) / 2 - 0.3)))), h2), at3(add2(cc, add2(mul2(fr.u, a), mul2(fr.v, s2 * (Math.min(9, fr.W - 10) / 2 - 0.3)))), h2 + 3.0), 0.09, 6)
+  return { replace: true, pieces: [], meshes: [
+    PM(white, FLAT, 'beachhouse-white', 'hull'), PM(blue, FLAT, 'beachhouse-blue', 'trim'), PM(red, FLAT, 'lighthouse-red', 'funnel-bands'),
+    PM(roof, FLAT, 'sidewalk-concrete', 'decks'), PM(ports, F.led, 'porthole-glow', 'portholes', true), PM(glass, FLAT, 'lp-window-lit', 'windows', true),
+  ] }
+}
+
+// The Lincoln Park Passerelle (Ralph H. Burke, 1940; NRHP): a welded-steel through-arch footbridge over Lake Shore
+// Drive at North Avenue — two arch ribs over the span, hangers to the deck, concrete approach ramps at each end.
+export function passerelle(b, spec = {}) {
+  const c = b.centroid, u = [Math.sin((spec.bearingDeg * Math.PI) / 180), -Math.cos((spec.bearingDeg * Math.PI) / 180)], v = left(u)
+  const span = spec.spanM ?? 46, deckY = spec.deckM ?? 5.6, rise = spec.riseM ?? 8, w = spec.widthM ?? 4.2, ramp = spec.rampM ?? 26
+  const steel = mesh(), deck = mesh(), concrete = mesh(), rail = mesh()
+  const A = (a, s, y) => at3(add2(add2(c, mul2(u, a)), mul2(v, s)), y)
+  slab(deck, c, u, span + 2, w, deckY - 0.55, deckY)
+  for (const e of [-1, 1]) {
+    // the approach ramp: a sloped deck down to the ground, on its concrete wall
+    const a0 = e * (span / 2 + 1), a1 = e * (span / 2 + 1 + ramp)
+    quad(concrete, A(a0, -w / 2, deckY), A(a1, -w / 2, 0.15), A(a1, w / 2, 0.15), A(a0, w / 2, deckY), [0, 1, 0])
+    for (const sd of [-1, 1]) quad(concrete, A(a0, sd * w / 2, deckY), A(a1, sd * w / 2, 0.15), A(a1, sd * w / 2, 0), A(a0, sd * w / 2, 0), [v[0] * sd, 0, v[1] * sd])
+    slab(concrete, add2(c, mul2(u, e * (span / 2 + 0.5))), u, 1.6, w + 0.8, 0, deckY - 0.5) // the abutment
+    for (const sd of [-1, 1]) tube(rail, A(a0, sd * (w / 2 - 0.1), deckY + 1.1), A(a1, sd * (w / 2 - 0.1), 1.25), 0.05, 4)
+  }
+  // the arch ribs and hangers
+  const N = 20
+  for (const sd of [-1, 1]) {
+    let prev = null
+    for (let k = 0; k <= N; k++) {
+      const a = -span / 2 + (span * k) / N, y = deckY + rise * (1 - (2 * a / span) ** 2), p = A(a, sd * (w / 2 + 0.15), y)
+      if (prev) tube(steel, prev, p, 0.22, 6)
+      if (k > 0 && k < N && k % 2 === 0) tube(steel, A(a, sd * (w / 2 + 0.15), deckY), p, 0.05, 4)
+      prev = p
+    }
+    tube(rail, A(-span / 2, sd * (w / 2 - 0.1), deckY + 1.1), A(span / 2, sd * (w / 2 - 0.1), deckY + 1.1), 0.05, 4)
+  }
+  for (let k = 2; k < N - 1; k += 3) { const a = -span / 2 + (span * k) / N, y = deckY + rise * (1 - (2 * a / span) ** 2); if (y > deckY + 4.6) tube(steel, A(a, -w / 2 - 0.15, y), A(a, w / 2 + 0.15, y), 0.1, 4) } // the struts overhead
+  return { replace: true, pieces: [], meshes: [PM(steel, FLAT, 'lp-passerelle', 'arch'), PM(deck, F.stone, 'sidewalk-concrete', 'deck'), PM(concrete, F.stone, 'sidewalk-concrete', 'ramps'), PM(rail, FLAT, 'lp-passerelle', 'rails', true)], clear: [rectRingP(c, u, span + 2 * ramp + 4, w + 6)] }
+}
+const rectRingP = (c, u, L, W) => { const v = left(u); return [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([a, s2]) => add2(add2(c, mul2(u, (a * L) / 2)), mul2(v, (s2 * W) / 2))) }
+
+// The Diversey Driving Range (since 1916): the two-storey hitting-bay canopy along its curved tee line (spec.bays, an
+// OSM roof outline, local to `bays.at`), the small tee house, and the tall net poles round the range to the north.
+export function drivingRange(b, spec = {}) {
+  const meshes = [], steel = mesh(), decks = mesh(), net = mesh(), back = mesh()
+  if (spec.bays) {
+    const o = project(spec.bays.lon, spec.bays.lat), ring = spec.bays.ring.map(([x, z]) => [o[0] + x, o[1] + z])
+    const lvl = [0, 3.4, 6.8]
+    for (const y of lvl.slice(1)) { const p = prism(ring, y - 0.3, y); into(decks, p.walls, p.top) }
+    // posts on the open (north) edge every ~4 m, a back wall on the south
+    for (let i = 0; i < ring.length; i++) {
+      const a = ring[i], q = ring[(i + 1) % ring.length], L = len2(sub2(q, a)), n = edgeNormal(ring, i)
+      if (L < 1) continue
+      const t = norm2(sub2(q, a)), k = Math.max(1, Math.round(L / 4))
+      if (n[1] < -0.2) for (let j = 0; j <= k; j++) tube(steel, at3(add2(a, mul2(t, (j * L) / k)), 0), at3(add2(a, mul2(t, (j * L) / k)), lvl[2]), 0.12, 6)
+      else if (n[1] > 0.2) quad(back, at3(a, 0), at3(q, 0), at3(q, lvl[2]), at3(a, lvl[2]), [n[0], 0, n[1]])
+    }
+  }
+  if (spec.nets) {
+    const pts = spec.nets.map((p) => project(p.lon, p.lat)), H = spec.netM ?? 22
+    for (let i = 0; i + 1 < pts.length; i++) {
+      const a = pts[i], q = pts[i + 1], L = len2(sub2(q, a)), t = norm2(sub2(q, a)), k = Math.max(1, Math.round(L / 18))
+      for (let j = 0; j <= k; j++) tube(steel, at3(add2(a, mul2(t, (j * L) / k)), 0), at3(add2(a, mul2(t, (j * L) / k)), H + 0.6), 0.25, 8)
+      for (const sd of [1, -1]) quad(net, at3(a, 1), at3(q, 1), at3(q, H), at3(a, H), [-t[1] * sd, 0, t[0] * sd]) // seen from both sides
+    }
+  }
+  const house = slab(mesh(), b.centroid, frameOf(b).u, frameOf(b).L, frameOf(b).W, 0, 3.6)
+  const hroof = hipRoof(b.centroid, frameOf(b).u, frameOf(b).L, frameOf(b).W, 3.6, 2.0, 0.6)
+  meshes.push(PM(steel, FLAT, 'lp-steel', 'posts'), PM(decks, F.stone, 'sidewalk-concrete', 'decks'), PM(back, FLAT, 'lp-steel', 'back-wall'), PM(net, F.grid, 'lp-net', 'nets'), PM(house, F.brick, 'lp-brick', 'tee-house'), PM(hroof, FLAT, 'lp-slate', 'roof'))
+  // the landing area is open turf: no tree inside the nets
+  return { replace: true, pieces: [], meshes, clear: spec.nets ? [spec.nets.map((p) => project(p.lon, p.lat))] : [] }
+}
+
+export const LINCOLN_PARK_BUILDERS = { chessPavilion, couchTomb, lilyPool, wavelandClock, glassHouse, conservatoryGrounds, elksMemorial, natureMuseum, shipBeachHouse, passerelle, drivingRange }

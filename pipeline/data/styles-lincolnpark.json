@@ -26,6 +26,8 @@
     { "key": "lp-flowers", "base": "#bf6f5c", "finish": "concrete", "source": "photo-matched, the formal garden's summer bedding" },
     { "key": "lp-prairie", "base": "#8d9352", "finish": "concrete", "source": "https://en.wikipedia.org/wiki/Nature_Boardwalk (restored prairie and wetland planting round South Pond; photo-matched)" },
     { "key": "lp-dome", "base": "#a7a69c", "finish": "limestone", "source": "https://www.architecture.org/online-resources/buildings-of-chicago/elks-national-memorial (limestone memorial; the dome photo-matched)" },
+    { "key": "lp-passerelle", "base": "#3d5446", "finish": "metal", "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Passerelle (welded steel arch; the dark green paint estimated from photographs, approximate)" },
+    { "key": "lp-net", "base": "#b9bfc2", "finish": "metal", "source": "photo-matched, the driving range's pale netting" },
     { "key": "lp-sand", "base": "#d9c49c", "finish": "concrete", "source": "https://www.chicagoparkdistrict.com/parks-facilities/north-avenue-beach (sand beach)" }
   ]
 }

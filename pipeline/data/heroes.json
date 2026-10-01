@@ -2955,18 +2955,40 @@
       "name": "North Avenue Beach House",
       "aliases": [
         "North Avenue Beach",
-        "beach house"
+        "beach house",
+        "Castaways",
+        "North Avenue Beach House"
       ],
       "match": {
         "osmId": "w417380833",
         "osmType": "way"
       },
       "landmark": {
-        "type": "beachHouse",
-        "style": "ship"
+        "type": "shipBeachHouse",
+        "deckM": 4.4,
+        "topM": 8.2,
+        "insetM": 3.6,
+        "funnels": [
+          -0.18,
+          0.12
+        ],
+        "funnelR": 1.8,
+        "funnelM": 4.6,
+        "canopyAt": 0.3,
+        "note": "Wheeler Kearns's 1999 beach house (22,000 sq ft, concrete), built as an ocean liner: the OSM outline is its hull — white with a blue band and a row of portholes, the upper deck set in, the rooftop deck (Castaways) under blue rails and its canopy, and two funnels, now the stair towers, white with red bands; heights, the funnels' size and the canopy read from photographs (approximate)"
       },
       "source": "https://en.wikipedia.org/wiki/North_Avenue_Beach",
-      "p2": true
+      "p2": true,
+      "sources": [
+        "https://www.architecture.org/online-resources/buildings-of-chicago/north-avenue-beach-house",
+        "https://www.chicagoparkdistrict.com/parks-facilities/north-avenue-beach",
+        "https://wkarch.com/catalog/northavebeachhouse/"
+      ],
+      "beacon": {
+        "lat": 41.9135,
+        "lon": -87.62422,
+        "y": 18
+      }
     },
     {
       "key": "oakstbeach",
@@ -3393,7 +3415,10 @@
       "name": "Waveland Clock Tower",
       "aliases": [
         "Waveland Fieldhouse",
-        "Lincoln Park Carillon Tower"
+        "Lincoln Park Carillon Tower",
+        "Sydney R. Marovitz Golf Course",
+        "Marovitz Golf Course",
+        "Waveland golf course"
       ],
       "match": {
         "osmId": "w53582240",
@@ -3404,7 +3429,7 @@
         "heightM": 32,
         "sideM": 7.5,
         "towerAt": 0,
-        "note": "Edwin H. Clark's 1931 English Gothic fieldhouse and seven-storey carillon tower (Deagan chimes), brick with limestone trim, a clock on each face; the tower's height and its place on the fieldhouse are approximate"
+        "note": "Edwin H. Clark's 1931 English Gothic fieldhouse and seven-storey carillon tower (Deagan chimes), brick with limestone trim, a clock on each face; the tower's height and its place on the fieldhouse are approximate; the fieldhouse is also the clubhouse of the Sydney R. Marovitz 9-hole course (OSM golf=clubhouse), whose fairways run north of it beyond the modelled world (Irving Park, Phase 6)"
       },
       "look": {
         "material": "brick with limestone trim, English Gothic",
@@ -5430,6 +5455,340 @@
       "sources": [
         "https://en.wikipedia.org/wiki/Kwanusila",
         "https://theclio.com/entry/142153"
+      ],
+      "p2": true
+    },
+    {
+      "key": "passerelle",
+      "name": "Lincoln Park Passerelle",
+      "aliases": [
+        "Passerelle",
+        "North Avenue pedestrian bridge",
+        "Lincoln Park Passerelle"
+      ],
+      "match": {
+        "synthetic": true,
+        "lat": 41.915361,
+        "lon": -87.627528,
+        "radius": 6
+      },
+      "landmark": {
+        "type": "passerelle",
+        "bearingDeg": 77,
+        "spanM": 46,
+        "deckM": 5.6,
+        "riseM": 8,
+        "widthM": 4.2,
+        "rampM": 26,
+        "note": "Ralph H. Burke's 1940 welded-steel through-arch footbridge over Lake Shore Drive at North Avenue (NRHP; MoMA 1947): two arch ribs over the drive, hangers, concrete approaches at each end. Centre from Wikipedia; the span (the drive's width in OSM), the rise, the deck height and the dark-green paint read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.915361,
+        "lon": -87.627528,
+        "y": 16
+      },
+      "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Passerelle",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Passerelle",
+        "https://historicbridges.org/bridges/browser/?bridgebrowser=illinois%2Flincolnpark%2F"
+      ],
+      "p2": true
+    },
+    {
+      "key": "drivingrange",
+      "name": "Diversey Driving Range",
+      "aliases": [
+        "Diversey Driving Range",
+        "Diversey Range",
+        "driving range",
+        "mini golf"
+      ],
+      "kindLine": "Driving range",
+      "match": {
+        "osmId": "w210686996",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "drivingRange",
+        "bays": {
+          "lat": 41.934207,
+          "lon": -87.634843,
+          "ring": [
+            [
+              -48.7,
+              15.4
+            ],
+            [
+              -48.6,
+              14.3
+            ],
+            [
+              -47.6,
+              9
+            ],
+            [
+              -36.6,
+              10.1
+            ],
+            [
+              -25.8,
+              10.2
+            ],
+            [
+              -14.8,
+              9.3
+            ],
+            [
+              -4.1,
+              7.4
+            ],
+            [
+              6.7,
+              4.4
+            ],
+            [
+              16.7,
+              0.8
+            ],
+            [
+              26.6,
+              -3.8
+            ],
+            [
+              33.5,
+              -7.7
+            ],
+            [
+              40.3,
+              -12.2
+            ],
+            [
+              44.7,
+              -16.1
+            ],
+            [
+              48.7,
+              -10.7
+            ],
+            [
+              44.4,
+              -7.2
+            ],
+            [
+              43.4,
+              -7.7
+            ],
+            [
+              25.1,
+              3.3
+            ],
+            [
+              24.6,
+              3.5
+            ],
+            [
+              11.9,
+              9.2
+            ],
+            [
+              -2.6,
+              13.4
+            ],
+            [
+              -14.4,
+              15.1
+            ],
+            [
+              -16,
+              15.2
+            ],
+            [
+              -18.6,
+              15.5
+            ],
+            [
+              -19.6,
+              15.6
+            ],
+            [
+              -32,
+              15.9
+            ],
+            [
+              -43.3,
+              15.2
+            ],
+            [
+              -43.4,
+              16.1
+            ]
+          ]
+        },
+        "nets": [
+          {
+            "lat": 41.934159,
+            "lon": -87.635551
+          },
+          {
+            "lat": 41.935419,
+            "lon": -87.635731
+          },
+          {
+            "lat": 41.935464,
+            "lon": -87.634406
+          },
+          {
+            "lat": 41.934384,
+            "lon": -87.634201
+          }
+        ],
+        "netM": 18,
+        "note": "the range at 141 W Diversey (since 1916): the two-storey hitting-bay canopy along its curved tee line (the OSM roof outline, way 210686995), the tee house, and the tall net poles round the landing area to the north; the nets' line (kept off the turf pitch beside it) and their 18 m height estimated from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.93382,
+        "lon": -87.63507,
+        "y": 14
+      },
+      "source": "https://www.dnainfo.com/chicago/20160909/lincoln-park/golf-away-at-diversey-driving-range-as-it-celebrates-100th-anniversary/",
+      "sources": [
+        "https://www.dnainfo.com/chicago/20160909/lincoln-park/golf-away-at-diversey-driving-range-as-it-celebrates-100th-anniversary/",
+        "https://www.chicagoparkdistrict.com/parks-facilities/diversey-driving-range"
+      ],
+      "p2": true
+    },
+    {
+      "key": "lpculturalcenter",
+      "name": "Lincoln Park Cultural Center",
+      "aliases": [
+        "Lincoln Park Cultural Center",
+        "Cultural Center (Lincoln Park)"
+      ],
+      "kindLine": "Cultural center",
+      "match": {
+        "osmId": "w53584355",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "brickHouse",
+        "eaveM": 8.5,
+        "windows": "flat",
+        "windowRows": [
+          [
+            1.4,
+            3.6
+          ],
+          [
+            5,
+            7
+          ]
+        ],
+        "roofStyle": "lp-slate",
+        "windowEveryM": 4,
+        "note": "the Park District's arts centre at 2045 N Lincoln Park West: two storeys of brick with white-framed windows under a hipped roof; its form and heights read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.91966,
+        "lon": -87.63586,
+        "y": 12
+      },
+      "source": "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park-cultural-center-0",
+      "sources": [
+        "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park-cultural-center-0"
+      ],
+      "p2": true
+    },
+    {
+      "key": "fullertoncomfort",
+      "name": "Fullerton Comfort Station",
+      "aliases": [
+        "Fullerton Comfort Station"
+      ],
+      "kindLine": "Comfort station",
+      "match": {
+        "osmId": "w356071739",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "brickHouse",
+        "eaveM": 3.4,
+        "roofStyle": "lp-slate",
+        "windowEveryM": 3,
+        "roofRiseM": 2.2,
+        "note": "a small brick comfort station by Theater on the Lake, hipped roof; heights approximate"
+      },
+      "beacon": {
+        "lat": 41.9275,
+        "lon": -87.63122,
+        "y": 12
+      },
+      "source": "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park",
+      "sources": [
+        "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park",
+        "https://en.wikipedia.org/wiki/Lincoln_Park_(Chicago)"
+      ],
+      "p2": true
+    },
+    {
+      "key": "roscoecomfort",
+      "name": "Roscoe Comfort Station",
+      "aliases": [
+        "Roscoe Comfort Station"
+      ],
+      "kindLine": "Comfort station",
+      "match": {
+        "osmId": "w53583611",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "brickHouse",
+        "eaveM": 3.4,
+        "roofStyle": "lp-slate",
+        "windowEveryM": 3,
+        "roofRiseM": 2,
+        "note": "a small brick comfort station at Roscoe, hipped roof; heights approximate"
+      },
+      "beacon": {
+        "lat": 41.94341,
+        "lon": -87.63942,
+        "y": 12
+      },
+      "source": "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park",
+      "sources": [
+        "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park",
+        "https://en.wikipedia.org/wiki/Lincoln_Park_(Chicago)"
+      ],
+      "p2": true
+    },
+    {
+      "key": "southfieldhouse",
+      "name": "South Athletic Fieldhouse",
+      "aliases": [
+        "South Athletic Fieldhouse",
+        "South Field fieldhouse"
+      ],
+      "kindLine": "Fieldhouse",
+      "match": {
+        "osmId": "w210686229",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "brickHouse",
+        "eaveM": 5,
+        "roofStyle": "lp-tile-red",
+        "windowEveryM": 3.6,
+        "roofRiseM": 3,
+        "note": "the fieldhouse of the South Field: brick under a hipped tile roof; heights approximate"
+      },
+      "beacon": {
+        "lat": 41.91463,
+        "lon": -87.62997,
+        "y": 12
+      },
+      "source": "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park",
+      "sources": [
+        "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park",
+        "https://en.wikipedia.org/wiki/Lincoln_Park_(Chicago)"
       ],
       "p2": true
     }
