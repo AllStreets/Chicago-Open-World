@@ -61,6 +61,7 @@ const md = [
   '| pose | diff % | SSIM | noise diff % | noise SSIM | result |', '|---|---:|---:|---:|---:|---|',
   ...rows.map((r) => `| ${r.name} | ${(r.diff * 100).toFixed(3)} | ${r.ssim.toFixed(5)} | ${r.noise ? (r.noise.diff * 100).toFixed(3) : '—'} | ${r.noise ? r.noise.ssim.toFixed(5) : '—'} | ${r.pass ? 'pass' : '**FAIL**'} |`),
   '', `**${rows.filter((r) => r.pass).length} / ${rows.length} poses pass.**`, '',
+  'Savings measured and rejected for artefacts (V5), with their pairs: [rejected.md](rejected.md).', '',
 ]
 
 if (args.quant && existsSync(args.quant)) {
@@ -69,7 +70,7 @@ if (args.quant && existsSync(args.quant)) {
     'Measured by `QUANT_REPORT` in `build-world.js` (`quantizationError`, `pipeline/lib/tilepack.js`): each source vertex against its quantised self.', '',
     '| LOD | files | layer | bits | vertices | max position error | max normal error | max UV error | integer customs exact | max fractional custom error |', '|---|---:|---|---:|---:|---:|---:|---:|---|---:|')
   for (const [lod, v] of Object.entries(q)) for (const [layer, r] of Object.entries(v.layers)) md.push(`| ${lod} | ${v.files} | ${layer} | ${r.bits} | ${r.verts.toLocaleString('en-US')} | ${(r.positionM * 100).toFixed(2)} cm | ${r.normalDeg.toFixed(3)}° | ${(r.uvM * 1000).toFixed(2)} mm | ${r.customExact ? 'yes' : '**no**'} | ${r.fracErr.toExponential(1)} |`)
-  md.push('', 'Limits (V2): ≤ 1 cm at LOD0, ≤ 5 cm at LOD1 and in far blocks, positions 16 bits per axis, normals 10 bits, custom attributes unfiltered. UVs in metres snap to 1/256 m (≤ 2 mm); the Crown Fountain faces, painted fields and murals keep exact UVs.', '')
+  md.push('', 'Normals 10 bits, custom attributes unfiltered (integer ids exact; `_SEED` and glow intensity keep the 12-bit quantisation they always had), UVs in metres snapped to 1/256 m (≤ 2 mm; the Crown Fountain faces, painted fields and murals keep exact UVs). Positions keep the 14 bits per mesh volume every baseline was taken with — the same error as the committed world. V2\'s 16-bit / ≤ 1 cm position limit was built and measured (all LODs inside their limits, +0.3 MB), then **rejected for parity (V5)**: the corrected geometry moves edges by up to a pixel (SSIM 0.956–0.99 on detail poses, noise floor ≥ 0.9999). See "Rejected" below.', '')
 }
 if (args['minimap-before'] && args['minimap-after']) {
   const a = await raw(args['minimap-before']), b = await raw(args['minimap-after'])

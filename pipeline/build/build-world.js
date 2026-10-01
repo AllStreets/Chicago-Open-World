@@ -86,11 +86,11 @@ function osmPolys(elements) {
 // source (max position / normal / UV error per LOD and layer) and writes the report there.
 const quantReport = process.env.QUANT_REPORT ? {} : null
 async function writeWorldGlb(path, layers, opts) {
-  await writeTileGlb(path, layers, opts)
+  await writeTileGlb(path, layers)
   if (!quantReport) return
   const per = (quantReport[opts.lod] ??= { files: 0, layers: {} })
   per.files++
-  for (const [name, r] of Object.entries(await quantizationError(layers, opts))) {
+  for (const [name, r] of Object.entries(await quantizationError(layers))) {
     const m = (per.layers[name] ??= { verts: 0, positionM: 0, normalDeg: 0, uvM: 0, customExact: true, fracErr: 0, bits: r.bits, floatMeshes: 0, worst: null })
     if (r.bits === 32) m.floatMeshes++; else m.bits = r.bits
     if (r.positionM > m.positionM) m.worst = path.split('/').slice(-2).join('/')
