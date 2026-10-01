@@ -20,3 +20,15 @@ export function refuseOverwrite(path, exists) {
   if (exists(path)) throw new Error(`${path} already exists — README images are history; pick a new subject`)
   return path
 }
+
+// ── E3-4 / E4-6 (sports pass, 2026-10-01): fixed poses for the README's sports frames ─────────────────────────────
+// `sports` pins the venue state (?sports=…); `showcase: [venue, team, msIn]` starts "Play a game" that far in.
+export const SPORTS_GALLERY = {
+  'united-center': { pose: { position: [-3655, 88, 375], target: [-3846, 44, 150] } },
+  'united-center-live': { pose: { position: [-3655, 88, 375], target: [-3846, 44, 150] }, sports: 'live:bulls' },
+  'showcase-wrigley': { pose: { position: [-2400, 62, -7255], target: [-2240, 6, -7410] }, showcase: ['wrigleyfield', 'cubs', 42000], card: 'wrigleyfield' },
+  'showcase-rate-field': { pose: { position: [-590, 72, 5690], target: [-440, 8, 5845] }, showcase: ['ratefield', 'whitesox', 45000] },
+  'showcase-soldier-field': { pose: { position: [1215, 165, 2225], target: [915, 0, 2160] }, showcase: ['soldierfield', 'bears', 47000] },
+  'showcase-wrigley-w': { pose: { position: [-2300, 40, -7350], target: [-2222, 28, -7428] }, showcase: ['wrigleyfield', 'cubs', 81000] },
+}
+export const sportsShotQuery = ({ pose, sports }, time) => `pose=${[...pose.position, ...pose.target].join(',')}&time=${time}&stats${sports ? `&sports=${sports}` : ''}`
