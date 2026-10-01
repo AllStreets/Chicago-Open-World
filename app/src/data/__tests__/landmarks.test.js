@@ -5,8 +5,8 @@ import tours from '../tours.json'
 
 const BBOX = { s: 41.826, w: -87.695, n: 41.952, e: -87.595 }
 describe('VISIT data', () => {
-  it('has CHI\'s 32 landmarks plus Flexport and BCG, each with desc, tip and category', () => {
-    expect(LANDMARKS).toHaveLength(34)
+  it('has CHI\'s 32 landmarks plus Flexport, BCG and four Lincoln Park stone structures, each with desc, tip and category', () => {
+    expect(LANDMARKS).toHaveLength(38)
     expect(LANDMARKS.find((l) => l.heroKey === 'gr333n').desc).toMatch(/Flexport/)
     for (const l of LANDMARKS) { expect(l.desc.length).toBeGreaterThan(20); expect(l.tip.length).toBeGreaterThan(10) }
   })

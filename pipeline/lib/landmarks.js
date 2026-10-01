@@ -11,6 +11,7 @@ import { CIVIC } from './civic.js'
 import { P2_BUILDERS } from './p2landmarks.js'
 import { FULTON_BUILDERS } from './fulton.js'
 import { wallPolygon } from './icons.js'
+import { LINCOLN_PARK_BUILDERS } from './lincolnpark.js'
 import { swapModel } from './swapModel.js'
 export { LANDMARK_FACADES }
 const F = LANDMARK_FACADES
@@ -336,7 +337,7 @@ function pavilion(b, spec) {
   ] }
 }
 
-const BUILDERS = { wheel, bean, fountain, theatreSign, museum, castellated, pavilion, ...CIVIC, ...P2_BUILDERS, ...FULTON_BUILDERS }
+const BUILDERS = { wheel, bean, fountain, theatreSign, museum, castellated, pavilion, ...CIVIC, ...P2_BUILDERS, ...FULTON_BUILDERS, ...LINCOLN_PARK_BUILDERS }
 export function buildLandmark(b, spec) {
   const f = BUILDERS[spec.type]
   if (!f) throw new Error(`unknown landmark type: ${spec.type}`)

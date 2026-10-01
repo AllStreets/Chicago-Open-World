@@ -132,7 +132,16 @@ async function main() {
     const b = { id: `p-${h.key}`, osmId: null, source: 'park', tags: {}, name: h.name, address: null, stories: null, year: null, polygons: [{ outer: p.outer, holes: p.holes }], area: Math.abs(signedArea(p.outer)), centroid: ringCentroid(p.outer), bbox: p.bbox, height: 0, heightSource: 'default', parts: null }
     buildings.push(b); heroFor.set(b, h)
   }
-  for (const h of heroes.filter((x) => !x.match.synthetic && !x.match.parkOsmId)) {
+  // landmarks that are a mapped pond (the Lily Pool) get the water's outline as their footprint; the water itself
+  // still draws as water
+  const ponds = heroes.some((x) => x.match.waterOsmId) ? osmPolys(uniq(chunks('water'))) : []
+  for (const h of heroes.filter((x) => x.match.waterOsmId)) {
+    const p = ponds.find((g) => g.id === h.match.waterOsmId)
+    if (!p) throw new Error(`hero pond not found in OSM data: ${h.name} (${h.match.waterOsmId})`)
+    const b = { id: `w-${h.key}`, osmId: null, source: 'pond', tags: {}, name: h.name, address: null, stories: null, year: null, polygons: [{ outer: p.outer, holes: p.holes }], area: Math.abs(signedArea(p.outer)), centroid: ringCentroid(p.outer), bbox: p.bbox, height: 0, heightSource: 'default', parts: null }
+    buildings.push(b); heroFor.set(b, h)
+  }
+  for (const h of heroes.filter((x) => !x.match.synthetic && !x.match.parkOsmId && !x.match.waterOsmId)) {
     let b = h.match.osmId ? findByOsm(buildings, h.match.osmId) : null
     if (!b && h.match.lat) { const p = project(h.match.lon, h.match.lat); b = bIdx.query(p, 200).find((x) => x.polygons.some((q) => pointInRing(p, q.outer))) }
     if (!b) throw new Error(`hero not found in OSM data: ${h.name} (${JSON.stringify(h.match)})`)

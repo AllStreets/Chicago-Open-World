@@ -51,7 +51,7 @@ describe('heroes.json looks (F1, F7)', () => {
   const heroes = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'data', 'heroes.json'), 'utf8')).heroes
   it('the 41 V2 heroes and 6 P2 buildings carry a valid, sourced look; landmarks colour through their material rows', () => {
     const looked = heroes.filter((h) => h.look)
-    expect(looked).toHaveLength(41 + 6) // P3: Rookery, Monadnock, Marquette, Carbide & Carbon, Palmer House, Newberry
+    expect(looked).toHaveLength(41 + 6 + 1) // P3: Rookery, Monadnock, Marquette, Carbide & Carbon, Palmer House, Newberry; P4: the Waveland fieldhouse
     expect(looked.flatMap((h) => validateLook(h.look, h.key))).toEqual([])
     for (const h of heroes.filter((x) => !x.look)) expect(h.landmark?.type ?? (h.sacred && 'sacred'), h.key).toBeTruthy() // V6: styled per mesh; P3 churches keep sacred shaping
   })

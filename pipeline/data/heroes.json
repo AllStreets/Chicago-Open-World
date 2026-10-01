@@ -3198,6 +3198,131 @@
         "https://chicago.suntimes.com/business/2022/6/2/23152410/boston-consulting-group-signs-big-fulton-market-lease"
       ],
       "p2": true
+    },
+    {
+      "key": "chesspavilion",
+      "name": "Chess Pavilion",
+      "aliases": [
+        "North Avenue Beach Chess Pavilion",
+        "Lincoln Park Chess Pavilion",
+        "chess"
+      ],
+      "match": {
+        "osmId": "w210686258",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "chessPavilion",
+        "roofM": 3.0,
+        "note": "a thin flat concrete roof on carved Indiana limestone end walls, chess tables beneath, the five-foot carved king and queen flanking it; the OSM shelter outline (7.4 × 18.9 m) sets the plan, heights read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.9113,
+        "lon": -87.62501,
+        "y": 10
+      },
+      "source": "https://www.chicagoparkdistrict.com/parks-facilities/chess-pavilion-artwork",
+      "sources": [
+        "https://www.chicagoparkdistrict.com/parks-facilities/chess-pavilion-artwork",
+        "https://en.wikipedia.org/wiki/Maurice_H._Webster",
+        "http://www.publicartinchicago.com/lincoln-park-chess-pavilion-king-queen-by-boris-gilbertson/"
+      ],
+      "p2": true
+    },
+    {
+      "key": "couchtomb",
+      "name": "Couch Tomb",
+      "aliases": [
+        "Ira Couch Tomb",
+        "Couch Mausoleum"
+      ],
+      "match": {
+        "osmId": "w1398715844",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "couchTomb",
+        "heightM": 3.5,
+        "note": "John M. Van Osdel's 1858 limestone vault for Ira Couch, the last tomb left from the City Cemetery (its riveted stones were too costly to move): a limestone block with a heavy cornice, COUCH over the iron door, inside an iron fence; plan from OSM (4.2 × 5.7 m), heights read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.91293,
+        "lon": -87.63142,
+        "y": 9
+      },
+      "source": "https://www.atlasobscura.com/places/couch-tomb",
+      "sources": [
+        "https://www.atlasobscura.com/places/couch-tomb",
+        "https://chicagohistorytoday.wordpress.com/2024/06/11/couch-tomb-lincoln-park-chicago/",
+        "https://en.wikipedia.org/wiki/Ira_Couch"
+      ],
+      "p2": true
+    },
+    {
+      "key": "lilypool",
+      "name": "Alfred Caldwell Lily Pool",
+      "aliases": [
+        "Lily Pool",
+        "Caldwell Lily Pool",
+        "Lincoln Park Lily Pool"
+      ],
+      "match": {
+        "waterOsmId": 116740882
+      },
+      "landmark": {
+        "type": "lilyPool",
+        "note": "Caldwell's 1938 prairie river: stratified limestone ledges along the mapped pond's banks, a waterfall at its north end, the long low pavilion and a council ring; the pond is OSM's, the stonework procedural, placements approximate"
+      },
+      "beacon": {
+        "lat": 41.9253,
+        "lon": -87.6341,
+        "y": 8
+      },
+      "source": "https://en.wikipedia.org/wiki/Alfred_Caldwell_Lily_Pool",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Alfred_Caldwell_Lily_Pool",
+        "https://www.chicagoparkdistrict.com/parks-facilities/alfred-caldwell-lily-pool"
+      ],
+      "p2": true
+    },
+    {
+      "key": "wavelandclock",
+      "name": "Waveland Clock Tower",
+      "aliases": [
+        "Waveland Fieldhouse",
+        "Lincoln Park Carillon Tower"
+      ],
+      "match": {
+        "osmId": "w53582240",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "wavelandClock",
+        "heightM": 32,
+        "sideM": 7.5,
+        "towerAt": 0,
+        "note": "Edwin H. Clark's 1931 English Gothic fieldhouse and seven-storey carillon tower (Deagan chimes), brick with limestone trim, a clock on each face; the tower's height and its place on the fieldhouse are approximate"
+      },
+      "look": {
+        "material": "brick with limestone trim, English Gothic",
+        "finish": "terracotta",
+        "base": "#8a5a43",
+        "glass": "#2b2f33",
+        "mullion": "#d6c9a8",
+        "spandrel": "#8a5a43",
+        "source": "https://historicalmarkerproject.com/markers/HM1S1M_waveland-clock-tower_Chicago-IL.html"
+      },
+      "beacon": {
+        "lat": 41.95177,
+        "lon": -87.64132,
+        "y": 42
+      },
+      "source": "https://historicalmarkerproject.com/markers/HM1S1M_waveland-clock-tower_Chicago-IL.html",
+      "sources": [
+        "https://historicalmarkerproject.com/markers/HM1S1M_waveland-clock-tower_Chicago-IL.html",
+        "https://news.wttw.com/2025/10/31/it-s-time-set-clocks-back-weekend-let-s-look-some-chicago-s-iconic-timepieces"
+      ],
+      "p2": true
     }
   ]
 }

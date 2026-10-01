@@ -500,6 +500,60 @@
       "base": "#a9c2d0",
       "finish": "glass",
       "source": "https://theskydeck.com/the-ledge/ (glass boxes)"
+    },
+    {
+      "key": "lp-limestone",
+      "base": "#cfc3a4",
+      "finish": "limestone",
+      "source": "https://www.chicagoparkdistrict.com/parks-facilities/chess-pavilion-artwork (Indiana limestone)"
+    },
+    {
+      "key": "lp-concrete",
+      "base": "#bdbab2",
+      "finish": "concrete",
+      "source": "https://www.chicagoparkdistrict.com/parks-facilities/chess-pavilion-artwork (concrete roof)"
+    },
+    {
+      "key": "lp-ledgestone",
+      "base": "#b8a77f",
+      "finish": "limestone",
+      "source": "https://en.wikipedia.org/wiki/Alfred_Caldwell_Lily_Pool (stratified limestone)"
+    },
+    {
+      "key": "lp-pool",
+      "base": "#2f4a42",
+      "finish": "glass",
+      "source": "https://en.wikipedia.org/wiki/Alfred_Caldwell_Lily_Pool"
+    },
+    {
+      "key": "lp-falls",
+      "base": "#d4e2e3",
+      "finish": "glass",
+      "source": "https://en.wikipedia.org/wiki/Alfred_Caldwell_Lily_Pool (waterfall)"
+    },
+    {
+      "key": "lp-roof",
+      "base": "#5b4636",
+      "finish": "concrete",
+      "source": "https://en.wikipedia.org/wiki/Alfred_Caldwell_Lily_Pool (prairie pavilion roof)"
+    },
+    {
+      "key": "tomb-iron",
+      "base": "#2a2d2f",
+      "finish": "metal",
+      "source": "https://www.atlasobscura.com/places/couch-tomb (iron door and fence)"
+    },
+    {
+      "key": "waveland-brick",
+      "base": "#8a5a43",
+      "finish": "terracotta",
+      "source": "https://historicalmarkerproject.com/markers/HM1S1M_waveland-clock-tower_Chicago-IL.html (brick and limestone)"
+    },
+    {
+      "key": "waveland-clock",
+      "base": "#ece4d0",
+      "finish": "limestone",
+      "source": "https://historicalmarkerproject.com/markers/HM1S1M_waveland-clock-tower_Chicago-IL.html (clock faces)"
     }
   ]
 }
