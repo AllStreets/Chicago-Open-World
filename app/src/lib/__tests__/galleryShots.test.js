@@ -44,5 +44,12 @@ describe('Lincoln Park gallery poses (B-0)', () => {
     const z = e.map(([, v]) => v.pose.target[2])
     for (let i = 1; i < z.length; i++) if (i !== 2) expect(z[i]).toBeLessThan(z[i - 1] + 300) // roughly south → north (−z is north)
     expect(poseShotQuery(LINCOLN_PARK_GALLERY['lp-zoo-mall'], 'day')).toBe('pose=-320,85,-4190,-470,0,-4380&time=day')
+
+import { RIVER_GALLERY, riverShotQuery } from '../galleryShots.js'
+describe('river gallery poses (A-0)', () => {
+  it('eight kebab-case river poses, each a full pose the query pins', () => {
+    expect(Object.keys(RIVER_GALLERY)).toHaveLength(8)
+    for (const [k, v] of Object.entries(RIVER_GALLERY)) { expect(k).toMatch(/^river[a-z0-9]+$/); expect(v.position).toHaveLength(3); expect(v.target).toHaveLength(3) }
+    expect(riverShotQuery(RIVER_GALLERY.rivermouth, 'night')).toBe('pose=2150,90,-600,1500,10,-720&time=night')
   })
 })

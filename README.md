@@ -466,6 +466,93 @@ Flexport Chicago's office at 333 North Green and BCG's tower across the street, 
 </tr>
 </table>
 
+### River icons — *the river's buildings to the Tribune and Wrigley standard*
+
+Forty-four buildings and structures along the main stem and both branches, each with sourced heights, setbacks, crowns, façade rhythm, materials and night lighting: Trump, St. Regis, 333 W Wacker, AMA Plaza, 35 E Wacker, London Guarantee, Mather, Reid Murdoch, the Merchandise Mart, the Civic Opera, the Old Post Office, 150 N Riverside, River Point, 110 N Wacker, the Wolf Point towers, Boeing, Riverside Plaza, Union Station, River City, 333 N Michigan, 300 N LaSalle, NBC Tower, the Salt Shed, Montgomery Ward, the Wacker Drive wall and its hotels, three railroad bridges, the Harbor Lock, Centennial Fountain and the Ping Tom boathouse. Every one is in ⌘K and on its hover card.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/v9-river-mouth-day.png" alt="The river mouth by day" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-mouth-night.png" alt="The river mouth at night" width="100%"/></td>
+</tr>
+<tr>
+<td colspan="2"><em>The mouth: the Harbor Lock's 600 × 80 ft chamber, its sector gates and the zinc control house, with Lake Point and the Streeterville wall behind.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/v9-river-dusable-day.png" alt="DuSable Bridge by day" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-dusable-night.png" alt="DuSable Bridge at night" width="100%"/></td>
+</tr>
+<tr>
+<td colspan="2"><em>At DuSable: the Wrigley Building and the Tribune with London Guarantee's tholos and 333 N Michigan across the bridge; Trump's stainless fins and setbacks behind.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/v9-river-marina-trump-day.png" alt="Marina City, AMA Plaza and Trump" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-marina-trump-night.png" alt="Marina City and Trump at night" width="100%"/></td>
+</tr>
+<tr>
+<td colspan="2"><em>Marina City's corn cobs, Mies's black AMA Plaza on its 5 ft module, Trump's three setbacks and Reid Murdoch's clock down the river.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/v9-river-clark-lasalle-day.png" alt="Clark to LaSalle" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-clark-lasalle-night.png" alt="Clark to LaSalle at night" width="100%"/></td>
+</tr>
+<tr>
+<td colspan="2"><em>Reid Murdoch's red-brick clock tower, 300 N LaSalle's stepped stainless crown and the Wacker wall: 77 W's pediment, Leo Burnett, 225 W's lanterns.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/v9-river-wolf-point-day.png" alt="Wolf Point" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-wolf-point-night.png" alt="Wolf Point at night" width="100%"/></td>
+</tr>
+<tr>
+<td colspan="2"><em>The forks: Wolf Point West, East and Salesforce, River Point's parabolic arch, 333 W Wacker's green bow and the Merchandise Mart.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/v9-river-opera-day.png" alt="The Civic Opera" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-opera-night.png" alt="The Civic Opera at night" width="100%"/></td>
+</tr>
+<tr>
+<td colspan="2"><em>The South Branch: the Civic Opera's armchair and Wacker portico, Riverside Plaza, 150 N Riverside on its 12 m core, 110 N Wacker on its tridents.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/v9-river-post-office-day.png" alt="The Old Post Office" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-post-office-night.png" alt="The Old Post Office at night" width="100%"/></td>
+</tr>
+<tr>
+<td colspan="2"><em>The Old Post Office straddling the Eisenhower, its roof park on top, Union Station's light court and Great Hall vault beyond.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/v9-river-salt-shed-day.png" alt="The Salt Shed by day" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-salt-shed-night.png" alt="The Salt Shed at night" width="100%"/></td>
+</tr>
+<tr>
+<td colspan="2"><em>The North Branch: the Salt Shed's steep gable on buttressed walls and MORTON SALT across the roof, lit after dark.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/v9-art-on-the-mart-night.png" alt="Art on theMART" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-35-east-wacker-night.png" alt="35 East Wacker at night" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Art on theMART: 556 × 165 ft of light on the Mart's river façade, Thursday to Sunday on the 2026 schedule (the art here is procedural, not a real piece).</em></td>
+<td><em>35 East Wacker's belvedere and corner tempietti floodlit gold over Mather Tower's gilded cupola.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/v9-canal-street-lift-day.png" alt="Canal Street railroad lift bridge" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-centennial-fountain-day.png" alt="Centennial Fountain" width="100%"/></td>
+</tr>
+<tr>
+<td><em>The Canal Street lift bridge between its 185 ft towers; the St. Charles Air Line and the raised Kinzie Street bascule are in too.</em></td>
+<td><em>Centennial Fountain's granite steps and its 80 ft arc, five minutes at the top of each hour, May to September.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/v9-77-west-wacker-night.png" alt="77 West Wacker at night" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-salt-shed-night.png" alt="The Salt Shed sign at night" width="100%"/></td>
+</tr>
+<tr>
+<td><em>77 West Wacker's glazed temple pediment, floodlit.</em></td>
+<td><em>MORTON SALT on the Salt Shed's roof, facing the Kennedy.</em></td>
+</tr>
+</table>
+
 ### Phase 5 · Alive — *live trains, live scores, weather and Scan*
 
 The city reads the CHI ATLAS API when it can and never shows an error when it can't: real CTA trains snapped onto the track (with the timetable simulator as the fallback), live scores driving the stadiums, the scoreboards and the W flag, and the real Chicago sky — overcast, rain, snow or lake fog, carried by the wind. The chip at the top left says honestly which: LIVE CTA or SIMULATED, with the data sources one click away. Press `V` for Scan, the holographic city.
@@ -632,6 +719,72 @@ It wasn't made right in one attempt. Here are the same places through each pass,
 <td><sub>Phase 2.5 · Sep 28<br/>Wrigleyville to 35th St</sub></td>
 <td><sub>Vision pass · Sep 29<br/>one lake, true colours</sub></td>
 <td><sub>Today · Sep 30<br/>traffic, crowns, paving</sub></td>
+</tr>
+</table>
+
+**Down the river, the same pose** — before and after the river icons
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/v9-river-mouth-before-day.png" alt="The mouth before the river icons" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-mouth-day.png" alt="The mouth with the river icons" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>The mouth · Oct 1, before<br/>OSM massing, generic façades</sub></td>
+<td><sub>The mouth · Oct 1, after<br/>sourced crowns, rhythm and materials</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/v9-river-dusable-before-day.png" alt="DuSable before the river icons" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-dusable-day.png" alt="DuSable with the river icons" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>DuSable · Oct 1, before<br/>OSM massing, generic façades</sub></td>
+<td><sub>DuSable · Oct 1, after<br/>sourced crowns, rhythm and materials</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/v9-river-clarklasalle-before-day.png" alt="Clark to LaSalle before the river icons" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-clark-lasalle-day.png" alt="Clark to LaSalle with the river icons" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>Clark to LaSalle · Oct 1, before<br/>OSM massing, generic façades</sub></td>
+<td><sub>Clark to LaSalle · Oct 1, after<br/>sourced crowns, rhythm and materials</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/v9-river-wolfpoint-before-day.png" alt="Wolf Point before the river icons" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-wolf-point-day.png" alt="Wolf Point with the river icons" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>Wolf Point · Oct 1, before<br/>OSM massing, generic façades</sub></td>
+<td><sub>Wolf Point · Oct 1, after<br/>sourced crowns, rhythm and materials</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/v9-river-opera-before-day.png" alt="The Civic Opera before the river icons" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-opera-day.png" alt="The Civic Opera with the river icons" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>The Civic Opera · Oct 1, before<br/>OSM massing, generic façades</sub></td>
+<td><sub>The Civic Opera · Oct 1, after<br/>sourced crowns, rhythm and materials</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/v9-river-postoffice-before-day.png" alt="The Old Post Office before the river icons" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-post-office-day.png" alt="The Old Post Office with the river icons" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>The Old Post Office · Oct 1, before<br/>OSM massing, generic façades</sub></td>
+<td><sub>The Old Post Office · Oct 1, after<br/>sourced crowns, rhythm and materials</sub></td>
+</tr>
+</table>
+
+**Marina City and Trump at the water**
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/v9-river-marinatrump-before-day.png" alt="Marina City and Trump before" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-marina-trump-day.png" alt="Marina City and Trump after" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>Before · Oct 1<br/>plain glass and a stub spire</sub></td>
+<td><sub>After · Oct 1<br/>stainless fins, the 60 m podium, the 423 m spire, AMA Plaza's module</sub></td>
 </tr>
 </table>
 

@@ -554,6 +554,640 @@
       "base": "#ece4d0",
       "finish": "limestone",
       "source": "https://historicalmarkerproject.com/markers/HM1S1M_waveland-clock-tower_Chicago-IL.html (clock faces)"
+    },
+    {
+      "key": "trump-stainless",
+      "base": "#c9cdd1",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Trump_International_Hotel_and_Tower_(Chicago) (polished stainless mullions and spire; photo-matched)"
+    },
+    {
+      "key": "stregis-glass-1",
+      "base": "#3d6670",
+      "glass": "#3d6670",
+      "mullion": "#3b4a50",
+      "spandrel": "#375e68",
+      "finish": "glass",
+      "source": "https://en.wikipedia.org/wiki/St._Regis_Chicago (darkest of six blue-green glass shades, at a frustum's waist; photo-matched)"
+    },
+    {
+      "key": "stregis-glass-2",
+      "base": "#5f8c93",
+      "glass": "#5f8c93",
+      "mullion": "#4a5c62",
+      "spandrel": "#557f86",
+      "finish": "glass",
+      "source": "https://en.wikipedia.org/wiki/St._Regis_Chicago (middle glass shades; photo-matched)"
+    },
+    {
+      "key": "stregis-glass-3",
+      "base": "#86aeb3",
+      "glass": "#86aeb3",
+      "mullion": "#7f9a9e",
+      "spandrel": "#7aa3a8",
+      "finish": "glass",
+      "source": "https://en.wikipedia.org/wiki/St._Regis_Chicago (brightest glass shades, at a frustum's belt; photo-matched)"
+    },
+    {
+      "key": "stregis-gap",
+      "base": "#1d2326",
+      "finish": "concrete",
+      "source": "https://en.wikipedia.org/wiki/St._Regis_Chicago (the open blow-through floor in shadow; photo-matched)"
+    },
+    {
+      "key": "wacker333-stainless",
+      "base": "#b8bdbf",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/333_Wacker_Drive (brushed stainless bands; photo-matched)"
+    },
+    {
+      "key": "verde-antique",
+      "base": "#1f3b30",
+      "finish": "granite",
+      "source": "https://vtverde.com/portfolio/wacker/ (Vermont Verde Antique serpentine; photo-matched)"
+    },
+    {
+      "key": "wacker333-granite",
+      "base": "#b9b7b0",
+      "finish": "granite",
+      "source": "https://vtverde.com/portfolio/wacker/ (grey Vermont granite; photo-matched)"
+    },
+    {
+      "key": "mies-bronze-black",
+      "base": "#1e1b18",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/330_North_Wabash (black-bronze anodised aluminium; photo-matched)"
+    },
+    {
+      "key": "jewelers-terracotta",
+      "base": "#cdb48a",
+      "finish": "terracotta",
+      "source": "https://en.wikipedia.org/wiki/35_East_Wacker (buff terra cotta; photo-matched)",
+      "crownLight": {
+        "kind": "flood",
+        "color": "#ffd9a0",
+        "fromM": 92,
+        "toM": 160,
+        "intensity": 1.2,
+        "source": [
+          "https://en.wikipedia.org/wiki/35_East_Wacker"
+        ]
+      }
+    },
+    {
+      "key": "jewelers-green",
+      "base": "#2f4a3a",
+      "finish": "terracotta",
+      "source": "https://chicagology.com/skyscrapers/skyscrapers024/ (dark green terra cotta, floors 20–22; photo-matched)"
+    },
+    {
+      "key": "londonhouse-limestone",
+      "base": "#d9cbae",
+      "finish": "limestone",
+      "source": "https://en.wikipedia.org/wiki/London_Guarantee_Building (Bedford limestone; photo-matched)",
+      "crownLight": {
+        "kind": "flood",
+        "color": "#ffe6bf",
+        "fromM": 62,
+        "toM": 103,
+        "intensity": 1.1,
+        "source": [
+          "https://en.wikipedia.org/wiki/London_Guarantee_Building"
+        ]
+      }
+    },
+    {
+      "key": "londonhouse-cupola",
+      "base": "#8a9488",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/London_Guarantee_Building (grey-green cupola roof; photo-matched)",
+      "crownLight": {
+        "kind": "flood",
+        "color": "#ffe6bf",
+        "fromM": 79,
+        "toM": 103,
+        "intensity": 1,
+        "source": [
+          "https://en.wikipedia.org/wiki/London_Guarantee_Building"
+        ]
+      }
+    },
+    {
+      "key": "mather-terracotta",
+      "base": "#e6dcc3",
+      "finish": "terracotta",
+      "source": "https://en.wikipedia.org/wiki/Mather_Tower (cream terra cotta; photo-matched)",
+      "crownLight": {
+        "kind": "flood",
+        "color": "#eef3ff",
+        "fromM": 93,
+        "toM": 152,
+        "intensity": 1.1,
+        "source": [
+          "https://schulershook.com/projects/mather-tower-75-e-wacker-drive"
+        ]
+      }
+    },
+    {
+      "key": "mather-gold",
+      "base": "#c9a44a",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Mather_Tower (gilded cupola; photo-matched)",
+      "crownLight": {
+        "kind": "flood",
+        "color": "#ffb347",
+        "fromM": 145,
+        "toM": 160,
+        "intensity": 1.4,
+        "source": [
+          "https://schulershook.com/projects/mather-tower-75-e-wacker-drive"
+        ]
+      }
+    },
+    {
+      "key": "reid-brick",
+      "base": "#8b3a2b",
+      "finish": "terracotta",
+      "source": "https://en.wikipedia.org/wiki/Reid,_Murdoch_%26_Co._Building (red brick; photo-matched)"
+    },
+    {
+      "key": "reid-trim",
+      "base": "#5a3a28",
+      "finish": "terracotta",
+      "source": "https://chicagology.com/skyscrapers/skyscrapers150/ (dark brown terra-cotta trim; photo-matched)"
+    },
+    {
+      "key": "reid-clock",
+      "base": "#efe6cf",
+      "finish": "glass",
+      "source": "https://chicagology.com/skyscrapers/skyscrapers150/ (clock faces, lit at night; photo-matched)"
+    },
+    {
+      "key": "mart-heads",
+      "base": "#a8977a",
+      "finish": "terracotta",
+      "source": "https://chicagology.com/skyscrapers/skyscrapers033/ (56 terra-cotta chiefs' heads on the tower crown; photo-matched)"
+    },
+    {
+      "key": "opera-limestone",
+      "base": "#cfc7b5",
+      "finish": "limestone",
+      "source": "https://en.wikipedia.org/wiki/Civic_Opera_Building (Bedford limestone; photo-matched)"
+    },
+    {
+      "key": "opera-lantern",
+      "base": "#ffd99a",
+      "finish": "glass",
+      "source": "https://chicagology.com/skyscrapers/skyscrapers014/ (the portico's 55 lanterns; photo-matched)"
+    },
+    {
+      "key": "postoffice-limestone",
+      "base": "#c9c2b2",
+      "finish": "limestone",
+      "source": "https://www.architecture.org/online-resources/buildings-of-chicago/old-chicago-main-post-office (Bedford limestone; photo-matched)"
+    },
+    {
+      "key": "postoffice-granite",
+      "base": "#1e1e20",
+      "finish": "granite",
+      "source": "https://www.architecture.org/online-resources/buildings-of-chicago/old-chicago-main-post-office (black granite base; photo-matched)"
+    },
+    {
+      "key": "roof-lawn",
+      "base": "#4f7a3c",
+      "finish": "concrete",
+      "source": "https://en.wikipedia.org/wiki/Old_Chicago_Main_Post_Office (3.5-acre roof park; photo-matched)"
+    },
+    {
+      "key": "roof-track",
+      "base": "#9a4a3a",
+      "finish": "concrete",
+      "source": "https://en.wikipedia.org/wiki/Old_Chicago_Main_Post_Office (roof running track; photo-matched)"
+    },
+    {
+      "key": "riverside150",
+      "base": "#7c8e9a",
+      "glass": "#7c8e9a",
+      "mullion": "#b9c0c5",
+      "spandrel": "#5e6b74",
+      "finish": "glass",
+      "source": "https://en.wikipedia.org/wiki/150_North_Riverside (the sloped glass transition over the core; photo-matched)"
+    },
+    {
+      "key": "riverside150-steel",
+      "base": "#8d9296",
+      "finish": "metal",
+      "source": "https://www.architectmagazine.com/project-gallery/150-north-riverside/ (sloped steel soffit; photo-matched)"
+    },
+    {
+      "key": "riverside150-fin",
+      "base": "#b9c0c5",
+      "finish": "metal",
+      "source": "https://www.architectmagazine.com/project-gallery/150-north-riverside/ (silver fins at every mullion; photo-matched)"
+    },
+    {
+      "key": "riverpoint-steel",
+      "base": "#a9b1b0",
+      "finish": "metal",
+      "source": "https://www.pickardchilton.com/work/river-point (silver arch columns and mullions; photo-matched)"
+    },
+    {
+      "key": "red-travertine",
+      "base": "#8e4f42",
+      "finish": "granite",
+      "source": "https://www.pickardchilton.com/work/river-point (red travertine lobby wall; photo-matched)"
+    },
+    {
+      "key": "saddle-lead",
+      "base": "#8c8f90",
+      "finish": "metal",
+      "source": "https://www.marinacity.org/history/mobi/theatrical_flourish.htm (lead-sheathed saddle roof; photo-matched)"
+    },
+    {
+      "key": "wacker110-steel",
+      "base": "#b8bcc0",
+      "finish": "metal",
+      "source": "https://www.thorntontomasetti.com/project/110-north-wacker (light grey steel tridents and soffit; photo-matched)"
+    },
+    {
+      "key": "wacker110-fin",
+      "base": "#c9d3d8",
+      "finish": "glass",
+      "source": "https://en.wikipedia.org/wiki/110_North_Wacker (vertical glass fins; photo-matched)"
+    },
+    {
+      "key": "salesforce-accent",
+      "base": "#d3d9dd",
+      "finish": "metal",
+      "source": "https://www.archpaper.com/2025/01/pelli-clarke-partners-salesforce-tower-chicago/ (horizontal accents; photo-matched)"
+    },
+    {
+      "key": "wolfpoint-sunshade",
+      "base": "#e0e4e6",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Wolf_Point_East_Tower (radiused white sunshades; photo-matched)"
+    },
+    {
+      "key": "wolfpoint-crown",
+      "base": "#d6dee4",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Wolf_Point_East_Tower (crown of lighter vertical bands; photo-matched)"
+    },
+    {
+      "key": "wolfpoint-aluminium",
+      "base": "#bfc4c6",
+      "finish": "metal",
+      "source": "https://bklarchitecture.com/projects/wolf-point-west/ (horizontal aluminium tube bands; photo-matched)"
+    },
+    {
+      "key": "boeing-truss",
+      "base": "#d9dcdd",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Boeing_Building (exposed roof trusses; photo-matched)"
+    },
+    {
+      "key": "boeing-granite",
+      "base": "#6e6f70",
+      "finish": "granite",
+      "source": "https://en.wikipedia.org/wiki/Boeing_Building (grey marble and granite; photo-matched)"
+    },
+    {
+      "key": "dailynews-limestone",
+      "base": "#cfc2a6",
+      "finish": "limestone",
+      "source": "https://en.wikipedia.org/wiki/Riverside_Plaza_(Chicago) (light brown limestone; photo-matched)"
+    },
+    {
+      "key": "michigan333-limestone",
+      "base": "#d6cdb8",
+      "finish": "limestone",
+      "source": "https://en.wikipedia.org/wiki/333_North_Michigan (limestone; photo-matched)",
+      "crownLight": {
+        "kind": "flood",
+        "color": "#ffe2b0",
+        "fromM": 85,
+        "toM": 121,
+        "intensity": 0.9,
+        "source": [
+          "https://en.wikipedia.org/wiki/333_North_Michigan"
+        ]
+      }
+    },
+    {
+      "key": "michigan333-granite",
+      "base": "#5b5550",
+      "finish": "granite",
+      "source": "https://chicagology.com/skyscrapers/skyscrapers062/ (dark polished stone base; photo-matched)"
+    },
+    {
+      "key": "michigan333-frieze",
+      "base": "#c4b9a2",
+      "finish": "limestone",
+      "source": "https://news.wttw.com/2017/10/25/ask-geoffrey-what-are-those-faces-michigan-avenue (Fred M. Torrey's carved frieze; photo-matched)"
+    },
+    {
+      "key": "lasalle300-steel",
+      "base": "#c7cccf",
+      "finish": "metal",
+      "source": "https://www.architecturalrecord.com/articles/5947-300-north-lasalle (stainless shade fins; photo-matched)"
+    },
+    {
+      "key": "lasalle300-crown",
+      "base": "#dfe5ea",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/300_North_LaSalle (the luminous stainless crown; photo-matched)",
+      "crownLight": {
+        "kind": "lantern",
+        "color": "#f2f6ff",
+        "fromM": 205,
+        "toM": 240,
+        "intensity": 1.6,
+        "source": [
+          "https://en.wikipedia.org/wiki/300_North_LaSalle"
+        ]
+      }
+    },
+    {
+      "key": "nbc-limestone",
+      "base": "#d9cfbd",
+      "finish": "limestone",
+      "source": "https://en.wikipedia.org/wiki/NBC_Tower (Indiana limestone piers; photo-matched)",
+      "crownLight": {
+        "kind": "flood",
+        "color": "#fff0d8",
+        "fromM": 110,
+        "toM": 152,
+        "intensity": 0.9,
+        "source": [
+          "https://en.wikipedia.org/wiki/NBC_Tower"
+        ]
+      }
+    },
+    {
+      "key": "nbc-granite",
+      "base": "#6b4f48",
+      "finish": "granite",
+      "source": "https://en.wikipedia.org/wiki/NBC_Tower (reddish granite; photo-matched)"
+    },
+    {
+      "key": "nbc-spire",
+      "base": "#cfd2d4",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/NBC_Tower (broadcast spire, lit white; photo-matched)",
+      "crownLight": {
+        "kind": "flood",
+        "color": "#ffffff",
+        "fromM": 151,
+        "toM": 192,
+        "intensity": 1.2,
+        "source": [
+          "https://en.wikipedia.org/wiki/NBC_Tower"
+        ]
+      }
+    },
+    {
+      "key": "saltshed-concrete",
+      "base": "#9c9890",
+      "finish": "concrete",
+      "source": "https://www.architecture.org/online-resources/buildings-of-chicago/the-salt-shed (buttressed concrete walls; photo-matched)"
+    },
+    {
+      "key": "saltshed-roof",
+      "base": "#2b2d2f",
+      "finish": "concrete",
+      "source": "https://www.wbez.org/architecture/2024/06/24/whats-that-building-the-salt-shed (dark roof under the sign; photo-matched)"
+    },
+    {
+      "key": "morton-white",
+      "base": "#f2f2ee",
+      "finish": "concrete",
+      "source": "https://blockclubchicago.org/2022/02/09/the-morton-salt-warehouse-salt-shed-venue-sign-is-peeling-but-its-supposed-to-developers-say/ (white MORTON SALT letters; photo-matched)",
+      "crownLight": {
+        "kind": "flood",
+        "color": "#ffffff",
+        "fromM": 4,
+        "toM": 22,
+        "intensity": 1.6,
+        "source": [
+          "https://www.wbez.org/architecture/2024/06/24/whats-that-building-the-salt-shed"
+        ]
+      }
+    },
+    {
+      "key": "ward-concrete",
+      "base": "#b9ae9c",
+      "finish": "concrete",
+      "source": "https://en.wikipedia.org/wiki/Montgomery_Ward_Company_Complex (buff concrete frame; photo-matched)"
+    },
+    {
+      "key": "ward-spandrel",
+      "base": "#8c5a44",
+      "finish": "terracotta",
+      "source": "https://en.wikipedia.org/wiki/Montgomery_Ward_Company_Complex (red-brown spandrels; photo-matched)"
+    },
+    {
+      "key": "burnett-granite",
+      "base": "#3e4a42",
+      "finish": "granite",
+      "source": "https://en.wikipedia.org/wiki/Leo_Burnett_Building (green granite grid; photo-matched)"
+    },
+    {
+      "key": "sheraton-precast",
+      "base": "#bba78d",
+      "finish": "concrete",
+      "source": "https://aviewoncities.com/chicago/buildings/sheraton-grand-chicago (tan and rose precast; photo-matched)"
+    },
+    {
+      "key": "hyatt-bronze",
+      "base": "#2b2622",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Hyatt_Regency_Chicago (dark brown mullion grid; photo-matched)"
+    },
+    {
+      "key": "hyatt-glass",
+      "base": "#5a6a72",
+      "glass": "#5a6a72",
+      "mullion": "#2b2622",
+      "spandrel": "#3a3530",
+      "finish": "glass",
+      "source": "https://en.wikipedia.org/wiki/Hyatt_Regency_Chicago (glass walkways over Stetson Avenue; photo-matched)"
+    },
+    {
+      "key": "equitable-aluminium",
+      "base": "#8c8478",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Equitable_Building_(Chicago) (aluminium mullions and column covers; photo-matched)"
+    },
+    {
+      "key": "church17-lead",
+      "base": "#7a7e80",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Seventeenth_Church_of_Christ,_Scientist (lead roof; photo-matched)"
+    },
+    {
+      "key": "travertine-white",
+      "base": "#e6ddcb",
+      "finish": "limestone",
+      "source": "https://en.wikipedia.org/wiki/Seventeenth_Church_of_Christ,_Scientist (white travertine; photo-matched)"
+    },
+    {
+      "key": "wacker77-granite",
+      "base": "#d9d6cf",
+      "finish": "granite",
+      "source": "https://en.wikipedia.org/wiki/77_West_Wacker_Drive (Portuguese white granite; photo-matched)",
+      "crownLight": {
+        "kind": "flood",
+        "color": "#ffe9c4",
+        "fromM": 190,
+        "toM": 216,
+        "intensity": 1.1,
+        "source": [
+          "https://en.wikipedia.org/wiki/77_West_Wacker_Drive"
+        ]
+      }
+    },
+    {
+      "key": "wacker77-pediment",
+      "base": "#8fa6b3",
+      "finish": "glass",
+      "source": "https://en.wikipedia.org/wiki/77_West_Wacker_Drive (glazed pediment; photo-matched)",
+      "crownLight": {
+        "kind": "flood",
+        "color": "#ffe9c4",
+        "fromM": 200,
+        "toM": 216,
+        "intensity": 1.2,
+        "source": [
+          "https://en.wikipedia.org/wiki/77_West_Wacker_Drive"
+        ]
+      }
+    },
+    {
+      "key": "wacker225-granite",
+      "base": "#a7a39a",
+      "finish": "granite",
+      "source": "https://www.skyscrapercenter.com/building/225-west-wacker/9842 (grey granite; photo-matched)"
+    },
+    {
+      "key": "wacker225-aluminium",
+      "base": "#b8bcb8",
+      "finish": "metal",
+      "source": "https://aviewoncities.com/chicago/buildings/225-west-wacker (painted aluminium lanterns; photo-matched)"
+    },
+    {
+      "key": "builders-terracotta",
+      "base": "#cdbf9f",
+      "finish": "terracotta",
+      "source": "https://en.wikipedia.org/wiki/Builders_Building (buff terra cotta; photo-matched)"
+    },
+    {
+      "key": "builders-glass",
+      "base": "#4f5f66",
+      "glass": "#4f5f66",
+      "mullion": "#3c464b",
+      "spandrel": "#4a5a61",
+      "finish": "glass",
+      "source": "https://en.wikipedia.org/wiki/Builders_Building (1986 slanted glass mansard; photo-matched)"
+    },
+    {
+      "key": "lasallewacker-limestone",
+      "base": "#d3cbb8",
+      "finish": "limestone",
+      "source": "https://en.wikipedia.org/wiki/LaSalle%E2%80%93Wacker_Building (limestone; photo-matched)"
+    },
+    {
+      "key": "lasallewacker-granite",
+      "base": "#6e6a66",
+      "finish": "granite",
+      "source": "https://en.wikipedia.org/wiki/LaSalle%E2%80%93Wacker_Building (granite base; photo-matched)"
+    },
+    {
+      "key": "lasallewacker-beacon",
+      "base": "#c9c4b6",
+      "finish": "limestone",
+      "source": "https://en.wikipedia.org/wiki/LaSalle%E2%80%93Wacker_Building (the peak, lit cobalt blue)",
+      "crownLight": {
+        "kind": "lantern",
+        "color": "#2e4bd6",
+        "fromM": 140,
+        "toM": 157,
+        "intensity": 1.5,
+        "source": [
+          "https://en.wikipedia.org/wiki/LaSalle%E2%80%93Wacker_Building"
+        ]
+      }
+    },
+    {
+      "key": "hotel71-concrete",
+      "base": "#cfcbc1",
+      "finish": "concrete",
+      "source": "https://structurae.net/en/structures/hotel-71 (concrete balconies; photo-matched)"
+    },
+    {
+      "key": "rail-bridge-steel",
+      "base": "#33363a",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Canal_Street_railroad_bridge (dark grey railroad bridge steel; photo-matched)"
+    },
+    {
+      "key": "rail-counterweight",
+      "base": "#9a978f",
+      "finish": "concrete",
+      "source": "https://en.wikipedia.org/wiki/St._Charles_Air_Line_Bridge (concrete counterweights; photo-matched)"
+    },
+    {
+      "key": "lock-concrete",
+      "base": "#b4b1a9",
+      "finish": "concrete",
+      "source": "https://en.wikipedia.org/wiki/Chicago_Harbor_Lock (concrete lock walls; photo-matched)"
+    },
+    {
+      "key": "lock-gate-steel",
+      "base": "#4a5560",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Chicago_Harbor_Lock (steel sector gates; photo-matched)"
+    },
+    {
+      "key": "lock-zinc",
+      "base": "#7d8c96",
+      "finish": "metal",
+      "source": "https://www.bdcnetwork.com/product/zinc-clad-control-house-sets-sail-chicago-harbor-lock (patinated zinc; photo-matched)"
+    },
+    {
+      "key": "lock-bridge-glass",
+      "base": "#9fb6c4",
+      "finish": "glass",
+      "source": "https://www.bdcnetwork.com/product/zinc-clad-control-house-sets-sail-chicago-harbor-lock (the control house's glass bridge, staffed and lit at night; photo-matched)"
+    },
+    {
+      "key": "centennial-granite",
+      "base": "#b9a89c",
+      "finish": "granite",
+      "source": "https://www.architecture.org/online-resources/buildings-of-chicago/nicholas-j-melas-centennial-fountain (pink-grey granite; photo-matched)"
+    },
+    {
+      "key": "pingtom-red",
+      "base": "#b5262a",
+      "finish": "metal",
+      "source": "https://www.architectmagazine.com/project-gallery/ping-tom-park-boathouse/ (Mandarin-red steel; photo-matched)"
+    },
+    {
+      "key": "pingtom-black",
+      "base": "#2a2a2a",
+      "finish": "concrete",
+      "source": "https://www.architectmagazine.com/project-gallery/ping-tom-park-boathouse/ (black masonry; photo-matched)"
+    },
+    {
+      "key": "pingtom-white",
+      "base": "#f2f2ee",
+      "finish": "metal",
+      "source": "https://www.architectmagazine.com/project-gallery/ping-tom-park-boathouse/ (white steel canopy; photo-matched)"
+    },
+    {
+      "key": "pingtom-yellow",
+      "base": "#f2c230",
+      "finish": "metal",
+      "source": "https://www.architectmagazine.com/project-gallery/ping-tom-park-boathouse/ (yellow canopy; photo-matched)"
     }
   ]
 }

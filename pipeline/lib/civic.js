@@ -153,7 +153,10 @@ function unionStation(b, spec) {
   const span = o1 - o0 - 6, front = add2(c, mul2(f, face + 2.2)), mid = (o0 + o1) / 2, hall = spec.hall ?? { L: 67, W: 30, rise: 8 }
   const cols = merge(...Array.from({ length: n }, (_, i) => drum({ at: add2(front, mul2(side, mid - span / 2 + (span * i) / (n - 1))), base: 0, top: H, r: 0.95, sides: 12 })))
   const ent = slab(mesh(), add2(front, mul2(side, mid)), f, 3.4, span + 2.4, H, H + 2.2)
-  return { meshes: [P(cols, F.stone, 'union-limestone', 'column'), P(ent, F.stone, 'union-limestone', 'entablature'), P(barrel(c, side, hall.L, hall.W, b.height - 4, hall.rise), F.wall, 'conservatory-glass', 'great-hall', 0.35)] }
+  const meshes = [P(cols, F.stone, 'union-limestone', 'column'), P(ent, F.stone, 'union-limestone', 'entablature')]
+  // hall: false when the hero's sculpt (rivericons.js#unionstation) draws the Great Hall's vault in its light court
+  if (spec.hall !== false) meshes.push(P(barrel(c, side, hall.L, hall.W, b.height - 4, hall.rise), F.wall, 'conservatory-glass', 'great-hall', 0.35))
+  return { meshes }
 }
 
 // ── Merchandise Mart (1930) ─ https://en.wikipedia.org/wiki/Merchandise_Mart — the river façade's limestone piers

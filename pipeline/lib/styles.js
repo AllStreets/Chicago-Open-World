@@ -6,7 +6,7 @@ import { dirname } from 'node:path'
 import { FINISH_PRESETS, FINISHES, hexToRgb } from './looks.js'
 
 export const STYLE_COLS = 7
-export const MAX_STYLES = 256
+export const MAX_STYLES = 512 // _STYLE is a float attribute and the palette texture is sized by its rows; 512 leaves the river and park icons room
 
 export function styleEntry(key, look) {
   const p = FINISH_PRESETS[look.finish]

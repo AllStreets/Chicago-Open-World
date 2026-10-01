@@ -13,25 +13,25 @@
     },
     {
       "key": "trump",
-      "action": "keep",
+      "action": "refine",
       "method": "procedural",
       "criteria": {
         "figurative": false,
         "parametric": true,
-        "procTrisEstimate": 3000
+        "procTrisEstimate": 2500
       },
-      "reason": "Tower tiers and crown primitives already match; colours come from its V2 look"
+      "reason": "River icons (A-3): stainless fins, rounded setback ledges and the telescoping spire are parametric on the OSM setbacks"
     },
     {
       "key": "stregis",
-      "action": "keep",
+      "action": "refine",
       "method": "procedural",
       "criteria": {
         "figurative": false,
         "parametric": true,
-        "procTrisEstimate": 3000
+        "procTrisEstimate": 1000
       },
-      "reason": "Tower tiers and crown primitives already match; colours come from its V2 look"
+      "reason": "River icons (A-3): the frustum stacks are a parametric loft of the OSM plates; glass shades by plate width"
     },
     {
       "key": "aon",
@@ -167,25 +167,25 @@
     },
     {
       "key": "salesforce",
-      "action": "keep",
+      "action": "refine",
       "method": "procedural",
       "criteria": {
         "figurative": false,
         "parametric": true,
-        "procTrisEstimate": 3000
+        "procTrisEstimate": 3200
       },
-      "reason": "Tower tiers and crown primitives already match; colours come from its V2 look"
+      "reason": "River icons (A-6): three glass slabs and their accents are parametric on the OSM outline"
     },
     {
       "key": "110wacker",
-      "action": "keep",
+      "action": "refine",
       "method": "procedural",
       "criteria": {
         "figurative": false,
         "parametric": true,
-        "procTrisEstimate": 3000
+        "procTrisEstimate": 900
       },
-      "reason": "Tower tiers and crown primitives already match; colours come from its V2 look"
+      "reason": "River icons (A-6): the overhang cut, tridents and glass fins are parametric on the OSM outline"
     },
     {
       "key": "1000m",
@@ -255,14 +255,14 @@
     },
     {
       "key": "mart",
-      "action": "keep",
+      "action": "refine",
       "method": "procedural",
       "criteria": {
         "figurative": false,
         "parametric": true,
         "procTrisEstimate": 3000
       },
-      "reason": "Tower tiers and crown primitives already match; colours come from its V2 look"
+      "reason": "River icons (A-4): piers, cornices, the chiefs' heads frieze and the Art on theMART surface are parametric on OSM parts"
     },
     {
       "key": "cbot",
@@ -530,14 +530,14 @@
     },
     {
       "key": "unionstation",
-      "action": "keep",
+      "action": "refine",
       "method": "procedural",
       "criteria": {
         "figurative": false,
         "parametric": true,
-        "procTrisEstimate": 10000
+        "procTrisEstimate": 900
       },
-      "reason": "V6 P1 landmark builder owns this form"
+      "reason": "River icons (A-6): the office block round its light court and the Great Hall vault are parametric primitives"
     },
     {
       "key": "navypier",
@@ -614,7 +614,7 @@
         "parametric": true,
         "procTrisEstimate": 6000
       },
-      "reason": "Studio Gang honeycomb vault: hexagonal rib lattice with crown pods on the OSM outline, the boardwalk loop and prairie fringe round South Pond (zoo.js natureBoardwalk)"
+      "reason": "P2 structure built by the parametric boardwalkArches builder (p2landmarks.js)"
     },
     {
       "key": "rookery",
@@ -890,6 +890,424 @@
         "procTrisEstimate": 4000
       },
       "reason": "Lincoln Park stone: a brick-and-limestone Gothic tower with clocks, belfry and pinnacles on the fieldhouse (lincolnpark.js)"
+    },
+    {
+      "key": "rivercity",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 500
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "pingtomboathouse",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 500
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "oldpostoffice",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 2900
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "leoburnett",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 7200
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "wacker77",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 1000
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "wacker225",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 1200
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "wacker333",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 2300
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "reidmurdoch",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 1000
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "boeing",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 1100
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "builders",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 600
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "civicopera",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 1300
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "lasallewacker",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 1200
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "riversideplaza",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 5300
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "riverpoint",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 500
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "wolfpointwest",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 1500
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "riverside150",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 4500
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "wolfpointeast",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 3000
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "houseofblues",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 500
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "lasalle300",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 3400
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "wabash330",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 1200
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "jewelers35",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 5000
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "michigan333",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 1300
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "church17",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 500
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "hotel71",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 1100
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "mather",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 1000
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "londonhouse",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 1400
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "sheraton",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 5200
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "hyattregency",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 1700
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "harborlock",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 500
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "wardcatalog",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 2000
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "equitable",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 800
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "nbc",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 2700
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "saltshed",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 500
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "kinzierr",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 1000
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "canalrr",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 2100
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "stcharlesairline",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 1300
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "centennialfountain",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 500
+      },
+      "reason": "River icons (Workstream A): façade rhythm, setbacks and crown are parametric on the OSM massing; colours from sourced material rows"
+    },
+    {
+      "key": "swissotel",
+      "action": "add",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 500
+      },
+      "reason": "River icons (A-7): a flush silver glass prism needs only its sourced look"
     },
     {
       "key": "palmhouse",
