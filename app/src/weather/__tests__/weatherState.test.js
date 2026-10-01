@@ -75,3 +75,25 @@ describe('weather on the atmosphere (reusing the SNOW view systems)', () => {
     expect(applyWeather(atmosphereFor('SNOW'), manualWeather('CLEAR'), 'CLEAR', 'SNOW', 'HIGH').snow).toBe(1)
   })
 })
+
+describe('the sun disc hides behind the weather (user, 2026-09-30: "sun disc visible through rain at dusk")', () => {
+  it('sunVeil: clear sky shows the whole disc; rain, fog, snow and a full overcast hide it', async () => {
+    const { sunVeil } = await import('../weatherState.js')
+    const veilFor = (mode, preset = 'DUSK') => sunVeil(applyWeather(atmosphereFor(preset), manualWeather(mode), mode, preset, 'HIGH'))
+    expect(veilFor('CLEAR')).toBe(0)
+    expect(veilFor('CLEAR', 'DAY')).toBe(0)
+    for (const m of ['RAIN', 'FOG', 'SNOW', 'OVERCAST']) expect(veilFor(m), m).toBeGreaterThan(0.95)
+    expect(sunVeil(atmosphereFor('SNOW'))).toBe(1) // the SNOW view's deck, as before
+    // live weather on the LIVE view: light rain or thin fog already hides it
+    const live = (kind, intensity) => sunVeil(applyWeather(atmosphereFor('LIVE'), { kind, intensity, windMps: 3, windDeg: 270 }, 'LIVE', 'LIVE', 'HIGH'))
+    expect(live('rain', 0.35)).toBeGreaterThan(0.95)
+    expect(live('fog', 0.4)).toBeGreaterThan(0.95)
+  })
+  it('is proportional: it rises steadily with the cover and stays within 0..1', async () => {
+    const { sunVeil } = await import('../weatherState.js')
+    let prev = -1
+    for (let o = 0; o <= 1.0001; o += 0.05) { const v = sunVeil({ overcast: o }); expect(v).toBeGreaterThanOrEqual(prev); expect(v).toBeLessThanOrEqual(1); prev = v }
+    const mid = sunVeil({ overcast: 0.4 }); expect(mid).toBeGreaterThan(0.2); expect(mid).toBeLessThan(0.8)
+    expect(sunVeil({})).toBe(0)
+  })
+})

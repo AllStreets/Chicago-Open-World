@@ -11,7 +11,7 @@ import { applySkyGain } from './materials/skyGain.js'
 import { createRestTracker } from '../lib/rest.js'
 import { REFLECT_LAYER } from './materials/waterSurface.js'
 import { atmosphereFor } from '../lib/atmosphere.js'
-import { applyWeather } from '../weather/weatherState.js'
+import { applyWeather, sunVeil } from '../weather/weatherState.js'
 import { scanNow } from '../scan/ScanController.jsx'
 import * as THREE from 'three'
 
@@ -50,7 +50,8 @@ export default function SkyRig({ target, sunRef, instant = false, shadowMap = 40
     const elev = (Math.asin(Math.max(-1, Math.min(1, y))) * 180) / Math.PI
     const p = paletteFor(elev)
     sky.current?.material.uniforms.sunPosition.value.set(x * DIST, y * DIST, z * DIST)
-    if (sky.current) { const u = sky.current.material.uniforms; u.turbidity.value = A.turbidity; u.rayleigh.value = A.rayleigh; u.mieDirectionalG.value = 0.82 - 0.55 * A.overcast /* cloud hides the sun's disc */; applySkyGain(sky.current.material, A.skyGain * (1 - scanNow.sky), A.skyTint, [0.2, 0.2, 0.25, 0.92 * A.overcast]) } // SNOW: a low grey-violet deck lit by the city
+    const veil = sunVeil(A) // how much the weather hides the sun's disc (user, 2026-09-30: it showed through rain at dusk)
+    if (sky.current) { const u = sky.current.material.uniforms; u.turbidity.value = A.turbidity; u.rayleigh.value = A.rayleigh; u.mieDirectionalG.value = 0.82 - 0.55 * Math.max(A.overcast, 0.8 * veil) /* cloud flattens the sun's glare (the SNOW view: 0.8 either way) */; applySkyGain(sky.current.material, A.skyGain * (1 - scanNow.sky), A.skyTint, [0.2, 0.2, 0.25, 0.92 * A.overcast], 1 - veil) } // SNOW: a low grey-violet deck lit by the city; rain, fog, snow and overcast hide the disc
     const lightScale = (1 - 0.6 * A.overcast) * A.sunScale // an overcast sky dims the sun and flattens the shadows
     if (light.current) {
       // shadows cover the area around the camera target (snapped to 50 m so they don't swim)

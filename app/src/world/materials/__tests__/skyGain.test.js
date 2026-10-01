@@ -28,3 +28,23 @@ describe('overcast cloud deck (user, 2026-09-30)', () => {
     expect(m.uniforms.skyCloud.value[3]).toBe(0.8) // unchanged when not given
   })
 })
+
+describe('the sun disc under weather (user, 2026-09-30: "sun disc visible through rain at dusk")', () => {
+  it('scales the solar disc term of the stock sky by a uniform, idempotently', () => {
+    const sky = new Sky()
+    applySkyGain(sky.material, 0.4, [1, 1, 1], [0.2, 0.2, 0.25, 0.7], 0)
+    applySkyGain(sky.material, 0.4, null, null, 0.25)
+    expect(sky.material.fragmentShader).toMatch(/sundisk \* skySunDisc/)
+    expect(sky.material.fragmentShader.match(/uniform float skySunDisc;/g)).toHaveLength(1)
+    expect(sky.material.uniforms.skySunDisc.value).toBe(0.25)
+    applySkyGain(sky.material, 0.4)
+    expect(sky.material.uniforms.skySunDisc.value).toBe(0.25) // unchanged when not given
+  })
+  it('a fresh sky shows the whole disc; the stock shader still has the disc line we scale', () => {
+    // three-stdlib's Skys all share one material, so a fresh one is a copy of the stock shader
+    const m = { fragmentShader: Sky.SkyShader.fragmentShader, uniforms: {}, needsUpdate: false }
+    applySkyGain(m, 0.4)
+    expect(m.uniforms.skySunDisc.value).toBe(1)
+    expect(m.fragmentShader).toMatch(/sundisk \* skySunDisc/)
+  })
+})

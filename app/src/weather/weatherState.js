@@ -55,6 +55,14 @@ export function weatherVisuals({ kind, intensity }, quality = 'HIGH') {
   return v
 }
 
+// How much the weather hides the sun's disc and its glare, 0 (clear) … 1 (gone), from an atmosphere's eased
+// overcast / rain / haze / snow. Rising smoothly with each, so a thin overcast only dims it and rain, lake fog, snow
+// or a full deck hide it (user, 2026-09-30: "sun disc visible through rain at dusk").
+const ramp = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t) }
+export function sunVeil({ overcast = 0, rain = 0, haze = 0, snow = 0 } = {}) {
+  return Math.max(ramp(0.1, 0.7, overcast), ramp(0.05, 0.4, rain), ramp(0.1, 0.5, haze), ramp(0.05, 0.4, snow))
+}
+
 export function tweenWeather(a, b, t) {
   if (t >= 1) return b
   if (t <= 0) return a
