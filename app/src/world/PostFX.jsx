@@ -8,8 +8,10 @@ export default function PostFX() {
   const q = QUALITY[useStore((s) => s.quality)]
   // a softer vignette on clear days: over a bright sky the dark corners read as grey haze (user fixes)
   const clear = useStore((s) => s.timePreset === 'DAY' || s.timePreset === 'SUNNY')
+  // in a subway tube the 18 m AO radius spans the whole tube and reads as grey haze: the tubes carry their own shading
+  const underground = useStore((s) => s.underground)
   const effects = [
-    q.ao && <N8AO key="ao" halfRes aoRadius={18} distanceFalloff={0.6} intensity={2.2} quality="medium" />,
+    q.ao && !underground && <N8AO key="ao" halfRes aoRadius={18} distanceFalloff={0.6} intensity={2.2} quality="medium" />,
     <Bloom key="bloom" mipmapBlur luminanceThreshold={0.55} luminanceSmoothing={0.25} intensity={1.1} radius={0.75} />,
     <ToneMapping key="tm" mode={ToneMappingMode.ACES_FILMIC} />,
     <SMAA key="smaa" />,

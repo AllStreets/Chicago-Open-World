@@ -1,8 +1,27 @@
 // app/src/transit/followCam.js — ride along with a train (C15): chase or side view, never inside a building
-// (V1 clearance: roof + 25 m) and never underground (a subway train is followed along the surface).
+// (V1 clearance: roof + 25 m). A subway train is followed down into its tube (user, 2026-09-30) when the tunnels are
+// drawn: the camera stays inside the tube's walls, floor and ceiling; without them it rides along the surface.
 import { clearanceAt } from '../lib/clearance.js'
+import { activeTunnelRoom, TUNNEL } from './tunnels.js'
 
 export const FOLLOW = { chase: { back: 38, up: 14, ahead: 70, side: 0 }, side: { back: -4, up: 5, ahead: 0, side: 26 } }
+
+// in a tube: just behind the last car at window height, or beside the leading car looking back along its flank
+export const FOLLOW_UNDER = { chase: { back: [10, 6, 3], up: 2.3, ahead: 30 }, side: { lat: [3.4, -3.4, 2.1, -2.1], ahead: 7, up: 1.9, look: 14 } }
+export const UNDER_Y = TUNNEL.mouthY + 1 // rail top below this: the train is in its tube
+
+// `tail` (the last car's rear and heading) keeps the chase in the tube on curves, where "behind the head" is a wall
+function underPose(head, f, r, view, room, len, tail) {
+  const U = FOLLOW_UNDER, from = (o, g, along, lat, up) => [o[0] + g[0] * along - g[1] * lat, o[1] + up, o[2] + g[1] * along + g[0] * lat]
+  if (view === 'side') {
+    const target = from(head, f, -U.side.look, 0, 1.4)
+    for (const lat of U.side.lat) { const p = from(head, f, U.side.ahead, lat, U.side.up); if (room(...p)) return { position: p, target, underground: true } }
+  }
+  const [o, g, extra] = tail ? [tail.p, tail.f, 0] : [head, f, len]
+  let p = null
+  for (const back of U.chase.back) { p = from(o, g, -(back + extra), 0, U.chase.up); if (room(...p)) break }
+  return { position: p, target: from(o, g, U.chase.ahead + (tail ? 0 : len), 0, 1.5), underground: true }
+}
 
 const MAX_PITCH_DEG = 45
 const PULL_BACK_M = [38, 80, 140, 220, 320]
@@ -15,8 +34,9 @@ function place(head, f, r, ground, v, side, back, clearance) {
 }
 
 // `len` is the train's length: the chase sits behind its last car; the side view frames the leading car.
-export function followPose(head, dir, view = 'chase', clearance = clearanceAt, len = 0) {
+export function followPose(head, dir, view = 'chase', clearance = clearanceAt, len = 0, room = null, tail = null) {
   const v = FOLLOW[view] ?? FOLLOW.chase, l = Math.hypot(dir[0], dir[2]) || 1, f = [dir[0] / l, dir[2] / l], r = [-f[1], f[0]]
+  if (room && head[1] < UNDER_Y) return underPose(head, f, r, view, room, len, tail)
   const ground = Math.max(head[1], 0)
   const target = (ahead) => [head[0] + f[0] * ahead, ground + 2, head[2] + f[1] * ahead]
   // In the Loop's canyons the preferred spot is often over a roof: try the other side, then a chase from behind.
@@ -40,11 +60,17 @@ export function followPose(head, dir, view = 'chase', clearance = clearanceAt, l
 }
 
 // `lookup` resolves a train missing from the last published frame (it may not have been drawn yet) before giving up.
-export function followStep(follow, trains, clearance = clearanceAt, lookup = null) {
+export function followStep(follow, trains, clearance = clearanceAt, lookup = null, room = activeTunnelRoom()) {
   const t = trains.find((x) => x.id === follow.trainId) ?? lookup?.(follow.trainId) ?? null
   if (!t) return { ended: 'left' }
   const len = (t.cars ?? []).reduce((a, c) => a + (c?.length ?? 0), 0)
-  return { pose: followPose(t.head.p, t.head.dir, follow.view, clearance, len), train: t }
+  // the rear of the last car, heading the way the train runs (cars may be turned round, so not from their yaw)
+  const cars = (t.cars ?? []).filter(Boolean), last = cars.at(-1), prev = cars.at(-2)
+  const tail = last?.pos && prev?.pos ? (() => {
+    const dx = prev.pos[0] - last.pos[0], dz = prev.pos[2] - last.pos[2], l = Math.hypot(dx, dz) || 1, g = [dx / l, dz / l], h = (last.length ?? 0) / 2
+    return { p: [last.pos[0] - g[0] * h, last.pos[1], last.pos[2] - g[1] * h], f: g }
+  })() : null
+  return { pose: followPose(t.head.p, t.head.dir, follow.view, clearance, len, room, tail), train: t }
 }
 
 const MODIFIERS = new Set(['Shift', 'Meta', 'Control', 'Alt', 'CapsLock'])
