@@ -1,0 +1,696 @@
+{
+  "note": "Workstream D0 (plan 2026-10-01 §4): the vertical stack under the flat street datum. Model y 0 = the street the model flattens; beside the river that is Upper Wacker (≈ 599.6 ft NAVD88), in the Loop interior ≈ 593.6 ft, on the lakefront the park / LSD grade (≈ 593 ft). All model values are metres. D1–D5 read these; nothing renders from this file yet. Findings and corrections: docs/superpowers/plans/2026-10-01-d0-findings.md.",
+  "version": 1,
+  "levels": {
+    "RIVER_Y": -6.3,
+    "LAKE_Y": -4.65,
+    "RIVERWALK_Y": -5.3,
+    "LOWER_Y": -5.1,
+    "LOWER2_Y": -9.5,
+    "SLAB_M": 0.9,
+    "CLEAR_M": 4.19
+  },
+  "planValues": {
+    "RIVER_Y": -6,
+    "LAKE_Y": -4.6,
+    "RIVERWALK_Y": -5,
+    "LOWER_Y": -5,
+    "LOWER2_Y": -9.5,
+    "SLAB_M": 0.8,
+    "CLEAR_M": 4.2
+  },
+  "levelSources": {
+    "RIVER_Y": [
+      "usgs-3dep-epqs",
+      "cfr-207-420",
+      "mwrd-cws",
+      "chicago-benchmarks",
+      "cpl-elevation"
+    ],
+    "LAKE_Y": [
+      "usgs-3dep-epqs",
+      "chs-lake-levels",
+      "cpl-elevation",
+      "harbor-lock"
+    ],
+    "RIVERWALK_Y": [
+      "usgs-3dep-epqs",
+      "osm",
+      "riverwalk-design"
+    ],
+    "LOWER_Y": [
+      "wacker-clearance",
+      "lusas-wacker",
+      "usgs-3dep-epqs"
+    ],
+    "LOWER2_Y": [
+      "wiki-multilevel",
+      "osm",
+      "usgs-3dep-epqs"
+    ],
+    "SLAB_M": [
+      "lusas-wacker"
+    ],
+    "CLEAR_M": [
+      "wacker-clearance"
+    ]
+  },
+  "notes": {
+    "RIVER_Y": "Upper Wacker median − river at its regulated normal level (−2.0 ft CCD = 577.31 ft NAVD88) = 6.83 m. −6.3 is the deepest value that keeps the plan's lake step ≤ 1.7 m with LAKE_Y inside tolerance; it equals the river at the top of its regulated band (−0.5 ft CCD → 6.34 m). Plan value −6.0 was 0.83 m short (outside ±0.7).",
+    "LAKE_Y": "Lakefront street/park median − Lake Michigan long-term mean (578.81 ft IGLD85 → 579.31 ft NAVD88) = 4.28 m. −4.65 keeps the river→lake step at 1.65 m (≤ 1.7). Revetment / harbour-wall / beach-edge / pier-deck tops (lakeEdge) are only ≈ 2.6 m above the lake: D5 aprons step from y 0 down to ≈ LAKE_Y + 2.6, then to the water.",
+    "RIVERWALK_Y": "Upper Wacker − Riverwalk median = 5.77 m; Riverwalk ≈ 1.0 m above normal pool. Kept exactly 1.0 m over RIVER_Y in the model (−5.3).",
+    "LOWER_Y": "Where Lower Wacker is open to the sky at its ramp mouths (Lake, Madison, Congress) the 2017 DEM reads 582.6–583.8 ft, median 583.3 ⇒ 5.0 m under the Upper Wacker median (sampleSummary.lowerDropM). From the structure: 13′9″ clearance + 13″ slab + 24″ ribs + ≈ 3″ wearing course ≈ 17.1 ft = 5.2 m. −5.1 m gives 4.2 m clear under a 0.9 m slab.",
+    "LOWER2_Y": "Lower Lower Wacker / Lower Lower Randolph are covered. Where an upper deck is a mapped bridge (Stetson × South Water) the DEM sees the level under it 4.05 m (13.3 ft) down; Upper → Lower is 5.0–5.2 m. A third level 4.0–4.4 m under LOWER_Y ⇒ −9.5 (plan value kept). In reality this level is ≈ 2.9 m above the river; in the model it sits behind the dockwall, below RIVER_Y.",
+    "SLAB_M": "Upper Wacker deck: 13 in slab on 2 ft deep × 4 ft wide longitudinal ribs (0.94 m at the ribs, 0.33 m between). 0.9 m.",
+    "CLEAR_M": "Rebuilt 2001–02 from 12′6″ to at least 13′9″ (4.19 m). Posted truck clearance at the entrances is 13′0″.",
+    "levelSpacing": "Measured spacing between stacked street levels: 5.0–5.2 m (Upper → Lower Wacker: LiDAR at the open ramp mouths, and clearance + structure), 4.05 m (Upper → Lower South Water / Lower Stetson, LiDAR under a mapped bridge), 4.3 m (Upper Michigan → Upper Wacker at DuSable, LiDAR 613.8 − 599.7 ft)."
+  },
+  "datum": {
+    "ccdZeroNavd88Ft": 579.3,
+    "ccdCalibration": "City of Chicago elevation benchmarks (CCD) vs the 2017 1 m DEM at the same coordinates, n = 39 benchmarks between 41.85–41.95 N, 87.60–87.70 W: median NAVD88 − CCD = 579.31 ft (IQR 579.08–579.50); monuments in manholes 579.39. Cross-check: CPL gives 580 ft IGLD85 ≈ 580.5 ft NAVD88 ≈ +1.3 ft CCD ⇒ 579.2. Benchmark #1 (Northern Trust, 50 S LaSalle, primary city bench, 17.64 ft CCD, 3.22 ft above sidewalk) ⇒ sidewalk 14.42 ft CCD = 593.7 ft NAVD88, matching the Loop-street LiDAR median 593.6.",
+    "ccdHistoric": "CCD 0 = 579.88 ft above mean tide at New York (the NGVD-era figure the plan quoted). It is NOT the NAVD88 value; use ccdZeroNavd88Ft.",
+    "igld85ToNavd88Ft": 0.5,
+    "igldNote": "CPL: lake at 580 ft IGLD85 ≈ 580.5 ft NAVD88 at Chicago."
+  },
+  "water": {
+    "riverNormalCcdFt": -2,
+    "riverBandCcdFt": [
+      -2,
+      -0.5
+    ],
+    "riverNote": "33 CFR 207.420 / MWRD: the river at the Chicago River Controlling Works is held between −0.5 and −2.0 ft CCD, normally −2.0 ft.",
+    "lakeMeanIgldFt": 578.81,
+    "lakeJune2017IgldFt": 580.31,
+    "lakeLowWaterDatumIgldFt": 577.5,
+    "lakeRecordHighIgldFt": 582.35,
+    "lakeNote": "Lake Michigan–Huron: 1918–2016 mean 578.81 ft IGLD85; June 2017 monthly mean 176.88 m = 580.31 ft (the LiDAR month); chart datum (LWD) 577.5 ft; record monthly high 582.35 ft (October 1986; 2020 came within ≈ 0.1 ft).",
+    "lockNormalLiftFt": 2,
+    "lockNote": "Chicago Harbor Lock: normal lift 2.0 ft; cycles 2–5 ft differences. Lake mean (579.31 NAVD88) − river normal (577.31) = 2.0 ft = 0.61 m: the real step at the lock.",
+    "lidarWaterNote": "The 2017 DEM is hydro-flattened: the river AND the nearshore lake both read 576.09–576.10 ft, offshore 574.83 ft. Those are breakline artefacts (the lake was 580.8 ft NAVD88 that month), so water surfaces come from the regulation and gauge data above, never from the DEM."
+  },
+  "sources": {
+    "usgs-3dep-epqs": {
+      "title": "USGS 3DEP 1 m DEM via the Elevation Point Query Service (Cook County 2017 LiDAR, acquired 2017-06-03, NAVD88 ft)",
+      "url": "https://epqs.nationalmap.gov/v1/docs"
+    },
+    "chicago-benchmarks": {
+      "title": "City of Chicago — Elevation Benchmarks (Chicago City Datum)",
+      "url": "https://data.cityofchicago.org/Buildings/Elevation-Benchmarks/zgvr-7yfd"
+    },
+    "cpl-elevation": {
+      "title": "Chicago Public Library — The Elevation of Chicago: A Statistical Mystery",
+      "url": "https://www.chipublib.org/blogs/post/the-elevation-of-chicago-a-statistical-mystery/"
+    },
+    "cfr-207-420": {
+      "title": "33 CFR 207.420 — Chicago River; Sanitary District controlling works and the lock at the mouth of the river",
+      "url": "https://www.ecfr.gov/current/title-33/chapter-II/part-207/section-207.420"
+    },
+    "mwrd-cws": {
+      "title": "MWRD — Description of the Chicago Waterway System (R&D report 08-15)",
+      "url": "https://mwrd.org/sites/default/files/documents/08-15_Description_of_CWS_Report_for_UAA.pdf"
+    },
+    "harbor-lock": {
+      "title": "Chicago Harbor Lock (USACE-operated; normal lift 2.0 ft)",
+      "url": "https://en.wikipedia.org/wiki/Chicago_Harbor_Lock"
+    },
+    "chs-lake-levels": {
+      "title": "Canadian Hydrographic Service — historical monthly mean water levels, Lake Michigan–Huron (coordinated network, IGLD85)",
+      "url": "https://www.tides.gc.ca/en/historical-monthly-mean-water-levels-coordinated-network-lake-michiganhuron"
+    },
+    "riverwalk-design": {
+      "title": "Ross Barney Architects / Sasaki — Chicago Riverwalk (22 ft below street; ≈ 7 ft annual flood range — quoted from a search excerpt, the page itself timed out)",
+      "url": "https://divisare.com/projects/334360-ross-barney-architects-chicago-riverwalk"
+    },
+    "wacker-clearance": {
+      "title": "Wacker Drive reconstruction — Lower Wacker clearance raised from 12′6″ to at least 13′9″ (posted 13′0″ at entrances)",
+      "url": "https://www.researchgate.net/publication/293551146_Rebuilding_Chicago's_Upper_and_Lower_Wacker_Drive"
+    },
+    "lusas-wacker": {
+      "title": "LUSAS case study — Wacker Drive Phase 2 (13 in slab, 2 ft × 4 ft ribs, 32 ft column bays)",
+      "url": "https://www.lusas.com/case/bridge/wacker.html"
+    },
+    "wiki-multilevel": {
+      "title": "Wikipedia — Multilevel streets in Chicago",
+      "url": "https://en.wikipedia.org/wiki/Multilevel_streets_in_Chicago"
+    },
+    "osm": {
+      "title": "OpenStreetMap (ODbL) — layer / tunnel / covered tags, Riverwalk footways, CTA subway ways (pipeline/cache/world)",
+      "ref": "https://www.openstreetmap.org/copyright"
+    },
+    "red-river-tube": {
+      "title": "DNAinfo / Block Club — State Street subway river crossing: riverbed 24 ft below the water, trench bottom 52 ft; Blue Line crosses under Lake St and Congress, hand-mined and deeper",
+      "url": "https://www.dnainfo.com/chicago/20161018/downtown/cta-blue-line-chicago-river-history-subway/"
+    },
+    "chicago-l-state": {
+      "title": "Chicago-L.org — State Street Subway (200 ft prefabricated river tube, 1939–40)",
+      "url": "https://www.chicago-l.org/operations/lines/state_subway.html"
+    }
+  },
+  "samples": [
+    {
+      "id": "loop-state-madison",
+      "kind": "loopStreet",
+      "lat": 41.88203,
+      "lon": -87.62784,
+      "ftNavd88": 593.62,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "loop-lasalle-monroe",
+      "kind": "loopStreet",
+      "lat": 41.88065,
+      "lon": -87.6324,
+      "ftNavd88": 593.26,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "loop-clark-lake",
+      "kind": "loopStreet",
+      "lat": 41.88568,
+      "lon": -87.63108,
+      "ftNavd88": 593.22,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "loop-michigan-randolph",
+      "kind": "loopStreet",
+      "lat": 41.8844,
+      "lon": -87.6246,
+      "ftNavd88": 595.17,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "loop-franklin-quincy",
+      "kind": "loopStreet",
+      "lat": 41.8788,
+      "lon": -87.6358,
+      "ftNavd88": 593.72,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "wacker-wabash-state",
+      "kind": "upperWacker",
+      "lat": 41.886981,
+      "lon": -87.627,
+      "ftNavd88": 602.26,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "wacker-state-dearborn",
+      "kind": "upperWacker",
+      "lat": 41.886947,
+      "lon": -87.6287,
+      "ftNavd88": 599.35,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "wacker-dearborn-clark",
+      "kind": "upperWacker",
+      "lat": 41.886949,
+      "lon": -87.6303,
+      "ftNavd88": 599.59,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "wacker-clark-lasalle",
+      "kind": "upperWacker",
+      "lat": 41.886945,
+      "lon": -87.6318,
+      "ftNavd88": 599.42,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "wacker-lasalle-wells",
+      "kind": "upperWacker",
+      "lat": 41.886947,
+      "lon": -87.6333,
+      "ftNavd88": 599.42,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "wacker-wells-franklin",
+      "kind": "upperWacker",
+      "lat": 41.886949,
+      "lon": -87.6348,
+      "ftNavd88": 599.84,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "wacker-franklin-lake",
+      "kind": "upperWacker",
+      "lat": 41.88647,
+      "lon": -87.6362,
+      "ftNavd88": 599.95,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "wacker-n-randolph",
+      "kind": "upperWacker",
+      "lat": 41.8846,
+      "lon": -87.6372,
+      "ftNavd88": 600.23,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "rw-vietnam-memorial",
+      "kind": "riverwalk",
+      "lat": 41.887475,
+      "lon": -87.627,
+      "ftNavd88": 582.26,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "rw-marina-plaza",
+      "kind": "riverwalk",
+      "lat": 41.887126,
+      "lon": -87.6287,
+      "ftNavd88": 581.06,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "rw-the-cove",
+      "kind": "riverwalk",
+      "lat": 41.887092,
+      "lon": -87.6303,
+      "ftNavd88": 580.03,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "rw-river-theater",
+      "kind": "riverwalk",
+      "lat": 41.88714,
+      "lon": -87.6318,
+      "ftNavd88": 581.02,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "rw-water-plaza",
+      "kind": "riverwalk",
+      "lat": 41.887137,
+      "lon": -87.6333,
+      "ftNavd88": 580.55,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "rw-the-jetty",
+      "kind": "riverwalk",
+      "lat": 41.887095,
+      "lon": -87.6348,
+      "ftNavd88": 580.02,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "rw-the-boardwalk",
+      "kind": "riverwalk",
+      "lat": 41.886804,
+      "lon": -87.6362,
+      "ftNavd88": 580.15,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "rw-east-section",
+      "kind": "riverwalk",
+      "lat": 41.88845,
+      "lon": -87.6225,
+      "ftNavd88": 584.86,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "lower-ramp-lake-wacker",
+      "kind": "lowerEntrance",
+      "lat": 41.885481,
+      "lon": -87.6369071,
+      "ftNavd88": 582.63,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "lower-ramp-madison-wacker",
+      "kind": "lowerEntrance",
+      "lat": 41.8817898,
+      "lon": -87.636889,
+      "ftNavd88": 583.84,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "lower-ramp-congress-wacker",
+      "kind": "lowerEntrance",
+      "lat": 41.8766327,
+      "lon": -87.6367504,
+      "ftNavd88": 583.31,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "lower-ramp-michigan-wacker",
+      "kind": "lowerEntrance",
+      "lat": 41.8882974,
+      "lon": -87.6245493,
+      "ftNavd88": 614.16,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "lower-open-stetson-southwater",
+      "kind": "lowerOpen",
+      "lat": 41.8865,
+      "lon": -87.6225,
+      "ftNavd88": 586.69,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "bridge-dusable-south-upper",
+      "kind": "bridgeApproach",
+      "lat": 41.888192,
+      "lon": -87.6253,
+      "ftNavd88": 613.82,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "bridge-state-north",
+      "kind": "bridgeApproach",
+      "lat": 41.8883,
+      "lon": -87.6278,
+      "ftNavd88": 609.85,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "bridge-clark-north",
+      "kind": "bridgeApproach",
+      "lat": 41.8883,
+      "lon": -87.631,
+      "ftNavd88": 603.53,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "bridge-wells-north",
+      "kind": "bridgeApproach",
+      "lat": 41.8883,
+      "lon": -87.634,
+      "ftNavd88": 602.11,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "lake-northave-lsd",
+      "kind": "lakeStreet",
+      "lat": 41.9115,
+      "lon": -87.629,
+      "ftNavd88": 594.7,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "lake-northave-beachhouse",
+      "kind": "lakeStreet",
+      "lat": 41.9115,
+      "lon": -87.6256,
+      "ftNavd88": 594.01,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "lake-belmont-park",
+      "kind": "lakeStreet",
+      "lat": 41.94,
+      "lon": -87.64,
+      "ftNavd88": 589.57,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "lake-navypier-streeter",
+      "kind": "lakeStreet",
+      "lat": 41.8917,
+      "lon": -87.612,
+      "ftNavd88": 592.67,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "lake-oak-park",
+      "kind": "lakeStreet",
+      "lat": 41.902,
+      "lon": -87.624,
+      "ftNavd88": 589.77,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "lake-monroe-lsd",
+      "kind": "lakeStreet",
+      "lat": 41.881,
+      "lon": -87.6184,
+      "ftNavd88": 594.53,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "edge-northave-beach",
+      "kind": "lakeEdge",
+      "lat": 41.9115,
+      "lon": -87.6248,
+      "ftNavd88": 589.21,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "edge-belmont-harbor-wall",
+      "kind": "lakeEdge",
+      "lat": 41.94,
+      "lon": -87.6376,
+      "ftNavd88": 587.2,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "edge-navypier-deck",
+      "kind": "lakeEdge",
+      "lat": 41.8917,
+      "lon": -87.602,
+      "ftNavd88": 588.76,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    },
+    {
+      "id": "edge-oak-revetment",
+      "kind": "lakeEdge",
+      "lat": 41.902,
+      "lon": -87.6222,
+      "ftNavd88": 584.06,
+      "date": "6/3/2017",
+      "resolutionM": 1
+    }
+  ],
+  "sampleSummary": {
+    "loopStreetFt": 593.62,
+    "upperWackerFt": 599.72,
+    "riverwalkFt": 580.79,
+    "bridgeApproachFt": 606.69,
+    "lakeStreetFt": 593.34,
+    "lakeEdgeFt": 587.98,
+    "riverDropM": 6.83,
+    "riverwalkDropM": 5.77,
+    "lakeDropM": 4.28,
+    "lakeEdgeAboveWaterM": 2.64,
+    "lowerDropM": 5
+  },
+  "tubeDips": {
+    "note": "D0-3. Crossings found by build/levels-survey.js (OSM railway=subway ways with tunnel/layer<0 × OSM river polygons and downtown layer<0 streets). railY is the model rail-top height the tube should reach there (model frame, y 0 = Upper Wacker). tunnelClearM = app/src/transit/tunnels.js TUNNEL.clear. Today every tube runs flat at SUBWAY_Y −9.",
+    "tunnelClearM": 4.2,
+    "crossings": [
+      {
+        "key": "red-state-main",
+        "kind": "river",
+        "line": "Red (State Street Subway)",
+        "crossing": "Main Branch at State St, twin tubes, 67 m inside the river polygon",
+        "at": {
+          "lat": 41.88754,
+          "lon": -87.627985
+        },
+        "railY": -21.3,
+        "source": "red-river-tube",
+        "basis": "Trench bottom 52 ft (15.85 m) below the water; ≈ 1 m of invert + track ⇒ rail ≈ water − 15.0 m = RIVER_Y − 15.0. Tube top ≈ 29 ft below water (24 ft riverbed + 5 ft cover)."
+      },
+      {
+        "key": "blue-lake-south",
+        "kind": "river",
+        "line": "Blue (Milwaukee–Dearborn Subway, Lake St)",
+        "crossing": "South Branch at Lake St (just south of Wolf Point), twin tubes, 63 m inside the river polygon",
+        "at": {
+          "lat": 41.885712,
+          "lon": -87.637719
+        },
+        "railY": -22,
+        "source": "approximate",
+        "basis": "Hand-mined and 'much deeper than the Red Line' (red-river-tube); no published depth found ⇒ Red value − 0.7 m."
+      },
+      {
+        "key": "blue-congress-south",
+        "kind": "river",
+        "line": "Blue (Milwaukee–Dearborn → Forest Park, Congress)",
+        "crossing": "South Branch at Congress Pkwy, twin tubes, 59 m inside the river polygon",
+        "at": {
+          "lat": 41.875647,
+          "lon": -87.636719
+        },
+        "railY": -22,
+        "source": "approximate",
+        "basis": "As blue-lake-south."
+      },
+      {
+        "key": "red-state-lower-wacker",
+        "kind": "lower",
+        "layer": -1,
+        "line": "Red (State Street Subway)",
+        "crossing": "Under E/W Lower Wacker Dr and E Lower Wacker Service Dr at State, 70 m south of the river crossing",
+        "at": {
+          "lat": 41.886892,
+          "lon": -87.62796
+        },
+        "railY": -18.5,
+        "source": "approximate",
+        "basis": "Ramp from the river low point (−21.3) at ≈ 3.5 % (the real Lake-station → river grade: 21 ft over ≈ 200 m)."
+      },
+      {
+        "key": "red-state-carroll",
+        "kind": "lower",
+        "layer": -2,
+        "line": "Red (State Street Subway)",
+        "crossing": "Under W Carroll Ave service level (L-2) at State, north bank",
+        "at": {
+          "lat": 41.888575,
+          "lon": -87.627985
+        },
+        "railY": -18,
+        "source": "approximate",
+        "basis": "Ramp from the river low point at ≈ 3.5 %."
+      },
+      {
+        "key": "blue-lake-lower-wacker",
+        "kind": "lower",
+        "layer": -1,
+        "line": "Blue (Lake St)",
+        "crossing": "Under N/W Lower Wacker Dr and its trunk_link at Lake St",
+        "at": {
+          "lat": 41.885694,
+          "lon": -87.636803
+        },
+        "railY": -19.5,
+        "source": "approximate",
+        "basis": "76 m east of the river low point, ≈ 3.5 % ramp."
+      },
+      {
+        "key": "blue-lake-canal-l2",
+        "kind": "lower",
+        "layer": -2,
+        "line": "Blue (Lake St)",
+        "crossing": "Under the L-2 service way west of the river (Canal St / Union Station side)",
+        "at": {
+          "lat": 41.885703,
+          "lon": -87.638623
+        },
+        "railY": -19.5,
+        "source": "approximate",
+        "basis": "75 m west of the river low point, ≈ 3.5 % ramp."
+      },
+      {
+        "key": "blue-congress-l1",
+        "kind": "lower",
+        "layer": -1,
+        "line": "Blue (Congress)",
+        "crossing": "Under the L-1 service way west of the river at Congress",
+        "at": {
+          "lat": 41.875593,
+          "lon": -87.637767
+        },
+        "railY": -19.5,
+        "source": "approximate",
+        "basis": "≈ 90 m west of the river low point, ≈ 3.5 % ramp."
+      }
+    ]
+  },
+  "ledger": {
+    "note": "D0-4 bytes ledger. Measured by build/levels-survey.js into a scratch dir (never app/public/world) with the build's own encoders: meshopt tiles (writeTileGlb), compact JSON, Int16 traffic.bin. Filled from its output; see the findings note for the per-stage table.",
+    "measured": {
+      "D1_dockwalls": {
+        "riverPerimeterM": 77318,
+        "tileBytesLod0": 263332,
+        "how": "one quad per river-polygon edge, 0 → RIVER_Y − 0.5, meshopt"
+      },
+      "D2_lowerLevelsJson": {
+        "ways": 312,
+        "bytes": 36843,
+        "bytesIfAll529LayerLt0": 58337
+      },
+      "D3_trafficBin": {
+        "lowerEdgeBytes": 3434,
+        "levelValueBytes": 20420,
+        "existingNodes": 10078
+      },
+      "D5_shore": {
+        "coastM": 28734,
+        "bytesPerFace": 61996
+      }
+    },
+    "perStageMB": {
+      "D1": [
+        0.9,
+        1.3
+      ],
+      "D2": [
+        0.04,
+        0.06
+      ],
+      "D3": [
+        0.02,
+        0.03
+      ],
+      "D4": [
+        0.01,
+        0.03
+      ],
+      "D5": [
+        0.3,
+        0.5
+      ],
+      "total": [
+        1.3,
+        1.9
+      ]
+    },
+    "perStageBasis": {
+      "D1": "dockwalls 0.26 MB in LOD0 tiles + the same in LOD1 ≈ 0.53 MB; water meshes only change y (0 B); Riverwalk rooms 0.2–0.5 MB (landmark-style hand geometry, LOD0 only); bascule piers/pits 0.1–0.2 MB; building skirts ≈ 0.1 MB",
+      "D2": "lower-levels.json as measured (app-built decks, no tile bytes)",
+      "D3": "traffic.bin v2: Int16 lower edges + one Int16 level per node",
+      "D4": "portal signs and labels",
+      "D5": "two stepped revetment faces along 28.7 km of coast, LOD0 + LOD1 ≈ 0.25 MB, plus harbour walls / Navy Pier / breakwater faces"
+    }
+  }
+}
