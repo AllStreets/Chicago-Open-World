@@ -67,6 +67,22 @@ describe('landmarks', () => {
     expect(r.meshes.filter((m) => m.part === 'turret').length).toBe(4)
     expect(Math.max(...pts(r.meshes).map((q) => q[1]), ...r.pieces.map((p) => p.top))).toBeCloseTo(55, 0)
   })
+  it('the Water Tower in full (user: icons to the Tribune/Wrigley standard): pepper-box turrets on the base and the shaft, crenellations, lancets, an octagonal lantern and cupola', () => {
+    const r = buildLandmark(B(rect(-9, -9, 9, 9), { height: 55 }), { type: 'castellated', heightM: 55 })
+    const part = (p) => r.meshes.filter((m) => m.part === p)
+    expect(part('shaft-turret')).toHaveLength(4)
+    // every turret ends in a pepper-box cap above its crenellated rim
+    expect(part('caps').length).toBe(1)
+    const merl = pts(part('merlons'))
+    expect(new Set(merl.map((q) => Math.round(q[1]))).size).toBeGreaterThanOrEqual(3) // battlements at several levels
+    // the stage above the square shaft is an octagon, then the open lantern, the cupola and the finial at the very top
+    expect(r.pieces.some((p) => p.outer.length === 8)).toBe(true)
+    for (const p of ['lantern', 'lantern-arches', 'cupola', 'finial', 'lancets', 'doorways']) expect(part(p).length, p).toBeGreaterThan(0)
+    expect(part('lancets')[0].style).toBe('gothic-shadow')
+    const fin = pts(part('finial'))
+    expect(Math.max(...fin.map((q) => q[1]))).toBeCloseTo(55, 0)
+    expect(Math.hypot(...[fin.reduce((a, q) => a + q[0], 0) / fin.length, fin.reduce((a, q) => a + q[2], 0) / fin.length])).toBeLessThan(0.5)
+  })
 })
 
 describe('campus buildings', () => {

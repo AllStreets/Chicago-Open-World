@@ -40,7 +40,41 @@
       "crowns": [],
       "aliases": [
         "Sears Tower"
-      ]
+      ],
+      "sculpt": "willis",
+      "sculptParams": {
+        "belts": [
+          [
+            113,
+            125.2
+          ],
+          [
+            254.5,
+            262.6
+          ],
+          [
+            351.5,
+            359.6
+          ],
+          [
+            416.2,
+            428.3
+          ]
+        ],
+        "ledge": {
+          "face": [
+            -1,
+            0
+          ],
+          "y": 412
+        },
+        "minTubeM2": 200,
+        "note": "mechanical floors 29-31, 64-65, 88-89 and 104-106 at ~4.04 m a floor (Skydeck, floor 103, at 1,353 ft / 412 m); the Ledge's four glass boxes out 4.3 ft (1.3 m) from the west face.",
+        "source": [
+          "https://en.wikipedia.org/wiki/Willis_Tower",
+          "https://theskydeck.com/the-ledge/"
+        ]
+      }
     },
     {
       "key": "trump",
@@ -1769,12 +1803,18 @@
         "spandrel": "#d8c38f",
         "parts": [
           "turret",
-          "lantern"
+          "lantern",
+          "shaft-turret",
+          "caps",
+          "merlons",
+          "cupola",
+          "finial"
         ],
         "source": [
           "https://en.wikipedia.org/wiki/Chicago_Water_Tower",
           "https://sah-archipedia.org/buildings/IL-01-031-0095"
-        ]
+        ],
+        "note": "Wilde's 'castellated monstrosity with pepper boxes stuck all over it': every stone part of the sculpted tower takes the limestone row; the lancets and lantern arches are the shared gothic-shadow row."
       },
       "match": {
         "osmId": 130147025
@@ -2581,7 +2621,15 @@
         "glass": "#1c2226",
         "mullion": "#2a4a3a",
         "spandrel": "#1b3328",
-        "source": "https://en.wikipedia.org/wiki/Carbide_%26_Carbon_Building"
+        "source": "https://en.wikipedia.org/wiki/Carbide_%26_Carbon_Building",
+        "crownLight": {
+          "kind": "flood",
+          "color": "#ffd98a",
+          "fromM": 112,
+          "toM": 153,
+          "intensity": 1.3,
+          "source": "https://en.wikipedia.org/wiki/Carbide_%26_Carbon_Building (the gold crown is floodlit at night)"
+        }
       },
       "bodyTopM": 137,
       "crowns": [
@@ -2599,7 +2647,26 @@
         }
       ],
       "source": "https://en.wikipedia.org/wiki/Carbide_%26_Carbon_Building",
-      "p2": true
+      "p2": true,
+      "sculpt": "carbide",
+      "sculptParams": {
+        "graniteTop": 9,
+        "setbacks": [
+          [
+            118,
+            0.78
+          ],
+          [
+            131,
+            0.6
+          ]
+        ],
+        "note": "black granite to the second floor; the dark green shaft steps back twice into the gold-leaf tower under the spire. Setback heights and widths read from photographs (approximate)."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Carbide_%26_Carbon_Building",
+        "https://www.chicagoarchitecture.org/buildings/carbide-carbon-building/"
+      ]
     },
     {
       "key": "palmerhouse",

@@ -10,6 +10,7 @@ import { LANDMARK_FACADES } from './facadeIds.js'
 import { CIVIC } from './civic.js'
 import { P2_BUILDERS } from './p2landmarks.js'
 import { FULTON_BUILDERS } from './fulton.js'
+import { wallPolygon } from './icons.js'
 import { swapModel } from './swapModel.js'
 export { LANDMARK_FACADES }
 const F = LANDMARK_FACADES
@@ -222,20 +223,67 @@ function museum(b, spec) {
 }
 
 // ── Chicago Water Tower (1869): castellated limestone ────────────────────────
+// Boyington's "castellated monstrosity with pepper boxes stuck all over it" (Wilde): a square base block with an
+// octagonal pepper-box turret at each corner, a square shaft with four more, battlements at every level, tall pointed
+// lancets, then an octagonal stage, the open arcaded lantern, the cupola and its finial. Proportions read from
+// photographs; total 182.5 ft (55.6 m). Sources in heroes.json (historicwatertower).
 function castellated(b, spec) {
-  const { c, u, v, L, W } = obOf(b), H = spec.heightM ?? b.height
+  const { c, u, v, L, W } = obOf(b), H = spec.heightM ?? b.height, m0 = Math.min(L, W)
   const sq = (s) => { const hu = (L * s) / 2, hv = (W * s) / 2; return [add2(add2(c, mul2(u, -hu)), mul2(v, -hv)), add2(add2(c, mul2(u, hu)), mul2(v, -hv)), add2(add2(c, mul2(u, hu)), mul2(v, hv)), add2(add2(c, mul2(u, -hu)), mul2(v, hv))] }
+  const oct = (r) => Array.from({ length: 8 }, (_, i) => { const a = ((i + 0.5) / 8) * Math.PI * 2; return add2(add2(c, mul2(u, Math.cos(a) * r)), mul2(v, Math.sin(a) * r)) })
+  const yBase = 0.3 * H, yShaft = 0.7 * H, yOct = 0.82 * H, yLan = 0.9 * H
+  const rOct = 0.2 * m0, rLan = 0.15 * m0
   const pieces = [
-    { outer: sq(1), holes: [], base: 0, top: 0.3 * H },
-    { outer: sq(0.46), holes: [], base: 0, top: 0.72 * H },
-    { outer: sq(0.27), holes: [], base: 0, top: 0.86 * H },
+    { outer: sq(1), holes: [], base: 0, top: yBase },
+    { outer: sq(0.46), holes: [], base: 0, top: yShaft },
+    { outer: oct(rOct), holes: [], base: 0, top: yOct },
   ]
   const stone = STYLE.wall.limestone, meshes = []
-  meshes.push({ mesh: spire({ at: c, base: 0.86 * H, top: H, r0: 0.15 * Math.min(L, W), sides: 8 }), facade: F.wall, seed: stone, part: 'lantern' })
-  for (const p of sq(0.9)) {
-    const r = 0.07 * Math.min(L, W)
-    meshes.push({ mesh: merge(drum({ at: p, base: 0, top: 0.38 * H, r, sides: 8 }), spire({ at: p, base: 0.38 * H, top: 0.46 * H, r0: r * 1.1, sides: 8 })), facade: F.wall, seed: stone, part: 'turret' })
+  const caps = mesh(), merl = mesh()
+  // battlements: merlons around a ring's edge, `h` tall, ~1.4 m apart
+  const battlements = (ring, y, h = 1.1, w = 0.75, d = 0.45) => {
+    for (let i = 0; i < ring.length; i++) {
+      const a = ring[i], bq = ring[(i + 1) % ring.length], e = [bq[0] - a[0], bq[1] - a[1]], len = Math.hypot(...e), t = [e[0] / len, e[1] / len]
+      const n = Math.max(1, Math.round(len / 1.4))
+      for (let k = 0; k < n; k++) slab(merl, add2(a, mul2(t, ((k + 0.5) * len) / n)), t, w, d, y, y + h)
+    }
   }
+  const turret = (p, y0, y1, r, part) => {
+    meshes.push({ mesh: drum({ at: p, base: y0, top: y1, r, sides: 8 }), facade: F.wall, seed: stone, part })
+    battlements(ringAround(p, r * 1.05, 8), y1, 0.8, 0.45, 0.3)
+    const s = spire({ at: p, base: y1 + 0.4, top: y1 + 0.4 + r * 2.6, r0: r * 0.8, sides: 8 })
+    for (const k of ['positions', 'normals', 'uvs']) caps[k].push(...s[k])
+  }
+  for (const p of sq(0.9)) turret(p, 0, 0.36 * H, 0.07 * m0, 'turret')
+  for (const p of sq(0.46)) turret(p, yBase, yShaft + 0.04 * H, 0.045 * m0, 'shaft-turret')
+  battlements(sq(1), yBase); battlements(sq(0.46), yShaft); battlements(oct(rOct), yOct, 0.9, 0.6, 0.4)
+  meshes.push({ mesh: caps, facade: F.wall, seed: stone, part: 'caps' })
+  meshes.push({ mesh: merl, facade: F.wall, seed: stone, part: 'merlons' })
+  // tall pointed lancets on the shaft, a pointed doorway and two lancets on each face of the base
+  const lancets = mesh(), doors = mesh()
+  const lancet = (out, o, along, dir, s, y0, y1, hw) => wallPolygon(out, add2(o, mul2(along, s)), along, dir, [[-hw, y0], [hw, y0], [hw, y1 - hw * 1.6], [0, y1], [-hw, y1 - hw * 1.6]], 0.06)
+  for (const d of [u, v, mul2(u, -1), mul2(v, -1)]) {
+    const along = left(d), half = Math.abs(d[0] * u[0] + d[1] * u[1]) > 0.5 ? L / 2 : W / 2
+    const shaftFace = add2(c, mul2(d, half * 0.46)), baseFace = add2(c, mul2(d, half))
+    for (const s of [-0.09 * m0, 0.09 * m0]) lancet(lancets, shaftFace, along, d, s, yBase + 3, yShaft - 3, 0.45)
+    lancet(doors, baseFace, along, d, 0, 0, 0.2 * H, 1.6)
+    for (const s of [-0.28 * m0, 0.28 * m0]) lancet(lancets, baseFace, along, d, s, 0.08 * H, 0.24 * H, 0.5)
+  }
+  meshes.push({ mesh: lancets, facade: F.paint, seed: 0.5, style: 'gothic-shadow', part: 'lancets' })
+  meshes.push({ mesh: doors, facade: F.paint, seed: 0.5, style: 'gothic-shadow', part: 'doorways' })
+  // the open lantern: an octagonal drum with a round-headed opening on each face, then the cupola and finial
+  meshes.push({ mesh: drum({ at: c, base: yOct, top: yLan, r: rLan, sides: 8 }), facade: F.wall, seed: stone, part: 'lantern' })
+  const arches = mesh()
+  for (let k = 0; k < 8; k++) {
+    const a = (k / 8) * Math.PI * 2, d = [u[0] * Math.cos(a) + v[0] * Math.sin(a), u[1] * Math.cos(a) + v[1] * Math.sin(a)]
+    const apo = rLan * Math.cos(Math.PI / 8), hw = rLan * 0.28, pts = [[-hw, yOct + 0.8], [hw, yOct + 0.8]]
+    for (let j = 0; j <= 6; j++) { const t = (j / 6) * Math.PI; pts.push([hw * Math.cos(t), yLan - 1.2 - hw + hw * Math.sin(t)]) }
+    wallPolygon(arches, add2(c, mul2(d, apo)), left(d), d, pts, 0.05)
+  }
+  meshes.push({ mesh: arches, facade: F.paint, seed: 0.5, style: 'gothic-shadow', part: 'lantern-arches' })
+  const rc = rLan * 0.85
+  meshes.push({ mesh: lathe(c, yLan, rc, DOME, 16), facade: F.wall, seed: stone, part: 'cupola' })
+  meshes.push({ mesh: spire({ at: c, base: yLan + rc * 1.4, top: H, r0: 0.3, sides: 8 }), facade: F.wall, seed: stone, part: 'finial' })
   return { replace: true, pieces, meshes }
 }
 
