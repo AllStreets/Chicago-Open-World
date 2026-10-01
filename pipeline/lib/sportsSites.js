@@ -54,6 +54,7 @@ export function venueRecord(hero, hull, info) {
   return {
     key: hero.key, name: hero.name, kind: s.kind, slot: s.slot, teams: s.teams, capacity: s.capacity, center, radius,
     frame: info?.frame ?? null, boards: info?.boards ?? [], flagPole: info?.flagPole ?? null,
+    marquee: info?.marquee ?? null,
     seats: info ? `venues/${hero.key}.seats.bin` : null, seatCount: info?.seats?.length ?? 0,
     plaza: null, plazaCount: 0,
   }

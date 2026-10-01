@@ -51,7 +51,8 @@ describe('buildVenue — baseball', () => {
     expect(byFacade(meshes, F.wall).some((m) => m.seed === STYLE.wall['brick-steel'])).toBe(true)
   })
   it('produces seats, the field, steel, lamps, screens, walls, the marquee and ivy', () => {
-    for (const k of ['seats', 'field', 'steel', 'lamp', 'screen', 'wall', 'marquee', 'ivy']) expect(byFacade(meshes, F[k]).length, k).toBeGreaterThan(0)
+    // the marquee left the tile (user fix): the app draws the lettered sign from the venue's marquee frame
+    for (const k of ['seats', 'field', 'steel', 'lamp', 'screen', 'wall', 'ivy']) expect(byFacade(meshes, F[k]).length, k).toBeGreaterThan(0)
     for (const k of ['turf', 'clay', 'paint']) expect(byFacade(meshes, F[k]).length, k).toBe(0)
   })
   it('the field is one surface covering the field ring exactly once', () => {
@@ -199,5 +200,21 @@ describe('buildVenue — rim light rows', () => {
     }
     expect(lamps.some((l) => xz(l.mesh)[0][0] < 110)).toBe(true)
     expect(lamps.some((l) => xz(l.mesh)[0][0] > 110)).toBe(true)
+  })
+})
+
+describe('the Wrigley marquee (user fix)', () => {
+  const meshes = buildVenue(OUT, BASEBALL)
+  const info = meshes.find((m) => m.venue).venue
+  it('the marquee is a sign frame for the app (centre, facing, size), not a noisy red box in the tile', () => {
+    expect(info.marquee).toMatchObject({ w: 11, h: 3.4, base: 7 })
+    expect(info.marquee.center[1]).toBeCloseTo(7 + 3.4 / 2)
+    expect(Math.hypot(...info.marquee.normal)).toBeCloseTo(1)
+    expect(meshes.some((m) => m.facade === F.marquee)).toBe(false)
+  })
+  it('stands on two green steel posts', () => {
+    const posts = meshes.filter((m) => m.part === 'marquee')
+    expect(posts).toHaveLength(2)
+    for (const p of posts) expect(p.facade).toBe(F.steel)
   })
 })

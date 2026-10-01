@@ -7,6 +7,7 @@ import Cheers from './Cheers.jsx'
 import { swellNow } from '../audio/cheerMath.js'
 import Crowd from './Crowd.jsx'
 import Scoreboard from './Scoreboard.jsx'
+import WrigleyMarquee from './WrigleyMarquee.jsx'
 import WinFlag from './WinFlag.jsx'
 import { flagKind } from './winFlag.js'
 import { boardLines } from './scoreboard.js'
@@ -64,6 +65,7 @@ function Boards({ venue, st }) {
   return (
     <group ref={group}>
       {venue.boards.map((b, i) => <Scoreboard key={i} board={b} lines={lines} />)}
+      {venue.marquee && <WrigleyMarquee marquee={venue.marquee} st={st} now={now} />}
       {kind && <WinFlag pole={venue.flagPole} normal={venue.boards[0].normal} kind={kind} />}
     </group>
   )

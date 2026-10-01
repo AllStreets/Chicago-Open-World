@@ -1278,9 +1278,15 @@
           "setback": 7
         },
         "marquee": {
-          "w": 11,
-          "h": 3.4,
-          "base": 7
+          "w": 10,
+          "h": 5.8,
+          "base": 5.2,
+          "out": 3,
+          "note": "the red marquee over the main entrance at Clark & Addison (1934): WRIGLEY FIELD / HOME OF / CHICAGO CUBS above a message board; size read from photographs",
+          "source": [
+            "https://en.wikipedia.org/wiki/Wrigley_Field",
+            "https://commons.wikimedia.org/wiki/File:Wrigley_Field_marquee_2016-10-22.jpg"
+          ]
         },
         "roofDepth": 0.42
       },
