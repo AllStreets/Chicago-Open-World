@@ -45,7 +45,7 @@ export default function SkyRig({ target, sunRef, instant = false, shadowMap = 40
     const elev = (Math.asin(Math.max(-1, Math.min(1, y))) * 180) / Math.PI
     const p = paletteFor(elev)
     sky.current?.material.uniforms.sunPosition.value.set(x * DIST, y * DIST, z * DIST)
-    if (sky.current) { const u = sky.current.material.uniforms; u.turbidity.value = A.turbidity; u.rayleigh.value = A.rayleigh; u.mieDirectionalG.value = 0.82 - 0.55 * A.overcast /* cloud hides the sun's disc */; applySkyGain(sky.current.material, A.skyGain, A.skyTint) }
+    if (sky.current) { const u = sky.current.material.uniforms; u.turbidity.value = A.turbidity; u.rayleigh.value = A.rayleigh; u.mieDirectionalG.value = 0.82 - 0.55 * A.overcast /* cloud hides the sun's disc */; applySkyGain(sky.current.material, A.skyGain, A.skyTint, [0.2, 0.2, 0.25, 0.92 * A.overcast]) } // SNOW: a low grey-violet deck lit by the city
     const lightScale = (1 - 0.6 * A.overcast) * A.sunScale // an overcast sky dims the sun and flattens the shadows
     if (light.current) {
       // shadows cover the area around the camera target (snapped to 50 m so they don't swim)

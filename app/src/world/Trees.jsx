@@ -1,7 +1,8 @@
 // app/src/world/Trees.jsx — instanced seasonal trees (canopy + trunk).
 import { useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
-import { treePalette, chicagoMonth } from '../lib/seasons.js'
+import { treePaletteFor, chicagoMonth } from '../lib/seasons.js'
+import { useStore } from '../state/store.js'
 
 const canopyGeo = new THREE.IcosahedronGeometry(1, 0) // 20 tris: ~29k trees stay within budget
 canopyGeo.scale(3.5, 3.9, 3.5).translate(0, 7.5, 0)
@@ -12,7 +13,8 @@ const UP = new THREE.Vector3(0, 1, 0)
 
 export default function Trees({ trees }) {
   const canopy = useRef(), trunk = useRef()
-  const pal = useMemo(() => treePalette(chicagoMonth()), [])
+  const preset = useStore((s) => s.timePreset)
+  const pal = useMemo(() => treePaletteFor(preset, chicagoMonth()), [preset])
   useEffect(() => {
     if (!trees?.length || !canopy.current) return
     const m = new THREE.Matrix4(), q = new THREE.Quaternion(), s = new THREE.Vector3(), p = new THREE.Vector3(), c = new THREE.Color()

@@ -16,3 +16,15 @@ describe('applySkyGain', () => {
     expect(() => applySkyGain(m, 1)).toThrow(/sky shader/)
   })
 })
+
+describe('overcast cloud deck (user, 2026-09-30)', () => {
+  it('blends the sky toward a flat cloud colour by the overcast amount', async () => {
+    const { applySkyGain } = await import('../skyGain.js')
+    const m = { fragmentShader: 'void main(){ gl_FragColor = vec4( retColor, 1.0 ); }', uniforms: {}, needsUpdate: false }
+    applySkyGain(m, 0.4, [1, 1, 1], [0.3, 0.3, 0.35, 0.8])
+    expect(m.fragmentShader).toContain('skyCloud')
+    expect(m.uniforms.skyCloud.value).toEqual([0.3, 0.3, 0.35, 0.8])
+    applySkyGain(m, 0.4, [1, 1, 1])
+    expect(m.uniforms.skyCloud.value[3]).toBe(0.8) // unchanged when not given
+  })
+})

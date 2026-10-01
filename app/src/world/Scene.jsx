@@ -34,6 +34,7 @@ import Landmarks from './Landmarks.jsx'
 import TrainAudio from '../transit/TrainAudio.jsx'
 import { followNearest } from '../transit/actions.js'
 import PerfProbe from './PerfProbe.jsx'
+import { PRESETS } from '../lib/atmosphere.js'
 
 export default function Scene() {
   const [manifest, setManifest] = useState(null)
@@ -55,7 +56,7 @@ export default function Scene() {
   useEffect(() => {
     const { setLoadTotal, setLoadError, setTimePreset } = useStore.getState()
     const t = new URLSearchParams(window.location.search).get('time')?.toUpperCase()
-    if (['LIVE', 'DAWN', 'DAY', 'DUSK', 'NIGHT'].includes(t)) setTimePreset(t)
+    if (PRESETS.includes(t)) setTimePreset(t) // every view, SUNNY and SNOW included (tests only)
     loadManifest().then((r) => {
       if (!r.ok) { setLoadError(r.error); return }
       setLoadTotal(3) // land + façade textures + 'tiles-planned'; TileStreamer adds the near tiles

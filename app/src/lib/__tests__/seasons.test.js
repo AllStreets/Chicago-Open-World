@@ -16,3 +16,14 @@ describe('treePalette', () => {
     expect(chicagoMonth(new Date('2026-10-01T03:00:00Z'))).toBe(9) // still Sep 30 in Chicago
   })
 })
+
+import { treePaletteFor } from '../seasons.js'
+describe('trees follow the season views (user, 2026-09-30)', () => {
+  it('SNOW: snow-laden canopies (not autumn leaves); SUNNY: summer green; other views: the real month', () => {
+    const snow = treePaletteFor('SNOW', 10)
+    expect(snow.bare).toBe(false)
+    for (const hex of snow.canopy) expect(parseInt(hex.slice(1, 3), 16)).toBeGreaterThan(200) // white-ish
+    expect(treePaletteFor('SUNNY', 10).canopy).toEqual(treePaletteFor('LIVE', 7).canopy)
+    expect(treePaletteFor('DUSK', 10).canopy).toEqual(treePaletteFor('LIVE', 10).canopy)
+  })
+})

@@ -6,6 +6,7 @@ const P = {
   sept: ['#4a7a3a', '#3f6d33', '#557f40', '#6d8a3a', '#c9a23a'],
   oct: ['#c8702a', '#d9922f', '#b5452a', '#e0b23a', '#8f6b2c', '#6d8a3a'],
   nov: ['#8f6b2c', '#6e5238', '#a0612a', '#5b4a3c'],
+  snow: ['#e9eef3', '#dde5ec', '#f3f6f9', '#d6dfe7'], // snow-laden canopies for the Christmas view
 }
 export function treePalette(month) {
   if ([12, 1, 2, 3].includes(month)) return { canopy: P.bare, bare: true, density: 0 }
@@ -17,4 +18,11 @@ export function treePalette(month) {
 }
 export function chicagoMonth(date = new Date()) {
   return Number(new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', month: 'numeric' }).format(date))
+}
+
+// The season views override the calendar: SNOW is snow-laden, SUNNY is midsummer; every other view is the real month.
+export function treePaletteFor(preset, month) {
+  if (preset === 'SNOW') return { canopy: P.snow, bare: false, density: 1 }
+  if (preset === 'SUNNY') return treePalette(7)
+  return treePalette(month)
 }
