@@ -55,7 +55,7 @@ grid — so the HUD always knows which corner you are over.
 </tr>
 <tr>
 <td><em>Grant Park in September — the trees follow the real calendar.</em></td>
-<td><em>Down the river canyon to Trump Tower, the Riverwalk lined with trees.</em></td>
+<td><em>Down the river canyon to Trump Tower: the river 6.3 m under Wacker Drive, the Riverwalk at the water's edge.</em></td>
 </tr>
 </table>
 
@@ -509,8 +509,39 @@ A second way to be in Chicago (`L`, the Ride button or ⌘K): ride any L line fr
 <td width="50%"><img src="docs/screenshots/p7-glide-dusk.png" alt="Phase 7 — hang-gliding over Streeterville at dusk" width="100%"/></td>
 </tr>
 <tr>
-<td><em>A street-level walk by the river at dusk, a Brown Line train crossing the Wells Street bridge.</em></td>
+<td><em>The Riverwalk walk at river level at dusk: the Water Plaza, the vaults under Wacker, an L train crossing the Wells Street bridge overhead.</em></td>
 <td><em>The glide: dive for speed, climb to trade it away — it banks round the towers, never through them.</em></td>
+</tr>
+</table>
+
+### Workstream D1 · The river at its real depth — *6.3 m under the street, the Riverwalk at the water*
+
+The Chicago River now runs where it really does: 6.3 m below Upper Wacker Drive (the regulated river level, checked against the 2017 Cook County LiDAR), between concrete dockwalls downtown and rubble-faced banks upriver, with the slips, basins and the Harbor Lock opening onto it. The Riverwalk sits 1 m above the water, from Lake Shore Drive to the Confluence at Lake Street, with its rooms between the bridges — the east section, the Vietnam Veterans Memorial, Marina Plaza, the Cove, the River Theater's steps up to Wacker, the Water Plaza, the Jetty and the Boardwalk — a passage under every bridge and a stair up to the street beside each one. The bascule piers stand in the water, each leaf swings down into a pit sized for its tail, the subway tubes dive under the river (the Red Line to about 20 m down at State Street), river-front buildings reach the water, and the water's reflection follows the view. The streets, buildings, traffic and the lake stay exactly where they were.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/d1-river-michigan-dusk.png" alt="D1 — the river from the Michigan Avenue bridge at dusk" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/d1-riverwalk-theater-day.png" alt="D1 — the River Theater's steps on the Riverwalk" width="100%"/></td>
+</tr>
+<tr>
+<td><em>West from the Michigan Avenue bridge at dusk: the river down in its canyon, the bascules lined up toward Marina City.</em></td>
+<td><em>On the Riverwalk at the River Theater: the seat-steps climb to Upper Wacker, the LaSalle Street bridge ahead.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/d1-riverwalk-jetty-day.png" alt="D1 — the Jetty's piers and the vaults under Wacker" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/d1-bridge-raised-pit.png" alt="D1 — the Clark Street bridge raised over its pit" width="100%"/></td>
+</tr>
+<tr>
+<td><em>The Jetty: wooden piers out over the water, the arched vaults under Wacker Drive behind.</em></td>
+<td><em>Press B: the Clark Street leaf stands up and its tail drops into the open pit in the pier.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/d1-subway-under-river.png" alt="D1 — following a Red Line train under the river" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/d1-hero-river-dusk.png" alt="D1 — the river hero view at dusk" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Following a Red Line train through the State Street tube, about 16 m down where it passes under the river.</em></td>
+<td><em>The river hero view at dusk, re-taken: the water below the dockwalls, the Riverwalk at its edge.</em></td>
 </tr>
 </table>
 
@@ -635,6 +666,38 @@ It wasn't made right in one attempt. Here are the same places through each pass,
 </tr>
 </table>
 
+**The river** — from flat water at street level to the river at its real depth
+
+<table>
+<tr>
+<td width="33%"><img src="docs/screenshots/evolution/phase2-river-day.png" alt="Phase 2 — the river at street level" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/evolution/hero-river-dusk-before-d1.png" alt="Before D1 — the river hero view, flat" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/phase2-river-day.png" alt="Today — the river 6.3 m down, the Riverwalk at the water" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>Phase 2 · Sep 28<br/>water level with the street</sub></td>
+<td><sub>Vision pass · Sep 30<br/>one water, still flat</sub></td>
+<td><sub>D1 · Oct 1<br/>6.3 m down, the Riverwalk at the water</sub></td>
+</tr>
+</table>
+
+**The Riverwalk** — the walk and the night view, before and after it went down to the water
+
+<table>
+<tr>
+<td width="25%"><img src="docs/screenshots/evolution/p7-riverwalk-dusk.png" alt="Phase 7 — the Riverwalk walk at street level" width="100%"/></td>
+<td width="25%"><img src="docs/screenshots/p7-riverwalk-dusk.png" alt="D1 — the Riverwalk walk at river level" width="100%"/></td>
+<td width="25%"><img src="docs/screenshots/evolution/v8-riverwalk-night.png" alt="Vision pass — the Riverwalk at night, flat" width="100%"/></td>
+<td width="25%"><img src="docs/screenshots/v8-riverwalk-night.png" alt="D1 — the Riverwalk at night, lamps at the water" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>Phase 7 · Sep 30<br/>a walk at street level</sub></td>
+<td><sub>D1 · Oct 1<br/>the walk at river level</sub></td>
+<td><sub>Vision pass · Sep 29<br/>the flat river at night</sub></td>
+<td><sub>D1 · Oct 1<br/>its lamps down at the water</sub></td>
+</tr>
+</table>
+
 **One landmark** — the Wrigley Building and the Tribune
 
 <table>
@@ -724,7 +787,7 @@ It wasn't made right in one attempt. Here are the same places through each pass,
 <td><sub>V1 · Sep 29<br/>windows on the water</sub></td>
 <td><sub>V3 · Sep 29<br/>the L in its colours</sub></td>
 <td><sub>Vision pass · Sep 29<br/>lit crowns, trains</sub></td>
-<td><sub>Phase 4 · Sep 30<br/>street lamps, traffic</sub></td>
+<td><sub>D1 · Oct 1<br/>the river at its real depth</sub></td>
 <td><sub>Phase 4 · Sep 30<br/>floodlit gold leaf</sub></td>
 </tr>
 </table>
