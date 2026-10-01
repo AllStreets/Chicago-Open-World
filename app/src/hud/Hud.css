@@ -15,6 +15,10 @@
 .hud-controls { position: absolute; top: 16px; right: 16px; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; animation: hud-rise 0.6s 0.1s ease both; }
 .pill-row { display: flex; gap: 6px; }
 .pill-row.small .hud-pill { font-size: 10px; padding: 4px 11px; }
+/* P5: the weather menu drops under its pill, right-aligned with the column */
+.weather-pill { position: relative; display: inline-flex; }
+.weather-menu { position: absolute; top: calc(100% + 6px); right: 0; z-index: 30; display: flex; flex-direction: column; align-items: stretch; gap: 4px; padding: 8px; min-width: 190px; }
+.weather-menu .hud-pill { text-align: left; }
 
 .hud-hints { overflow: hidden; position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
   display: flex; align-items: center; gap: 16px; padding: 7px 16px; border-radius: 999px;

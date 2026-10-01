@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { FOUNTAIN_SCHEDULE } from '../landmarks/fountainSchedule.js'
+import { weatherFromChi, manualWeather } from '../weather/weatherState.js'
 
 // Your office, remembered in this browser (user, 2026-09-30); storage can be blocked — then it simply isn't remembered
 const OFFICE_KEY = 'chi-ow-office'
@@ -101,6 +102,12 @@ export const useStore = create((set) => ({
   setFeed: (name, status) => set((s) => (s.feeds[name] === status && status !== 'LIVE' ? {} : { feeds: { ...s.feeds, [name]: status }, ...(status === 'LIVE' ? { feedAt: { ...s.feedAt, [name]: Date.now() } } : {}) })),
   sourcesOpen: false,
   setSourcesOpen: (sourcesOpen) => set({ sourcesOpen }),
+  // weather (P5): 'LIVE' follows the weather feed (clear when offline); a menu choice overrides it until Live again
+  weatherMode: 'LIVE',
+  weatherLive: weatherFromChi(null),
+  weather: weatherFromChi(null),
+  setWeatherMode: (weatherMode) => set((s) => ({ weatherMode, weather: weatherMode === 'LIVE' ? s.weatherLive : manualWeather(weatherMode) })),
+  setWeatherLive: (weatherLive) => set((s) => ({ weatherLive, ...(s.weatherMode === 'LIVE' ? { weather: weatherLive } : {}) })),
   hover: null,    // { x, y, lines } — the building under the pointer (P4)
   setHover: (hover) => set({ hover }),
   readout: { streets: 'STATE & MADISON', altitude: 0, heading: 0 },

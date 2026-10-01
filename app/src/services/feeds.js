@@ -6,6 +6,7 @@ import { chiBase, chiGet, probeHealth, createFeed, FEEDS } from './chiApi.js'
 import { applyLineAlerts } from '../transit/lineAlerts.js'
 import { ingestLiveTrains } from '../transit/liveStore.js'
 import { parseChiSports, sportsInterval } from '../sports/liveScores.js'
+import { weatherFromChi } from '../weather/weatherState.js'
 import { applyLiveSports } from '../sports/SportsClock.jsx'
 
 const REPROBE_MS = 60_000
@@ -15,7 +16,8 @@ let running = null // the live session's feeds, so the chip's "Try live again" a
 export const FEED_WIRING = {
   cta: { parse: (j) => { if (!Array.isArray(j?.trains)) throw new Error('no trains'); return j }, onData: (j) => ingestLiveTrains(j), onFail: () => {} }, // offline: the simulator takes over; stale live trains age out
   alerts: { parse: (j) => j, onData: (j) => applyLineAlerts(j), onFail: () => applyLineAlerts(null) },
-  weather: { parse: (j) => j, onData: () => {}, onFail: () => {} },
+  weather: { parse: (j) => { const w = weatherFromChi(j); if (w.source !== 'live') throw new Error('unreadable'); return w }, onData: (w) => useStore.getState().setWeatherLive(w),
+    onFail: () => useStore.getState().setWeatherLive(weatherFromChi(null)) }, // offline (or CHI's 503 without a key): a clear sky
   sports: { parse: (j) => { if (!Array.isArray(j)) throw new Error('no teams'); return parseChiSports(j).flatMap((t) => t.games) }, onData: (g) => applyLiveSports(g),
     onFail: () => {}, intervalMs: (last) => sportsInterval(last ?? [], Date.now()) }, // offline: the last live state ages out on the clock; the schedule carries on
 }

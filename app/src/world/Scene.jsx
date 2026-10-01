@@ -8,6 +8,7 @@ import { sunForPreset } from '../lib/sun.js'
 import TileStreamer from './TileStreamer.jsx'
 import Picker from './Picker.jsx'
 import SeasonRig from './SeasonRig.jsx'
+import Rain from './Rain.jsx'
 import Fireworks from '../landmarks/Fireworks.jsx'
 import PoiPins from './PoiPins.jsx'
 import Beacons from './Beacons.jsx'
@@ -36,6 +37,7 @@ import TrainAudio from '../transit/TrainAudio.jsx'
 import { followNearest } from '../transit/actions.js'
 import PerfProbe from './PerfProbe.jsx'
 import { PRESETS } from '../lib/atmosphere.js'
+import { WEATHER_MODES } from '../weather/weatherState.js'
 
 export default function Scene() {
   const [manifest, setManifest] = useState(null)
@@ -58,6 +60,8 @@ export default function Scene() {
     const { setLoadTotal, setLoadError, setTimePreset } = useStore.getState()
     const t = new URLSearchParams(window.location.search).get('time')?.toUpperCase()
     if (PRESETS.includes(t)) setTimePreset(t) // every view, SUNNY and SNOW included (tests only)
+    const w = new URLSearchParams(window.location.search).get('weather')?.toUpperCase()
+    if (WEATHER_MODES.includes(w)) useStore.getState().setWeatherMode(w) // P5, tests only (people use the Weather button)
     loadManifest().then((r) => {
       if (!r.ok) { setLoadError(r.error); return }
       setLoadTotal(3) // land + façade textures + 'tiles-planned'; TileStreamer adds the near tiles
@@ -98,6 +102,7 @@ export default function Scene() {
       <StationHits />
       <Picker />
       <SeasonRig />
+      <Rain />
       <Fireworks />
       <PoiPins />
       <Beacons />

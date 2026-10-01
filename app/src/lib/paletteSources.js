@@ -9,6 +9,7 @@ import { gamePlaces } from '../sports/palette.js'
 import { useSports } from '../sports/sportsStore.js'
 import { FEATURE_CONTROLS } from '../hud/featureControls.js'
 import { retryLive } from '../services/feeds.js'
+import { WEATHER_MODES, WEATHER_NAMES } from '../weather/weatherState.js'
 
 export function featurePlaces(state) {
   const sp = useSports.getState()
@@ -76,5 +77,6 @@ export function liveCommands() {
   return [
     { id: 'data:retry', kind: 'command', name: 'Data: try live again', sub: 'Live CTA trains, weather and scores from CHI ATLAS', aliases: ['live', 'reconnect'], run: () => { if (!retryLive()) s().showToast('The live service is not connected to this copy of the map — everything runs on simulations') } },
     { id: 'data:sources', kind: 'command', name: 'Data: show sources', sub: 'What is live and what is simulated', aliases: ['data sources', 'simulated', 'live data'], run: () => s().setSourcesOpen(true) },
+    ...WEATHER_MODES.map((m) => ({ id: `weather:${m}`, kind: 'command', name: `Weather: ${WEATHER_NAMES[m]}`, sub: m === 'LIVE' ? 'Follow the real Chicago sky (clear when the live feed is off)' : 'Weather button · holds until you choose Live', aliases: ['weather', WEATHER_NAMES[m].toLowerCase()], run: () => s().setWeatherMode(m) })),
   ]
 }
