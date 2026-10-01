@@ -14,6 +14,8 @@ import { decodeRoadGraph, buildNetwork, pointOnLink } from './graph.js'
 import { createTraffic, TYPES, CAP, RANGE_M } from './sim.js'
 import { carGeometry, busGeometry, truckGeometry, lampGeometry, signalPoleGeometry, SIGNAL_LAMP_Y, SIGNAL_RGB, PAINTS } from './models.js'
 
+const IDLE = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('traffic') === 'idle'
+
 const ROAD_Y = 0.13 // on the road ribbons (pipeline GROUND_Y.roads 0.12)
 const REFRESH_S = 1, SIGNAL_MAX = 2400
 const VEHICLE_CAP = { car: 3000, bus: 260, truck: 700 }
@@ -120,7 +122,9 @@ export default function Traffic({ file, version }) {
     if (!vis) return
     const t0 = performance.now(), now = clock.elapsedTime
     // the range follows the point the camera looks down on
-    if (now - st.last > REFRESH_S) {
+    // ?traffic=idle (tests only): the seeded vehicles placed once and held still, so reference shots are deterministic
+    const idle = IDLE && st.frozen
+    if (!idle && now - st.last > REFRESH_S) {
       st.last = now
       const dir = camera.getWorldDirection(P), alt = Math.max(camera.position.y, 1)
       const reach = dir.y < -0.05 ? Math.min(alt / -dir.y, 1200) * 0.6 : 400
@@ -128,7 +132,8 @@ export default function Traffic({ file, version }) {
       st.signals = signalsInRange(st.net, camera.position.x, camera.position.z)
       placePoles(meshes.poles, st.signals)
     }
-    sim.step(dt)
+    if (IDLE) st.frozen = true
+    if (!idle) sim.step(dt)
     // vehicles
     const night = facadeUniforms.uNight.value, buckets = { car: 0, bus: 0, truck: 0 }
     let li = 0
