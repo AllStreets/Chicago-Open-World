@@ -1814,6 +1814,28 @@
         "procTrisEstimate": 8000
       },
       "reason": "Lincoln Park: brick house, framed windows, hip roof (zoo.js brickHouse)"
+    },
+    {
+      "key": "applemichigan",
+      "action": "build",
+      "method": "procedural",
+      "criteria": {
+        "figurative": false,
+        "parametric": true,
+        "procTrisEstimate": 1500
+      },
+      "reason": "River icons (A-8, A32): glass box, rounded roof plate, columns and the steps are parametric on the OSM footprint and the river landing (riverbases.js)"
+    },
+    {
+      "key": "healdsquare",
+      "action": "build",
+      "method": "blender",
+      "criteria": {
+        "figurative": true,
+        "parametric": false,
+        "procTrisEstimate": 5000
+      },
+      "reason": "A41: a figurative bronze group (three standing figures, hands joined) — Blender (heroes/scripts/statue_heald.py) on a stepped granite pedestal"
     }
   ]
 }
