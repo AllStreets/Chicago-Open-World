@@ -1,0 +1,32 @@
+{
+ "total": 171019150,
+ "entries": {
+  "blocks": 40627760,
+  "blocks:glb": 40607660,
+  "blocks:json": 20100,
+  "bridges.json": 30815,
+  "ground": 1318636,
+  "heightfield.png": 805754,
+  "land.json": 8644,
+  "landmarks": 581352,
+  "landmarks.json": 8848,
+  "manifest.json": 146555,
+  "minimap.webp": 1385146,
+  "neighborhoods.json": 27554,
+  "pois-index.json": 443084,
+  "schedules.json": 250541,
+  "style-palette.png": 16672,
+  "styles.json": 38668,
+  "tiles": 121824776,
+  "tiles:glb": 85299604,
+  "tiles:json": 4906976,
+  "tiles:lod1.glb": 31618196,
+  "traffic.bin": 337674,
+  "trains.glb": 105776,
+  "transit.json": 1014440,
+  "venues": 1133656,
+  "venues.json": 16150,
+  "walk-graph.json": 628967,
+  "water": 267682
+ }
+}

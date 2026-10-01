@@ -1,0 +1,9 @@
+# X-0 savings rejected for visual parity (plan §6.1 V5)
+
+Each was built, measured with the X-0f harness and reverted. Pairs: left = the committed world, right = the candidate.
+
+| Candidate | Bytes | Why rejected | Pairs |
+|---|---|---|---|
+| **meshopt `level: 'high'`** (octahedral normal filter, X-0b as first written) | not adopted | gltf-transform's `high` encodes normals with an **8-bit** octahedral filter; V2 requires ≥ 10 bits. Rejected on V2 before capture. | — |
+| **16-bit positions** (V2's "≥ 16 bits per axis, ≤ 1 cm at LOD0"), float32 for meshes too large for the limit | +0.3 MB vs 14-bit (gltf-transform fills 14-bit values' spare low bits with copies of the high bits, so true 16-bit packs about the same) | All LODs measured inside V2 (LOD0 ≤ 0.92 cm, LOD1 ≤ 2.6 cm, blocks ≤ 4.0 cm), but the *corrected* geometry moves every edge by up to a pixel against the 14-bit baselines: SSIM 0.956 (Pilsen murals), 0.973 (Tribune crown), 0.976 (Wrigley clock), 0.982 (Chess Pavilion), 0.984 (Streeterville night) where the noise floor is ≥ 0.9999. Pixel-diff stayed ≤ 0.45 %, but parity is the rule, so positions keep the 14 bits every baseline was taken with (V2's position limit is therefore **not** met — exactly as in the committed world). | [murals](rejected/positions16-detail-pilsen-murals-2x.jpg) · [Tribune](rejected/positions16-detail-tribune-crown-2x.jpg) · [Wrigley clock](rejected/positions16-detail-wrigley-clock-2x.jpg) · [Streeterville night](rejected/positions16-streeterville-night-1x.jpg) |
+| **minimap 256-colour palette PNG** (X-0c as written, no dither) | 1.19 MB (vs 1.39 MB lossless WebP adopted) | ΔE2000 average 0.04 but **maximum 8.4** on antialiased edges (V3 limit 5). Lossless WebP adopted instead (ΔE 0). | [minimap crop, 2× nearest](rejected/minimap-palette256-2x.png) |

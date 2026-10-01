@@ -1,0 +1,710 @@
+{
+ "buildings": [
+  {
+   "id": "bridge:lasalle",
+   "name": "LaSalle Street Bridge",
+   "address": null,
+   "stories": null,
+   "year": 1928,
+   "height": 0,
+   "hero": null,
+   "bridge": "lasalle"
+  },
+  {
+   "id": "bridge:clark",
+   "name": "Clark Street Bridge",
+   "address": null,
+   "stories": null,
+   "year": 1929,
+   "height": 0,
+   "hero": null,
+   "bridge": "clark"
+  },
+  {
+   "id": "bridge:dearborn",
+   "name": "Dearborn Street Bridge",
+   "address": null,
+   "stories": null,
+   "year": 1962,
+   "height": 0,
+   "hero": null,
+   "bridge": "dearborn"
+  },
+  {
+   "id": "m-picasso",
+   "name": "The Picasso",
+   "address": null,
+   "stories": null,
+   "year": null,
+   "height": 15.2,
+   "hero": "picasso"
+  },
+  {
+   "id": "w284822929",
+   "name": "Marina City 2",
+   "address": "300 North State Street",
+   "stories": 61,
+   "year": null,
+   "height": 179,
+   "hero": "marina2"
+  },
+  {
+   "id": "w1177923716",
+   "name": "Marina City 1",
+   "address": "323 North Dearborn Street",
+   "stories": 61,
+   "year": 1962,
+   "height": 179,
+   "hero": "marina1"
+  },
+  {
+   "id": "w846476842",
+   "name": "One Chicago",
+   "address": "1 West Chicago Avenue",
+   "stories": 3,
+   "year": 1886,
+   "height": 296,
+   "hero": "onechicago"
+  },
+  {
+   "id": "r19327506",
+   "name": "Grand Appliance",
+   "address": "2300 West Fullerton Avenue",
+   "stories": null,
+   "year": null,
+   "height": 9,
+   "hero": null
+  },
+  {
+   "id": "r2814051",
+   "name": null,
+   "address": "410-428 North Western Avenue",
+   "stories": 4,
+   "year": 1959,
+   "height": 15.2,
+   "hero": null
+  },
+  {
+   "id": "bw24926000",
+   "name": "Breakwater",
+   "address": null,
+   "stories": null,
+   "year": null,
+   "height": 1.8,
+   "hero": null
+  },
+  {
+   "id": "bw762075039",
+   "name": "Breakwater",
+   "address": null,
+   "stories": null,
+   "year": null,
+   "height": 1.8,
+   "hero": null
+  },
+  {
+   "id": "m-lincolnstatues",
+   "name": "Standing Lincoln",
+   "address": null,
+   "stories": null,
+   "year": null,
+   "height": 5.5,
+   "hero": "lincolnstatues"
+  },
+  {
+   "id": "m-natureboardwalk",
+   "name": "Nature Boardwalk pavilion",
+   "address": null,
+   "stories": null,
+   "year": null,
+   "height": 7.2,
+   "hero": "natureboardwalk"
+  },
+  {
+   "id": "m-grantstatue",
+   "name": "General Grant Memorial",
+   "address": null,
+   "stories": null,
+   "year": null,
+   "height": 11.5,
+   "hero": "grantstatue"
+  },
+  {
+   "id": "w209381025",
+   "name": null,
+   "address": "137-141 North Oakley Boulevard",
+   "stories": null,
+   "year": 2005,
+   "height": 9,
+   "hero": null
+  },
+  {
+   "id": "w209381113",
+   "name": null,
+   "address": "213-235 North Artesian Avenue",
+   "stories": null,
+   "year": null,
+   "height": 9,
+   "hero": null
+  },
+  {
+   "id": "w209381159",
+   "name": null,
+   "address": "2253-2255 West Washington Boulevard",
+   "stories": 2,
+   "year": 1997,
+   "height": 7.6,
+   "hero": null
+  },
+  {
+   "id": "w209381160",
+   "name": null,
+   "address": "2253-2271 West Maypole Avenue",
+   "stories": null,
+   "year": 2006,
+   "height": 9,
+   "hero": null
+  },
+  {
+   "id": "w1320809155",
+   "name": "Riverwalk Lofts",
+   "address": null,
+   "stories": null,
+   "year": null,
+   "height": 12,
+   "hero": null
+  },
+  {
+   "id": "w209897567",
+   "name": "9",
+   "address": null,
+   "stories": null,
+   "year": null,
+   "height": 9,
+   "hero": null
+  },
+  {
+   "id": "w209383367",
+   "name": null,
+   "address": null,
+   "stories": null,
+   "year": 2006,
+   "height": 9,
+   "hero": null
+  },
+  {
+   "id": "w209383422",
+   "name": null,
+   "address": null,
+   "stories": null,
+   "year": 2006,
+   "height": 9,
+   "hero": null
+  },
+  {
+   "id": "w209383464",
+   "name": null,
+   "address": null,
+   "stories": null,
+   "year": null,
+   "height": 9,
+   "hero": null
+  },
+  {
+   "id": "bridge:state",
+   "name": "State Street Bridge",
+   "address": null,
+   "stories": null,
+   "year": 1949,
+   "height": 0,
+   "hero": null,
+   "bridge": "state"
+  },
+  {
+   "id": "w209841250",
+   "name": null,
+   "address": "2114 West Erie Street",
+   "stories": null,
+   "year": 2006,
+   "height": 9,
+   "hero": null
+  },
+  {
+   "id": "w210317316",
+   "name": null,
+   "address": "2051 North Fremont Street",
+   "stories": 1,
+   "year": 1891,
+   "height": 3.8,
+   "hero": null
+  },
+  {
+   "id": "w209870682",
+   "name": null,
+   "address": null,
+   "stories": null,
+   "year": 2006,
+   "height": 9,
+   "hero": null
+  },
+  {
+   "id": "w210318919",
+   "name": null,
+   "address": null,
+   "stories": null,
+   "year": null,
+   "height": 9,
+   "hero": null
+  },
+  {
+   "id": "w209811337",
+   "name": null,
+   "address": null,
+   "stories": null,
+   "year": null,
+   "height": 9,
+   "hero": null
+  },
+  {
+   "id": "w210534490",
+   "name": null,
+   "address": "3419 South Prairie Avenue",
+   "stories": 2,
+   "year": 1997,
+   "height": 7.6,
+   "hero": null
+  },
+  {
+   "id": "w209403613",
+   "name": null,
+   "address": "1936 North Rockwell Street",
+   "stories": null,
+   "year": 2005,
+   "height": 9,
+   "hero": null
+  },
+  {
+   "id": "w210534959",
+   "name": null,
+   "address": "3723 South Wallace Street",
+   "stories": 1,
+   "year": 1888,
+   "height": 3.8,
+   "hero": null
+  },
+  {
+   "id": "w210325307",
+   "name": null,
+   "address": "1211 West Belmont Avenue",
+   "stories": 3,
+   "year": 1891,
+   "height": 11.4,
+   "hero": null
+  },
+  {
+   "id": "w330879711",
+   "name": "Mariano's Fresh Market",
+   "address": "2112 North Ashland Avenue",
+   "stories": 2,
+   "year": 1945,
+   "height": 7.6,
+   "hero": null
+  },
+  {
+   "id": "w210537789",
+   "name": null,
+   "address": "211 West Alexander Street",
+   "stories": 3,
+   "year": 1888,
+   "height": 11.4,
+   "hero": null
+  },
+  {
+   "id": "w209390469",
+   "name": null,
+   "address": "2533 West Chicago Avenue",
+   "stories": 2,
+   "year": 1889,
+   "height": 7.6,
+   "hero": null
+  },
+  {
+   "id": "w1459145087",
+   "name": null,
+   "address": null,
+   "stories": null,
+   "year": null,
+   "height": 9,
+   "hero": null
+  },
+  {
+   "id": "w157657443",
+   "name": "Sigma Phi Epsilon",
+   "address": "3341 South Wabash Avenue",
+   "stories": null,
+   "year": null,
+   "height": 9,
+   "hero": null
+  },
+  {
+   "id": "w210259407",
+   "name": null,
+   "address": "935 West 14th Place",
+   "stories": null,
+   "year": null,
+   "height": 9,
+   "hero": null
+  },
+  {
+   "id": "w1032367662",
+   "name": null,
+   "address": null,
+   "stories": null,
+   "year": null,
+   "height": 4,
+   "hero": null
+  },
+  {
+   "id": "w209391985",
+   "name": null,
+   "address": "704 North Rockwell Street",
+   "stories": 1,
+   "year": 1884,
+   "height": 3.8,
+   "hero": null
+  },
+  {
+   "id": "w209782524",
+   "name": null,
+   "address": "1531 West 19th Street",
+   "stories": 2,
+   "year": 1889,
+   "height": 7.6,
+   "hero": null
+  },
+  {
+   "id": "w209786262",
+   "name": null,
+   "address": "2306 South Hoyne Avenue",
+   "stories": 1,
+   "year": 1902,
+   "height": 3.8,
+   "hero": null
+  },
+  {
+   "id": "w210269541",
+   "name": null,
+   "address": "1127 West Madison Street",
+   "stories": null,
+   "year": 2006,
+   "height": 9,
+   "hero": null
+  },
+  {
+   "id": "w209391048",
+   "name": null,
+   "address": "2636 West Division Street",
+   "stories": 3,
+   "year": 1904,
+   "height": 11.4,
+   "hero": null
+  },
+  {
+   "id": "w209788009",
+   "name": null,
+   "address": null,
+   "stories": null,
+   "year": null,
+   "height": 9,
+   "hero": null
+  },
+  {
+   "id": "w210326451",
+   "name": null,
+   "address": "3209 North Clark Street",
+   "stories": 4,
+   "year": null,
+   "height": 15.2,
+   "hero": null
+  },
+  {
+   "id": "w209868746",
+   "name": null,
+   "address": "2047 West Dickens Avenue",
+   "stories": 1,
+   "year": 1889,
+   "height": 3.8,
+   "hero": null
+  },
+  {
+   "id": "w209782823",
+   "name": null,
+   "address": "1700 West Cermak Road",
+   "stories": 4,
+   "year": 1894,
+   "height": 15.2,
+   "hero": null
+  },
+  {
+   "id": "w209810057",
+   "name": null,
+   "address": "1501 South Laflin Street",
+   "stories": null,
+   "year": null,
+   "height": 9,
+   "hero": null
+  }
+ ],
+ "trees": [
+  [
+   -4847.3,
+   -302.9,
+   1.39,
+   3
+  ],
+  [
+   -4841.8,
+   -303.1,
+   1.35,
+   3
+  ],
+  [
+   -4811.6,
+   -4573.3,
+   1.17,
+   2
+  ],
+  [
+   -4820.8,
+   -4561.6,
+   1.1,
+   2
+  ],
+  [
+   -4983.4,
+   -5465.5,
+   1.25,
+   3
+  ],
+  [
+   -4983.2,
+   -5462,
+   1.24,
+   2
+  ],
+  [
+   -4617.6,
+   -5868.6,
+   1.34,
+   3
+  ],
+  [
+   -4593.7,
+   -5857.2,
+   0.89,
+   0
+  ],
+  [
+   -4996.5,
+   -6274.2,
+   0.82,
+   0
+  ],
+  [
+   -4996.3,
+   -6270.8,
+   0.81,
+   0
+  ],
+  [
+   -4884,
+   -1785.2,
+   1.08,
+   1
+  ],
+  [
+   -4516.2,
+   -3387.8,
+   1.35,
+   3
+  ]
+ ],
+ "props": [
+  [
+   0,
+   -4962.9,
+   15.2,
+   -5696.8,
+   4,
+   1,
+   1,
+   1
+  ],
+  [
+   0,
+   -4533.2,
+   15.2,
+   -612.9,
+   5.4,
+   1,
+   1,
+   1
+  ],
+  [
+   1,
+   -4933.7,
+   34.2,
+   -2112.9,
+   0,
+   3.2,
+   2.9,
+   3.6
+  ],
+  [
+   1,
+   -4845.1,
+   22.8,
+   -2848.8,
+   0,
+   3.8,
+   2,
+   2.3
+  ],
+  [
+   0,
+   -4981.3,
+   15.2,
+   -3187,
+   0.1,
+   1,
+   1,
+   1
+  ],
+  [
+   1,
+   -4907.8,
+   22.8,
+   -3813.1,
+   0,
+   4.6,
+   1.7,
+   3.6
+  ]
+ ],
+ "pois": [
+  {
+   "id": "w209381320",
+   "n": "BP Shop",
+   "c": 6,
+   "x": -4802.8,
+   "y": 10,
+   "z": -135.9,
+   "b": 56,
+   "a": "2340 West Washington Boulevard",
+   "t": {
+    "website": "https://bp.com"
+   }
+  },
+  {
+   "id": "w209381348",
+   "n": "Citgo",
+   "c": 6,
+   "x": -4831.9,
+   "y": 13,
+   "z": -386.5,
+   "b": 64,
+   "a": "2353 West Walnut Street",
+   "t": {
+    "website": "https://www.citgo.com"
+   }
+  },
+  {
+   "id": "w209383098",
+   "n": "Shell",
+   "c": 6,
+   "x": -4815.8,
+   "y": 7.8,
+   "z": -38,
+   "b": 72,
+   "a": "33-45 North Western Avenue",
+   "t": {
+    "website": "https://www.shell.com/"
+   }
+  },
+  {
+   "id": "w209383247",
+   "n": "Popeyes",
+   "c": 0,
+   "x": -4895.2,
+   "y": 7.8,
+   "z": -72.6,
+   "b": 74,
+   "a": "50 North Western Avenue",
+   "t": {
+    "cuisine": "chicken",
+    "opening_hours": "10:00-22:00",
+    "website": "https://www.popeyes.com/store-locator/store/restaurant_82133"
+   }
+  },
+  {
+   "id": "n3660929472",
+   "n": "Mister \"G\" Cleaners",
+   "c": 6,
+   "x": -4982.5,
+   "y": 11.6,
+   "z": -4814.3,
+   "b": 338
+  },
+  {
+   "id": "n3660929473",
+   "n": "Nashville Hot Chicken",
+   "c": 0,
+   "x": -4950,
+   "y": 11.6,
+   "z": -4859.6,
+   "b": 351,
+   "t": {
+    "cuisine": "chicken"
+   }
+  },
+  {
+   "id": "w1320809155",
+   "n": "Riverwalk Lofts",
+   "c": 10,
+   "x": -4932.9,
+   "y": 16,
+   "z": -5843.4,
+   "b": 244
+  },
+  {
+   "id": "n1585425015",
+   "n": "Weissbluth Pediatrics",
+   "c": 9,
+   "x": -4945.8,
+   "y": 11.6,
+   "z": -4774.9,
+   "b": 363,
+   "a": "2401 North Western Avenue"
+  },
+  {
+   "id": "n10801274574",
+   "n": "Spy Store",
+   "c": 6,
+   "x": -4993.7,
+   "y": 11.6,
+   "z": -4779.5,
+   "b": 340,
+   "a": "2406 West Fullerton Avenue"
+  },
+  {
+   "id": "n13627184408",
+   "n": "Family Food & Beer",
+   "c": 6,
+   "x": -4993.7,
+   "y": 7.8,
+   "z": -4720.6,
+   "b": 330,
+   "a": "2346 North Western Avenue"
+  }
+ ]
+}
