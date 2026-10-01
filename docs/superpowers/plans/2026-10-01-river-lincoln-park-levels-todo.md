@@ -264,10 +264,6 @@ Size key: **S** ≈ ≤ 2 h (look row, crown primitive, colour), **M** ≈ half 
 ### 4.5 To-dos (staged; each stage is its own branch, gate, merge and push)
 
 **D0 — Research and spec (no world change)**
-- [ ] **D0-1** Write `pipeline/data/levels.json` with `RIVER_Y`, `LAKE_Y`, `RIVERWALK_Y`, `LOWER_Y`, `LOWER2_Y`, `SLAB_M`, `CLEAR_M` and the sources from §4.2. **Done when** `levels.test.js` checks the invariants (LOWER_Y − RIVER_Y ≥ 0.8; −SLAB_M − LOWER_Y ≥ 4.19; LAKE_Y − RIVER_Y ∈ [0, 1.7]).
-- [ ] **D0-2** Sample the **Cook County 2017 LiDAR / Illinois Height Modernization DEM** at 40 points (Upper Wacker, the Riverwalk rooms, Lower Wacker entrances, bridge decks, the lakefront at North Ave, Belmont and Navy Pier) and record street-to-water differences in `levels.json.samples`. **Done when** the model values are within ±0.7 m of the LiDAR median, or are changed to match it.
-- [ ] **D0-3** For each subway line crossing the river or a lower street (Red/State, Blue/Dearborn, Blue/Milwaukee-Kinzie), record the dip profile. **Done when** `levels.json.tubeDips` lists every crossing with a source or "approximate".
-- [ ] **D0-4** Bytes ledger: estimate per stage from a dry-run build in a scratch output dir (not `public/world`). **Done when** the ledger is in this plan's PR description.
 
 **D1 — The river at its real depth + the Riverwalk at river level (world rebuild)**
 - [ ] **D1-1** River polygons at `RIVER_Y`. Generate **dockwalls** (vertical concrete, sheet-pile tone downtown, darker riprap tone upriver) along every river polygon edge that meets land, from 0 to RIVER_Y − 0.5, merged into the ground layer. **Done when** `water.test.js` asserts the wall quads close every land–river edge and the draw-call census is unchanged.
@@ -452,6 +448,9 @@ Each wave ends with a world rebuild on merged main (wave 0′ needs none), the 3
 ---
 
 ## 8. Decisions (2026-10-01)
+
+> **Update after D0 (2026-10-01, verified against Cook County 2017 LiDAR + 33 CFR 207.420):** Decision 4 becomes river **−6.3 m**, lake **−4.65 m**, Riverwalk −5.3, Lower Wacker −5.1, slab 0.9 m (user asked for real-world accuracy; same intent, verified numbers). `pipeline/data/levels.json` is the source of truth; see `2026-10-01-d0-findings.md`. D0 done and removed.
+
 
 The user answered all eight open questions. Each answer is already applied in the to-dos listed.
 
