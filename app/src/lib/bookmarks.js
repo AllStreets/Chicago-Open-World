@@ -39,6 +39,7 @@ export const BOOKMARKS = {
   martriver: { position: [-625, 45, -560], target: [-625, 40, -705] },
   navypierhead: { position: [1480, 50, -980], target: [1541, 14, -1078] }, // Family Pavilion / Headhouse
   ballroom: { position: [2250, 70, -960], target: [2361, 20, -1090] },     // Aon Grand Ballroom
+  lowerlevels: { position: [450, 300, -1050], target: [200, -5, -560] }, // D2-3: the U cut-away — Lower Wacker, Lower Michigan and the river streets from over the river
   riverwalk: { position: [-120, 32, -560], target: [80, 1, -606] },
   zoo: { position: [-380, 110, -4150], target: [-560, 5, -4500] },         // Lion House (−456, −4365), Conservatory (−598, −4706)
   // Transit (V3): Tower 18 at Lake & Wells from street level, the Loop from 150 m and 1 km, Fullerton's 4-track corridor

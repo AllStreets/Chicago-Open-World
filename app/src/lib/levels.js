@@ -12,6 +12,14 @@ export function readLevels(manifest) {
   return { river: { y: r.y, riverwalk: Number.isFinite(r.riverwalk) ? r.riverwalk : null, file: typeof r.file === 'string' ? r.file : null } }
 }
 
+// D2: the multi-level streets (Lower Wacker, Lower Michigan …) — `levels.lower` names their centreline file and the two
+// lower levels' ys. Absent (an older world, or LEVELS_LOWER=0) = nothing is drawn under the street and U is unavailable.
+export function readLowerLevels(manifest) {
+  const l = manifest?.levels?.lower
+  if (!l || typeof l.file !== 'string' || !Number.isFinite(l.y)) return null
+  return { file: l.file, y: l.y, y2: Number.isFinite(l.y2) ? l.y2 : null }
+}
+
 // the river-corridor mask (pipeline riverLevel.js corridorMask): row runs of 40 m cells near the sunken river
 export function inCorridor(mask, x, z) {
   if (!mask?.runs) return false
