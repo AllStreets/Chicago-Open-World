@@ -222,15 +222,31 @@ export function natureBoardwalk(b, spec = {}) {
 // portico with a pediment on the face spec.portico.faceDeg looks toward.
 export function brickHouse(b, spec = {}) {
   const ring = mainRing(b), fr = frameOf(b), eave = spec.eaveM ?? 8, wallStyle = spec.wallStyle ?? 'lp-brick'
-  const win = spec.windows === 'flat' ? flatHead(0.9, 1.4, eave - 2.2) : roundHead(1.0, 1.6, eave - 3.0)
-  const pf = spec.portico ? frameOf(b, { faceDeg: spec.portico.faceDeg }) : null
-  const pOut = pf ? pf.v : null, pFace = pf ? add2(pf.c, mul2(pOut, reach(ring, pf.c, pOut))) : null
+  const win = spec.windows === 'flat' ? flatHead(0.9, 1.4, eave - 2.2) : spec.windows === 'arcade' ? roundHead(spec.archHalfM ?? 1.6, 0.0, spec.archSpringM ?? eave - 3.0, 10) : roundHead(1.0, 1.6, eave - 3.0)
+  let pf = spec.portico ? frameOf(b, { faceDeg: spec.portico.faceDeg }) : null
+  let pOut = pf ? pf.v : null, pFace = pf ? add2(pf.c, mul2(pOut, reach(ring, pf.c, pOut))) : null
+  if (pf && spec.portico.at) {
+    // on the wall nearest the given point (local to the outline's bbox centre): its foot, outward normal and run
+    const q = add2(bboxCentre(ring), spec.portico.at)
+    let best = null
+    for (let i = 0; i < ring.length; i++) {
+      const a = ring[i], c = ring[(i + 1) % ring.length], d = sub2(c, a), l2 = d[0] * d[0] + d[1] * d[1]
+      const t = Math.max(0.1, Math.min(0.9, ((q[0] - a[0]) * d[0] + (q[1] - a[1]) * d[1]) / l2)), f = add2(a, mul2(d, t)), dist = len2(sub2(q, f))
+      if (!best || dist < best.dist) best = { dist, f, n: edgeNormal(ring, i), t: norm2(d) }
+    }
+    pFace = best.f; pOut = best.n; pf = { ...pf, u: mul2([-best.n[1], best.n[0]], -1), v: best.n }
+  }
   const pSpan = spec.portico?.spanM ?? 9
-  const hall = masonryHall(ring, { eave, plinth: 0.8, belts: spec.beltM ? [spec.beltM] : [], cornice: 0.6, corniceProud: 0.3, windows: { spacing: spec.windowEveryM ?? 4, margin: 2, minEdge: 5, outline: win }, skip: (p) => pFace && len2(sub2(p, pFace)) < pSpan / 2 + 1 })
+  const rows = spec.windows === 'flat' ? (spec.windowRows ?? [[1.4, eave - 2.2]]) : null
+  const hall = masonryHall(ring, { eave, plinth: 0.8, belts: spec.beltM ? [spec.beltM] : [], cornice: 0.6, corniceProud: 0.3, windows: rows ? null : { spacing: spec.windowEveryM ?? 4, margin: 2, minEdge: 5, outline: win }, skip: (p) => pFace && len2(sub2(p, pFace)) < pSpan / 2 + 1 })
   const rise = spec.roofRiseM ?? Math.min(fr.W / 2, 9) * 0.55, over = spec.overM ?? 0.7
-  const roof = hipRoof(fr.c, fr.u, fr.L, fr.W, eave, rise, over), trim = hall.trim, frames = mesh(), portico = mesh()
-  if (spec.windows === 'flat') {
-    // a white frame round each opening, drawn as four bars proud of the brick
+  const flatRoof = spec.roof === 'flat', trim = hall.trim, frames = mesh(), portico = mesh()
+  const brg = (d) => [Math.sin((d * Math.PI) / 180), -Math.cos((d * Math.PI) / 180)], cb = bboxCentre(ring)
+  // a roof per block when the outline is not one rectangle (spec.roofs: local to the outline's bbox centre)
+  const roof = flatRoof ? hall.top : spec.roofs ? into(mesh(), ...spec.roofs.map((r) => hipRoof(add2(cb, r.at), brg(r.bearingDeg), r.L, r.W, eave, r.rise ?? rise, over))) : hipRoof(fr.c, fr.u, fr.L, fr.W, eave, rise, over)
+  if (flatRoof) ringBand(trim, ring, eave, eave + (spec.parapetM ?? 1.0), -0.05, 0.4) // the parapet and its coping
+  if (rows) {
+    // flat-headed windows in white frames (jambs, a transom, a stone lintel and sill), one band per storey row
     for (let i = 0; i < ring.length; i++) {
       const a = ring[i], c = ring[(i + 1) % ring.length], L = len2(sub2(c, a))
       if (L < 5) continue
@@ -239,8 +255,12 @@ export function brickHouse(b, spec = {}) {
         const o = add2(a, mul2(t, k === 1 ? L / 2 : 2 + ((L - 4) * j) / (k - 1)))
         if (pFace && len2(sub2(o, pFace)) < pSpan / 2 + 1) continue
         const f = add2(o, mul2(n, 0.07))
-        for (const [s, y0, y1, w] of [[-0.95, 1.4, eave - 2.2, 0.12], [0.95, 1.4, eave - 2.2, 0.12], [0, (1.4 + eave - 2.2) / 2 - 0.05, (1.4 + eave - 2.2) / 2 + 0.05, 1.9]]) slab(frames, add2(f, mul2(t, s)), t, w, 0.08, y0, y1)
-        slab(frames, add2(o, mul2(n, 0.12)), t, 2.3, 0.24, eave - 2.2, eave - 1.8) // the lintel
+        for (const [y0, y1] of rows) {
+          wallPolygon(hall.glass, o, t, n, flatHead(0.9, y0, y1), 0.05)
+          for (const [s, z0, z1, w] of [[-0.95, y0, y1, 0.12], [0.95, y0, y1, 0.12], [0, (y0 + y1) / 2 - 0.05, (y0 + y1) / 2 + 0.05, 1.9]]) slab(frames, add2(f, mul2(t, s)), t, w, 0.08, z0, z1)
+          slab(frames, add2(o, mul2(n, 0.12)), t, 2.3, 0.24, y1, y1 + 0.4) // the lintel
+          slab(hall.sills, add2(o, mul2(n, 0.12)), t, 2.2, 0.26, y0 - 0.18, y0)
+        }
       }
     }
   }

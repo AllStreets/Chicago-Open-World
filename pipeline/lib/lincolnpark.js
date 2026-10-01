@@ -17,7 +17,8 @@ import earcut from 'earcut'
 import { spire } from './crowns.js'
 import { wallPolygon } from './icons.js'
 import { add2, sub2, mul2, left, len2, norm2, mesh, merge, slab, revolve, ringAround, tri, quad, tube, at3 } from './meshkit.js'
-import { frameOf, at, prism, ringBand, offsetRing, edgeNormal, bellRoof, hatch, siteBuilding, siteGreen, into } from './parkkit.js'
+import { frameOf, at, prism, ringBand, offsetRing, edgeNormal, bellRoof, hatch, siteBuilding, siteGreen, into, column } from './parkkit.js'
+import { modernPavilion } from './zoo.js'
 import { project } from '../../shared/project.js'
 import polygonClipping from 'polygon-clipping'
 import { LANDMARK_FACADES as F } from './facadeIds.js'
@@ -409,4 +410,68 @@ export function conservatoryGrounds(b, spec = {}) {
   return { replace: true, pieces: [], meshes, clear }
 }
 
-export const LINCOLN_PARK_BUILDERS = { chessPavilion, couchTomb, lilyPool, wavelandClock, glassHouse, conservatoryGrounds }
+// ── Museums and pavilions (B-5) ──────────────────────────────────────────────────────────────────────────────────────
+const PM = (m, facade, style, part, fine = false) => ({ mesh: m, facade, seed: 0.5, style, part, lod0Only: fine })
+
+// The Elks National Veterans Memorial (Egerton Swartwout, 1926): Indiana limestone, a great domed rotunda ringed by a
+// colonnade of Ionic columns under Weinman's frieze, between two low wings round their courtyards; the dome rises
+// ~100 ft. The rotunda's centre and radius come from the OSM outline's round bay (spec.rotunda, local to its bbox centre).
+export function elksMemorial(b, spec = {}) {
+  const ring = b.polygons.reduce((a, p) => (Math.abs(polyArea(p.outer)) > Math.abs(polyArea(a.outer)) ? p : a)).outer
+  const xs = ring.map((p) => p[0]), zs = ring.map((p) => p[1]), cb = [(Math.min(...xs) + Math.max(...xs)) / 2, (Math.min(...zs) + Math.max(...zs)) / 2]
+  const R = spec.rotunda?.r ?? 20, c = add2(cb, spec.rotunda?.at ?? [0, 0]), wingH = spec.wingM ?? 12, drumH = spec.drumM ?? 18, top = spec.heightM ?? 35
+  const walls = mesh(), trim = mesh(), glass = mesh(), cols = mesh(), dome = mesh(), roofs = mesh()
+  // the wings: the outline less the rotunda's open half (its colonnade stands free in front of the drum, toward the
+  // park, spec.rotunda.faceDeg; the other half is engaged in the block behind it)
+  const fd = (((spec.rotunda?.faceDeg ?? 90) - 90) * Math.PI) / 180, span = ((spec.rotunda?.openDeg ?? 110) * Math.PI) / 180
+  const disc = [c, ...Array.from({ length: 25 }, (_, k) => { const a = fd - span + (2 * span * k) / 24; return add2(c, [(R + 2.5) * Math.cos(a), (R + 2.5) * Math.sin(a)]) })], close = (r) => [...r, r[0]]
+  for (const [outer] of polygonClipping.difference([close(ring)], [close(disc)])) {
+    const r = outer.slice(0, -1)
+    if (Math.abs(polyArea(r)) < 40 || orientedBox(r).W < 5) continue // slivers of the round bay
+    const w = prism(r, 0, wingH); into(walls, w.walls); into(roofs, w.top)
+    ringBand(trim, r, wingH - 1.2, wingH + 0.05, 0.3); ringBand(trim, r, 0, 1.2, 0.12)
+  }
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], q = ring[(i + 1) % ring.length], L = len2(sub2(q, a))
+    if (L < 6 || len2(sub2(mul2(add2(a, q), 0.5), c)) < R + 2) continue
+    const t = norm2(sub2(q, a)), n = edgeNormal(ring, i), k = Math.max(1, Math.floor((L - 4) / 4.5) + 1)
+    for (let j = 0; j < k; j++) wallPolygon(glass, add2(a, mul2(t, k === 1 ? L / 2 : 2 + ((L - 4) * j) / (k - 1))), t, n, [[-0.8, 2.2], [0.8, 2.2], [0.8, 8.2], [-0.8, 8.2]], 0.05)
+  }
+  // the rotunda: a drum behind its colonnade, the frieze over it, an attic, the dome and its lantern
+  const drum = revolve(c, [[R - 2.2, 0], [R - 2.2, drumH]], { sides: 48 }) // in the colonnade's shade
+  for (let k = 0; k < 24; k++) { const a = (k / 24) * Math.PI * 2, da = Math.atan2(Math.sin(a - fd), Math.cos(a - fd)); if (Math.abs(da) > span) continue; column(cols, add2(c, [R * Math.cos(a), R * Math.sin(a)]), 1.4, drumH - 3.2, 0.62, 12) }
+  into(trim, revolve(c, [[R + 0.9, 0], [R + 0.9, 1.4], [0.001, 1.4]], { sides: 48 })) // the stylobate
+  into(trim, revolve(c, [[R + 0.9, drumH - 3.2], [R + 0.9, drumH], [R - 2.2, drumH]], { sides: 48 })) // entablature with the frieze
+  into(trim, revolve(c, [[R - 1.2, drumH], [R - 1.2, drumH + 3.0], [R - 2.0, drumH + 3.2]], { sides: 48 })) // the attic
+  const dr = R - 2.0, d0 = drumH + 3.2
+  into(dome, revolve(c, Array.from({ length: 9 }, (_, k) => { const a = (k / 8) * (Math.PI / 2); return [Math.max(2.2, dr * Math.cos(a)), d0 + (top - 3.5 - d0) * Math.sin(a)] }), { sides: 48 }))
+  into(trim, revolve(c, [[2.6, top - 3.6], [2.6, top - 1.2], [1.8, top - 0.8], [0.001, top]], { sides: 16 })) // the lantern
+  const prof = Array.from({ length: 9 }, (_, k) => { const a = (k / 8) * (Math.PI / 2); return [Math.max(2.2, dr * Math.cos(a)) + 0.12, d0 + (top - 3.5 - d0) * Math.sin(a)] })
+  for (let k = 0; k < 16; k++) { const a = (k / 16) * Math.PI * 2, d = [Math.cos(a), Math.sin(a)]; for (let j = 0; j + 1 < prof.length - 1; j++) tube(dome, at3(add2(c, mul2(d, prof[j][0])), prof[j][1]), at3(add2(c, mul2(d, prof[j + 1][0])), prof[j + 1][1]), 0.18, 4) } // the dome's ribs
+  return { replace: true, pieces: [], meshes: [
+    PM(walls, F.stone, 'lp-limestone', 'walls'), PM(drum, F.stone, 'lp-ledgestone', 'drum'), PM(trim, F.stone, 'lp-limestone', 'trim', true), PM(cols, F.stone, 'lp-limestone', 'columns'),
+    PM(dome, F.stone, 'lp-dome', 'dome'), PM(glass, FLAT, 'gothic-shadow', 'windows', true), PM(roofs, FLAT, 'lp-slate', 'roof'),
+  ] }
+}
+
+// The Peggy Notebaert Nature Museum (Perkins & Will / Ellerbe Becket, 1999): a low, angular building of pale stone and
+// glass whose sloped roofs fold over the galleries, the glass Judy Istock Butterfly Haven (2,700 sq ft) at its south
+// end, and terraces stepping down west to North Pond (spec.terraces).
+export function natureMuseum(b, spec = {}) {
+  const base = modernPavilion(b, { eaveM: spec.eaveM ?? 9, wallStyle: 'lp-limestone', wallFacade: 'stone', glassBand: [1.0, 6.4], roofStyle: 'lp-green-roof', copingStyle: 'lp-steel' })
+  const extra = [], ring = b.polygons[0].outer, fr = frameOf(b)
+  if (spec.haven) {
+    const c = project(spec.haven.lon, spec.haven.lat), hw = spec.haven.halfW ?? 9, sh = spec.haven.spineHalf ?? 6
+    const d = bellRoof(c, fr.u, sh, bellProfile(hw, (spec.eaveM ?? 9) - 0.2, spec.haven.topM ?? 14.5), { K: 6, M: 10, purlins: [0, 3] })
+    extra.push(PM(d.glass, FLAT, GLASS, 'butterfly-haven'), PM(d.ribs, FLAT, 'lp-steel', 'haven-ribs', true))
+  }
+  if (spec.terraces) {
+    const steps = mesh(), dir = [Math.sin((spec.terraces.faceDeg * Math.PI) / 180), -Math.cos((spec.terraces.faceDeg * Math.PI) / 180)]
+    const o = project(spec.terraces.lon, spec.terraces.lat), along = [-dir[1], dir[0]]
+    for (let k = 0; k < 4; k++) slab(steps, add2(o, mul2(dir, k * 3.2)), along, spec.terraces.widthM ?? 40, 3.2, 0, 1.6 - k * 0.4)
+    extra.push(PM(steps, F.stone, 'lp-limestone', 'terraces'))
+  }
+  return { ...base, meshes: [...base.meshes, ...extra] }
+}
+
+export const LINCOLN_PARK_BUILDERS = { chessPavilion, couchTomb, lilyPool, wavelandClock, glassHouse, conservatoryGrounds, elksMemorial, natureMuseum }

@@ -25,6 +25,7 @@
     { "key": "lp-hedge", "base": "#3d5a33", "finish": "concrete", "source": "photo-matched, clipped boxwood and garden beds" },
     { "key": "lp-flowers", "base": "#bf6f5c", "finish": "concrete", "source": "photo-matched, the formal garden's summer bedding" },
     { "key": "lp-prairie", "base": "#8d9352", "finish": "concrete", "source": "https://en.wikipedia.org/wiki/Nature_Boardwalk (restored prairie and wetland planting round South Pond; photo-matched)" },
+    { "key": "lp-dome", "base": "#a7a69c", "finish": "limestone", "source": "https://www.architecture.org/online-resources/buildings-of-chicago/elks-national-memorial (limestone memorial; the dome photo-matched)" },
     { "key": "lp-sand", "base": "#d9c49c", "finish": "concrete", "source": "https://www.chicagoparkdistrict.com/parks-facilities/north-avenue-beach (sand beach)" }
   ]
 }

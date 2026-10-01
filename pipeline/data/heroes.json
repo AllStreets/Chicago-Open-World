@@ -4105,7 +4105,8 @@
         "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
         "OpenStreetMap way 53584351"
       ],
-      "p2": true
+      "p2": true,
+      "kindLine": "Zoo offices"
     },
     {
       "key": "zoohospital",
@@ -4853,6 +4854,271 @@
       "sources": [
         "https://www.lpzoo.org/exhibit/farm-in-the-zoo/",
         "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo"
+      ],
+      "p2": true
+    },
+    {
+      "key": "historymuseum",
+      "name": "Chicago History Museum",
+      "aliases": [
+        "Chicago History Museum",
+        "Chicago Historical Society",
+        "History Museum"
+      ],
+      "match": {
+        "osmId": "w23987046",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "brickHouse",
+        "roof": "flat",
+        "eaveM": 15,
+        "parapetM": 1.2,
+        "beltM": 5,
+        "windows": "flat",
+        "windowEveryM": 4.4,
+        "wallStyle": "lp-brick",
+        "roofStyle": "lp-slate",
+        "portico": {
+          "faceDeg": 65,
+          "columns": 6,
+          "spanM": 16,
+          "depthM": 4.2,
+          "pedimentM": 3.2,
+          "at": [
+            35.5,
+            1.4
+          ]
+        },
+        "note": "Graham, Anderson, Probst & White's 1932 Georgian building, its tall porticoed entrance facing east into the park; the 1972 and 1988 (Holabird & Root) additions refaced in red brick to match, the main entrance now on Clark Street. Red brick with limestone trim and white-framed windows on the OSM outline (three storeys, 15 m to the parapet, approximate); a six-column pedimented portico on the park face (column count read from photographs, approximate); no cupola (none confirmed)",
+        "windowRows": [
+          [
+            1.6,
+            3.9
+          ],
+          [
+            6,
+            8.9
+          ],
+          [
+            10.4,
+            12.6
+          ]
+        ]
+      },
+      "beacon": {
+        "lat": 41.91193,
+        "lon": -87.63142,
+        "y": 24
+      },
+      "source": "https://en.wikipedia.org/wiki/Chicago_History_Museum",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Chicago_History_Museum",
+        "https://www.chicagohistory.org/about-us/museum-history/"
+      ],
+      "p2": true,
+      "kindLine": "Museum"
+    },
+    {
+      "key": "naturemuseum",
+      "name": "Peggy Notebaert Nature Museum",
+      "aliases": [
+        "Nature Museum",
+        "Peggy Notebaert Nature Museum",
+        "Butterfly Haven",
+        "Judy Istock Butterfly Haven"
+      ],
+      "match": {
+        "osmId": "w23986958",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "natureMuseum",
+        "eaveM": 9,
+        "haven": {
+          "lat": 41.92647,
+          "lon": -87.63483,
+          "halfW": 8,
+          "spineHalf": 5,
+          "topM": 14
+        },
+        "terraces": {
+          "lat": 41.92691,
+          "lon": -87.63555,
+          "faceDeg": 245,
+          "widthM": 36
+        },
+        "note": "the 1999 museum of the Chicago Academy of Sciences (Perkins & Will): a low angular building of pale stone and glass on the OSM outline, planted roofs, the glass Judy Istock Butterfly Haven (2,700 sq ft) on its south wing and terraces stepping down west toward North Pond; the stone (the sources confirm steel and glass), the haven's place and all heights read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.92656,
+        "lon": -87.6351,
+        "y": 22
+      },
+      "source": "https://en.wikipedia.org/wiki/Peggy_Notebaert_Nature_Museum",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Peggy_Notebaert_Nature_Museum",
+        "https://naturemuseum.org/",
+        "https://www.artic.edu/artworks/239604/peggy-notebaert-nature-museum-chicago-illinois-exterior-perspective"
+      ],
+      "p2": true
+    },
+    {
+      "key": "northpondcafe",
+      "name": "North Pond",
+      "aliases": [
+        "North Pond restaurant",
+        "North Pond Café",
+        "North Pond"
+      ],
+      "match": {
+        "osmId": "w719036695",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "brickHouse",
+        "eaveM": 4.6,
+        "windows": "arcade",
+        "archHalfM": 0.9,
+        "archSpringM": 2.6,
+        "windowEveryM": 3,
+        "wallStyle": "lp-brick",
+        "roofStyle": "lp-slate",
+        "roofRiseM": 4.2,
+        "overM": 0.8,
+        "note": "Dwight Perkins's 1912 skaters' warming shelter on North Pond, since 1998 a restaurant in the Arts & Crafts manner: a single-storey brick lodge under a deep hipped roof (the roof form, its pitch and the openings read from photographs, approximate) on the OSM outline (2610 N Cannon Dr)",
+        "roofs": [
+          {
+            "at": [
+              -0.65,
+              0.52
+            ],
+            "L": 24,
+            "W": 12.5,
+            "bearingDeg": 214,
+            "rise": 4
+          },
+          {
+            "at": [
+              0.01,
+              -2.88
+            ],
+            "L": 29.6,
+            "W": 7.5,
+            "bearingDeg": 304,
+            "rise": 2.6
+          }
+        ]
+      },
+      "beacon": {
+        "lat": 41.92986,
+        "lon": -87.6375,
+        "y": 12
+      },
+      "source": "https://en.wikipedia.org/wiki/North_Pond_(restaurant)",
+      "sources": [
+        "https://en.wikipedia.org/wiki/North_Pond_(restaurant)",
+        "https://en.wikipedia.org/wiki/Dwight_H._Perkins_(architect)"
+      ],
+      "p2": true,
+      "kindLine": "Restaurant"
+    },
+    {
+      "key": "theateronthelake",
+      "name": "Theater on the Lake",
+      "aliases": [
+        "Theater on the Lake",
+        "Theatre on the Lake",
+        "Fullerton Pavilion"
+      ],
+      "match": {
+        "osmId": "w23989552",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "brickHouse",
+        "eaveM": 7.5,
+        "windows": "arcade",
+        "archHalfM": 1.7,
+        "archSpringM": 4.6,
+        "windowEveryM": 4.2,
+        "wallStyle": "lp-brick",
+        "roofStyle": "lp-tile-red",
+        "roofRiseM": 3.6,
+        "overM": 1.2,
+        "note": "Dwight Perkins's 1913 Prairie-style Fresh Air Fund sanitarium (built 1920, a theatre since 1953, renovated 2017): brick with sweeping arched openings (the steel arched trusses kept in 2017, sources) under a low hipped roof on the OSM outline; heights, roof and tile colour read from photographs (approximate)",
+        "roofs": [
+          {
+            "at": [
+              0,
+              -0.1
+            ],
+            "L": 75,
+            "W": 30,
+            "bearingDeg": 144
+          },
+          {
+            "at": [
+              -14.9,
+              11.5
+            ],
+            "L": 18.6,
+            "W": 18,
+            "bearingDeg": 144,
+            "rise": 3
+          }
+        ]
+      },
+      "beacon": {
+        "lat": 41.92699,
+        "lon": -87.6307,
+        "y": 16
+      },
+      "source": "https://www.chicagoparkdistrict.com/parks-facilities/theatre-lake",
+      "sources": [
+        "https://www.chicagoparkdistrict.com/parks-facilities/theatre-lake",
+        "https://kaufmanoneil.com/projects/wellness-amp-hospitality/theater-on-the-lake/"
+      ],
+      "p2": true,
+      "kindLine": "Theater"
+    },
+    {
+      "key": "elksmemorial",
+      "name": "Elks National Veterans Memorial",
+      "aliases": [
+        "Elks Memorial",
+        "Elks National Memorial",
+        "Elks National Veterans Memorial"
+      ],
+      "match": {
+        "osmId": "r2826708"
+      },
+      "landmark": {
+        "type": "elksMemorial",
+        "rotunda": {
+          "at": [
+            0,
+            -1
+          ],
+          "r": 21,
+          "faceDeg": 90,
+          "openDeg": 50
+        },
+        "wingM": 12,
+        "drumM": 18,
+        "heightM": 35,
+        "note": "Egerton Swartwout's 1926 memorial: an Indiana limestone rotunda ringed by Ionic columns under Adolph Weinman's frieze, between two low wings round their courtyards; the rotunda's centre and radius from the OSM outline's round bay; the dome's interior rises ~95 ft (sources), its exterior height (35 m to the lantern) and the column count read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.93234,
+        "lon": -87.64,
+        "y": 40
+      },
+      "source": "https://www.architecture.org/online-resources/buildings-of-chicago/elks-national-memorial",
+      "sources": [
+        "https://www.architecture.org/online-resources/buildings-of-chicago/elks-national-memorial",
+        "https://en.wikipedia.org/wiki/Elks_National_Veterans_Memorial",
+        "https://mag.elks.org/articles/the-elks-national-memorial-a-tribute-to-america-s-veterans"
       ],
       "p2": true
     }
