@@ -1,0 +1,78 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`C-2 SoundGlyph > on: speaker and two waves, no slash; off: the same speaker with a slash, no waves 1`] = `
+<svg
+  aria-hidden="true"
+  class="sound-glyph"
+  focusable="false"
+  viewBox="0 0 48 48"
+>
+  <path
+    d="M5 17.5h8.5L25 8v32l-11.5-9.5H5a1 1 0 0 1-1-1v-11a1 1 0 0 1 1-1z"
+    data-part="speaker"
+    fill="currentColor"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M30.5 17.5a9 9 0 0 1 0 13"
+    data-part="wave"
+    fill="none"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-width="3.6"
+  />
+  <path
+    d="M35.5 12a16.5 16.5 0 0 1 0 24"
+    data-part="wave"
+    fill="none"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-width="3.6"
+  />
+</svg>
+`;
+
+exports[`C-2 SoundGlyph > on: speaker and two waves, no slash; off: the same speaker with a slash, no waves 2`] = `
+<svg
+  aria-hidden="true"
+  class="sound-glyph"
+  focusable="false"
+  viewBox="0 0 48 48"
+>
+  <mask
+    height="48"
+    id="sg-cut-_r_1_"
+    maskUnits="userSpaceOnUse"
+    width="48"
+    x="0"
+    y="0"
+  >
+    <rect
+      fill="#fff"
+      height="48"
+      width="48"
+    />
+    <path
+      d="M7 7l34 34"
+      stroke="#000"
+      stroke-linecap="round"
+      stroke-width="9"
+    />
+  </mask>
+  <path
+    d="M5 17.5h8.5L25 8v32l-11.5-9.5H5a1 1 0 0 1-1-1v-11a1 1 0 0 1 1-1z"
+    data-part="speaker"
+    fill="currentColor"
+    mask="url(#sg-cut-_r_1_)"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M7 7l34 34"
+    data-part="slash"
+    fill="none"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-width="4"
+  />
+</svg>
+`;

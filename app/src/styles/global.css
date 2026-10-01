@@ -20,6 +20,9 @@
   /* Signals */
   --accent: #45d8ff;
   --accent-rgb: 69, 216, 255;
+  /* green: "on" — luminous on the dark palette (the sound-on glyph); not CTA Green #009b3a, too dark over the night city */
+  --green: #34e07a;
+  --green-rgb: 52, 224, 122;
   --red: #ff3b53;
   --red-rgb: 255, 59, 83;
 
