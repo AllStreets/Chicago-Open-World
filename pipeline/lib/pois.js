@@ -2,6 +2,7 @@
 // pinned where a person would look for it — on the roof of its building, or just above the ground in the open or
 // in a courtyard.
 import { pointInRing, distToRing } from './geom.js'
+import { siteFromTags, wikidataId } from './poiSites.js'
 
 export const POI_CATEGORIES = [
   { id: 'food', label: 'Food', icon: 'RiRestaurantLine' },
@@ -35,16 +36,17 @@ export function poiCategory(tags = {}) {
   return AMENITY[tags.amenity] ?? TOURISM[tags.tourism] ?? LEISURE[tags.leisure] ?? (tags.shop ? 'shops' : null)
 }
 
-const KEEP = ['cuisine', 'opening_hours', 'website']
+const KEEP = ['cuisine', 'opening_hours']
 export function poiRecord(el) {
   const tags = el?.tags ?? {}, cat = poiCategory(tags)
   const lat = el?.lat ?? el?.center?.lat, lon = el?.lon ?? el?.center?.lon
   if (!cat || lat == null || lon == null) return null
   const t = {}
   for (const k of KEEP) if (tags[k]) t[k] = tags[k]
-  if (!t.website && tags['contact:website']) t.website = tags['contact:website']
+  const site = siteFromTags(tags)
+  if (site) t.website = site
   for (const [k, v] of Object.entries(tags)) if (k.startsWith('addr:')) t[k] = v
-  return { id: `${el.type?.[0] ?? 'n'}${el.id}`, name: tags.name.trim(), cat, lon, lat, tags: t }
+  return { id: `${el.type?.[0] ?? 'n'}${el.id}`, name: tags.name.trim(), cat, lon, lat, tags: t, qid: wikidataId(tags) }
 }
 
 const norm = (s) => String(s ?? '').toLowerCase().replace(/\s+/g, ' ').trim()
@@ -90,10 +92,11 @@ export function buildingPoi(b) {
   const cat = t.office || OFFICE.test(t.building ?? '') ? 'offices' : APARTMENT.test(t.building ?? '') ? 'apartments' : null
   if (!cat) return null
   const tags = {}
-  for (const k of ['website', 'opening_hours']) if (t[k]) tags[k] = t[k]
-  if (!tags.website && t['contact:website']) tags.website = t['contact:website']
+  if (t.opening_hours) tags.opening_hours = t.opening_hours
+  const site = siteFromTags(t)
+  if (site) tags.website = site
   for (const [k, v] of Object.entries(t)) if (k.startsWith('addr:')) tags[k] = v
-  return { id: b.id, name, cat, x: b.centroid[0], z: b.centroid[1], tags, h: Math.max(0, ...(b.pieces ?? []).map((p) => p.top ?? 0)) }
+  return { id: b.id, name, cat, x: b.centroid[0], z: b.centroid[1], tags, qid: wikidataId(t), h: Math.max(0, ...(b.pieces ?? []).map((p) => p.top ?? 0)) }
 }
 
 // So named apartment and office buildings don't swamp the map: at most `caps[cat]` per tile, the tallest kept.

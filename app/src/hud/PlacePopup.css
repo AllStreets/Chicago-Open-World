@@ -1,0 +1,25 @@
+/* app/src/hud/PlacePopup.css — the small card beside a place pin */
+.place-popup {
+  position: absolute; left: 0; top: 0; z-index: 40; pointer-events: auto;
+  background: rgba(10, 15, 27, 0.94); border: 1px solid var(--border); border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+  padding: 12px 12px 10px; display: flex; flex-direction: column; gap: 7px;
+  backdrop-filter: blur(10px); animation: pp-in 0.14s ease-out;
+}
+.place-popup::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 3px; border-radius: 12px 12px 0 0; background: var(--cat); }
+@keyframes pp-in { from { opacity: 0; } to { opacity: 1; } }
+.pp-head { display: flex; align-items: flex-start; gap: 10px; }
+.pp-icon { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--cat); color: #fff; font-size: 18px; box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9); }
+.pp-titles { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.pp-name { font: 600 15px/1.25 var(--font-ui); color: var(--text); overflow-wrap: anywhere; }
+.pp-kind { font: 500 11px var(--font-ui); color: var(--text-muted); text-transform: capitalize; }
+.pp-close { appearance: none; border: 0; background: none; color: var(--text-faint); font-size: 16px; cursor: pointer; padding: 2px; border-radius: 6px; }
+.pp-close:hover { color: var(--text); background: rgba(255, 255, 255, 0.06); }
+.pp-line { margin: 0; display: flex; align-items: flex-start; gap: 7px; font: 400 12px/1.35 var(--font-ui); color: var(--text-muted); }
+.pp-line svg { flex: none; margin-top: 2px; color: var(--cat); }
+.pp-closed { color: #ff8787; }
+.pp-actions { display: flex; gap: 6px; margin-top: 2px; }
+.pp-btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-width: 0; padding: 7px 10px; border-radius: 8px; border: 1px solid var(--border-strong); color: var(--text); font: 600 12px var(--font-ui); text-decoration: none; }
+.pp-btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pp-btn.primary { background: var(--cat); border-color: transparent; color: #fff; }
+.pp-btn:hover { filter: brightness(1.1); }

@@ -26,6 +26,7 @@ import { venueZones, filterTrees, assertNoVenueTrees, outsideZones, cutZones } f
 import { createBlock, addTileToBlock, blockLayers, blockSidecar } from '../lib/blocks.js'
 import { bAcc, appendBuilding, appendLayer, asLayer } from '../lib/layers.js'
 import { preloadStatue } from '../lib/statues.js'
+import { mergeSites } from '../lib/poiSites.js'
 import { poiRecord, dedupePois, anchorPoi, buildingPoi, capByTile, POI_CATEGORIES, POI_CAT_IDS } from '../lib/pois.js'
 import { buildNeighborhoods } from '../lib/zones.js'
 import { loadBlenderMesh } from '../lib/blenderMesh.js'
@@ -347,7 +348,11 @@ async function main() {
   const amenityRecs = uniq(chunks('pois')).map(poiRecord).filter((r) => r && inWorld(r)).map((r) => { const [x, z] = project(r.lon, r.lat); return { ...r, x, z } })
   // named apartment and office buildings join as places, at most a dozen of each per tile (the tallest)
   const buildingRecs = capByTile(buildings.map(buildingPoi).filter(Boolean).map((r) => ({ ...r, tile: tileKeyFor([r.x, r.z]) })), { apartments: 12, offices: 12 })
-  const poiRecs = dedupePois([...amenityRecs, ...buildingRecs])
+  // websites: OSM tags, then the cached Wikidata official sites (fetch/fetch-wikidata-sites.js)
+  const wdFile = join(ROOT, 'cache', 'wikidata-sites.json'), wd = existsSync(wdFile) ? loadJson(wdFile) : {}
+  const poiRecs = mergeSites(dedupePois([...amenityRecs, ...buildingRecs]), wd)
+  const withSite = (list) => list.filter((r) => r.tags?.website).length
+  log(`places with a website: ${withSite(dedupePois([...amenityRecs, ...buildingRecs]))} from OSM tags → ${withSite(poiRecs)} with Wikidata`)
   const poisByTile = new Map()
   for (const r of poiRecs) { const k = tileKeyFor([r.x, r.z]); if (!poisByTile.has(k)) poisByTile.set(k, []); poisByTile.get(k).push(r) }
   const poiIndex = []

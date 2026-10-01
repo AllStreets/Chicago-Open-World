@@ -86,6 +86,15 @@ void main() {
 
 // the pins on screen last frame, for picking
 let shown = []
+// the live camera and canvas, so the place popup can follow its pin every frame
+const view = { camera: null, el: null }
+const pv = new THREE.Vector3()
+export function pinScreen(poi) {
+  if (!view.camera || !view.el || !poi) return null
+  pv.set(poi.x, poi.y, poi.z).project(view.camera)
+  const r = view.el.getBoundingClientRect()
+  return { sx: r.left + ((pv.x + 1) / 2) * r.width, sy: r.top + ((1 - pv.y) / 2) * r.height - PIN_PX * 1.2 * BADGE_UP, visible: pv.z > -1 && pv.z < 1 && Math.abs(pv.x) < 1 && Math.abs(pv.y) < 1 }
+}
 export function pickPin(clientX, clientY, maxPx = PIN_PX * 0.5) {
   let best = null, bd = maxPx
   for (const s of shown) { const d = Math.hypot(s.sx - clientX, s.sy - PIN_PX * 1.2 * BADGE_UP - clientY); if (d < bd) { bd = d; best = s.poi } } // aim at the badge above the tip
@@ -137,6 +146,7 @@ export default function PoiPins({ max: maxProp } = {}) {
   const tgt = useMemo(() => new THREE.Vector3(), []), lastPick = useRef(0)
   useFrame((state) => {
     mesh.material.uniforms.uViewport.value.set(size.width, size.height)
+    view.camera = camera; view.el = gl.domElement
     if (!on) return
     // the focus follows the camera (the target is where it looks: the controls' target, or ahead along the view)
     camera.getWorldDirection(tgt).multiplyScalar(Math.max(200, camera.position.y * 2.5)).add(camera.position)
