@@ -37,7 +37,8 @@ void main() {
   vUv = uv; vKind = aKind;
   vec3 c = (instanceMatrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
   vec3 fwd = normalize(instanceMatrix[0].xyz);
-  float size = length(instanceMatrix[1].xyz), width = length(instanceMatrix[2].xyz);
+  float grow = max(1.0, length(cameraPosition - (instanceMatrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz) / 110.0); // a few pixels at any range
+  float size = length(instanceMatrix[1].xyz) * grow, width = length(instanceMatrix[2].xyz) * min(grow, 2.0);
   float facing = dot(fwd, normalize(cameraPosition - c));
   vGain = aGain * smoothstep(-0.05, 0.35, facing);
   vec3 right = vec3(viewMatrix[0][0], viewMatrix[1][0], viewMatrix[2][0]);
