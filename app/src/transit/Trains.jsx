@@ -9,6 +9,7 @@ import { useStore } from '../state/store.js'
 import { worldUrl } from '../lib/manifest.js'
 import { QUALITY } from '../lib/quality.js'
 import { toPoolGeometry } from './pools.js'
+import { skipInCube } from '../landmarks/cubeFaces.js'
 import { getSim, publishTrains } from './simStore.js'
 import { trainsNow } from './liveStore.js'
 import { withRideTrain } from '../ride/rideSession.js'
@@ -62,6 +63,8 @@ export default function Trains({ file, version }) {
   useEffect(() => {
     if (new URLSearchParams(window.location.search).has('stats')) window.__trainMeshes = [...MODELS.map((k) => meshes[k]), meshes.impostor, meshes.lights]
   }, [meshes])
+
+  useEffect(() => skipInCube([...MODELS.map((k) => meshes[k]), meshes.impostor]), [meshes]) // the Bean's 128 px faces: lights only
 
   useFrame(({ camera }) => {
     const s = useStore.getState(), sim = getSim()

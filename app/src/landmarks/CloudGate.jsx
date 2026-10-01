@@ -5,7 +5,15 @@ import { useGLTF } from '@react-three/drei'
 import { worldUrl } from '../lib/manifest.js'
 import * as THREE from 'three'
 import { useStore } from '../state/store.js'
-import { CUBE, cubeFaceFor, cubeActive, renderCubeFaces } from './cubeFaces.js'
+import { CUBE, CUBE_STEPS, cubeStepFor, cubeActive, renderCubePart } from './cubeFaces.js'
+
+const _frustum = new THREE.Frustum(), _pv = new THREE.Matrix4(), _sphere = new THREE.Sphere(new THREE.Vector3(), 30)
+export function beanInView(camera, centre) {
+  camera.updateMatrixWorld()
+  _frustum.setFromProjectionMatrix(_pv.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse))
+  _sphere.center.set(centre[0], 5, centre[1])
+  return _frustum.intersectsSphere(_sphere)
+}
 
 export default function CloudGate({ file, version, centre }) {
   const { scene: glb } = useGLTF(worldUrl(file, version), false, true)
@@ -17,20 +25,24 @@ export default function CloudGate({ file, version, centre }) {
   const cubeCam = useMemo(() => new THREE.CubeCamera(CUBE.near, CUBE.far, rt), [rt])
   const mat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#f2f4f6', metalness: 1, roughness: 0.1 }), [])
   const geo = useMemo(() => { let g = null; glb.traverse((o) => { if (o.isMesh && !g) g = o.geometry }); return g }, [glb])
-  const bean = useRef(), frame = useRef(0), primed = useRef(false)
+  const bean = useRef(), frame = useRef(0), primed = useRef(0) // steps of the first fill rendered so far
   useEffect(() => () => { rt.dispose(); mat.dispose() }, [rt, mat])
   useFrame(() => {
     const active = cubeActive({ quality, camDist: Math.hypot(camera.position.x - centre[0], camera.position.z - centre[1]) })
-    const env = active ? rt.texture : null   // null → scene.environment (the sky) at LOW or far away
+    // the sky (scene.environment) at LOW, far away, and until every face of a first fill is in
+    const env = active && primed.current >= CUBE_STEPS ? rt.texture : null
     if (mat.envMap !== env) { mat.envMap = env; mat.needsUpdate = true }
-    if (!active || !bean.current) { primed.current = false; return }
+    if (!active || !bean.current) { primed.current = 0; return }
+    // off screen, a filled mirror keeps what it has and stops redrawing (the cube was the frame peak of views that only
+    // look past the Bean); back in view it resumes from that image, never from blank
+    if (primed.current >= CUBE_STEPS && !beanInView(camera, centre)) return
     if (cubeCam.coordinateSystem !== gl.coordinateSystem) { cubeCam.coordinateSystem = gl.coordinateSystem; cubeCam.updateCoordinateSystem() }
     cubeCam.position.set(centre[0], 5, centre[1]); cubeCam.updateMatrixWorld(true)
-    const faces = primed.current ? [cubeFaceFor(frame.current++)] : [0, 1, 2, 3, 4, 5]   // first sight: fill all six once
-    primed.current = true
-    if (faces[0] < 0) return
+    // first sight: one slice a frame through all six faces; then the refresh schedule
+    const step = primed.current < CUBE_STEPS ? cubeStepFor(primed.current++) : cubeStepFor(frame.current++)
+    if (!step) return
     bean.current.visible = false
-    renderCubeFaces(gl, rt, scene, cubeCam, faces)
+    renderCubePart(gl, rt, scene, cubeCam, step.face, step.part)
     bean.current.visible = true
   })
   return geo ? <mesh ref={bean} geometry={geo} material={mat} castShadow receiveShadow /> : null
