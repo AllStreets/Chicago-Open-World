@@ -8,6 +8,7 @@ import { computeBoundsTree, disposeBoundsTree, acceleratedRaycast } from 'three-
 import { useStore } from '../state/store.js'
 import { bldgIndexFromHit, buildingInfo, tooltipLines } from '../lib/picking.js'
 import { pickPin } from './PoiPins.jsx'
+import { zoneAt } from '../lib/neighborhoods.js'
 import { POI_CATEGORIES } from '../data/poiCategories.js'
 
 THREE.BufferGeometry.prototype.computeBoundsTree = computeBoundsTree
@@ -80,7 +81,12 @@ export default function Picker() {
       const pin = pickPin(e.clientX, e.clientY)
       if (pin) { useStore.getState().select({ kind: 'poi', id: pin.id, data: pin }); return }
       const p = pick(e)
-      if (!p) return
+      if (!p) {
+        // LIVE: a click on open ground opens the neighbourhood it lies in
+        const s = useStore.getState(), g = new THREE.Vector3()
+        if (s.lens === 'LIVE' && ray.current.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), g)) { const z = zoneAt(g.x, g.z, s.hoods); if (z) s.select({ kind: 'neighborhood', id: z.id, data: z }) }
+        return
+      }
       const { info, hit } = p, tileId = hit.object.userData.tileId, before = useStore.getState().selection
       // a station, train or ballpark clicked in the same gesture (their own click handlers) wins over the building behind
       setTimeout(() => {

@@ -23,3 +23,12 @@ describe('beaconLayout', () => {
     expect(r[0].labelled).toBe(false); expect(r[0].alpha).toBe(0)
   })
 })
+
+describe('per-item fade (P4 Task 7 evaluation)', () => {
+  it('an item may carry its own fade distance (neighbourhood names stay readable from high up)', () => {
+    const toScreen = (x, y, z) => ({ sx: x, sy: y, depth: z, visible: true })
+    const r = beaconLayout([{ id: 'zone', x: 100, y: 100, z: 7000, priority: 1, fadeFar: 12000 }, { id: 'pin', x: 400, y: 100, z: 7000, priority: 1 }], { toScreen, width: 1280, height: 800 })
+    expect(r.find((b) => b.id === 'zone').alpha).toBeGreaterThan(0.4)
+    expect(r.find((b) => b.id === 'pin').alpha).toBe(0)
+  })
+})

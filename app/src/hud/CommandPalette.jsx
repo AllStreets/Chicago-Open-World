@@ -8,6 +8,8 @@ import { buildPlaces, searchPlaces } from '../lib/places.js'
 import { BOOKMARKS } from '../lib/bookmarks.js'
 import { featurePlaces, featureCommands, lensCommands, placeCommands, tourCommands } from '../lib/paletteSources.js'
 import { buildPlaceRows } from '../lib/poiFilter.js'
+import { zoneForName } from '../lib/neighborhoods.js'
+import { openZone } from '../world/NeighborhoodZones.jsx'
 import { worldUrl } from '../lib/manifest.js'
 import { buildingPose } from './cards/BuildingCard.jsx'
 
@@ -84,6 +86,7 @@ export default function CommandPalette() {
     if (!r) return
     close()
     if (r.run) r.run()
+    else if (r.kind === 'neighborhood' && zoneForName(r.name, useStore.getState().hoods)) openZone(zoneForName(r.name, useStore.getState().hoods)) // its LIVE profile too
     else useStore.getState().startFlight(r.pose, r.name)
   }
   const onKeyDown = (e) => {

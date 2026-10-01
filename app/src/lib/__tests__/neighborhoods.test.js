@@ -13,3 +13,15 @@ describe('neighbourhood helpers', () => {
     expect(rentRangeLabel(null)).toBe('Rent data unavailable')
   })
 })
+
+import { zoneForName } from '../neighborhoods.js'
+describe('⌘K neighbourhood rows find their LIVE zone', () => {
+  const zones = [{ id: 'loop', name: 'The Loop' }, { id: 'little-italy', name: 'Little Italy & UIC' }, { id: 'boystown', name: 'Northalsted' }, { id: 'pilsen', name: 'Pilsen' }]
+  it('matches exact, partial and article-less names; null when there is no zone', () => {
+    expect(zoneForName('The Loop', zones).id).toBe('loop')
+    expect(zoneForName('Loop', zones).id).toBe('loop')
+    expect(zoneForName('Little Italy', zones).id).toBe('little-italy')
+    expect(zoneForName('Pilsen', zones).id).toBe('pilsen')
+    expect(zoneForName('Navy Pier', zones)).toBeNull()
+  })
+})

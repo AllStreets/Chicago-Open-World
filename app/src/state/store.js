@@ -83,6 +83,7 @@ export const useStore = create((set) => ({
   setPlacesOn: (placesOn) => set({ placesOn }),
   tour: null,
   setTour: (tour) => set({ tour }),
+  hoods: null, // neighborhoods.json zones, loaded by the LIVE layer (P4)
   tourResume: null, // the tour a movement key interrupted, offered back for 10 s
   lineAlerts: {}, // line id → { severity, headlines } from CTA alerts (P4)
   hover: null,    // { x, y, lines } — the building under the pointer (P4)

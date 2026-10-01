@@ -6,7 +6,8 @@ export function beaconLayout(items, { toScreen, width, height, maxLabels = 16, f
   const scored = items.map((it) => {
     const s = toScreen(it.x, it.y, it.z) ?? {}
     const on = s.visible !== false && Number.isFinite(s.sx) && s.sx >= 0 && s.sx <= width && s.sy >= 0 && s.sy <= height
-    const alpha = on ? Math.max(0, Math.min(1, (fadeFar - s.depth) / (fadeFar - fadeNear))) : 0
+    const far = it.fadeFar ?? fadeFar, near = Math.min(it.fadeNear ?? fadeNear, far - 1) // an item may fade on its own scale
+    const alpha = on ? Math.max(0, Math.min(1, (far - s.depth) / (far - near))) : 0
     return { it, s, on, alpha }
   })
   const order = scored.filter((r) => r.on && r.alpha > 0).sort((a, b) => (b.it.priority ?? 0) - (a.it.priority ?? 0) || a.s.depth - b.s.depth)

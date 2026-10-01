@@ -12,6 +12,7 @@ import Fireworks from '../landmarks/Fireworks.jsx'
 import PoiPins from './PoiPins.jsx'
 import Beacons from './Beacons.jsx'
 import WorldLabels from './WorldLabels.jsx'
+import NeighborhoodZones from './NeighborhoodZones.jsx'
 import Land from './Land.jsx'
 import { loadFacadeTextures, loadStylePalette } from './materials/facadeMaterial.js'
 import { loadGroundTextures } from './materials/groundShader.js'
@@ -99,6 +100,7 @@ export default function Scene() {
       <PoiPins />
       <Beacons />
       <WorldLabels />
+      <NeighborhoodZones />
       <TrainAudio />
         {manifest?.trains && <SafeLoad><Suspense fallback={null}><Trains file={manifest.trains} version={manifest.version} /></Suspense></SafeLoad>}
   

@@ -9,15 +9,17 @@ import BuildingCard from './cards/BuildingCard.jsx'
 import PoiCard from './cards/PoiCard.jsx'
 import LandmarkCard from './cards/LandmarkCard.jsx'
 import VisitPanel from './panels/VisitPanel.jsx'
+import LivePanel from './panels/LivePanel.jsx'
+import NeighborhoodCard from './cards/NeighborhoodCard.jsx'
 import './ContextPanel.css'
 
 const TRANSIT_KINDS = ['station', 'train'] // the transit card shows these
 const KIND_LABEL = { building: 'Building', landmark: 'Landmark', poi: 'Place', neighborhood: 'Neighborhood', office: 'Office' }
 
 // Card bodies register here as later tasks add them: kind → component({ selection })
-export const CARDS = { building: BuildingCard, landmark: LandmarkCard, poi: PoiCard }
+export const CARDS = { building: BuildingCard, landmark: LandmarkCard, poi: PoiCard, neighborhood: NeighborhoodCard }
 // Lens panels likewise: lens id → component
-export const PANELS = { VISIT: VisitPanel }
+export const PANELS = { VISIT: VisitPanel, LIVE: LivePanel }
 
 function GenericCard({ selection }) {
   const d = selection.data ?? {}
