@@ -135,7 +135,7 @@ for (const w of curated.walks) {
   else preferred = (x, z) => graphCells.has(ck(x, z))
   let path = [], ok = true
   for (let i = 1; i < way.length; i++) {
-    const leg = gridRoute(way[i - 1], way[i], { blocked, preferred, cell: CELL })
+    const leg = gridRoute(way[i - 1], way[i], { blocked, preferred, cell: CELL, offPath: 12 }) // off the paths only where it must (a street is no place to walk)
     if (!leg) { failures.push(`${w.id}: no open way for leg ${i}`); ok = false; break }
     path.push(...(i === 1 ? leg : leg.slice(1)))
   }

@@ -4,6 +4,7 @@
 import { useStore } from '../state/store.js'
 import { getSim } from '../transit/simStore.js'
 import { pointAt } from '../transit/path.js'
+import { tauAtS } from '../transit/profile.js'
 import { consistFor, carPoses } from '../transit/consist.js'
 import { createRun, stepRun, runState, skipStop, cycleSpeed, ridePose, UNDERGROUND_Y } from './rideRun.js'
 import { allRides, ridesJsonNow, VIEWS } from './rideCatalog.js'
@@ -68,6 +69,14 @@ export function frame(dt, ctx) {
 }
 
 // --- the rider's controls -------------------------------------------------------------------------------------------
+// tests and screenshots: put the ride at arc length s (metres along its path), paused
+export function seekRide(s) {
+  if (!S?.run) return
+  const def = S.def, tau = def.profile ? tauAtS(def.profile, s) : s / (def.paceMps ?? 1.4)
+  S.run = { ...S.run, tau, done: false }
+  const r = useStore.getState().ride
+  if (r) useStore.setState({ ride: { ...r, paused: true } })
+}
 export function skip(dir) { if (S?.run) { S.run = skipStop(S.def, S.run, dir); publishHud(0, true) } }
 export function nextSpeed(run = useStore.getState().ride, dir = 1) { return cycleSpeed({ speed: run?.speed ?? 1 }, dir).speed }
 export function addLook(dx, dy) {
@@ -77,12 +86,17 @@ export function addLook(dx, dy) {
 export const resetLook = () => { if (S) S.look = { yaw: 0, pitch: 0 } }
 
 // --- what the rider sees around them -----------------------------------------------------------------------------
-const SKIP_CATS = new Set([10, 11]) // apartments and offices are not sights
+const SIGHT_CATS = new Set([4, 5, 7]) // venues, culture, outdoors (not shops, services, offices or apartments)
+let chainsFor = null, chains = new Set()
+// Landmarks first (nearest first), then the venues, museums and parks you pass — never a chain (a name on 3+ places)
 export function nearbyNames([x, z], radius, landmarks = useStore.getState().manifest?.landmarks ?? [], pois = allTilePois()) {
-  const out = []
-  for (const l of landmarks) { const d = Math.hypot(l.x - x, l.z - z); if (d <= radius) out.push([d * 0.6, l.name]) } // landmarks first at equal distance
-  for (const p of pois) { if (SKIP_CATS.has(p.c) || !p.n) continue; const d = Math.hypot(p.x - x, p.z - z); if (d <= radius * 0.6) out.push([d, p.n]) }
-  return [...new Set(out.sort((a, b) => a[0] - b[0]).map((e) => e[1]))].slice(0, 3)
+  if (chainsFor !== pois.length) {
+    const n = new Map(); for (const p of pois) n.set(p.n, (n.get(p.n) ?? 0) + 1)
+    chains = new Set([...n].filter(([, k]) => k >= 3).map(([name]) => name)); chainsFor = pois.length
+  }
+  const lm = landmarks.map((l) => [Math.hypot(l.x - x, l.z - z), l.name]).filter(([d]) => d <= radius).sort((a, b) => a[0] - b[0])
+  const ps = pois.filter((p) => p.n && SIGHT_CATS.has(p.c) && !chains.has(p.n)).map((p) => [Math.hypot(p.x - x, p.z - z), p.n]).filter(([d]) => d <= radius * 0.5).sort((a, b) => a[0] - b[0])
+  return [...new Set([...lm, ...ps].map((e) => e[1]))].slice(0, 3)
 }
 
 function publishHud(now, force = false) {

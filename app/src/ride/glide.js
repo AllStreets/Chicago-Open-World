@@ -55,7 +55,7 @@ export function glideStep(g, input, dt, env) {
   return s
 }
 
-export function chasePose(g, { back = 18, up = 5, reducedMotion = false } = {}) {
+export function chasePose(g, { back = 30, up = 8, reducedMotion = false } = {}) {
   const [fx, fz] = forward(g.heading)
   return {
     position: [g.pos[0] - fx * back, g.pos[1] + up, g.pos[2] - fz * back],

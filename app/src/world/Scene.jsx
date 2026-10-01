@@ -11,6 +11,9 @@ import SeasonRig from './SeasonRig.jsx'
 import Rain from './Rain.jsx'
 import ScanController from '../scan/ScanController.jsx'
 import ScanOverlays from '../scan/ScanOverlays.jsx'
+import RideVehicles from '../ride/RideVehicles.jsx'
+import { startRide } from '../ride/rideActions.js'
+import { seekRide } from '../ride/rideSession.js'
 import Fireworks from '../landmarks/Fireworks.jsx'
 import PoiPins from './PoiPins.jsx'
 import Beacons from './Beacons.jsx'
@@ -89,6 +92,17 @@ export default function Scene() {
     const id = setTimeout(() => { followNearest(f); const v = q.get('followView'); if (v) useStore.getState().setFollowView(v) }, 500)
     return () => clearTimeout(id)
   }, [ready, transit])
+  useEffect(() => { // test-only ?ride=<id>&rideView=side&rideAt=<s metres> (people use the Ride button, L or ⌘K)
+    const q = new URLSearchParams(window.location.search), id = q.get('ride')
+    if (!id || !ready || !transit) return
+    const t = setTimeout(() => {
+      if (!startRide(id)) return
+      const v = q.get('rideView'), at = Number(q.get('rideAt'))
+      if (v) useStore.setState((s) => ({ ride: s.ride && { ...s.ride, view: v } }))
+      if (Number.isFinite(at) && q.has('rideAt')) setTimeout(() => seekRide(at), 300)
+    }, 500)
+    return () => clearTimeout(t)
+  }, [ready, transit])
   const gl = useThree((s) => s.gl)
   const threeScene = useThree((s) => s.scene)
   const threeCamera = useThree((s) => s.camera)
@@ -114,6 +128,7 @@ export default function Scene() {
       <Rain />
       <ScanController />
       <ScanOverlays />
+      <RideVehicles />
       <Fireworks />
       <PoiPins />
       <Beacons />

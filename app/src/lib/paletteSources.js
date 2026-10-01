@@ -91,6 +91,6 @@ export function rideCommands() {
   return rides.map((r) => ({
     id: `ride:${r.id}`, kind: 'guide', name: r.kind === 'glide' ? r.name : `${RIDE_PREFIX[r.kind]}: ${r.name}`,
     sub: r.kind === 'L' ? 'Ride the L · front window, alongside or behind' : r.kind === 'bus' ? 'Ride a CTA bus' : r.kind === 'walk' ? 'Street-level walk' : 'Hang-glide · ↑ dive ↓ climb',
-    aliases: ['ride', r.kind === 'walk' ? 'walk' : r.kind === 'bus' ? 'bus' : r.kind === 'glide' ? 'glide' : 'train'], run: () => startRide(r.id),
+    aliases: ['ride', r.kind === 'walk' ? 'walk' : r.kind === 'bus' ? 'bus' : r.kind === 'glide' ? 'glide' : 'train', ...(r.ref ? [`bus ${r.ref}`, `#${r.ref}`, `${r.ref} bus`] : [])], run: () => startRide(r.id),
   }))
 }
