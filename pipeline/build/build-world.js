@@ -182,7 +182,7 @@ async function main() {
     const h = heroFor.get(b)
     if (h) { const r = applyHero(b, h); b.pieces = r.pieces; b.extraMeshes = r.extraMeshes; b.venueMeshes = r.venueMeshes; b.clearPolys = r.clear; b.sculptReplaces = r.sculptReplaces; b.detached = r.detached; b.runtime = r.runtime; b.venueTop = (r.venueMeshes || []).reduce((t, v) => { for (let k = 1; k < v.mesh.positions.length; k += 3) t = Math.max(t, v.mesh.positions[k]); return t }, 0); b.venueTop = Math.max(b.venueTop, ...(r.detached ?? []).flatMap((d) => d.mesh.positions.filter((_, k) => k % 3 === 1))); b.hero = h.key; b.heroSacred = Boolean(h.sacred); b.crownTop = Math.max(0, ...r.extraMeshes.map((m) => m.positions.reduce((t, y, i) => (i % 3 === 1 && y > t ? y : t), 0)), ...(h.spireCounts ? r.pieces.map((q) => q.top) : [])) }
     else b.pieces = shapePieces(b)
-    if (h && (h.sculpt || h.bodyTopM)) { const tw = b.pieces.reduce((a, p) => (p.top > a.top ? p : a), { top: 0 }), bb = tw.outer ? ringBBox(tw.outer) : null; log(`hero ${h.key}: ${b.pieces.length} pieces, tower top ${tw.top.toFixed(1)} m, ${bb ? `${(bb.maxX - bb.minX).toFixed(1)} × ${(bb.maxZ - bb.minZ).toFixed(1)} m` : 'no ring'}, crown top ${b.crownTop.toFixed(1)} m; pieces ${b.pieces.map((q) => { const bb = ringBBox(q.outer); return `${q.base ?? 0}–${q.top.toFixed(0)}:${(bb.maxX - bb.minX).toFixed(0)}×${(bb.maxZ - bb.minZ).toFixed(0)}` }).join(' ')}`) }
+    if (h && (h.sculpt || h.bodyTopM)) { const tw = b.pieces.reduce((a, p) => (p.top > a.top ? p : a), { top: 0 }), bb = tw.outer ? ringBBox(tw.outer) : null; log(`hero ${h.key}: ${b.pieces.length} pieces, tower top ${tw.top.toFixed(1)} m, ${bb ? `${(bb.maxX - bb.minX).toFixed(1)} × ${(bb.maxZ - bb.minZ).toFixed(1)} m` : 'no ring'}, crown top ${b.crownTop.toFixed(1)} m, detail ${(b.extraMeshes.reduce((n, m) => n + m.positions.length / 9, 0) / 1000).toFixed(1)} k tris; pieces ${b.pieces.map((q) => { const bb = ringBBox(q.outer); return `${q.base ?? 0}–${q.top.toFixed(0)}:${(bb.maxX - bb.minX).toFixed(0)}×${(bb.maxZ - bb.minZ).toFixed(0)}` }).join(' ')}`) }
   }
   log(`heroes applied: ${heroFor.size}`)
   // ── Wrigley rooftop clubs (user item 13): bleachers on the Waveland and Sheffield roofs, facing home plate ──
@@ -481,17 +481,18 @@ async function main() {
       tops[i] = top
       const family = b.facadeOverride ? (VENUE_FACADES[b.facadeOverride] ?? FACADE_FAMILIES.indexOf(b.facadeOverride)) : classifyFacade({ height: top, year: b.year ?? 0, area: b.area, type: b.tags?.building })
       const seed = b.seedOverride ?? hashSeed(b.id)
-      const parapets = b.noParapet || b.sculptReplaces ? [] : b.pieces.map(parapetPiece).filter(Boolean)
+      const shown = b.pieces.filter((p) => !p.hidden) // a hidden piece counts for height, trees and clearance; its sculpt draws it
+      const parapets = b.noParapet || b.sculptReplaces ? [] : shown.map(parapetPiece).filter(Boolean)
       const st = meshStyle(b)
-      if (!b.sculptReplaces) for (const pc of b.pieces) appendBuilding(L0, extrudeBuilding(pc), family, seed, i, st) // a sculpted hero draws its own close-range body
+      if (!b.sculptReplaces) for (const pc of shown) appendBuilding(L0, extrudeBuilding(pc), family, seed, i, st) // a sculpted hero draws its own close-range body
       for (const pc of parapets) appendBuilding(L0, extrudeBuilding(pc), PARAPET_FACADE, seed, i, st)
       const crownStyle = (m) => (m.style ? styleIndex(m.style) : m.facade != null ? meshStyle(b, 'crown') : st) // own-surface crowns skip the wall recolour; sculpted detail names its material row
       for (const m of b.extraMeshes || []) appendBuilding(L0, m, m.facade ?? family, m.seed ?? seed, i, crownStyle(m))
       for (const v of b.venueMeshes || []) { const vs = partStyle(b, v); appendBuilding(L0, v.mesh, v.facade, v.seed, i, vs); if (!v.lod0Only) appendBuilding(L1, v.mesh, v.facade, v.seed, i, vs) } // fine landmark detail (merlons, ledges, carving) is close-range only
       // LOD1: heroes and part-buildings keep their shape (they are the skyline); plain footprints simplify
-      if (keepsShapeAtDistance(b)) { for (const pc of b.pieces) appendBuilding(L1, extrudeBuilding(pc), family, seed, i, st); for (const m of b.extraMeshes || []) if (!m.lod0Only) appendBuilding(L1, m, m.facade ?? family, m.seed ?? seed, i, crownStyle(m)) }
+      if (keepsShapeAtDistance(b)) { for (const pc of shown) appendBuilding(L1, extrudeBuilding(pc), family, seed, i, st); for (const m of b.extraMeshes || []) if (!m.lod0Only) appendBuilding(L1, m, m.facade ?? family, m.seed ?? seed, i, crownStyle(m)) }
       else if (b.area >= 80) for (const pc of lod1Pieces(b)) appendBuilding(L1, extrudeBuilding(pc), family, seed, i, st)
-      if (top > 15) for (const pr of roofProps(b, b.pieces)) t.props.push(pr)
+      if (top > 15) for (const pr of roofProps(b, shown)) t.props.push(pr)
       meta.push({ id: b.id, name: b.name, address: b.address, stories: b.stories, year: b.year, height: Math.round(top * 10) / 10, hero: b.hero ?? null })
     })
     const LV = { ...bAcc(), leaf: [] }

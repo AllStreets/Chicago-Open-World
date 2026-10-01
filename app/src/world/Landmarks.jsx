@@ -1,4 +1,5 @@
-// app/src/world/Landmarks.jsx — V6 runtime: bridge leaves and lights, fountain show, Cloud Gate mirror.
+// app/src/world/Landmarks.jsx — V6 runtime: bridge leaves and lights, fountain show, Cloud Gate mirror; the river's
+// scheduled shows (Art on theMART, the Centennial Fountain arc).
 import { Suspense, useEffect, useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { facadeUniforms } from './materials/facadeMaterial.js'
@@ -10,6 +11,8 @@ import CloudGate from '../landmarks/CloudGate.jsx'
 import { crownFace, crownWaterOn } from '../landmarks/crownFace.js'
 import { worldUrl } from '../lib/manifest.js'
 import ShowMusic from '../landmarks/ShowMusic.jsx'
+import ArtOnTheMart from '../landmarks/ArtOnTheMart.jsx'
+import CentennialArc from '../landmarks/CentennialArc.jsx'
 
 // versioned like the tiles, so a cached sidecar never disagrees with rebuilt tiles (_LEAF ids, pivots)
 const getJson = (file, version) => (file ? fetch(worldUrl(file, version)).then((r) => (r.ok ? r.json() : null)).catch(() => null) : Promise.resolve(null))
@@ -34,6 +37,8 @@ export default function Landmarks({ manifest }) {
       <ShowMusic fountainCentre={runtime?.fountain?.centre ?? null} bridges={bridges?.bridges ?? []} />
       {/* no plaza people (user, 2026-09-30: stick figures read as unfinished) — people stay only in the stadium stands */}
       {runtime?.fountain && <FountainShow emitters={showEmitters(runtime)} crownLevels={crownLevels} />}
+      {runtime?.artOnTheMart && <ArtOnTheMart spec={runtime.artOnTheMart} />}
+      {runtime?.centennialArc && <CentennialArc spec={runtime.centennialArc} />}
       {runtime?.detached?.filter((d) => d.key === 'cloudgate').map((d) => <Suspense key={d.key} fallback={null}><CloudGate file={d.file} version={manifest.version} centre={d.centre} /></Suspense>)}
     </>
   )

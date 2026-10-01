@@ -12,6 +12,7 @@ import { marinaTower, MARINA } from './marina.js'
 import { placeStatue } from './statues.js'
 import { tribuneDetail, wrigleyClockTower, skybridge, carbideDetail, willisDetail } from './icons.js'
 import { LANDMARK_FACADES } from './facadeIds.js'
+import { riverSculpt } from './rivericons.js'
 
 // Mirror of the façade shader's curtain-glass tint buckets: g = fract(seed * 3.7).
 const TINT_G = { dark: 0.14, green: 0.39, silver: 0.64, blue: 0.89 }
@@ -153,6 +154,14 @@ export function applyHero(b, spec) {
     for (const k of ['core', 'slabs', 'ramp']) extraMeshes.push(Object.assign(t[k], { facade: LANDMARK_FACADES.stone, seed: 0.5, style: 'marina-concrete', lod0Only: true }))
     extraMeshes.push(Object.assign(t.glass, { lod0Only: true })) // the hero's own window façade and glass colour
     sculptReplaces = true
+  }
+
+  // the river's icons (rivericons.js, Workstream A): routed by name; a name no module knows is a no-op
+  const river = spec.sculpt ? riverSculpt(spec.sculpt, { b, spec, pieces, main, centroid: [cx, cz] }) : null
+  if (river) {
+    if (river.pieces) pieces = river.pieces
+    if (river.runtime) runtime = { ...(runtime ?? {}), ...river.runtime }
+    for (const m of river.meshes ?? []) extraMeshes.push(Object.assign(m.mesh, { facade: m.facade, seed: m.seed, style: m.style, part: m.part, lod0Only: !m.lod1 }))
   }
 
   if (spec.facade) b.facadeOverride = spec.facade
