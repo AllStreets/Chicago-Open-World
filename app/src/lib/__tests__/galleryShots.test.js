@@ -31,3 +31,12 @@ describe('sports gallery poses (E3-4 / E4-6)', () => {
     expect(sportsShotQuery(SPORTS_GALLERY['united-center-live'], 'night')).toBe('pose=-3655,88,375,-3846,44,150&time=night&stats&sports=live:bulls')
   })
 })
+
+import { RIVER_GALLERY, riverShotQuery } from '../galleryShots.js'
+describe('river gallery poses (A-0)', () => {
+  it('eight kebab-case river poses, each a full pose the query pins', () => {
+    expect(Object.keys(RIVER_GALLERY)).toHaveLength(8)
+    for (const [k, v] of Object.entries(RIVER_GALLERY)) { expect(k).toMatch(/^river[a-z0-9]+$/); expect(v.position).toHaveLength(3); expect(v.target).toHaveLength(3) }
+    expect(riverShotQuery(RIVER_GALLERY.rivermouth, 'night')).toBe('pose=2150,90,-600,1500,10,-720&time=night')
+  })
+})

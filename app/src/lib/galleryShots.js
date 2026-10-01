@@ -32,3 +32,17 @@ export const SPORTS_GALLERY = {
   'showcase-wrigley-w': { pose: { position: [-2300, 40, -7350], target: [-2222, 28, -7428] }, showcase: ['wrigleyfield', 'cubs', 81000] },
 }
 export const sportsShotQuery = ({ pose, sports }, time) => `pose=${[...pose.position, ...pose.target].join(',')}&time=${time}&stats${sports ? `&sports=${sports}` : ''}`
+
+// ── A-0 (river icons, 2026-10-01): eight fixed river poses for the README's "River icons" frames, day and night.
+// gallery.spec.js takes a RIVER_GALLERY key as the view (GALLERY="rivermouth:river-mouth@day,…").
+export const RIVER_GALLERY = {
+  rivermouth: { position: [2150, 90, -600], target: [1500, 10, -720] },          // the Harbor Lock and the mouth, looking west
+  riverdusable: { position: [520, 45, -700], target: [180, 50, -760] },          // DuSable Bridge, Wrigley, Tribune, London Guarantee
+  rivermarinatrump: { position: [-140, 60, -520], target: [20, 120, -760] },    // Marina City, AMA Plaza, Trump from the south bank
+  riverclarklasalle: { position: [-140, 50, -600], target: [-420, 40, -680] },  // Reid Murdoch's clock, the Wacker wall
+  riverwolfpoint: { position: [-560, 70, -560], target: [-860, 60, -620] },     // the forks: Wolf Point, the Mart, 333 W Wacker
+  riveropera: { position: [-700, 60, -260], target: [-830, 60, -60] },           // the South Branch at the Civic Opera
+  riverpostoffice: { position: [-760, 80, 420], target: [-900, 30, 715] },      // the Old Post Office over the expressway
+  riversaltshed: { position: [-2720, 60, -2700], target: [-2601, 10, -2740] },  // the North Branch Salt Shed and its roof sign
+}
+export const riverShotQuery = (pose, time) => `pose=${[...pose.position, ...pose.target].join(',')}&time=${time}`
