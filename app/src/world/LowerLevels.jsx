@@ -15,6 +15,8 @@ import { BOOKMARKS } from '../lib/bookmarks.js'
 import { facadeUniforms } from './materials/facadeMaterial.js'
 
 export const SHOW = { belowM: 120, withinM: 600, fadeS: 0.6, cutBelowM: 2000 }
+// D3: what the traffic needs to know — are the decks drawn this frame, and the pieces they're built from
+export const lowerShared = { visible: false, json: null }
 
 export const LOWER_VERT = /* glsl */ `
 attribute vec3 _col;
@@ -115,9 +117,10 @@ export default function LowerLevels() {
   useEffect(() => {
     if (!built) return undefined
     setCutMask(built.mask)
+    lowerShared.json = json
     if (new URLSearchParams(window.location.search).has('stats')) window.__lowerLevels = built.stats
-    return () => { setCutMask(null); cutUniforms.uCut.value = 0; built.mesh.geometry.dispose(); built.mesh.material.dispose() }
-  }, [built])
+    return () => { setCutMask(null); cutUniforms.uCut.value = 0; lowerShared.json = null; lowerShared.visible = false; built.mesh.geometry.dispose(); built.mesh.material.dispose() }
+  }, [built, json])
   // U on: the ⌘K / key path asks for a view over the lower levels when the camera isn't over them
   useEffect(() => {
     useStore.setState({ requestLowerLevelsView: () => {
@@ -137,6 +140,7 @@ export default function LowerLevels() {
     if (u.value !== want) u.value = want > u.value ? Math.min(1, u.value + dt / SHOW.fadeS) : Math.max(0, u.value - dt / SHOW.fadeS)
     const ride = Boolean(useStore.getState().ride)
     group.current.visible = (u.value > 0 && cam.position.y < SHOW.cutBelowM) || ride || nearLower(cam.position.toArray(), built.box) // lean: from very high the cut lines say it all
+    lowerShared.visible = group.current.visible
     const mu = built.mesh.material.uniforms
     mu.uBoost.value = 0.32 * u.value * (1 - 0.8 * facadeUniforms.uNight.value) // daylight falls in by day; at night only the lamps
     mu.uFar.value = u.value > 0 ? 0 : 1 / 120

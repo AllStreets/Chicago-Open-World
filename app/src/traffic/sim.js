@@ -12,6 +12,7 @@ export const TYPES = {
 export const RANGE_M = 1500
 const NEAR_M = 650
 export const CAP = { LOW: 600, HIGH: 2400, ULTRA: 3200 }
+export const LOWER_SHARE = 0.2 // room for the lower decks over the cap (HIGH: +480)
 // vehicles per km per lane at the busiest hour: motorway, trunk, primary, secondary, tertiary, local, ramp
 const DENSITY = [30, 24, 20, 16, 12, 5, 8]
 const S0 = 2.2, HEADWAY_S = 1.3, TURN_V = 6.5
@@ -34,7 +35,7 @@ export function createTraffic(net, { seed = 7, cap = CAP.HIGH } = {}) {
   const active = new Set()            // link ids in range
   const onLink = new Map()            // link id → vehicles on it (unsorted between frames)
   const vehicles = []
-  let nextId = 1, t = 0, density = 1, maxVehicles = cap
+  let nextId = 1, t = 0, density = 1, maxVehicles = cap, closed = new Set(), raised = new Set()
   const centre = [0, 0]
 
   const typeFor = (cls) => {
@@ -49,14 +50,15 @@ export function createTraffic(net, { seed = 7, cap = CAP.HIGH } = {}) {
     const w = l.next.map((o, i) => {
       const straight = l.turn[i] < 0.5 ? 4 : l.turn[i] < 2.2 ? 1 : 0.05
       const pref = type === 'truck' ? (o.cls <= 1 || o.cls === 6 ? 3 : o.cls === 5 ? 0.1 : 1) : type === 'bus' ? (o.cls === 2 || o.cls === 3 ? 3 : 0.2) : o.cls === 5 ? 0.5 : 1
-      total += straight * pref; return total
+      const up = closed.size && o.spans.some((sp) => closed.has(sp.key)) ? 0.02 : 1 // the bridge is up: most turn away
+      total += straight * pref * up; return total
     })
     const r = rand() * total, i = w.findIndex((x) => x >= r)
     return l.next[Math.max(0, i)]
   }
   const add = (l, s, lane, type) => {
     const T = TYPES[type]
-    const v = { id: nextId++, type, link: l, lane, s, v: l.speed * T.vmul * 0.8, acc: 0, next: null, seg: 0, colour: Math.floor(rand() * 1e6), vmul: T.vmul * (0.88 + rand() * 0.22), x: 0, z: 0, yaw: 0 }
+    const v = { id: nextId++, type, link: l, lane, s, v: l.speed * T.vmul * 0.8, acc: 0, next: null, seg: 0, colour: Math.floor(rand() * 1e6), vmul: T.vmul * (0.88 + rand() * 0.22), x: 0, z: 0, y: 0, yaw: 0, pitch: 0 }
     v.next = pickNext(l, type)
     vehicles.push(v)
     if (!onLink.has(l.id)) onLink.set(l.id, [])
@@ -75,13 +77,17 @@ export function createTraffic(net, { seed = 7, cap = CAP.HIGH } = {}) {
     const d = Math.hypot((l.bbox[0] + l.bbox[2]) / 2 - centre[0], (l.bbox[1] + l.bbox[3]) / 2 - centre[1])
     return d < NEAR_M ? 1 : Math.max(0.33, 1 - (0.67 * (d - NEAR_M)) / (RANGE_M - NEAR_M))
   }
+  // D3-2: the lower decks have room of their own on top of the cap (a fifth of it), so a busy street level never
+  // leaves Lower Wacker empty when the U cut-away opens
+  const lowerExtra = () => Math.round(maxVehicles * LOWER_SHARE)
+  const capOf = (l) => (l.lower ? maxVehicles + lowerExtra() : maxVehicles)
   const target = (l) => (l.len / 1000) * l.lanes * DENSITY[l.cls] * density * falloff(l)
 
   // fill a link coming into range: vehicles spaced along each lane (it's out at the edge of the range, or the scene is new)
   function populate(l) {
     const want = target(l)
     let n = Math.floor(want) + (rand() < want - Math.floor(want) ? 1 : 0)
-    for (let k = 0; k < n && vehicles.length < maxVehicles; k++) {
+    for (let k = 0; k < n && vehicles.length < capOf(l); k++) {
       const lane = Math.floor(rand() * l.lanes), s = 8 + rand() * Math.max(0, l.stopAt - 12)
       const others = onLink.get(l.id) ?? []
       if (others.some((o) => o.lane === lane && Math.abs(o.s - s) < 22)) continue
@@ -89,12 +95,17 @@ export function createTraffic(net, { seed = 7, cap = CAP.HIGH } = {}) {
     }
   }
 
-  // which links carry traffic: the camera moved, or the scene started
-  function refresh(cx, cz, hour) {
+  // which links carry traffic: the camera moved, or the scene started. lower (D3-2): which links under the street
+  // (end to end) carry traffic — true: all in range (the U cut-away opens them to view); false: none (the decks aren't
+  // drawn; the ramps keep theirs, so nothing pops at a mouth); { x, z, r }: those within r of x, z (seen from down
+  // there — a ride or a low camera — the far roadway falls into the dark anyway)
+  function refresh(cx, cz, hour, lower = true) {
     centre[0] = cx; centre[1] = cz
     density = hourFactor(hour)
     const now = new Set()
-    for (const l of net.links) if (inRange(l, RANGE_M)) now.add(l.id)
+    const near = typeof lower === 'object' && lower ? lower : null
+    const nearOk = (l) => Math.hypot(Math.max(l.bbox[0] - near.x, 0, near.x - l.bbox[2]), Math.max(l.bbox[1] - near.z, 0, near.z - l.bbox[3])) < near.r
+    for (const l of net.links) if ((!l.deep || (near ? nearOk(l) : lower)) && inRange(l, RANGE_M)) now.add(l.id)
     for (const id of now) if (!active.has(id)) populate(net.links[id])
     for (let i = vehicles.length - 1; i >= 0; i--) if (!now.has(vehicles[i].link.id)) removeAt(i)
     active.clear(); for (const id of now) active.add(id)
@@ -104,10 +115,11 @@ export function createTraffic(net, { seed = 7, cap = CAP.HIGH } = {}) {
   function topUp() {
     let want = 0
     for (const id of active) want += target(net.links[id])
-    want = Math.min(maxVehicles, want)
+    want = Math.min(maxVehicles + lowerExtra(), want)
     const ids = [...active]
     for (let tries = 0; tries < 6 && vehicles.length < want && ids.length; tries++) {
       const l = net.links[ids[Math.floor(rand() * ids.length)]]
+      if (vehicles.length >= capOf(l)) continue
       const [x0, z0] = [l.xs[0], l.zs[0]]
       if (Math.hypot(x0 - centre[0], z0 - centre[1]) < RANGE_M * 0.55) continue
       const lane = Math.floor(rand() * l.lanes)
@@ -134,6 +146,12 @@ export function createTraffic(net, { seed = 7, cap = CAP.HIGH } = {}) {
       else if (v.next) {
         const nl = v.next, lane = Math.min(v.lane, nl.lanes - 1), back = lastOn(onLink.get(nl.id) ?? [], lane)
         if (back) { gap = l.len - v.s + back.s - TYPES[back.type].length; vLead = back.v }
+      }
+      // a raised bridge (or one about to lift): wait short of its leaves
+      if (closed.size) for (const h of l.holds) {
+        if (!closed.has(h.key) || (h.via && !h.via.has(v.next))) continue
+        const d = h.at - v.s
+        if (d > -0.5 && d < gap) { gap = Math.max(0.01, d); vLead = 0 }
       }
       // the light: hold at the stop line on red, and on amber when there's room to stop
       if (l.signal >= 0) {
@@ -172,9 +190,15 @@ export function createTraffic(net, { seed = 7, cap = CAP.HIGH } = {}) {
         onLink.get(nl.id).push(v)
       }
     }
+    // nobody is left on a leaf that has started to rise (the gates came down first; this only catches a straggler)
+    if (raised.size) for (let i = vehicles.length - 1; i >= 0; i--) {
+      const v = vehicles[i]
+      for (const sp of v.link.spans) if (raised.has(sp.key) && v.s >= sp.s0 && v.s - TYPES[v.type].length <= sp.s1) { removeAt(i); break }
+    }
     for (const v of vehicles) {
       const p = pointOnLink(v.link, Math.min(v.s, v.link.len) - TYPES[v.type].length / 2, v.link.offsets[v.lane], v.seg)
       v.seg = p.k; v.x = p.x; v.z = p.z; v.yaw = Math.atan2(-p.dz, p.dx)
+      v.y = p.y; v.pitch = Math.atan(p.grade) // D3-2: up and down the ramps, on the decks below the street
     }
     topUp()
   }
@@ -183,6 +207,8 @@ export function createTraffic(net, { seed = 7, cap = CAP.HIGH } = {}) {
     vehicles, refresh, step, active,
     get time() { return t }, set time(x) { t = x },
     setCap: (c) => { maxVehicles = c },
+    // bridges.js keys: closed (traffic waits short of the leaves), raised (the leaves are off the deck)
+    setBridges: (c, r) => { closed = c ?? new Set(); raised = r ?? new Set() },
     signalAt: (l) => (l.signal >= 0 ? signalState(net.signals[l.signal], l.phase, t) : null),
   }
 }

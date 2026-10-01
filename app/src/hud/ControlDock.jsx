@@ -73,7 +73,7 @@ function RideButton() {
   const on = useStore((s) => Boolean(s.ride) || s.ridePanelOpen), riding = useStore((s) => Boolean(s.ride))
   return (
     <button type="button" className={`dock-btn ride-btn${on ? ' active' : ''}`} aria-pressed={on} aria-label="Ride (L)"
-      title="Ride an L train, a bus, a street-level walk or a hang-glider (L)" onClick={() => featureById('ride').toggle()}>
+      title="Ride an L train, a bus, a street-level walk, a drive under the street or a hang-glider (L)" onClick={() => featureById('ride').toggle()}>
       <RiRouteLine /><span>{riding ? 'Stop riding' : 'Ride the city'}</span><span className="hud-kbd">L</span>
     </button>
   )

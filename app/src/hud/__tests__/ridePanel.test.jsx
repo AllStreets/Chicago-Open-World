@@ -19,11 +19,11 @@ describe('Ride the city', () => {
     vi.useFakeTimers({ now: new Date('2026-09-30T08:15:00-05:00'), toFake: ['Date'] })
     useStore.setState(useStore.getInitialState()); useStore.setState({ transit: TRANSIT })
   })
-  it('L and the dock row open the panel, which lists the L, buses, walks and the glide', () => {
+  it('L and the dock row open the panel, which lists the L, buses, walks, drives and the glide', () => {
     render(<><Keys /><ControlDock /><RidePanel /></>)
     fireEvent.keyDown(window, { code: 'KeyL', key: 'l' })
     expect(screen.getByRole('dialog', { name: 'Ride the city' })).toBeInTheDocument()
-    for (const t of ['L trains', 'Buses', 'Walks', 'Glide']) expect(screen.getByRole('region', { name: t })).toBeInTheDocument()
+    for (const t of ['L trains', 'Buses', 'Walks', 'Drives', 'Glide']) expect(screen.getByRole('region', { name: t })).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: 'Ride (L)' }))
     expect(useStore.getState().ridePanelOpen).toBe(false)
   })

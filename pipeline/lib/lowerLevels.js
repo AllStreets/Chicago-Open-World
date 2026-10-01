@@ -102,7 +102,12 @@ export function segmentProfile(a, b, ha, hb, levelY, grade) {
 // roads: OSM way elements (with `nodes` and `geometry`) — every drivable road, so the ramp mouths can be found.
 // levels: levels.json `levels`. water: rings ([[x, z]…]) of the sunken river — no deck is laid over open water.
 // tracks: transit.json route paths ([[x, y, z]…]); tubeClear: the tubes' ceiling over rail top (levels.json tubeDips).
-export function buildLowerLevels({ roads, levels, water = [], tracks = [], tubeClear = 4.2, grade = RAMP_GRADE }) {
+export function buildLowerLevels(args) { return lowerProfile(args).json }
+
+// buildLowerLevels plus what the traffic graph needs (D3-1): every lower way with its level, deck width and the
+// height at each of its OSM vertices, and `drawn` — the ids whose deck lower-levels.json draws whole (no piece left
+// out over a tube or split over water), the only lower ways traffic may drive.
+export function lowerProfile({ roads, levels, water = [], tracks = [], tubeClear = 4.2, grade = RAMP_GRADE }) {
   const levelY = { 1: levels.LOWER_Y, 2: levels.LOWER2_Y }
   const lower = roads.filter(isLowerWay).sort((a, b) => a.id - b.id)
   const lowerIds = new Set(lower.map((e) => e.id))
@@ -154,11 +159,31 @@ export function buildLowerLevels({ roads, levels, water = [], tracks = [], tubeC
   // A lower way that would sit on a below-grade railway (the service drives at Union Station's track level: the
   // tracks already are that level) is left out, so no deck ever runs into a subway tube or a Metra platform.
   const keep = tracks.length ? out.filter((w) => !hitsTrack(w, tracks, tubeClear, levels.SLAB_M)) : out
-  return {
+  const pieces = new Map(), kept = new Map()
+  for (const w of out) pieces.set(w.id, (pieces.get(w.id) ?? 0) + 1)
+  for (const w of keep) kept.set(w.id, (kept.get(w.id) ?? 0) + 1)
+  const drawn = new Set([...kept].filter(([id, n]) => n === 1 && pieces.get(id) === 1).map(([id]) => id))
+  const json = {
     v: LOWER_LEVELS_VERSION,
     y: { 1: levels.LOWER_Y, 2: levels.LOWER2_Y }, slab: levels.SLAB_M, clear: levels.CLEAR_M, columnM: COLUMN_M, grade,
     ways: keep,
   }
+  const info = new Map(ways.map((w) => [w.e.id, { level: w.level, h: w.h, width: widthOf(w.e.tags) }]))
+  // a bascule's lower deck (DuSable's carries Lower Michigan, the Outer Drive's Lower LSD): bridges.js draws it level
+  // at its lower street's height, so traffic drives it there
+  for (const e of roads) {
+    if (!isLowerBridgeDeck(e) || info.has(e.id)) continue
+    const lv = neighbourLevel(e.tags)
+    info.set(e.id, { level: lv, h: e.nodes.map(() => levelY[lv]), width: widthOf(e.tags) })
+    drawn.add(e.id)
+  }
+  return { json, drawn, levelY, grade, ways: info }
+}
+
+// a movable bridge's lower deck ("North Lower Michigan Avenue", bridge=movable) inside the multi-level zone
+export const isLowerBridgeDeck = (el) => {
+  const t = el.tags || {}
+  return t.bridge === 'movable' && DRIVABLE.has(t.highway) && neighbourLevel(t) > 0 && inZone(el.geometry || []) && Array.isArray(el.nodes)
 }
 
 // does a deck piece come within 1 m (vertically, under its slab) of a below-grade track's tube ceiling inside its

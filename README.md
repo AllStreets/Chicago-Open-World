@@ -732,8 +732,8 @@ Chicago's double- and triple-decker streets are now under the city where they re
 <td width="50%"><img src="docs/screenshots/d2-u-loop-night.png" alt="D2 — the U cut-away at night: the lower streets' lights" width="100%"/></td>
 </tr>
 <tr>
-<td><em>Press U over the river: the street opens along Wacker Drive and up Michigan Avenue, and the lower level shows underneath.</em></td>
-<td><em>The same view at night: Lower Wacker's strip lights glow under the opened street.</em></td>
+<td><em>Press U over the river: the street opens along Wacker Drive and up Michigan Avenue, and the lower level shows underneath, its traffic driving (D3).</em></td>
+<td><em>The same view at night: Lower Wacker's strip lights glow under the opened street, and its cars' headlights with them.</em></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/screenshots/d2-lower-wacker-day.png" alt="D2 — down into Lower Wacker between Michigan and Columbus" width="100%"/></td>
@@ -750,6 +750,33 @@ Chicago's double- and triple-decker streets are now under the city where they re
 <tr>
 <td><em>Lower Michigan meets the river at the DuSable Bridge, whose lower deck carries it across.</em></td>
 <td><em>Lower Wacker runs behind the Riverwalk's retaining wall, between the river and the towers.</em></td>
+</tr>
+</table>
+
+### Workstream D3 · Traffic under the street — *Lower Wacker's cars, buses and trucks, and a drive down there*
+
+The lower streets now carry traffic. Cars, buses and trucks come down the ramps from the street at the ramp's grade, run along Lower Wacker, Lower Michigan, Lower Columbus and Lower Randolph 5.1 m down (and the third level 9.5 m down), and climb back out to the street; the DuSable and Outer Drive bridges carry them across the river on their lower decks. Their lanes keep every vehicle, even a 2.6 m truck, clear of the walls and of each row of columns, and under the deck their headlights are on at any hour. They appear in the U cut-away and when you are down there yourself; from above the street hides them and they cost nothing. The street level obeys its lights as before, and ramps that come up at a signalled junction wait at its line.
+
+Raising the bridges (`B`) now stops the traffic: the gates come down ten seconds before the leaves move, cars queue at both ends (most turn away), nobody is ever left on a rising leaf, and traffic crosses again once the bridge is down.
+
+**Drive Lower Wacker** (⌘K "Drive Lower Wacker", or Ride → Drives) is a new kind of ride: from Randolph and Columbus down the ramp, along Lower Columbus, under the river front on Lower Wacker past Michigan, State and Franklin, then up the Lake Street exit to Upper Wacker — 2.1 km from the front of a bus, with the lower level's traffic around you.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/d3-drive-lower-columbus-day.png" alt="D3 — driving Lower Columbus toward Lower Wacker, oncoming headlights between the columns" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/d3-drive-lower-michigan-day.png" alt="D3 — the drive at Lower Michigan, traffic under the street" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Drive Lower Wacker: down on Lower Columbus, oncoming headlights between the rows of columns.</em></td>
+<td><em>Under Michigan Avenue: Lower Wacker's traffic queues at the Lower Michigan junction, the river through the opening on the right.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/d3-u-lower-wacker-traffic-dusk.png" alt="D3 — the U cut-away at dusk: Lower Wacker's traffic behind the Riverwalk" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/d3-bridges-raised-traffic-day.png" alt="D3 — the bridges raised, traffic waiting on Wacker" width="100%"/></td>
+</tr>
+<tr>
+<td><em>U at dusk, closer in: a truck and cars on Lower Wacker behind the Riverwalk, headlights on under the deck.</em></td>
+<td><em>B raises the bridges: the leaves are empty, and the traffic waits on Wacker until they come down.</em></td>
 </tr>
 </table>
 
@@ -791,12 +818,12 @@ Everything is reachable with the keyboard, the mouse and the on-screen dock — 
 | `M` · ⌘K "Sound" | music for the fountain and bridge shows, crowd cheers, passing trains and your ride (the L's rumble and door chime, a bus engine, the glider's wind, the city on a walk) — off until you turn it on; a green speaker (on) or a red one with a slash (off) shows in the middle of the screen for a second, then fades |
 | `G` · Games button · `⌘K` "tonight" | tonight's game, scores and the next game at every venue |
 | `Y` · ▶ Play a game (a ballpark's card) | a 90-second game at Wrigley, Rate Field or Soldier Field — the card's ballpark, else the nearest; `Y` again or `Esc` stops it (⌘K "Play a Cubs game", "Play a Fire match", "Stop the game"); a real live game always wins |
-| `B` · Bridges button | raise the river bridges — a boat-run lift with gate bells, flashers and music; press again and they come down within seconds |
+| `B` · Bridges button | raise the river bridges — a boat-run lift with gate bells, flashers and music, the traffic waiting at the gates; press again and they come down within seconds |
 | `J` · Fountain button | Buckingham Fountain water show — jets dance to music, lit in colour after dusk; press again to stop any show |
 | `X` · Fireworks button | Navy Pier fireworks — flies you to the harbour view; press again to stop (real shows: Wed 9 pm, Sat 10 pm in summer) |
 | `P` · Places button | pins for restaurants, bars, venues and more — click one for its card and website |
-| `L` · Ride button | ride the city — an L line, a CTA bus, a street-level walk or the glide; `Space` pauses, `.` `,` next or previous stop, `>` `<` faster or slower, `K` view, drag to look, `Esc` gets off. `M`, `X` and the other toggles never end a ride, a tour or a train follow |
-| `U` · ⌘K "Lower levels" | the streets under the streets — the street over Lower Wacker, Lower Michigan, Lower Columbus and the other double-decker streets opens like a cut-away drawing; `U` again closes it (from far away it flies you over the river first) |
+| `L` · Ride button | ride the city — an L line, a CTA bus, a street-level walk, a drive under the street (⌘K "Drive Lower Wacker") or the glide; `Space` pauses, `.` `,` next or previous stop, `>` `<` faster or slower, `K` view, drag to look, `Esc` gets off. `M`, `X` and the other toggles never end a ride, a tour or a train follow |
+| `U` · ⌘K "Lower levels" | the streets under the streets — the street over Lower Wacker, Lower Michigan, Lower Columbus and the other double-decker streets opens like a cut-away drawing, with the traffic driving underneath; `U` again closes it (from far away it flies you over the river first) |
 | `V` · SCAN button | holographic Scan; in the Live lens, light columns for transit, nightlife, green space or rent |
 | Weather button | follows Chicago live, or pick clear, overcast, rain, snow or lake fog (also ⌘K "Weather") |
 | LIVE CTA / SIMULATED chip | click for the data sources and "Try live again" |
@@ -848,7 +875,7 @@ npm run e2e --prefix app          # hero-view screenshot baselines (Playwright)
 - [x] **4 · Guide** — VISIT / LIVE / WORK lenses: places, tours, neighbourhood profiles, commute estimates; hover cards; Navy Pier fireworks; snow and sunny views
 - [x] **5 · Alive** — live L trains, scores and weather via the CHI ATLAS API (simulated whenever it isn't there), the LIVE / SIMULATED chip, Scan mode
 - [ ] **6 · Further rings** — streaming the rest of the city (deferred by the user, for later)
-- [x] **7 · Ride the city** — reworked from "glide mode": L train rides, CTA bus rides, street-level walks and the glide; a written plan for VR later
+- [x] **7 · Ride the city** — reworked from "glide mode": L train rides, CTA bus rides, street-level walks, the glide and a drive along Lower Wacker; a written plan for VR later
 
 Design spec: [docs/superpowers/specs/2026-09-28-chi-atlas-open-world-design.md](docs/superpowers/specs/2026-09-28-chi-atlas-open-world-design.md)
 
@@ -990,6 +1017,23 @@ It wasn't made right in one attempt. Here are the same places through each pass,
 <td><sub>D1 · Oct 1<br/>the walk at river level</sub></td>
 <td><sub>Vision pass · Sep 29<br/>the flat river at night</sub></td>
 <td><sub>D1 · Oct 1<br/>its lamps down at the water</sub></td>
+</tr>
+</table>
+
+**Lower Wacker** — the U cut-away, the same pose, before and after its traffic
+
+<table>
+<tr>
+<td width="25%"><img src="docs/screenshots/evolution/d2-u-loop-day-before-d3.png" alt="D2 — the U cut-away by day, the lower level empty" width="100%"/></td>
+<td width="25%"><img src="docs/screenshots/d2-u-loop-day.png" alt="D3 — the U cut-away by day with the lower level's traffic" width="100%"/></td>
+<td width="25%"><img src="docs/screenshots/evolution/d2-u-loop-night-before-d3.png" alt="D2 — the U cut-away at night, the lower level empty" width="100%"/></td>
+<td width="25%"><img src="docs/screenshots/d2-u-loop-night.png" alt="D3 — the U cut-away at night, headlights under the street" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>D2 · Oct 1<br/>the decks, empty</sub></td>
+<td><sub>D3 · Oct 1<br/>cars, buses and trucks down there</sub></td>
+<td><sub>D2 · Oct 1<br/>its strip lights alone</sub></td>
+<td><sub>D3 · Oct 1<br/>headlights at any hour</sub></td>
 </tr>
 </table>
 

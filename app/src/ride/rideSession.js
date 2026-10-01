@@ -37,7 +37,7 @@ export function beginSession(def, from) {
     const y = Math.max(py, roofHeightAt(px, pz) + 60, 120)
     S = { def, glider: createGlider({ position: [px, y, pz], heading, speed: 35 }), view: 'chase', look: { yaw: 0, pitch: 0 }, hudAt: 0, last: null }
   } else {
-    const fromStop = def.kind === 'walk' ? 0 : boardingStop(def, [from.target[0], from.target[2]])
+    const fromStop = def.kind === 'walk' || def.kind === 'drive' ? 0 : boardingStop(def, [from.target[0], from.target[2]])
     S = { def, run: createRun(def, { fromStop }), view: VIEWS[def.kind]?.[0] ?? 'cab', look: { yaw: 0, pitch: 0 }, hudAt: 0, last: null }
     if (def.kind === 'L') {
       const sim = getSim(), period = 'midday'
@@ -140,14 +140,18 @@ export function rideSoundState() {
   if (!S) return null
   if (S.def.kind === 'glide') return { kind: 'glide', speedMps: S.glider?.speed ?? 0 }
   const st = S.state
-  return { kind: S.def.kind, speedMps: rideSpeedMps(S.def, S.run), dwelling: Boolean(st?.dwelling), at: st?.prev?.name ?? null }
+  return { kind: S.def.kind === 'drive' ? 'bus' : S.def.kind, speedMps: rideSpeedMps(S.def, S.run), dwelling: Boolean(st?.dwelling), at: st?.prev?.name ?? null }
 }
 
 // the bus or glider pose for its mesh: { pos, yaw, pitch, roll } or null
 export function vehiclePose() {
   if (!S) return null
   if (S.def.kind === 'glide') { const g = S.glider, [fx, fz] = forward(g.heading); return { kind: 'glide', pos: g.pos, yaw: Math.atan2(-fz, fx), pitch: g.pitch, roll: g.bank } }
-  if (S.def.kind !== 'bus' || !S.state) return null
-  const half = 6.1, s = Math.max(0, S.state.s - half), c = pointAt(S.def.path, s), d = S.state.head.dir
-  return { kind: 'bus', pos: c.p, yaw: Math.atan2(-d[2], d[0]), pitch: 0, roll: 0 }
+  if ((S.def.kind !== 'bus' && S.def.kind !== 'drive') || !S.state) return null
+  const half = 6.1, s = Math.max(0, S.state.s - half), c = pointAt(S.def.path, s)
+  if (S.def.kind !== 'drive') { const d = S.state.head.dir; return { kind: 'bus', pos: c.p, yaw: Math.atan2(-d[2], d[0]), pitch: 0, roll: 0 } }
+  // a drive's bus pitches with the ramps (D3-3): its heading and pitch from its own two axles
+  const f = pointAt(S.def.path, Math.min(S.def.path.length, s + 3)).p, b = pointAt(S.def.path, Math.max(0, s - 3)).p
+  const dx = f[0] - b[0], dy = f[1] - b[1], dz = f[2] - b[2]
+  return { kind: 'bus', pos: c.p, yaw: Math.atan2(-dz, dx), pitch: Math.atan2(dy, Math.hypot(dx, dz)), roll: 0 }
 }

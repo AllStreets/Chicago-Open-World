@@ -8,6 +8,7 @@ export const RIDE_KINDS = [
   ['L', 'L trains', 'Ride the L — the front window, alongside or behind; every stop announced'],
   ['bus', 'Buses', 'Ride a CTA bus up the big avenues'],
   ['walk', 'Walks', 'Walk at street level — the Riverwalk, the Mag Mile, the lakefront, Fulton Market, Lincoln Park'],
+  ['drive', 'Drives', 'Drive the streets under the streets — Lower Wacker, from the front of a bus'],
   ['glide', 'Glide', 'Hang-glide over the city — {↑} dive · {↓} climb · {←} {→} turn · {Shift} boost'],
 ]
 // keys in braces are drawn as keycaps (hud/Keycap.jsx withKeys); keysPlain() gives the words for a tooltip
@@ -15,7 +16,8 @@ export const GLIDE_RIDE = { id: 'glide', kind: 'glide', name: 'Glide over the ci
 
 export const BUS_PROFILE = { vmax: 40 / 3.6, accel: 1.0, brake: 1.3, dwellS: 12 }
 export const BUS_Y = 0.12, WALK_Y = 0.1
-export const VIEWS = { L: ['cab', 'side', 'chase'], bus: ['cab', 'side', 'chase'], walk: ['eye'], glide: ['chase'] }
+export const VIEWS = { L: ['cab', 'side', 'chase'], bus: ['cab', 'side', 'chase'], walk: ['eye'], glide: ['chase'], drive: ['cab'] }
+export const DRIVE_MPS = 11 // ≈ 40 km/h: Lower Wacker's 30 mph limit, eased for the view
 export const VIEW_NAMES = { cab: 'Front window', side: 'Alongside', chase: 'Behind', eye: 'Street view' }
 
 // --- L ride names (F-4, 2026-10-01): what the train really does, and never two rows that read the same --------------
@@ -103,6 +105,19 @@ export function walkRides(json) {
   })
 }
 
+// D3-3: drives under the street (pipeline/build/build-drives.js): routed over the traffic graph in the right-hand lane,
+// with the roadway's height per point — down the ramp from the street, along Lower Wacker, up the Lake St exit
+export function driveRides(json) {
+  return (json?.drives ?? []).filter((d) => d.path?.length >= 2).map((d) => {
+    const path = toPath(d.path, BUS_Y)
+    const stops = (d.stops ?? []).map((st) => ({ name: st.name, s: Math.min(st.s, path.length) })).sort((a, b) => a.s - b.s)
+    if (!stops.length || stops[0].s > 1) stops.unshift({ name: d.from ?? 'Start', s: 0 })
+    if (stops.at(-1).s < path.length - 1) stops.push({ name: d.to ?? 'End', s: path.length })
+    stops.at(-1).s = path.length
+    return { id: `drive:${d.id}`, kind: 'drive', name: d.name, blurb: d.blurb, path, stops, paceMps: DRIVE_MPS, trainLength: 12.2, sources: d.sources }
+  })
+}
+
 // the buses and walks ship with the app (27 KB, pipeline/build/build-rides.js): public/world stays within its budget
 let ridesJson = RIDES
 export const loadRidesJson = async () => ridesJson
@@ -113,6 +128,6 @@ const memo = { sim: null, json: null, list: [] }
 export function allRides(sim, transit, json = ridesJson) {
   if (memo.sim === sim && memo.json === json && memo.list.length) return memo.list
   memo.sim = sim; memo.json = json
-  memo.list = [...lRides(sim, transit), ...busRides(json), ...walkRides(json), GLIDE_RIDE]
+  memo.list = [...lRides(sim, transit), ...busRides(json), ...walkRides(json), ...driveRides(json), GLIDE_RIDE]
   return memo.list
 }
