@@ -21,7 +21,7 @@ export const FEATURE_CONTROLS = [
   { id: 'games', label: 'Games', key: 'KeyG', keyLabel: 'G', icon: RiTrophyLine, hint: 'games',
     help: "today's games — scores, and a flight to the ballpark", ...storeFlag('gamesOpen', 'setGamesOpen'), ...always },
   { id: 'sound', label: 'Sound', key: 'KeyM', keyLabel: 'M', icon: RiVolumeUpLine, iconOff: RiVolumeMuteLine, hint: 'sound',
-    help: 'music for the fountain and bridge shows, crowd cheers and passing trains — off until you turn it on',
+    help: 'music for the fountain and bridge shows, crowd cheers, passing trains and the sounds of your ride — off until you turn it on; a green or red speaker in the middle of the screen shows which',
     use: () => useSoundStore((s) => Boolean(s.soundOn)),
     isOn: () => Boolean(useSoundStore.getState().soundOn),
     toggle: () => { const s = useSoundStore.getState(); s.setSoundOn(!s.soundOn) }, ...always },
@@ -50,6 +50,11 @@ export const FEATURE_CONTROLS = [
       const s = useStore.getState()
       if (featureById('fireworks').isOn()) { s.stopFireworks(); return }
       s.startFireworks()
+      // following a train, on a tour or riding, the camera stays yours (C-fix): say where the show is instead of flying
+      if (s.follow || s.tour || s.ride) {
+        s.showToast(`Fireworks are on at Navy Pier — press X again to stop${useSoundStore.getState().soundOn ? '' : ' · M turns the sound on'}`)
+        return
+      }
       s.requestFireworksView?.() // the scene flies the camera to a view of the barge if it can't see it
     }, ...always },
   { id: 'places', label: 'Places', key: 'KeyP', keyLabel: 'P', icon: RiMapPin2Line, hint: 'places',

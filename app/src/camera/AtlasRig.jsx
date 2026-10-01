@@ -13,10 +13,11 @@ import { flyPose, flightDuration, flightLift, liftAboveRoofs } from '../lib/flig
 import { clearanceAt } from '../lib/clearance.js'
 import { createRestTracker } from '../lib/rest.js'
 import { VIEW_ORDER, VIEW_NAMES } from '../lib/views.js'
-import { followStep, shouldExitFollow } from '../transit/followCam.js'
+import { followStep } from '../transit/followCam.js'
+import { handleFollowKey } from '../transit/followKeys.js'
+import { KEEP_CAMERA_CODES } from '../lib/cameraKeepKeys.js'
 import { getTrains, getSim } from '../transit/simStore.js'
 import { ensureClear } from '../lib/poseClearance.js'
-import { FEATURE_CONTROLS } from '../hud/featureControls.js'
 import { tourById, tourPoses, tourClock } from '../lib/tourPoses.js'
 import { tourAt } from '../lib/tour.js'
 import { CHI_LINE } from '../lib/nearestTransit.js'
@@ -28,8 +29,8 @@ import { stopRide, handleRideKey } from '../ride/rideActions.js'
 // keys that move the camera: during a tour they hand control back (and offer to resume)
 const MOVE_KEYS = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyW', 'KeyA', 'KeyS', 'KeyD', 'KeyQ', 'KeyE', 'KeyR', 'KeyF', 'PageUp', 'PageDown', 'Equal', 'Minus']
 
-// keys that leave a flight running: the time-of-day brackets, help, and every city-life toggle
-const KEEP_FLIGHT = ['BracketLeft', 'BracketRight', 'KeyH', ...FEATURE_CONTROLS.map((c) => c.key)]
+// keys that leave a flight running: the view brackets, home, and the follow/tour/ride-safe keys (C-fix: one list)
+const KEEP_FLIGHT = ['BracketLeft', 'BracketRight', 'KeyH', ...KEEP_CAMERA_CODES]
 
 const GLIDE_MPS = 140
 const BOOST = 3
@@ -115,7 +116,7 @@ export default function AtlasRig() {
         if (handleRideKey(e)) { e.preventDefault(); return }
         if (st0.ride.kind !== 'glide' && MOVE_KEYS.includes(e.code)) { stopRide(); return }
       }
-      if (st0.follow && shouldExitFollow(e)) { st0.stopFollow(); return } // any key takes back control
+      if (st0.follow && handleFollowKey(e)) return // K changes the view; Esc or a movement key takes the camera back; M, X … don't
       if (st0.tour && MOVE_KEYS.includes(e.code)) { useStore.setState({ tourResume: { ...st0.tour, t: tourClock.t } }); st0.setTour(null) } // a movement key takes back the camera
       keys.current.add(e.code)
       if (e.code.startsWith('Arrow') || e.code === 'PageUp' || e.code === 'PageDown') e.preventDefault()

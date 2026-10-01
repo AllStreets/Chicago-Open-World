@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { useStore } from '../state/store.js'
 import { getTrains } from '../transit/simStore.js'
+import { withKeys } from './Keycap.jsx'
 
 const ENDED = { left: 'The train left the map', none: 'No trains on that line right now' }
 
@@ -21,7 +22,7 @@ export default function FollowChip() {
       <button type="button" className={`hud-pill${follow.view === 'chase' ? ' active' : ''}`} onClick={() => setFollowView('chase')}>Chase</button>
       <button type="button" className={`hud-pill${follow.view === 'side' ? ' active' : ''}`} onClick={() => setFollowView('side')}>Side</button>
       <button type="button" className="hud-pill" onClick={() => stopFollow()}>Stop following</button>
-      <span className="follow-hint">any key stops</span>
+      <span className="follow-hint">{withKeys('{Esc} or a move key stops · {K} view')}</span>
     </div>
   )
 }

@@ -1,0 +1,13 @@
+/* app/src/hud/SoundToast.css — the bare sound glyph in the middle of the screen (Workstream C). Decision 6: no plate,
+   border, blur, filter or shadow of any kind — just the green or red glyph on the scene. Above the HUD, below ⌘K/help. */
+.sound-toast { position: fixed; inset: 0; display: grid; place-items: center; pointer-events: none; z-index: 60;
+  background: transparent; border: 0; opacity: 1; }
+.sound-toast[data-phase="fade"] { opacity: 0; transition: opacity var(--fade-ms, 1500ms) ease-out; }
+.sound-toast .sound-glyph { width: clamp(72px, 10vmin, 120px); height: clamp(72px, 10vmin, 120px); display: block; }
+.sound-toast[data-state="on"] .sound-glyph { color: var(--green); }
+.sound-toast[data-state="off"] .sound-glyph { color: var(--red); }
+.sound-toast.pop .sound-glyph { animation: sound-toast-pop 120ms ease-out both; }
+@keyframes sound-toast-pop { from { transform: scale(0.92); } to { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .sound-toast.pop .sound-glyph { animation: none; } }
+/* read out, never seen */
+.sound-toast-live { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }

@@ -6,7 +6,8 @@ import { getSim } from '../transit/simStore.js'
 import { pointAt } from '../transit/path.js'
 import { tauAtS } from '../transit/profile.js'
 import { consistFor, carPoses } from '../transit/consist.js'
-import { createRun, stepRun, runState, skipStop, cycleSpeed, ridePose, UNDERGROUND_Y } from './rideRun.js'
+import { createRun, stepRun, runState, skipStop, cycleSpeed, ridePose, rideSpeedMps, UNDERGROUND_Y } from './rideRun.js'
+export { rideSpeedMps }
 import { allRides, ridesJsonNow, VIEWS } from './rideCatalog.js'
 import { createGlider, glideStep, chasePose, glideInput, forward } from './glide.js'
 import { roofHeightAt } from '../lib/clearance.js'
@@ -121,7 +122,7 @@ function publishHud(now, force = false) {
 export function rideTrain() {
   if (!S || S.def.kind !== 'L' || !S.state) return null
   const st = S.state
-  return { id: 'ride', rn: 'RIDE', line: S.def.line, service: S.def.service, destination: S.def.stops.at(-1)?.name, sHead: st.s, speed: 0, head: st.head, cars: carPoses(S.def.path, st.s, S.consist, S.dims), nextStop: st.next && { station: st.next.station, name: st.next.name, eta: null }, ride: true }
+  return { id: 'ride', rn: 'RIDE', line: S.def.line, service: S.def.service, destination: S.def.stops.at(-1)?.name, sHead: st.s, speed: rideSpeedMps(S.def, S.run), head: st.head, cars: carPoses(S.def.path, st.s, S.consist, S.dims), nextStop: st.next && { station: st.next.station, name: st.next.name, eta: null }, ride: true }
 }
 
 // simulated trains of the same service close to the ride train step aside, so two trains never overlap
@@ -132,6 +133,14 @@ export function hideNearRide(trains, ride, behind = 250, ahead = 400) {
 export function withRideTrain(trains) {
   const ride = rideTrain()
   return ride ? [...hideNearRide(trains, ride), ride] : trains
+}
+
+// what the ride sounds like now (F-7): its kind, how fast it really moves, and whether the train is at a stop
+export function rideSoundState() {
+  if (!S) return null
+  if (S.def.kind === 'glide') return { kind: 'glide', speedMps: S.glider?.speed ?? 0 }
+  const st = S.state
+  return { kind: S.def.kind, speedMps: rideSpeedMps(S.def, S.run), dwelling: Boolean(st?.dwelling), at: st?.prev?.name ?? null }
 }
 
 // the bus or glider pose for its mesh: { pos, yaw, pitch, roll } or null

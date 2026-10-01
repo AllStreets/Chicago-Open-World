@@ -18,6 +18,7 @@ import { hudScale, hudCompact } from '../lib/hudScale.js'
 import TransitLegend from './TransitLegend.jsx'
 import { useFeatureKeys } from './useFeatureKeys.js'
 import Toast from './Toast.jsx'
+import SoundToast from './SoundToast.jsx'
 import PerfOverlay from './PerfOverlay.jsx'
 import LensRail from './LensRail.jsx'
 import ContextPanel from './ContextPanel.jsx'
@@ -61,6 +62,7 @@ export default function Hud() {
       <PerfOverlay />
       <FollowChip />
       <Toast />
+      <SoundToast />
       <BuildingTooltip />
       <PlacePopup />
       <TourBar />

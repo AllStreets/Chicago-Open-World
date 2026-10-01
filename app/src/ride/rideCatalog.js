@@ -8,30 +8,64 @@ export const RIDE_KINDS = [
   ['L', 'L trains', 'Ride the L — the front window, alongside or behind; every stop announced'],
   ['bus', 'Buses', 'Ride a CTA bus up the big avenues'],
   ['walk', 'Walks', 'Walk at street level — the Riverwalk, the Mag Mile, the lakefront, Fulton Market, Lincoln Park'],
-  ['glide', 'Glide', 'Hang-glide over the city'],
+  ['glide', 'Glide', 'Hang-glide over the city — {↑} dive · {↓} climb · {←} {→} turn · {Shift} boost'],
 ]
-export const GLIDE_RIDE = { id: 'glide', kind: 'glide', name: 'Glide over the city', blurb: 'A hang-glider launched from where you are: ↑ dive, ↓ climb, ← → turn, Shift boost' }
+// keys in braces are drawn as keycaps (hud/Keycap.jsx withKeys); keysPlain() gives the words for a tooltip
+export const GLIDE_RIDE = { id: 'glide', kind: 'glide', name: 'Glide over the city', blurb: 'A hang-glider launched from where you are: {↑} dive, {↓} climb, {←} {→} turn, {Shift} boost' }
 
 export const BUS_PROFILE = { vmax: 40 / 3.6, accel: 1.0, brake: 1.3, dwellS: 12 }
 export const BUS_Y = 0.12, WALK_Y = 0.1
 export const VIEWS = { L: ['cab', 'side', 'chase'], bus: ['cab', 'side', 'chase'], walk: ['eye'], glide: ['chase'] }
 export const VIEW_NAMES = { cab: 'Front window', side: 'Alongside', chase: 'Behind', eye: 'Street view' }
 
-// One ride per CTA service; the same track twice (Green Line branches drawn twice) is listed once.
+// --- L ride names (F-4, 2026-10-01): what the train really does, and never two rows that read the same --------------
+// The elevated Loop's stations: a service that calls at five or more of them goes around the Loop (Brown, Orange, Pink,
+// Purple); Red and Blue run through downtown in subways and Green along Lake and Wabash, so they say where they're signed.
+const LOOP_ELEVATED = new Set(['Clark/Lake', 'State/Lake', 'Washington/Wabash', 'Adams/Wabash', 'Harold Washington Library-State/Van Buren', 'LaSalle/Van Buren', 'Quincy', 'Washington/Wells'])
+// CTA names a station that exists on two branches by its branch — "Western (O'Hare branch)", "Western (Forest Park
+// branch)"; a branch is known by the stations beside it (transitchicago.com station pages)
+export const BRANCHES = {
+  blue: [
+    ["O'Hare branch", ['Damen', 'Division', 'California', 'Logan Square', 'Belmont', 'Addison', 'Irving Park', 'Montrose', 'Jefferson Park', 'Cumberland', 'Rosemont', "O'Hare"]],
+    ['Forest Park branch', ['Illinois Medical District', 'Racine', 'UIC-Halsted', 'Kedzie-Homan', 'Pulaski', 'Cicero', 'Austin', 'Oak Park', 'Forest Park']],
+  ],
+}
+function branchOf(lineId, stops, i) {
+  for (const j of [i - 1, i + 1, i - 2, i + 2]) {
+    const hit = (BRANCHES[lineId] ?? []).find(([, names]) => names.includes(stops[j]?.name))
+    if (hit) return hit[0]
+  }
+  return null
+}
+// "Western" twice on one service at two different stations: name both by their branch
+function stopLabel(lineId, stops, i) {
+  const st = stops[i], twin = stops.some((x, j) => j !== i && x.name === st.name && x.station !== st.station)
+  const branch = twin ? branchOf(lineId, stops, i) : null
+  return branch ? `${st.name} (${branch})` : st.name
+}
+export function lRideName(line, stops, towards) {
+  const a = stopLabel(line.id, stops, 0), b = stopLabel(line.id, stops, stops.length - 1)
+  const loop = new Set(stops.map((s) => s.name).filter((n) => LOOP_ELEVATED.has(n))).size >= 5
+  if (loop) return `${line.name} · ${a} → around the Loop → ${b}`
+  return `${line.name}${towards.length ? ` to ${towards.join(' or ')}` : ''} · ${a} → ${b}`
+}
+
+// One ride per CTA service; the same track twice (the Green Line's two southern branches share it here) is listed once,
+// signed to both of its destinations.
 export function lRides(sim, transit) {
   if (!sim || !transit) return []
-  const lines = new Map(transit.lines.map((l) => [l.id, l])), dims = transit.rollingStock ?? {}, seen = new Set(), out = []
+  const lines = new Map(transit.lines.map((l) => [l.id, l])), dims = transit.rollingStock ?? {}, seen = new Map(), out = []
   for (const sv of sim.services) {
     const line = lines.get(sv.line)
     if (line?.operator !== 'cta' || sv.stops.length < 2) continue
     const first = sv.stops[0].name, last = sv.stops.at(-1).name
     const key = `${sv.line}|${first}|${last}|${Math.round(sv.path.length / 50)}`
-    if (seen.has(key)) continue
-    seen.add(key)
-    const name = first === last ? `${line.name}: ${first} → the Loop → ${last}` : `${line.name}: ${first} → ${last}`
+    if (seen.has(key)) { const r = seen.get(key); if (sv.to && !r.towards.includes(sv.to)) r.towards.push(sv.to); continue }
     const car = dims[sv.spec.stock]?.length ?? 14.6
-    out.push({ id: `l:${sv.id}`, kind: 'L', name, line: sv.line, colour: line.colour, service: sv.id, path: sv.path, stops: sv.stops, profile: sv.profile, spec: sv.spec, inbound: sv.inbound, trainLength: car * (sv.spec.cars?.offpeak ?? 6) })
+    const r = { id: `l:${sv.id}`, kind: 'L', name: '', line: sv.line, colour: line.colour, service: sv.id, path: sv.path, stops: sv.stops, profile: sv.profile, spec: sv.spec, inbound: sv.inbound, trainLength: car * (sv.spec.cars?.offpeak ?? 6), towards: sv.to ? [sv.to] : [] }
+    seen.set(key, r); out.push(r)
   }
+  for (const r of out) r.name = lRideName(lines.get(r.line), r.stops, r.towards)
   return out.sort((a, b) => a.name.localeCompare(b.name))
 }
 
