@@ -5,6 +5,8 @@ import { useStore } from '../state/store.js'
 import { chiBase, chiGet, probeHealth, createFeed, FEEDS } from './chiApi.js'
 import { applyLineAlerts } from '../transit/lineAlerts.js'
 import { ingestLiveTrains } from '../transit/liveStore.js'
+import { parseChiSports, sportsInterval } from '../sports/liveScores.js'
+import { applyLiveSports } from '../sports/SportsClock.jsx'
 
 const REPROBE_MS = 60_000
 let running = null // the live session's feeds, so the chip's "Try live again" and ⌘K can refresh them
@@ -14,7 +16,8 @@ export const FEED_WIRING = {
   cta: { parse: (j) => { if (!Array.isArray(j?.trains)) throw new Error('no trains'); return j }, onData: (j) => ingestLiveTrains(j), onFail: () => {} }, // offline: the simulator takes over; stale live trains age out
   alerts: { parse: (j) => j, onData: (j) => applyLineAlerts(j), onFail: () => applyLineAlerts(null) },
   weather: { parse: (j) => j, onData: () => {}, onFail: () => {} },
-  sports: { parse: (j) => j, onData: () => {}, onFail: () => {} },
+  sports: { parse: (j) => { if (!Array.isArray(j)) throw new Error('no teams'); return parseChiSports(j).flatMap((t) => t.games) }, onData: (g) => applyLiveSports(g),
+    onFail: () => {}, intervalMs: (last) => sportsInterval(last ?? [], Date.now()) }, // offline: the last live state ages out on the clock; the schedule carries on
 }
 
 export async function startFeeds({ probe = probeHealth, get = chiGet, base = chiBase(), schedule = setTimeout, cancel = clearTimeout, isHidden } = {}) {

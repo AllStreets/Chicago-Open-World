@@ -34,7 +34,7 @@ export default function VenueCard() {
       )}
       <p className="vc-status">{lines.status}</p>
       {st?.next && <p className="vc-next">Next: {gameLabel(st.next)} · {whenChicago(Date.parse(st.next.start))}</p>}
-      <p className="vc-foot"><span className={`chip chip-${chip.toLowerCase()}`}>{chip}</span> {chip === 'ESPN' ? `ESPN schedule as of ${generatedAt?.slice(0, 10)}` : 'Simulated schedule — typical home dates'}</p>
+      <p className="vc-foot"><span className={`chip chip-${chip.toLowerCase()}`}>{chip}</span> {chip === 'LIVE' ? 'Live score from ESPN, via CHI ATLAS' : chip === 'ESPN' ? `ESPN schedule as of ${generatedAt?.slice(0, 10)}` : 'Simulated schedule — typical home dates'}</p>
     </div>
   )
 }

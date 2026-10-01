@@ -6,6 +6,7 @@ import { isStale } from './venueStates.js'
 
 export const useSports = create((set) => ({
   games: [], source: 'SIMULATED', generatedAt: null, venues: [], states: {}, override: null,
+  liveGames: [], // P5: CHI /api/sports, overlaid on `games` by the clock (liveScores.overlayLive)
   cardVenue: null, boardOverrides: {}, swells: {},
   setData: (d) => set(d),
   setVenues: (venues) => set({ venues }),
