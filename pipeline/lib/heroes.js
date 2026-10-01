@@ -170,6 +170,16 @@ export function applyHero(b, spec) {
   return { pieces, extraMeshes, venueMeshes, clear, detached, runtime, sculptReplaces }
 }
 
+// A hero group (Lincoln Park pass, B-4): one spec dressing many small buildings — the zoo's lesser houses — each
+// still its own landmark with its own name for hover and ⌘K. heroes.json gives `members: [{ way, name, aliases?,
+// landmark? }]`; each becomes `<key>-<way>` matched to that way, the group's landmark spec merged with its own.
+export function expandHeroGroups(heroes) {
+  return heroes.flatMap((h) => (!h.members ? [h] : h.members.map((m) => {
+    const { members, ...rest } = h
+    return { ...rest, key: `${h.key}-${m.way}`, name: m.name, aliases: [m.name, ...(m.aliases ?? [])].filter(Boolean), match: { osmId: `w${m.way}`, osmType: 'way' }, landmark: { ...h.landmark, ...(m.landmark ?? {}) }, group: h.key }
+  })))
+}
+
 // OSM ids are unique per element type only: way 123 and relation 123 are different buildings.
 // A ref is 'w123' / 'r123' (typed) or a bare number / digit string (must then be unambiguous).
 export function parseOsmRef(ref) {

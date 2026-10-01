@@ -102,3 +102,21 @@ describe('cutZones (V5: parks never under a venue field)', () => {
     expect(cutZones([far], [zone])[0]).toBe(far) // untouched polygons pass through as-is
   })
 })
+
+import { cutWater } from '../lib/trees.js'
+describe('Lincoln Park water shows through the park (ponds, lagoons, harbours were hidden under the grass)', () => {
+  const park = { outer: sq(0, 0, 200, 200), holes: [], tags: { leisure: 'park' } }
+  const pond = { outer: sq(50, 50, 150, 150), holes: [sq(90, 90, 110, 110)], tags: { natural: 'water' } } // with an island
+  it('the park ground is cut around each water body; its island stays grass', () => {
+    const out = cutWater([park], [pond])
+    const area = (r) => Math.abs(r.reduce((a, p, i) => { const q = r[(i + 1) % r.length]; return a + p[0] * q[1] - q[0] * p[1] }, 0)) / 2
+    const total = out.reduce((t, p) => t + area(p.outer) - p.holes.reduce((h, r) => h + area(r), 0), 0)
+    expect(total).toBeCloseTo(200 * 200 - 100 * 100 + 20 * 20, 0)
+    expect(out.some((p) => area(p.outer) === 400)).toBe(true) // the island
+  })
+  it('no tree stands in the water (but one on the island may)', () => {
+    const r = filterTrees([[60, 60], [100, 100], [10, 10]], { wet: () => [pond] })
+    expect(r.kept).toEqual([[100, 100], [10, 10]])
+    expect(r.removed.water).toBe(1)
+  })
+})

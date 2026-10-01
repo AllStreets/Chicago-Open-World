@@ -1,0 +1,7 @@
+{
+  "note": "Lincoln Park lakefront beaches OSM leaves unmapped (pipeline/lib/beaches.js): each is sand from the Lakefront Trail to the shore between two latitudes. Extents from the Chicago Park District beach pages and aerial photographs (approximate).",
+  "beaches": [
+    { "key": "northavenue", "name": "North Avenue Beach", "south": 41.9118, "north": 41.9252, "setbackM": 6, "source": "https://www.chicagoparkdistrict.com/parks-facilities/north-avenue-beach" },
+    { "key": "fullerton", "name": "Fullerton Beach", "south": 41.9275, "north": 41.9302, "setbackM": 4, "source": "https://www.chicagoparkdistrict.com/parks-facilities/fullerton-beach" }
+  ]
+}

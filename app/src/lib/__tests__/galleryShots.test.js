@@ -32,6 +32,21 @@ describe('sports gallery poses (E3-4 / E4-6)', () => {
   })
 })
 
+import { LINCOLN_PARK_GALLERY, poseShotQuery } from '../galleryShots.js'
+describe('Lincoln Park gallery poses (B-0)', () => {
+  it('six kebab-case subjects, south → north, each looking down at the park from above the ground', () => {
+    const e = Object.entries(LINCOLN_PARK_GALLERY)
+    expect(e).toHaveLength(6)
+    for (const [k, v] of e) {
+      expect(k).toMatch(/^lp-[a-z0-9]+(-[a-z0-9]+)*$/)
+      expect(v.pose.position[1]).toBeGreaterThan(v.pose.target[1])
+    }
+    const z = e.map(([, v]) => v.pose.target[2])
+    for (let i = 1; i < z.length; i++) if (i !== 2) expect(z[i]).toBeLessThan(z[i - 1] + 300) // roughly south → north (−z is north)
+    expect(poseShotQuery(LINCOLN_PARK_GALLERY['lp-zoo-mall'], 'day')).toBe('pose=-320,85,-4190,-470,0,-4380&time=day')
+  })
+})
+
 import { RIVER_GALLERY, riverShotQuery } from '../galleryShots.js'
 describe('river gallery poses (A-0)', () => {
   it('eight kebab-case river poses, each a full pose the query pins', () => {

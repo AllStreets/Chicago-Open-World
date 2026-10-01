@@ -33,6 +33,18 @@ export const SPORTS_GALLERY = {
 }
 export const sportsShotQuery = ({ pose, sports }, time) => `pose=${[...pose.position, ...pose.target].join(',')}&time=${time}&stats${sports ? `&sports=${sports}` : ''}`
 
+// ── B-0 (Lincoln Park pass, 2026-10-01): fixed poses for the "Lincoln Park" README frames, south → north. The frames
+// taken before the pass, at the same poses, are docs/screenshots/evolution/before-<subject>-<time>.png.
+export const LINCOLN_PARK_GALLERY = {
+  'lp-north-avenue-beach': { pose: { position: [420, 45, -3600], target: [290, 0, -3440] } },
+  'lp-zoo-mall': { pose: { position: [-320, 85, -4190], target: [-470, 0, -4380] } },
+  'lp-south-pond': { pose: { position: [-420, 40, -3930], target: [-500, 6, -4110] } },
+  'lp-conservatory': { pose: { position: [-600, 42, -4445], target: [-615, 8, -4690] } },
+  'lp-theater-on-the-lake': { pose: { position: [-60, 60, -4890], target: [-240, 0, -5010] } },
+  'lp-belmont-waveland': { pose: { position: [-560, 160, -6500], target: [-980, 0, -7350] } },
+}
+export const poseShotQuery = ({ pose }, time) => `pose=${[...pose.position, ...pose.target].join(',')}&time=${time}`
+
 // ── A-0 (river icons, 2026-10-01): eight fixed river poses for the README's "River icons" frames, day and night.
 // gallery.spec.js takes a RIVER_GALLERY key as the view (GALLERY="rivermouth:river-mouth@day,…").
 export const RIVER_GALLERY = {

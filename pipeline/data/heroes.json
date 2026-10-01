@@ -4292,29 +4292,40 @@
     },
     {
       "key": "lincolnparkzoo",
-      "name": "Lincoln Park Zoo",
+      "name": "Kovler Lion House",
       "match": {
         "osmId": 210686223
       },
-      "heightM": 11,
-      "facade": "prewar-brick",
-      "crowns": [],
       "landmark": {
         "type": "lionHouse",
-        "roofRise": 5
+        "eaveM": 9.5,
+        "bayM": 6,
+        "hallW": 20,
+        "pitchDeg": 30,
+        "faceDeg": 180,
+        "doorHalfM": 2.4,
+        "doorSpringM": 4.6,
+        "monitorW": 4.2,
+        "monitorH": 1.5,
+        "note": "Perkins, Fellows & Hamilton's 1912 Lion House (Chicago Landmark 2005): a long hall of decorative tapestry brick (the landmark text: masonry, terra-cotta ornament, a clay tile roof with copper gutters) under a hipped clay-tile roof with a glazed monitor along its ridge lighting the Guastavino-vaulted hall, tall round-headed windows over lower bays on the mall front, and the great arched entrance flanked by terra-cotta lions' heads; the hall's block and the bays from the OSM outline, heights, pitch and openings read from photographs (approximate)"
       },
       "aliases": [
-        "zoo",
+        "Lion House",
         "Kovler Lion House",
-        "Lion House"
+        "Lincoln Park Zoo",
+        "zoo",
+        "lions"
       ],
       "beacon": {
         "lat": 41.9211,
         "lon": -87.6333,
         "y": 24
       },
+      "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
       "sources": [
         "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+        "https://webapps1.chicago.gov/landmarksweb/web/landmarkdetails.htm?lanId=11382",
+        "https://www.hmdb.org/m.asp?m=10653",
         "OpenStreetMap way 210686223"
       ]
     },
@@ -4326,12 +4337,46 @@
       },
       "crowns": [],
       "landmark": {
-        "type": "glasshouse",
-        "domeR": 9
+        "type": "conservatoryGrounds",
+        "houses": [
+          "w1428865072",
+          "w1428865073",
+          "w1428865074",
+          "w1428865075"
+        ],
+        "rangeM": 3.4,
+        "garden": {
+          "beds": [
+            357240009,
+            524245315,
+            524245316,
+            524245317,
+            524245319,
+            524245320,
+            524245323,
+            524245324,
+            524245325,
+            524245327,
+            524245329,
+            524245331
+          ]
+        },
+        "fountain": {
+          "lat": 41.92276,
+          "lon": -87.63522,
+          "radiusM": 6,
+          "note": "the Eli Bates Fountain, OSM water way 210686594 (12 m across); the bronze group of three storks, merboys and reeds is a procedural stand-in"
+        },
+        "note": "the conservatory outline (OSM way 23986733) less its four display houses (heroes palmhouse, fernroom, showhouse, orchidhouse) is the propagation ranges, drawn as ridge-and-furrow glass 3.4 m to the eave (approximate); the French formal garden in front is the OSM leisure=garden beds, hedged; the Bates Fountain at its south end"
       },
       "aliases": [
         "Conservatory",
-        "palm house"
+        "palm house",
+        "Lincoln Park Conservatory",
+        "Bates Fountain",
+        "Storks at Play",
+        "Eli Bates Fountain",
+        "formal garden"
       ],
       "beacon": {
         "lat": 41.9243,
@@ -4340,6 +4385,9 @@
       },
       "sources": [
         "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory",
+        "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park-conservatory",
+        "https://www.lincolnparkconservancy.org/projects/conservatory-garden/",
+        "https://en.wikipedia.org/wiki/Eli_Bates_Fountain",
         "OpenStreetMap way 23986733"
       ]
     },
@@ -4541,27 +4589,33 @@
       "aliases": [
         "Nature Boardwalk",
         "South Pond",
-        "Studio Gang pavilion"
+        "People's Gas Education Pavilion",
+        "Studio Gang pavilion",
+        "honeycomb pavilion"
       ],
       "match": {
-        "synthetic": true,
-        "lat": 41.91765,
-        "lon": -87.63385,
-        "radius": 14
+        "osmId": "w186667195",
+        "osmType": "way"
       },
       "landmark": {
-        "type": "boardwalkArches",
-        "count": 12,
-        "spanM": 11,
-        "heightM": 7,
-        "bearingDeg": 20
+        "type": "natureBoardwalk",
+        "heightM": 5.5,
+        "cellM": 1.25,
+        "pondWaterId": 2514193,
+        "skipNear": [{ "lat": 41.91917, "lon": -87.63389, "r": 45 }],
+        "note": "Studio Gang's 2010 People's Gas Education Pavilion: the OSM outline (13.5 × 9.4 m, the 1,400 sq ft the sources give) carries a tortoise-shell vault of bent laminated Douglas-fir ribs in a honeycomb lattice, its crown cells filled with domed fibreglass pods; the boardwalk loop round South Pond (0.56 mi) with the prairie fringe at the water. The crown height and cell size are read from photographs (approximate). Moved from a synthetic anchor 125 m west (in the farm's fields) to its OSM building"
       },
       "beacon": {
-        "lat": 41.91765,
-        "lon": -87.63385,
-        "y": 16
+        "lat": 41.91785,
+        "lon": -87.63236,
+        "y": 14
       },
-      "source": "https://studiogang.com/project/nature-boardwalk-at-lincoln-park-zoo",
+      "source": "https://studiogang.com/projects/nature-boardwalk-at-lincoln-park-zoo/",
+      "sources": [
+        "https://studiogang.com/projects/nature-boardwalk-at-lincoln-park-zoo/",
+        "https://en.wikipedia.org/wiki/Nature_Boardwalk",
+        "https://www.architecturalrecord.com/articles/7537-lincoln-park-zoo-south-pond-restoration-and-pavilion"
+      ],
       "p2": true
     },
     {
@@ -4776,7 +4830,9 @@
       "aliases": [
         "Lincoln statue",
         "Abraham Lincoln: The Man",
-        "Lincoln Park statues"
+        "Lincoln Park statues",
+        "exedra",
+        "Stanford White exedra"
       ],
       "match": {
         "synthetic": true,
@@ -4794,9 +4850,14 @@
             "plinthW": 3.2,
             "bearingDeg": 270,
             "file": "heroes/out/statue_lincoln.glb",
-            "source": "https://en.wikipedia.org/wiki/Abraham_Lincoln:_The_Man"
+            "source": "https://en.wikipedia.org/wiki/Abraham_Lincoln:_The_Man",
+            "exedra": {
+              "radiusM": 9,
+              "lengthM": 18.3
+            }
           }
-        ]
+        ],
+        "note": "Saint-Gaudens's 12 ft (3.7 m) bronze on its granite pedestal, before Stanford White's granite exedra — a curved bench 60 ft (18.3 m) long round its back (sources); the exedra's radius and the bench's height read from photographs (approximate)"
       },
       "beacon": {
         "lat": 41.91139,
@@ -4805,7 +4866,11 @@
       },
       "source": "https://en.wikipedia.org/wiki/Abraham_Lincoln:_The_Man",
       "p2": true,
-      "note": "coordinates per Wikipedia (41°54′41″N 87°37′52″W), east of the Chicago History Museum"
+      "note": "coordinates per Wikipedia (41°54′41″N 87°37′52″W), east of the Chicago History Museum",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Abraham_Lincoln:_The_Man",
+        "https://www.chicago.gov/content/dam/city/depts/zlup/Historic_Preservation/Publications/Abraham_Lincoln_Monument.pdf"
+      ]
     },
     {
       "key": "grantstatue",
@@ -4825,22 +4890,46 @@
         "items": [
           {
             "kind": "grant",
-            "heightM": 5.5,
-            "plinthH": 6,
-            "plinthW": 7,
+            "heightM": 5.56,
             "bearingDeg": 90,
             "file": "heroes/out/statue_grant.glb",
-            "source": "https://en.wikipedia.org/wiki/General_Grant_National_Memorial_(Chicago)"
+            "source": "https://en.wikipedia.org/wiki/General_Grant_National_Memorial_(Chicago)",
+            "tiers": [
+              [
+                16,
+                11,
+                4.88
+              ],
+              [
+                10,
+                6.5,
+                4.88
+              ],
+              [
+                6.5,
+                3.6,
+                3.2
+              ]
+            ],
+            "arch": {
+              "spanM": 6,
+              "riseM": 4.2
+            }
           }
-        ]
+        ],
+        "note": "Rebisso's 18 ft 3 in (5.56 m) equestrian bronze on Jenney's granite base: a 16 ft terrace pierced by an arch, a 16 ft superstructure and the 10 ft 6 in pedestal — 60 ft 9 in (18.5 m) in all (Wikipedia); the tiers' plan sizes and the arch read from photographs (approximate)"
       },
       "beacon": {
         "lat": 41.91583,
         "lon": -87.63174,
-        "y": 18
+        "y": 26
       },
       "source": "https://en.wikipedia.org/wiki/Ulysses_S._Grant_Memorial_(Chicago)",
-      "p2": true
+      "p2": true,
+      "sources": [
+        "https://en.wikipedia.org/wiki/Ulysses_S._Grant_Memorial_(Chicago)",
+        "https://en.wikipedia.org/wiki/Ulysses_S._Grant_Monument"
+      ]
     },
     {
       "key": "goethestatue",
@@ -4881,18 +4970,40 @@
       "name": "North Avenue Beach House",
       "aliases": [
         "North Avenue Beach",
-        "beach house"
+        "beach house",
+        "Castaways",
+        "North Avenue Beach House"
       ],
       "match": {
         "osmId": "w417380833",
         "osmType": "way"
       },
       "landmark": {
-        "type": "beachHouse",
-        "style": "ship"
+        "type": "shipBeachHouse",
+        "deckM": 4.4,
+        "topM": 8.2,
+        "insetM": 3.6,
+        "funnels": [
+          -0.18,
+          0.12
+        ],
+        "funnelR": 1.8,
+        "funnelM": 4.6,
+        "canopyAt": 0.3,
+        "note": "Wheeler Kearns's 1999 beach house (22,000 sq ft, concrete), built as an ocean liner: the OSM outline is its hull — white with a blue band and a row of portholes, the upper deck set in, the rooftop deck (Castaways) under blue rails and its canopy, and two funnels, now the stair towers, white with red bands; heights, the funnels' size and the canopy read from photographs (approximate)"
       },
       "source": "https://en.wikipedia.org/wiki/North_Avenue_Beach",
-      "p2": true
+      "p2": true,
+      "sources": [
+        "https://www.architecture.org/online-resources/buildings-of-chicago/north-avenue-beach-house",
+        "https://www.chicagoparkdistrict.com/parks-facilities/north-avenue-beach",
+        "https://wkarch.com/catalog/northavebeachhouse/"
+      ],
+      "beacon": {
+        "lat": 41.9135,
+        "lon": -87.62422,
+        "y": 18
+      }
     },
     {
       "key": "oakstbeach",
@@ -5319,7 +5430,10 @@
       "name": "Waveland Clock Tower",
       "aliases": [
         "Waveland Fieldhouse",
-        "Lincoln Park Carillon Tower"
+        "Lincoln Park Carillon Tower",
+        "Sydney R. Marovitz Golf Course",
+        "Marovitz Golf Course",
+        "Waveland golf course"
       ],
       "match": {
         "osmId": "w53582240",
@@ -5330,7 +5444,7 @@
         "heightM": 32,
         "sideM": 7.5,
         "towerAt": 0,
-        "note": "Edwin H. Clark's 1931 English Gothic fieldhouse and seven-storey carillon tower (Deagan chimes), brick with limestone trim, a clock on each face; the tower's height and its place on the fieldhouse are approximate"
+        "note": "Edwin H. Clark's 1931 English Gothic fieldhouse and seven-storey carillon tower (Deagan chimes), brick with limestone trim, a clock on each face; the tower's height and its place on the fieldhouse are approximate; the fieldhouse is also the clubhouse of the Sydney R. Marovitz 9-hole course (OSM golf=clubhouse), whose fairways run north of it beyond the modelled world (Irving Park, Phase 6)"
       },
       "look": {
         "material": "brick with limestone trim, English Gothic",
@@ -5350,6 +5464,2346 @@
       "sources": [
         "https://historicalmarkerproject.com/markers/HM1S1M_waveland-clock-tower_Chicago-IL.html",
         "https://news.wttw.com/2025/10/31/it-s-time-set-clocks-back-weekend-let-s-look-some-chicago-s-iconic-timepieces"
+      ],
+      "p2": true
+    },
+    {
+      "key": "palmhouse",
+      "name": "Palm House",
+      "aliases": [
+        "Palm House",
+        "Lincoln Park Conservatory Palm House",
+        "conservatory dome"
+      ],
+      "match": {
+        "osmId": "w1428865072",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "glassHouse",
+        "wallM": 5.2,
+        "roofs": [
+          {
+            "at": [
+              0,
+              4.3
+            ],
+            "halfW": 10.3,
+            "spineHalf": 14.7,
+            "top": 10.5
+          },
+          {
+            "at": [
+              0,
+              4.3
+            ],
+            "halfW": 10.3,
+            "spineHalf": 2.5,
+            "eave": 7,
+            "top": 15.2
+          },
+          {
+            "at": [
+              1.5,
+              -9.8
+            ],
+            "halfW": 3.8,
+            "spineHalf": 6.4,
+            "top": 8.6
+          }
+        ],
+        "note": "Silsbee and Bell, 1892: the Palm House is 50 ft (15.2 m) high (Wikipedia); drawn as a tall central bell over long lower wings on its OSM outline, with the glazed entrance vestibule facing the formal garden; the bell profiles and the wings' 10.5 m crown are read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.92403,
+        "lon": -87.63527,
+        "y": 22
+      },
+      "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory",
+        "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park-conservatory",
+        "https://www.lincolnparkconservancy.org/projects/conservatory-garden/"
+      ],
+      "p2": true
+    },
+    {
+      "key": "fernroom",
+      "name": "Fern Room",
+      "aliases": [
+        "Fern Room",
+        "Lincoln Park Conservatory Fern Room"
+      ],
+      "match": {
+        "osmId": "w1428865073",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "glassHouse",
+        "wallM": 3.2,
+        "roofs": [
+          {
+            "top": 7.6
+          }
+        ],
+        "note": "opened 1895, its floor sunk 5.5 ft below grade (Wikipedia), so its glass walls stand lower outside; the bell roof's 7.6 m crown is approximate"
+      },
+      "beacon": {
+        "lat": 41.9243,
+        "lon": -87.6352,
+        "y": 16
+      },
+      "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory",
+        "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park-conservatory",
+        "https://www.lincolnparkconservancy.org/projects/conservatory-garden/"
+      ],
+      "p2": true
+    },
+    {
+      "key": "showhouse",
+      "name": "Show House",
+      "aliases": [
+        "Show House",
+        "Lincoln Park Conservatory Show House",
+        "flower shows"
+      ],
+      "match": {
+        "osmId": "w1428865074",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "glassHouse",
+        "wallM": 4.4,
+        "roofs": [
+          {
+            "top": 8.8
+          }
+        ],
+        "note": "the seasonal flower-show house; the bell roof's 8.8 m crown is approximate"
+      },
+      "beacon": {
+        "lat": 41.92436,
+        "lon": -87.63548,
+        "y": 16
+      },
+      "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory",
+        "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park-conservatory",
+        "https://www.lincolnparkconservancy.org/projects/conservatory-garden/"
+      ],
+      "p2": true
+    },
+    {
+      "key": "orchidhouse",
+      "name": "Orchid House",
+      "aliases": [
+        "Orchid House",
+        "Lincoln Park Conservatory Orchid House"
+      ],
+      "match": {
+        "osmId": "w1428865075",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "glassHouse",
+        "wallM": 3.8,
+        "roofs": [
+          {
+            "top": 6.4
+          }
+        ],
+        "note": "the smallest of the four houses; its 6.4 m crown is approximate"
+      },
+      "beacon": {
+        "lat": 41.92444,
+        "lon": -87.6353,
+        "y": 14
+      },
+      "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory",
+        "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park-conservatory",
+        "https://www.lincolnparkconservancy.org/projects/conservatory-garden/"
+      ],
+      "p2": true
+    },
+    {
+      "key": "cafebrauer",
+      "name": "Café Brauer",
+      "aliases": [
+        "Café Brauer",
+        "Cafe Brauer",
+        "South Pond Refectory",
+        "South Pond Café"
+      ],
+      "match": {
+        "osmId": "w24826112",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "cafeBrauer",
+        "parts": [
+          {
+            "kind": "hall",
+            "eaveM": 10,
+            "roof": {
+              "rise": 4.2,
+              "over": 1.6
+            },
+            "ring": [
+              [
+                -21.7,
+                4
+              ],
+              [
+                -16.5,
+                -16.7
+              ],
+              [
+                -7.3,
+                -14.5
+              ],
+              [
+                -0.3,
+                -17.5
+              ],
+              [
+                7.8,
+                -15.6
+              ],
+              [
+                11.7,
+                -7.7
+              ],
+              [
+                7.4,
+                10.2
+              ],
+              [
+                0.2,
+                14.4
+              ],
+              [
+                -7.6,
+                12.1
+              ],
+              [
+                -13.5,
+                10.5
+              ],
+              [
+                -12.7,
+                6.3
+              ]
+            ]
+          },
+          {
+            "kind": "pavilion",
+            "eaveM": 8.6,
+            "roof": {
+              "rise": 3.8,
+              "over": 1.4
+            },
+            "ring": [
+              [
+                5.5,
+                -29.2
+              ],
+              [
+                15,
+                -34.3
+              ],
+              [
+                20.6,
+                -23.6
+              ],
+              [
+                11.4,
+                -18.6
+              ]
+            ]
+          },
+          {
+            "kind": "loggia",
+            "eaveM": 5,
+            "ring": [
+              [
+                -0.3,
+                -17.5
+              ],
+              [
+                2.8,
+                -23
+              ],
+              [
+                6.8,
+                -25.8
+              ],
+              [
+                11.4,
+                -18.6
+              ],
+              [
+                7.8,
+                -15.6
+              ]
+            ]
+          },
+          {
+            "kind": "pavilion",
+            "eaveM": 8.6,
+            "roof": {
+              "rise": 3.8,
+              "over": 1.4
+            },
+            "ring": [
+              [
+                4.1,
+                18.2
+              ],
+              [
+                9.6,
+                27.1
+              ],
+              [
+                -2.5,
+                34.3
+              ],
+              [
+                -8.2,
+                24.9
+              ]
+            ]
+          },
+          {
+            "kind": "loggia",
+            "eaveM": 5,
+            "ring": [
+              [
+                0.2,
+                14.4
+              ],
+              [
+                1.1,
+                19.3
+              ],
+              [
+                4.1,
+                18.2
+              ],
+              [
+                -5.7,
+                23.2
+              ],
+              [
+                -7.4,
+                18.3
+              ],
+              [
+                -7.8,
+                15.2
+              ],
+              [
+                -7.6,
+                12.1
+              ]
+            ]
+          }
+        ],
+        "note": "Dwight H. Perkins's 1908 Prairie School refectory on South Pond, crescent in plan: the two-storey Great Hall (its tall round-headed windows lighting the second-floor ballroom), a square pavilion at each end on the water, and the one-storey arcaded loggias joining them; red brick with limestone trim under green tile hipped roofs with deep eaves. Parts traced from the OSM outline; heights, pitches and openings read from photographs (approximate); the windows glow in the evening (an events venue and restaurant)"
+      },
+      "beacon": {
+        "lat": 41.91917,
+        "lon": -87.63389,
+        "y": 20
+      },
+      "source": "https://en.wikipedia.org/wiki/Caf%C3%A9_Brauer",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Caf%C3%A9_Brauer",
+        "https://www.chicagoparkdistrict.com/parks-facilities/cafe-brauer-cermanic-tile-murals-artwork",
+        "https://www.jbachrach.com/blog/2018/3/30/u055zl23izoi2fb4pi1mnne0loiame"
+      ],
+      "p2": true
+    },
+    {
+      "key": "primatehouse",
+      "name": "Helen Brach Primate House",
+      "aliases": [
+        "Primate House",
+        "Helen Brach Primate House",
+        "monkeys",
+        "Small Animal House"
+      ],
+      "match": {
+        "osmId": "w210686220",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "brickHouse",
+        "eaveM": 8.5,
+        "windows": "flat",
+        "roofStyle": "lp-slate",
+        "portico": {
+          "faceDeg": 270,
+          "columns": 4,
+          "spanM": 9,
+          "depthM": 3.2
+        },
+        "windowEveryM": 4,
+        "note": "the 1927 Georgian brick house (its historic exterior kept in the 1992 renovation): red brick with white-framed windows and stone courses under a hipped slate roof, a four-column portico with a pediment on the mall side; portico side, heights and pitch read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.92083,
+        "lon": -87.63248,
+        "y": 20
+      },
+      "source": "https://www.lpzoo.org/pressroom/helen-brach-primate-house/",
+      "sources": [
+        "https://www.lpzoo.org/pressroom/helen-brach-primate-house/",
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo"
+      ],
+      "p2": true
+    },
+    {
+      "key": "birdhouse",
+      "name": "McCormick Bird House",
+      "aliases": [
+        "Bird House",
+        "McCormick Bird House",
+        "birds"
+      ],
+      "match": {
+        "osmId": "w24826074",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "brickHouse",
+        "eaveM": 7.5,
+        "wallStyle": "lp-brick-dark",
+        "roofStyle": "lp-tile-red",
+        "monitor": {
+          "widthM": 3.6,
+          "heightM": 1.2
+        },
+        "windowEveryM": 4.2,
+        "note": "the zoo's 1904 bird house (renovated 1991): brick with round-headed windows under a hipped tile roof and a glazed ridge monitor; heights and pitch read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.92277,
+        "lon": -87.63328,
+        "y": 18
+      },
+      "source": "https://www.lpzoo.org/pressroom/mccormick-bird-house/",
+      "sources": [
+        "https://www.lpzoo.org/pressroom/mccormick-bird-house/",
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo"
+      ],
+      "p2": true
+    },
+    {
+      "key": "apescenter",
+      "name": "Regenstein Center for African Apes",
+      "aliases": [
+        "Regenstein Center for African Apes",
+        "African Apes",
+        "gorillas",
+        "chimpanzees"
+      ],
+      "match": {
+        "osmId": "w210685702",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "modernPavilion",
+        "eaveM": 8,
+        "wallStyle": "lp-rock",
+        "wallFacade": "stone",
+        "glassBand": [
+          1.2,
+          5.6
+        ],
+        "skylights": 4,
+        "roofStyle": "lp-green-roof",
+        "note": "2004, 29,000 sq ft of habitat (sources): stone-clad walls, the glazed viewing band and roof skylights over a planted roof; heights read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.92017,
+        "lon": -87.63214,
+        "y": 20
+      },
+      "source": "https://www.lpzoo.org/pressroom/regenstein-center-for-african-apes/",
+      "sources": [
+        "https://www.lpzoo.org/pressroom/regenstein-center-for-african-apes/",
+        "https://zoolex.org/gallery/show/711/"
+      ],
+      "p2": true
+    },
+    {
+      "key": "smallmammal",
+      "name": "Regenstein Small Mammal–Reptile House",
+      "aliases": [
+        "Small Mammal-Reptile House",
+        "Regenstein Small Mammal & Reptile House",
+        "reptile house",
+        "reptiles"
+      ],
+      "match": {
+        "osmId": "w210686225",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "modernPavilion",
+        "eaveM": 7,
+        "wallStyle": "lp-brick",
+        "wallFacade": "brick",
+        "roofStyle": "lp-slate",
+        "glassBand": [
+          1.5,
+          3.2
+        ],
+        "dome": {
+          "r": 11,
+          "topM": 13.7
+        },
+        "note": "1997, 32,000 sq ft, with a 45 ft covered dome recreating a rain forest (PBC Chicago): brick walls and the glass dome to 45 ft (13.7 m); the dome's radius and the walls' height read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.92065,
+        "lon": -87.6344,
+        "y": 22
+      },
+      "source": "https://pbcchicago.com/projects/regenstein-sm-mammal-reptile-house/",
+      "sources": [
+        "https://pbcchicago.com/projects/regenstein-sm-mammal-reptile-house/",
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo"
+      ],
+      "p2": true
+    },
+    {
+      "key": "africanjourney",
+      "name": "Regenstein African Journey",
+      "aliases": [
+        "African Journey",
+        "Regenstein African Journey",
+        "giraffes",
+        "rhinos"
+      ],
+      "match": {
+        "osmId": "w210686226",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "modernPavilion",
+        "eaveM": 6.5,
+        "wallStyle": "lp-rock",
+        "wallFacade": "stone",
+        "glassBand": [
+          1,
+          4.2
+        ],
+        "skylights": 6,
+        "roofStyle": "lp-green-roof",
+        "note": "the long African habitat house: stone walls, viewing glass and skylit planted roofs on the OSM outline; heights read from photographs (approximate); the exhibit zones OSM maps inside it (Wings in the Wetlands, Life on the Rocks, Dry Thorn Forest, Life in the Lakes) are rooms of this building, not separate houses, and are dropped"
+      },
+      "beacon": {
+        "lat": 41.92319,
+        "lon": -87.63401,
+        "y": 18
+      },
+      "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+        "https://www.lpzoo.org/exhibit/regenstein-african-journey/"
+      ],
+      "p2": true,
+      "suppress": [
+        "w761732455",
+        "w761732460",
+        "w761732459",
+        "w761732461"
+      ]
+    },
+    {
+      "key": "birdsofprey",
+      "name": "Regenstein Birds of Prey Exhibit",
+      "aliases": [
+        "Birds of Prey",
+        "Regenstein Birds of Prey Exhibit",
+        "eagles",
+        "aviary"
+      ],
+      "match": {
+        "osmId": "w210686561",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "meshHabitat",
+        "heightM": 6,
+        "ridgeM": 2.4,
+        "note": "an open-air aviary under stainless mesh on steel posts; height read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.9224,
+        "lon": -87.63347,
+        "y": 14
+      },
+      "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+        "https://www.lpzoo.org/exhibit/regenstein-birds-of-prey-exhibit/"
+      ],
+      "p2": true
+    },
+    {
+      "key": "macaqueforest",
+      "name": "Regenstein Macaque Forest",
+      "aliases": [
+        "Macaque Forest",
+        "Regenstein Macaque Forest",
+        "snow monkeys",
+        "Japanese macaques"
+      ],
+      "match": {
+        "osmId": "w524245311",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "meshHabitat",
+        "heightM": 5,
+        "ridgeM": 2,
+        "note": "the snow monkeys' open-air habitat, its viewing structure under mesh; height read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.92228,
+        "lon": -87.63419,
+        "y": 12
+      },
+      "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+        "https://www.lpzoo.org/exhibit/regenstein-macaque-forest/"
+      ],
+      "p2": true
+    },
+    {
+      "key": "penguincove",
+      "name": "Pritzker Penguin Cove",
+      "aliases": [
+        "Penguin Cove",
+        "Pritzker Penguin Cove",
+        "penguins"
+      ],
+      "match": {
+        "osmId": "w758363114",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "rockHabitat",
+        "rockM": 3.2,
+        "note": "opened October 2016 after Boulders Beach, South Africa: granite-like rock outcrops round the penguins' pool and its underwater viewing window; rock heights approximate"
+      },
+      "beacon": {
+        "lat": 41.92318,
+        "lon": -87.63349,
+        "y": 10
+      },
+      "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+        "https://www.lpzoo.org/exhibit/robert-and-mayari-pritzker-penguin-cove/"
+      ],
+      "p2": true
+    },
+    {
+      "key": "childrenszoo",
+      "name": "Pritzker Family Children's Zoo",
+      "aliases": [
+        "Children's Zoo",
+        "Pritzker Family Children's Zoo"
+      ],
+      "match": {
+        "osmId": "w210686576",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "modernPavilion",
+        "eaveM": 5.5,
+        "wallStyle": "bp-deck-wood",
+        "glassBand": [
+          0.9,
+          3.8
+        ],
+        "skylights": 3,
+        "roofStyle": "lp-green-roof",
+        "note": "2004: a timber-and-glass house under a planted roof among the woodland habitats (wolves, beavers, otters); heights read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.9211,
+        "lon": -87.63491,
+        "y": 14
+      },
+      "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo"
+      ],
+      "p2": true
+    },
+    {
+      "key": "zooadmin",
+      "name": "Lincoln Park Zoo Administration Building",
+      "aliases": [
+        "Zoo Administration",
+        "Lincoln Park Zoological Society"
+      ],
+      "match": {
+        "osmId": "w53584351",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "brickHouse",
+        "eaveM": 9,
+        "windows": "flat",
+        "roofStyle": "lp-slate",
+        "windowEveryM": 4,
+        "note": "the zoo's offices at 2001 N Clark: brick with white-framed windows under a hipped slate roof; heights read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.91877,
+        "lon": -87.63544,
+        "y": 18
+      },
+      "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+        "OpenStreetMap way 53584351"
+      ],
+      "p2": true,
+      "kindLine": "Zoo offices"
+    },
+    {
+      "key": "zoohospital",
+      "name": "Conservation & Science Building",
+      "aliases": [
+        "Zoo Hospital",
+        "Conservation & Science Building",
+        "animal hospital"
+      ],
+      "match": {
+        "osmId": "w24826061",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "modernPavilion",
+        "eaveM": 7.5,
+        "wallStyle": "lp-brick",
+        "wallFacade": "brick",
+        "glassBand": [
+          1.2,
+          3
+        ],
+        "roofStyle": "lp-slate",
+        "note": "the zoo hospital and science centre: brick with a glazed band under a flat roof; heights read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.92341,
+        "lon": -87.63301,
+        "y": 16
+      },
+      "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+        "OpenStreetMap way 24826061"
+      ],
+      "p2": true
+    },
+    {
+      "key": "visitorcenter",
+      "name": "Searle Visitor Center",
+      "aliases": [
+        "Searle Visitor Center",
+        "East Gate",
+        "zoo entrance",
+        "Lincoln Park Zoo East Gate"
+      ],
+      "match": {
+        "osmId": "w759343817",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "modernPavilion",
+        "eaveM": 6,
+        "wallStyle": "lp-steel",
+        "glassBand": [
+          0.4,
+          5
+        ],
+        "roofStyle": "lp-steel",
+        "copingStyle": "lp-trim-white",
+        "note": "Ross Barney Architects' glass and steel visitor centre at the East Gate on Cannon Drive (the zoo's main entrance); heights read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.92209,
+        "lon": -87.63265,
+        "y": 14
+      },
+      "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo"
+      ],
+      "p2": true
+    },
+    {
+      "key": "carousel",
+      "name": "AT&T Endangered Species Carousel",
+      "aliases": [
+        "Carousel",
+        "Endangered Species Carousel",
+        "Judy Keller Education Center"
+      ],
+      "match": {
+        "osmId": "w759342068",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "carousel",
+        "radiusM": 13,
+        "eaveM": 4.6,
+        "note": "forty-eight hand-carved endangered animals and two chariots (sources) under a round open pavilion; the pavilion's radius from the OSM roof outline (way 210686222), its heights read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.92149,
+        "lon": -87.63241,
+        "y": 14
+      },
+      "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+        "https://www.lpzoo.org/exhibit/att-endangered-species-carousel/"
+      ],
+      "p2": true
+    },
+    {
+      "key": "sealionpool",
+      "name": "Kovler Sea Lion Pool",
+      "aliases": [
+        "Sea Lion Pool",
+        "Kovler Sea Lion Pool",
+        "sea lions",
+        "seals"
+      ],
+      "match": {
+        "synthetic": true,
+        "lat": 41.92155,
+        "lon": -87.63441,
+        "radius": 18
+      },
+      "landmark": {
+        "type": "seaLionPool",
+        "rxM": 17,
+        "rzM": 12,
+        "note": "the pool at the heart of the zoo, west of the Lion House: rockwork shores and a haul-out island, the curved underwater viewing gallery on its south side (OSM paving 'Under Water Viewing Area'); the pool's outline is not mapped — centred north of the gallery, its size and shape approximate"
+      },
+      "beacon": {
+        "lat": 41.92155,
+        "lon": -87.63441,
+        "y": 10
+      },
+      "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+        "https://www.lpzoo.org/exhibit/kovler-sea-lion-pool/"
+      ],
+      "p2": true
+    },
+    {
+      "key": "mainbarn",
+      "name": "Farm-in-the-Zoo Main Barn",
+      "aliases": [
+        "Farm-in-the-Zoo",
+        "Main Barn",
+        "red barn",
+        "farm"
+      ],
+      "match": {
+        "osmId": "w24826126",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "barn",
+        "eaveM": 4.6,
+        "roofs": [
+          {
+            "at": [
+              0,
+              -9.5
+            ],
+            "L": 32,
+            "W": 19,
+            "cupola": true
+          },
+          {
+            "at": [
+              -0.2,
+              9.5
+            ],
+            "L": 19,
+            "W": 17.5,
+            "alongZ": true
+          }
+        ],
+        "silo": {
+          "at": [
+            -10.7,
+            2.6
+          ],
+          "r": 2.2,
+          "heightM": 12
+        },
+        "note": "Farm-in-the-Zoo (1964, renovated 2002): the red main barn with white trim, a gambrel roof in dark shingle over its two blocks (from the OSM outline), cross-braced doors, a ventilator cupola, and the silo where the outline rounds it; heights and pitches read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.91696,
+        "lon": -87.63372,
+        "y": 14
+      },
+      "source": "https://www.lpzoo.org/exhibit/farm-in-the-zoo/",
+      "sources": [
+        "https://www.lpzoo.org/exhibit/farm-in-the-zoo/",
+        "https://www.alamy.com/stock-photo-chicago-illinois-red-barn-at-farm-in-the-zoo-section-of-lincoln-park-12079437.html",
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo"
+      ],
+      "p2": true
+    },
+    {
+      "key": "dairybarn",
+      "name": "Farm-in-the-Zoo Dairy Barn",
+      "aliases": [
+        "Dairy Barn",
+        "Farm-in-the-Zoo Dairy Barn"
+      ],
+      "match": {
+        "osmId": "w24826138",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "barn",
+        "eaveM": 4.4,
+        "roofs": [
+          {
+            "at": [
+              0,
+              0
+            ],
+            "L": 30,
+            "W": 20,
+            "cupola": true
+          }
+        ],
+        "note": "the red dairy barn, gambrel-roofed; heights read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.91772,
+        "lon": -87.63367,
+        "y": 12
+      },
+      "source": "https://www.lpzoo.org/exhibit/farm-in-the-zoo/",
+      "sources": [
+        "https://www.lpzoo.org/exhibit/farm-in-the-zoo/",
+        "https://www.alamy.com/stock-photo-chicago-illinois-red-barn-at-farm-in-the-zoo-section-of-lincoln-park-12079437.html",
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo"
+      ],
+      "p2": true
+    },
+    {
+      "key": "livestockbarn",
+      "name": "Farm-in-the-Zoo Livestock Barn",
+      "aliases": [
+        "Livestock Barn",
+        "horse barn"
+      ],
+      "match": {
+        "osmId": "w24826127",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "barn",
+        "eaveM": 4,
+        "roof": "gable",
+        "roofs": [
+          {
+            "at": [
+              0,
+              -0.8
+            ],
+            "L": 21.6,
+            "W": 14.8,
+            "alongZ": true
+          }
+        ],
+        "note": "a red gable-roofed barn; heights read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.91696,
+        "lon": -87.6333,
+        "y": 12
+      },
+      "source": "https://www.lpzoo.org/exhibit/farm-in-the-zoo/",
+      "sources": [
+        "https://www.lpzoo.org/exhibit/farm-in-the-zoo/",
+        "https://www.alamy.com/stock-photo-chicago-illinois-red-barn-at-farm-in-the-zoo-section-of-lincoln-park-12079437.html",
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo"
+      ],
+      "p2": true
+    },
+    {
+      "key": "holdingbarn",
+      "name": "Farm-in-the-Zoo Holding Barn",
+      "aliases": [
+        "Holding Barn"
+      ],
+      "match": {
+        "osmId": "w116720221",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "barn",
+        "eaveM": 3.8,
+        "roof": "gable",
+        "roofs": [
+          {
+            "at": [
+              0.4,
+              -0.2
+            ],
+            "L": 15,
+            "W": 9.4,
+            "bearingDeg": 39.4
+          }
+        ],
+        "note": "a small red gable-roofed barn; heights read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.91664,
+        "lon": -87.63349,
+        "y": 10
+      },
+      "source": "https://www.lpzoo.org/exhibit/farm-in-the-zoo/",
+      "sources": [
+        "https://www.lpzoo.org/exhibit/farm-in-the-zoo/",
+        "https://www.alamy.com/stock-photo-chicago-illinois-red-barn-at-farm-in-the-zoo-section-of-lincoln-park-12079437.html",
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo"
+      ],
+      "p2": true
+    },
+    {
+      "key": "farmhouse",
+      "name": "Farm-in-the-Zoo Farm House",
+      "aliases": [
+        "Farm House",
+        "Farm-in-the-Zoo Farm House"
+      ],
+      "match": {
+        "osmId": "w24826133",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "barn",
+        "eaveM": 4.2,
+        "roof": "gable",
+        "note": "the farm's red gable-roofed house barn; heights read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.91738,
+        "lon": -87.63397,
+        "y": 10
+      },
+      "source": "https://www.lpzoo.org/exhibit/farm-in-the-zoo/",
+      "sources": [
+        "https://www.lpzoo.org/exhibit/farm-in-the-zoo/",
+        "https://www.alamy.com/stock-photo-chicago-illinois-red-barn-at-farm-in-the-zoo-section-of-lincoln-park-12079437.html",
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo"
+      ],
+      "p2": true
+    },
+    {
+      "key": "zoohouses",
+      "name": "Lincoln Park Zoo",
+      "aliases": [],
+      "members": [
+        {
+          "way": 992815961,
+          "name": "Pepper Family Wildlife Center",
+          "aliases": [
+            "lion habitat"
+          ],
+          "landmark": {
+            "wallStyle": "lp-rock",
+            "wallFacade": "stone",
+            "glassBand": [
+              1,
+              5
+            ],
+            "eaveM": 7.5,
+            "skylights": 3
+          }
+        },
+        {
+          "way": 760952977,
+          "name": "Lester E. Fisher Center",
+          "aliases": [
+            "Fisher Center"
+          ],
+          "landmark": {
+            "wallStyle": "lp-rock",
+            "wallFacade": "stone",
+            "glassBand": [
+              1,
+              4
+            ],
+            "eaveM": 7
+          }
+        },
+        {
+          "way": 210686219,
+          "name": "Park Pavilion",
+          "aliases": [
+            "Park Place Cafe"
+          ],
+          "landmark": {
+            "wallStyle": "lp-steel",
+            "glassBand": [
+              0.4,
+              4.2
+            ],
+            "eaveM": 5,
+            "skylights": 2
+          }
+        },
+        {
+          "way": 210686259,
+          "name": "Foreman Pavilion",
+          "landmark": {
+            "wallStyle": "bp-deck-wood",
+            "glassBand": [
+              0.8,
+              3.6
+            ],
+            "eaveM": 5
+          }
+        },
+        {
+          "way": 760087113,
+          "name": "Viewing Shelter",
+          "landmark": {
+            "wallStyle": "bp-deck-wood",
+            "glassBand": [
+              0.9,
+              2.6
+            ],
+            "eaveM": 3.4,
+            "roofStyle": "lp-green-roof"
+          }
+        },
+        {
+          "way": 210686227,
+          "name": "Wild Things gift shop",
+          "aliases": [
+            "Bird's Eye Bar & Grill",
+            "zoo shop"
+          ],
+          "landmark": {
+            "wallStyle": "lp-steel",
+            "glassBand": [
+              0.4,
+              4
+            ],
+            "eaveM": 5.5
+          }
+        },
+        {
+          "way": 760942985,
+          "name": "Searle Family Board Room",
+          "landmark": {
+            "wallStyle": "lp-rock",
+            "wallFacade": "stone",
+            "glassBand": [
+              1,
+              3
+            ],
+            "eaveM": 4.5
+          }
+        },
+        {
+          "way": 758363122,
+          "name": "Walter Family Arctic Tundra",
+          "aliases": [
+            "polar bears",
+            "Arctic Tundra"
+          ],
+          "landmark": {
+            "wallStyle": "lp-rock",
+            "wallFacade": "stone",
+            "glassBand": [
+              0.6,
+              3.4
+            ],
+            "eaveM": 6
+          }
+        },
+        {
+          "way": 210687001,
+          "name": "Hurvis Family Learning Center",
+          "aliases": [
+            "Hurvis Center"
+          ],
+          "landmark": {
+            "wallStyle": "lp-brick",
+            "wallFacade": "brick",
+            "glassBand": [
+              1,
+              3
+            ],
+            "eaveM": 6.5
+          }
+        },
+        {
+          "way": 758363135,
+          "name": "Penguin Underwater Viewing",
+          "landmark": {
+            "wallStyle": "lp-rock",
+            "wallFacade": "stone",
+            "glassBand": [
+              0.4,
+              2.2
+            ],
+            "eaveM": 3
+          }
+        }
+      ],
+      "match": {
+        "group": true
+      },
+      "landmark": {
+        "type": "modernPavilion",
+        "roofStyle": "lp-green-roof",
+        "note": "the zoo's newer pavilions and habitat houses, each on its OSM outline in its material — stone, timber or glass and steel — with glazed viewing bands under planted or membrane roofs; materials and heights read from photographs (approximate)"
+      },
+      "suppress": [
+        "w760586254"
+      ],
+      "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+        "https://www.lpzoo.org/pressroom/"
+      ],
+      "p2": true
+    },
+    {
+      "key": "zoobrick",
+      "name": "Lincoln Park Zoo",
+      "aliases": [],
+      "members": [
+        {
+          "way": 210686221,
+          "name": "Antelope & Zebra House",
+          "aliases": [
+            "zebras",
+            "antelope"
+          ],
+          "landmark": {
+            "eaveM": 7,
+            "roofStyle": "lp-tile-red"
+          }
+        },
+        {
+          "way": 524245313,
+          "name": "Lionel Train Adventure",
+          "aliases": [
+            "zoo train",
+            "Lionel train"
+          ],
+          "landmark": {
+            "eaveM": 4.5,
+            "roofStyle": "lp-slate"
+          }
+        },
+        {
+          "way": 210686233,
+          "name": "Carlson Cottage",
+          "landmark": {
+            "eaveM": 5,
+            "roofStyle": "lp-slate",
+            "windows": "flat"
+          }
+        }
+      ],
+      "match": {
+        "group": true
+      },
+      "landmark": {
+        "type": "brickHouse",
+        "wallStyle": "lp-brick",
+        "windowEveryM": 4,
+        "note": "the zoo's older brick houses (the train station is red brick, per the sources), hipped roofs over their OSM outlines; heights and roofs read from photographs (approximate)"
+      },
+      "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+        "https://www.lpzoo.org/pressroom/"
+      ],
+      "p2": true
+    },
+    {
+      "key": "zooannex",
+      "name": "Lincoln Park Zoo building",
+      "aliases": [],
+      "quiet": true,
+      "members": [
+        {
+          "way": 24826070,
+          "landmark": {
+            "eaveM": 4
+          }
+        },
+        {
+          "way": 547515455,
+          "landmark": {
+            "eaveM": 4.6
+          }
+        },
+        {
+          "way": 210686372,
+          "landmark": {
+            "eaveM": 3.2
+          }
+        },
+        {
+          "way": 759759791,
+          "landmark": {
+            "eaveM": 3
+          }
+        },
+        {
+          "way": 759759794,
+          "landmark": {
+            "eaveM": 3.2
+          }
+        },
+        {
+          "way": 760952974,
+          "landmark": {
+            "eaveM": 3
+          }
+        },
+        {
+          "way": 210686217,
+          "landmark": {
+            "eaveM": 3.6
+          }
+        },
+        {
+          "way": 210686251,
+          "landmark": {
+            "eaveM": 3.4
+          }
+        },
+        {
+          "way": 210686317,
+          "landmark": {
+            "eaveM": 3.6
+          }
+        },
+        {
+          "way": 524245308,
+          "landmark": {
+            "eaveM": 4
+          }
+        },
+        {
+          "way": 524245310,
+          "landmark": {
+            "eaveM": 3
+          }
+        },
+        {
+          "way": 524245312,
+          "landmark": {
+            "eaveM": 3.2
+          }
+        },
+        {
+          "way": 524245314,
+          "landmark": {
+            "eaveM": 3.8
+          }
+        },
+        {
+          "way": 758246148,
+          "landmark": {
+            "eaveM": 3
+          }
+        },
+        {
+          "way": 758363119,
+          "landmark": {
+            "eaveM": 3.6
+          }
+        },
+        {
+          "way": 758363120,
+          "landmark": {
+            "eaveM": 3.2
+          }
+        },
+        {
+          "way": 758363121,
+          "landmark": {
+            "eaveM": 3.6
+          }
+        },
+        {
+          "way": 759343816,
+          "landmark": {
+            "eaveM": 3.8
+          }
+        },
+        {
+          "way": 760586255,
+          "landmark": {
+            "eaveM": 3.6
+          }
+        },
+        {
+          "way": 760942984,
+          "landmark": {
+            "eaveM": 3.6
+          }
+        }
+      ],
+      "match": {
+        "group": true
+      },
+      "landmark": {
+        "type": "modernPavilion",
+        "wallStyle": "lp-rock",
+        "wallFacade": "stone",
+        "roofStyle": "lp-green-roof",
+        "glassBand": [
+          0.9,
+          2.4
+        ],
+        "note": "the zoo's unnamed service buildings, keepers' houses and habitat shelters: low stone-clad walls with a viewing band under planted roofs, so none reads as an office block; heights read from photographs (approximate)"
+      },
+      "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo"
+      ],
+      "p2": true
+    },
+    {
+      "key": "farmannex",
+      "name": "Farm-in-the-Zoo building",
+      "aliases": [],
+      "quiet": true,
+      "members": [
+        {
+          "way": 24826142,
+          "landmark": {
+            "eaveM": 3.6
+          }
+        }
+      ],
+      "match": {
+        "group": true
+      },
+      "landmark": {
+        "type": "barn",
+        "roof": "gable",
+        "note": "a small red farm building at Farm-in-the-Zoo, gable-roofed; heights approximate"
+      },
+      "source": "https://www.lpzoo.org/exhibit/farm-in-the-zoo/",
+      "sources": [
+        "https://www.lpzoo.org/exhibit/farm-in-the-zoo/",
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Zoo"
+      ],
+      "p2": true
+    },
+    {
+      "key": "historymuseum",
+      "name": "Chicago History Museum",
+      "aliases": [
+        "Chicago History Museum",
+        "Chicago Historical Society",
+        "History Museum"
+      ],
+      "match": {
+        "osmId": "w23987046",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "brickHouse",
+        "roof": "flat",
+        "eaveM": 15,
+        "parapetM": 1.2,
+        "beltM": 5,
+        "windows": "flat",
+        "windowEveryM": 4.4,
+        "wallStyle": "lp-brick",
+        "roofStyle": "lp-slate",
+        "portico": {
+          "faceDeg": 65,
+          "columns": 6,
+          "spanM": 16,
+          "depthM": 4.2,
+          "pedimentM": 3.2,
+          "at": [
+            35.5,
+            1.4
+          ]
+        },
+        "note": "Graham, Anderson, Probst & White's 1932 Georgian building, its tall porticoed entrance facing east into the park; the 1972 and 1988 (Holabird & Root) additions refaced in red brick to match, the main entrance now on Clark Street. Red brick with limestone trim and white-framed windows on the OSM outline (three storeys, 15 m to the parapet, approximate); a six-column pedimented portico on the park face (column count read from photographs, approximate); no cupola (none confirmed)",
+        "windowRows": [
+          [
+            1.6,
+            3.9
+          ],
+          [
+            6,
+            8.9
+          ],
+          [
+            10.4,
+            12.6
+          ]
+        ]
+      },
+      "beacon": {
+        "lat": 41.91193,
+        "lon": -87.63142,
+        "y": 24
+      },
+      "source": "https://en.wikipedia.org/wiki/Chicago_History_Museum",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Chicago_History_Museum",
+        "https://www.chicagohistory.org/about-us/museum-history/"
+      ],
+      "p2": true,
+      "kindLine": "Museum"
+    },
+    {
+      "key": "naturemuseum",
+      "name": "Peggy Notebaert Nature Museum",
+      "aliases": [
+        "Nature Museum",
+        "Peggy Notebaert Nature Museum",
+        "Butterfly Haven",
+        "Judy Istock Butterfly Haven"
+      ],
+      "match": {
+        "osmId": "w23986958",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "natureMuseum",
+        "eaveM": 9,
+        "haven": {
+          "lat": 41.92647,
+          "lon": -87.63483,
+          "halfW": 8,
+          "spineHalf": 5,
+          "topM": 14
+        },
+        "terraces": {
+          "lat": 41.92691,
+          "lon": -87.63555,
+          "faceDeg": 245,
+          "widthM": 36
+        },
+        "note": "the 1999 museum of the Chicago Academy of Sciences (Perkins & Will): a low angular building of pale stone and glass on the OSM outline, planted roofs, the glass Judy Istock Butterfly Haven (2,700 sq ft) on its south wing and terraces stepping down west toward North Pond; the stone (the sources confirm steel and glass), the haven's place and all heights read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.92656,
+        "lon": -87.6351,
+        "y": 22
+      },
+      "source": "https://en.wikipedia.org/wiki/Peggy_Notebaert_Nature_Museum",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Peggy_Notebaert_Nature_Museum",
+        "https://naturemuseum.org/",
+        "https://www.artic.edu/artworks/239604/peggy-notebaert-nature-museum-chicago-illinois-exterior-perspective"
+      ],
+      "p2": true
+    },
+    {
+      "key": "northpondcafe",
+      "name": "North Pond",
+      "aliases": [
+        "North Pond restaurant",
+        "North Pond Café",
+        "North Pond"
+      ],
+      "match": {
+        "osmId": "w719036695",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "brickHouse",
+        "eaveM": 4.6,
+        "windows": "arcade",
+        "archHalfM": 0.9,
+        "archSpringM": 2.6,
+        "windowEveryM": 3,
+        "wallStyle": "lp-brick",
+        "roofStyle": "lp-slate",
+        "roofRiseM": 4.2,
+        "overM": 0.8,
+        "note": "Dwight Perkins's 1912 skaters' warming shelter on North Pond, since 1998 a restaurant in the Arts & Crafts manner: a single-storey brick lodge under a deep hipped roof (the roof form, its pitch and the openings read from photographs, approximate) on the OSM outline (2610 N Cannon Dr)",
+        "roofs": [
+          {
+            "at": [
+              -0.65,
+              0.52
+            ],
+            "L": 24,
+            "W": 12.5,
+            "bearingDeg": 214,
+            "rise": 4
+          },
+          {
+            "at": [
+              0.01,
+              -2.88
+            ],
+            "L": 29.6,
+            "W": 7.5,
+            "bearingDeg": 304,
+            "rise": 2.6
+          }
+        ]
+      },
+      "beacon": {
+        "lat": 41.92986,
+        "lon": -87.6375,
+        "y": 12
+      },
+      "source": "https://en.wikipedia.org/wiki/North_Pond_(restaurant)",
+      "sources": [
+        "https://en.wikipedia.org/wiki/North_Pond_(restaurant)",
+        "https://en.wikipedia.org/wiki/Dwight_H._Perkins_(architect)"
+      ],
+      "p2": true,
+      "kindLine": "Restaurant"
+    },
+    {
+      "key": "theateronthelake",
+      "name": "Theater on the Lake",
+      "aliases": [
+        "Theater on the Lake",
+        "Theatre on the Lake",
+        "Fullerton Pavilion"
+      ],
+      "match": {
+        "osmId": "w23989552",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "brickHouse",
+        "eaveM": 7.5,
+        "windows": "arcade",
+        "archHalfM": 1.7,
+        "archSpringM": 4.6,
+        "windowEveryM": 4.2,
+        "wallStyle": "lp-brick",
+        "roofStyle": "lp-tile-red",
+        "roofRiseM": 3.6,
+        "overM": 1.2,
+        "note": "Dwight Perkins's 1913 Prairie-style Fresh Air Fund sanitarium (built 1920, a theatre since 1953, renovated 2017): brick with sweeping arched openings (the steel arched trusses kept in 2017, sources) under a low hipped roof on the OSM outline; heights, roof and tile colour read from photographs (approximate)",
+        "roofs": [
+          {
+            "at": [
+              0,
+              -0.1
+            ],
+            "L": 75,
+            "W": 30,
+            "bearingDeg": 144
+          },
+          {
+            "at": [
+              -14.9,
+              11.5
+            ],
+            "L": 18.6,
+            "W": 18,
+            "bearingDeg": 144,
+            "rise": 3
+          }
+        ]
+      },
+      "beacon": {
+        "lat": 41.92699,
+        "lon": -87.6307,
+        "y": 16
+      },
+      "source": "https://www.chicagoparkdistrict.com/parks-facilities/theatre-lake",
+      "sources": [
+        "https://www.chicagoparkdistrict.com/parks-facilities/theatre-lake",
+        "https://kaufmanoneil.com/projects/wellness-amp-hospitality/theater-on-the-lake/"
+      ],
+      "p2": true,
+      "kindLine": "Theater"
+    },
+    {
+      "key": "elksmemorial",
+      "name": "Elks National Veterans Memorial",
+      "aliases": [
+        "Elks Memorial",
+        "Elks National Memorial",
+        "Elks National Veterans Memorial"
+      ],
+      "match": {
+        "osmId": "r2826708"
+      },
+      "landmark": {
+        "type": "elksMemorial",
+        "rotunda": {
+          "at": [
+            0,
+            -1
+          ],
+          "r": 21,
+          "faceDeg": 90,
+          "openDeg": 50
+        },
+        "wingM": 12,
+        "drumM": 18,
+        "heightM": 35,
+        "note": "Egerton Swartwout's 1926 memorial: an Indiana limestone rotunda ringed by Ionic columns under Adolph Weinman's frieze, between two low wings round their courtyards; the rotunda's centre and radius from the OSM outline's round bay; the dome's interior rises ~95 ft (sources), its exterior height (35 m to the lantern) and the column count read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.93234,
+        "lon": -87.64,
+        "y": 40
+      },
+      "source": "https://www.architecture.org/online-resources/buildings-of-chicago/elks-national-memorial",
+      "sources": [
+        "https://www.architecture.org/online-resources/buildings-of-chicago/elks-national-memorial",
+        "https://en.wikipedia.org/wiki/Elks_National_Veterans_Memorial",
+        "https://mag.elks.org/articles/the-elks-national-memorial-a-tribute-to-america-s-veterans"
+      ],
+      "p2": true
+    },
+    {
+      "key": "schillerstatue",
+      "name": "Schiller Monument",
+      "aliases": [
+        "Schiller statue",
+        "Friedrich Schiller",
+        "Schiller Monument"
+      ],
+      "match": {
+        "synthetic": true,
+        "lat": 41.92203,
+        "lon": -87.63519,
+        "radius": 8
+      },
+      "landmark": {
+        "type": "statues",
+        "items": [
+          {
+            "kind": "schiller",
+            "heightM": 2.9,
+            "plinthH": 3,
+            "plinthW": 2.6,
+            "bearingDeg": 0,
+            "file": "heroes/out/statue_schiller.glb",
+            "source": "https://www.chicagoparkdistrict.com/parks-facilities/johann-christoph-friedrich-von-schiller-monument"
+          }
+        ],
+        "note": "Ernst Rau's 1886 bronze (recast by William Pelargus) on a granite base, overlooking the formal garden and the Conservatory; its heights and facing read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.92203,
+        "lon": -87.63519,
+        "y": 12
+      },
+      "source": "https://www.chicagoparkdistrict.com/parks-facilities/johann-christoph-friedrich-von-schiller-monument",
+      "sources": [
+        "https://www.chicagoparkdistrict.com/parks-facilities/johann-christoph-friedrich-von-schiller-monument"
+      ],
+      "p2": true
+    },
+    {
+      "key": "andersenstatue",
+      "name": "Hans Christian Andersen Monument",
+      "aliases": [
+        "Hans Christian Andersen",
+        "Andersen statue",
+        "The Ugly Duckling"
+      ],
+      "match": {
+        "synthetic": true,
+        "lat": 41.91966,
+        "lon": -87.63585,
+        "radius": 8
+      },
+      "landmark": {
+        "type": "statues",
+        "items": [
+          {
+            "kind": "andersen",
+            "heightM": 2.44,
+            "plinthH": 1.8,
+            "plinthW": 2.6,
+            "bearingDeg": 90,
+            "file": "heroes/out/statue_andersen.glb",
+            "source": "https://www.chicagoparkdistrict.com/parks-facilities/hans-christian-andersen-monument"
+          }
+        ],
+        "note": "Johannes Gelert's 1896 8 ft (2.44 m) bronze: Andersen seated on a tree stump with a book, a swan at his feet, on a granite pedestal; position from a map listing and the pedestal read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.91966,
+        "lon": -87.63585,
+        "y": 9
+      },
+      "source": "https://www.chicagoparkdistrict.com/parks-facilities/hans-christian-andersen-monument",
+      "sources": [
+        "https://www.chicagoparkdistrict.com/parks-facilities/hans-christian-andersen-monument",
+        "https://www.waze.com/live-map/directions/us/il/chicago/hans-christian-andersen-monument"
+      ],
+      "p2": true
+    },
+    {
+      "key": "franklinstatue",
+      "name": "Benjamin Franklin Monument",
+      "aliases": [
+        "Benjamin Franklin",
+        "Franklin statue"
+      ],
+      "match": {
+        "synthetic": true,
+        "lat": 41.913806,
+        "lon": -87.631083,
+        "radius": 8
+      },
+      "landmark": {
+        "type": "statues",
+        "items": [
+          {
+            "kind": "franklin",
+            "heightM": 2.9,
+            "plinthH": 2.6,
+            "plinthW": 2.4,
+            "bearingDeg": 180,
+            "plinthStyle": "lp-trim-white",
+            "file": "heroes/out/statue_franklin.glb",
+            "source": "https://en.wikipedia.org/wiki/Statue_of_Benjamin_Franklin_(Chicago)"
+          }
+        ],
+        "note": "Richard Henry Park's 1896 bronze, 9 ft 6 in (2.9 m), on a white granite pedestal (Wikipedia); the pedestal's height and the facing read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.913806,
+        "lon": -87.631083,
+        "y": 10
+      },
+      "source": "https://en.wikipedia.org/wiki/Statue_of_Benjamin_Franklin_(Chicago)",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Statue_of_Benjamin_Franklin_(Chicago)"
+      ],
+      "p2": true
+    },
+    {
+      "key": "hamiltonstatue",
+      "name": "Alexander Hamilton Monument",
+      "aliases": [
+        "Alexander Hamilton",
+        "Hamilton statue",
+        "gilded Hamilton"
+      ],
+      "match": {
+        "synthetic": true,
+        "lat": 41.93172,
+        "lon": -87.63844,
+        "radius": 8
+      },
+      "landmark": {
+        "type": "statues",
+        "items": [
+          {
+            "kind": "hamilton",
+            "heightM": 3.96,
+            "plinthH": 3.4,
+            "plinthW": 3.2,
+            "bearingDeg": 0,
+            "style": "gold-leaf",
+            "plinthStyle": "lp-granite-red",
+            "file": "heroes/out/statue_hamilton.glb",
+            "source": "https://en.wikipedia.org/wiki/Statue_of_Alexander_Hamilton_(Chicago)"
+          }
+        ],
+        "note": "John Angel's 13 ft (3.96 m) gilded bronze, re-gilded and returned in 2017 facing north as in 1952, on its red granite block (the 78 ft black stele behind it was demolished in 1993); the pedestal's height read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.93172,
+        "lon": -87.63844,
+        "y": 14
+      },
+      "source": "https://en.wikipedia.org/wiki/Statue_of_Alexander_Hamilton_(Chicago)",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Statue_of_Alexander_Hamilton_(Chicago)",
+        "https://www.loopnorth.com/news/hamilton0624.htm",
+        "https://www.wikidata.org/wiki/Q79353617"
+      ],
+      "p2": true
+    },
+    {
+      "key": "altgeldstatue",
+      "name": "John Peter Altgeld Monument",
+      "aliases": [
+        "John Peter Altgeld",
+        "Altgeld statue"
+      ],
+      "match": {
+        "synthetic": true,
+        "lat": 41.932194,
+        "lon": -87.637528,
+        "radius": 8
+      },
+      "landmark": {
+        "type": "statues",
+        "items": [
+          {
+            "kind": "altgeld",
+            "heightM": 2.7,
+            "plinthH": 1,
+            "plinthW": 3.6,
+            "bearingDeg": 90,
+            "file": "heroes/out/statue_altgeld.glb",
+            "source": "https://en.wikipedia.org/wiki/Statue_of_John_Peter_Altgeld"
+          }
+        ],
+        "note": "Gutzon Borglum's 1915 bronze: the governor's hand stretched over a working man, his wife and child; the group's height and its low base read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.932194,
+        "lon": -87.637528,
+        "y": 9
+      },
+      "source": "https://en.wikipedia.org/wiki/Statue_of_John_Peter_Altgeld",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Statue_of_John_Peter_Altgeld"
+      ],
+      "p2": true
+    },
+    {
+      "key": "signalofpeace",
+      "name": "A Signal of Peace",
+      "aliases": [
+        "Signal of Peace",
+        "A Signal of Peace",
+        "Cyrus Dallin"
+      ],
+      "match": {
+        "synthetic": true,
+        "lat": 41.9332,
+        "lon": -87.6315,
+        "radius": 8
+      },
+      "landmark": {
+        "type": "statues",
+        "items": [
+          {
+            "kind": "signal",
+            "heightM": 3.4,
+            "plinthH": 2.4,
+            "plinthW": 3.4,
+            "bearingDeg": 90,
+            "file": "heroes/out/statue_signal.glb",
+            "source": "https://en.wikipedia.org/wiki/A_Signal_of_Peace"
+          }
+        ],
+        "note": "Cyrus Dallin's 1890 equestrian bronze of a Sioux chief in war bonnet, his spear raised, on a granite base; height and facing read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.9332,
+        "lon": -87.6315,
+        "y": 10
+      },
+      "source": "https://en.wikipedia.org/wiki/A_Signal_of_Peace",
+      "sources": [
+        "https://en.wikipedia.org/wiki/A_Signal_of_Peace"
+      ],
+      "p2": true
+    },
+    {
+      "key": "kwanusila",
+      "name": "Kwanusila totem pole",
+      "aliases": [
+        "Kwanusila",
+        "totem pole",
+        "Thunderbird totem pole"
+      ],
+      "match": {
+        "synthetic": true,
+        "lat": 41.948972,
+        "lon": -87.642444,
+        "radius": 4
+      },
+      "landmark": {
+        "type": "totem",
+        "heightM": 12.2,
+        "bearingDeg": 90,
+        "note": "Tony Hunt's 1986 red cedar pole (40 ft, 12.2 m), carved after the 1929 original: the sea monster at its foot, the man riding the whale, Kwanusila the Thunderbird at the top with his wings spread, painted black, red and blue-green (sources); the carving is suggested by turned figures, the wings' span and the facing approximate"
+      },
+      "beacon": {
+        "lat": 41.948972,
+        "lon": -87.642444,
+        "y": 18
+      },
+      "source": "https://en.wikipedia.org/wiki/Kwanusila",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Kwanusila",
+        "https://theclio.com/entry/142153"
+      ],
+      "p2": true
+    },
+    {
+      "key": "passerelle",
+      "name": "Lincoln Park Passerelle",
+      "aliases": [
+        "Passerelle",
+        "North Avenue pedestrian bridge",
+        "Lincoln Park Passerelle"
+      ],
+      "match": {
+        "synthetic": true,
+        "lat": 41.915361,
+        "lon": -87.627528,
+        "radius": 6
+      },
+      "landmark": {
+        "type": "passerelle",
+        "bearingDeg": 77,
+        "spanM": 46,
+        "deckM": 5.6,
+        "riseM": 8,
+        "widthM": 4.2,
+        "rampM": 26,
+        "note": "Ralph H. Burke's 1940 welded-steel through-arch footbridge over Lake Shore Drive at North Avenue (NRHP; MoMA 1947): two arch ribs over the drive, hangers, concrete approaches at each end. Centre from Wikipedia; the span (the drive's width in OSM), the rise, the deck height and the dark-green paint read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.915361,
+        "lon": -87.627528,
+        "y": 16
+      },
+      "source": "https://en.wikipedia.org/wiki/Lincoln_Park_Passerelle",
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lincoln_Park_Passerelle",
+        "https://historicbridges.org/bridges/browser/?bridgebrowser=illinois%2Flincolnpark%2F"
+      ],
+      "p2": true
+    },
+    {
+      "key": "drivingrange",
+      "name": "Diversey Driving Range",
+      "aliases": [
+        "Diversey Driving Range",
+        "Diversey Range",
+        "driving range",
+        "mini golf"
+      ],
+      "kindLine": "Driving range",
+      "match": {
+        "osmId": "w210686996",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "drivingRange",
+        "bays": {
+          "lat": 41.934207,
+          "lon": -87.634843,
+          "ring": [
+            [
+              -48.7,
+              15.4
+            ],
+            [
+              -48.6,
+              14.3
+            ],
+            [
+              -47.6,
+              9
+            ],
+            [
+              -36.6,
+              10.1
+            ],
+            [
+              -25.8,
+              10.2
+            ],
+            [
+              -14.8,
+              9.3
+            ],
+            [
+              -4.1,
+              7.4
+            ],
+            [
+              6.7,
+              4.4
+            ],
+            [
+              16.7,
+              0.8
+            ],
+            [
+              26.6,
+              -3.8
+            ],
+            [
+              33.5,
+              -7.7
+            ],
+            [
+              40.3,
+              -12.2
+            ],
+            [
+              44.7,
+              -16.1
+            ],
+            [
+              48.7,
+              -10.7
+            ],
+            [
+              44.4,
+              -7.2
+            ],
+            [
+              43.4,
+              -7.7
+            ],
+            [
+              25.1,
+              3.3
+            ],
+            [
+              24.6,
+              3.5
+            ],
+            [
+              11.9,
+              9.2
+            ],
+            [
+              -2.6,
+              13.4
+            ],
+            [
+              -14.4,
+              15.1
+            ],
+            [
+              -16,
+              15.2
+            ],
+            [
+              -18.6,
+              15.5
+            ],
+            [
+              -19.6,
+              15.6
+            ],
+            [
+              -32,
+              15.9
+            ],
+            [
+              -43.3,
+              15.2
+            ],
+            [
+              -43.4,
+              16.1
+            ]
+          ]
+        },
+        "nets": [
+          {
+            "lat": 41.934159,
+            "lon": -87.635551
+          },
+          {
+            "lat": 41.935419,
+            "lon": -87.635731
+          },
+          {
+            "lat": 41.935464,
+            "lon": -87.634406
+          },
+          {
+            "lat": 41.934384,
+            "lon": -87.634201
+          }
+        ],
+        "netM": 18,
+        "note": "the range at 141 W Diversey (since 1916): the two-storey hitting-bay canopy along its curved tee line (the OSM roof outline, way 210686995), the tee house, and the tall net poles round the landing area to the north; the nets' line (kept off the turf pitch beside it) and their 18 m height estimated from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.93382,
+        "lon": -87.63507,
+        "y": 14
+      },
+      "source": "https://www.dnainfo.com/chicago/20160909/lincoln-park/golf-away-at-diversey-driving-range-as-it-celebrates-100th-anniversary/",
+      "sources": [
+        "https://www.dnainfo.com/chicago/20160909/lincoln-park/golf-away-at-diversey-driving-range-as-it-celebrates-100th-anniversary/",
+        "https://www.chicagoparkdistrict.com/parks-facilities/diversey-driving-range"
+      ],
+      "p2": true
+    },
+    {
+      "key": "lpculturalcenter",
+      "name": "Lincoln Park Cultural Center",
+      "aliases": [
+        "Lincoln Park Cultural Center",
+        "Cultural Center (Lincoln Park)"
+      ],
+      "kindLine": "Cultural center",
+      "match": {
+        "osmId": "w53584355",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "brickHouse",
+        "eaveM": 8.5,
+        "windows": "flat",
+        "windowRows": [
+          [
+            1.4,
+            3.6
+          ],
+          [
+            5,
+            7
+          ]
+        ],
+        "roofStyle": "lp-slate",
+        "windowEveryM": 4,
+        "note": "the Park District's arts centre at 2045 N Lincoln Park West: two storeys of brick with white-framed windows under a hipped roof; its form and heights read from photographs (approximate)"
+      },
+      "beacon": {
+        "lat": 41.91966,
+        "lon": -87.63586,
+        "y": 12
+      },
+      "source": "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park-cultural-center-0",
+      "sources": [
+        "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park-cultural-center-0"
+      ],
+      "p2": true
+    },
+    {
+      "key": "fullertoncomfort",
+      "name": "Fullerton Comfort Station",
+      "aliases": [
+        "Fullerton Comfort Station"
+      ],
+      "kindLine": "Comfort station",
+      "match": {
+        "osmId": "w356071739",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "brickHouse",
+        "eaveM": 3.4,
+        "roofStyle": "lp-slate",
+        "windowEveryM": 3,
+        "roofRiseM": 2.2,
+        "note": "a small brick comfort station by Theater on the Lake, hipped roof; heights approximate"
+      },
+      "beacon": {
+        "lat": 41.9275,
+        "lon": -87.63122,
+        "y": 12
+      },
+      "source": "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park",
+      "sources": [
+        "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park",
+        "https://en.wikipedia.org/wiki/Lincoln_Park_(Chicago)"
+      ],
+      "p2": true
+    },
+    {
+      "key": "roscoecomfort",
+      "name": "Roscoe Comfort Station",
+      "aliases": [
+        "Roscoe Comfort Station"
+      ],
+      "kindLine": "Comfort station",
+      "match": {
+        "osmId": "w53583611",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "brickHouse",
+        "eaveM": 3.4,
+        "roofStyle": "lp-slate",
+        "windowEveryM": 3,
+        "roofRiseM": 2,
+        "note": "a small brick comfort station at Roscoe, hipped roof; heights approximate"
+      },
+      "beacon": {
+        "lat": 41.94341,
+        "lon": -87.63942,
+        "y": 12
+      },
+      "source": "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park",
+      "sources": [
+        "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park",
+        "https://en.wikipedia.org/wiki/Lincoln_Park_(Chicago)"
+      ],
+      "p2": true
+    },
+    {
+      "key": "southfieldhouse",
+      "name": "South Athletic Fieldhouse",
+      "aliases": [
+        "South Athletic Fieldhouse",
+        "South Field fieldhouse"
+      ],
+      "kindLine": "Fieldhouse",
+      "match": {
+        "osmId": "w210686229",
+        "osmType": "way"
+      },
+      "landmark": {
+        "type": "brickHouse",
+        "eaveM": 5,
+        "roofStyle": "lp-tile-red",
+        "windowEveryM": 3.6,
+        "roofRiseM": 3,
+        "note": "the fieldhouse of the South Field: brick under a hipped tile roof; heights approximate"
+      },
+      "beacon": {
+        "lat": 41.91463,
+        "lon": -87.62997,
+        "y": 12
+      },
+      "source": "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park",
+      "sources": [
+        "https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park",
+        "https://en.wikipedia.org/wiki/Lincoln_Park_(Chicago)"
       ],
       "p2": true
     }

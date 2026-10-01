@@ -49,8 +49,8 @@ export function canopyOverFootprint(p, b, r) {
   return Boolean(b.treeHull && nearRing(p, b.treeHull, r))
 }
 
-export function filterTrees(points, { zones = [], clearings = [], nearBuildings = () => [], plazas = [], rails = () => [], paved = () => [] } = {}) {
-  const kept = [], removed = { venue: 0, clearing: 0, building: 0, plaza: 0, rail: 0, paved: 0 }
+export function filterTrees(points, { zones = [], clearings = [], nearBuildings = () => [], plazas = [], rails = () => [], paved = () => [], wet = () => [] } = {}) {
+  const kept = [], removed = { venue: 0, clearing: 0, building: 0, plaza: 0, rail: 0, paved: 0, water: 0 }
   for (const raw of points) {
     const p = roundTree(raw), r = canopyRadius(p)
     if (zones.some((z) => nearRing(p, z, r + VENUE_MARGIN_M))) removed.venue++
@@ -59,6 +59,7 @@ export function filterTrees(points, { zones = [], clearings = [], nearBuildings 
     else if (rails(p).some((line) => line.some((a, i) => i + 1 < line.length && segDist(p, a, line[i + 1]) < r + RAIL_CLEAR_M))) removed.rail++
     else if (nearBuildings(p).some((b) => canopyOverFootprint(p, b, r))) removed.building++
     else if (paved(p).some((q) => pointInRing(p, q))) removed.paved++
+    else if (wet(p).some((w) => pointInRing(p, w.outer) && !(w.holes ?? []).some((h) => pointInRing(p, h)))) removed.water++
     else kept.push(p)
   }
   return { kept, removed }
@@ -76,6 +77,23 @@ export function assertNoVenueTrees(tileTrees, zones) {
 // because the venue builder paints the real field.
 export const outsideZones = (polys, zones) =>
   polys.filter((p) => !zones.some((z) => pointInRing([(p.bbox.minX + p.bbox.maxX) / 2, (p.bbox.minZ + p.bbox.maxZ) / 2], z)))
+
+// Lincoln Park's ponds, lagoons and harbours (B-3, B13/B17/B21/B23): OSM maps them inside the park polygon, and the park
+// grass (drawn above the water layer) hid every one of them. The park ground is cut around each water body (its islands
+// stay grass), so the water layer shows through.
+export function cutWater(polys, water) {
+  const out = []
+  for (const p of polys) {
+    const pb = p.bbox ?? ringBBox(p.outer)
+    const hit = water.filter((w) => { const b = w.bbox ?? ringBBox(w.outer); return b.maxX > pb.minX && b.minX < pb.maxX && b.maxZ > pb.minZ && b.minZ < pb.maxZ })
+    if (!hit.length) { out.push(p); continue }
+    for (const [outer, ...holes] of polygonClipping.difference([p.outer, ...(p.holes ?? [])], ...hit.map((w) => [w.outer, ...(w.holes ?? [])]))) {
+      const o = outer.slice(0, -1), h = holes.map((r) => r.slice(0, -1))
+      out.push({ ...p, outer: o, holes: h, bbox: ringBBox(o) })
+    }
+  }
+  return out
+}
 
 // Ground polygons (parks) with the venue hulls cut out: the ground's polygon offset would otherwise draw the park
 // over a stadium field at oblique angles (V5: Soldier Field sits inside Burnham Park).

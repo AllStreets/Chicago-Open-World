@@ -222,22 +222,5 @@ function riverwalk(b, spec) {
   return { replace: true, pieces: [], meshes }
 }
 
-// ── Lincoln Park Zoo ─ https://en.wikipedia.org/wiki/Lincoln_Park_Zoo — the Kovler Lion House (1912), brick under a
-// hipped tile roof. Lincoln Park Conservatory (1895) ─ https://en.wikipedia.org/wiki/Lincoln_Park_Conservatory —
-// the glass Palm House dome (50 ft) and its vaulted wings.
-function lionHouse(b, spec) {
-  const { c, u, L, W } = obOf(b)
-  return { meshes: [P(pyramid({ ring: rectRing(c, u, L + 1.2, W + 1.2), base: b.height, top: b.height + (spec.roofRise ?? 5) }), F.roofing, null, 'roof', 0.85)] }
-}
-function glasshouse(b, spec) {
-  const { c, u, L, W } = obOf(b), r = spec.domeR ?? 9, glass = (m, part) => P(m, F.wall, 'conservatory-glass', part, 0.35)
-  const meshes = [glass(drum({ at: c, base: 0, top: 6, r, sides: 24 }), 'palm-house'), glass(lathe(c, 6, r, DOME, 24), 'palm-dome')]
-  const wingL = Math.max(6, (L - 2 * r) / 2), wingW = Math.min(W, 14)
-  for (const s of [-1, 1]) {
-    const at = add2(c, mul2(u, s * (r + wingL / 2)))
-    meshes.push(glass(slab(mesh(), at, u, wingL, wingW, 0, 4), 'wing'), glass(barrel(at, u, wingL, wingW, 4, 5), 'wing-vault'))
-  }
-  return { replace: true, pieces: [], meshes }
-}
-
-export const CIVIC = { crownFountain, lurie, bpBridge, artInstitute, picasso, flamingo, culturalCenter, unionStation, martRiverFace, headhouse, ballroom, riverwalk, lionHouse, glasshouse }
+// (The Lion House moved to zoo.js, B-1; the Lincoln Park Conservatory's glass houses to lincolnpark.js, B-2.)
+export const CIVIC = { crownFountain, lurie, bpBridge, artInstitute, picasso, flamingo, culturalCenter, unionStation, martRiverFace, headhouse, ballroom, riverwalk }

@@ -16,8 +16,14 @@ import { pointInRing } from './geom.js'
 import earcut from 'earcut'
 import { spire } from './crowns.js'
 import { wallPolygon } from './icons.js'
-import { add2, mul2, left, mesh, merge, slab, revolve, ringAround, tri, quad, tube, at3 } from './meshkit.js'
+import { add2, sub2, mul2, left, len2, norm2, mesh, merge, slab, revolve, ringAround, tri, quad, tube, at3 } from './meshkit.js'
+import { frameOf, at, prism, ringBand, offsetRing, edgeNormal, bellRoof, hatch, siteBuilding, siteGreen, into, column, hipRoof } from './parkkit.js'
+import { modernPavilion } from './zoo.js'
+import { project } from '../../shared/project.js'
+import polygonClipping from 'polygon-clipping'
 import { LANDMARK_FACADES as F } from './facadeIds.js'
+// a flat styled colour that stays dark at night (the paint façade, 12, glows after dark like a floodlit field)
+const FLAT = F.steel
 
 // close-range detail stays out of LOD1 (the size budget); the silhouette parts draw at every distance
 const FINE = new Set(['reliefs', 'tables', 'boards', 'stools', 'piece-reliefs', 'king', 'queen', 'door', 'fence', 'ledges', 'falls', 'council-ring', 'pavilion-piers', 'belfry', 'parapet', 'pinnacles', 'quoins'])
@@ -124,11 +130,11 @@ export function chessPavilion(b, spec = {}) {
     P(merge(stone, plinths), F.stone, LIME, 'platform'),
     P(walls, F.stone, LIME, 'end-walls'),
     P(pieces, F.stone, LIME, 'piece-reliefs'),
-    P(reliefs, F.paint, 'gothic-shadow', 'reliefs'),
-    P(roof, F.paint, 'lp-concrete', 'roof'),
-    P(cols, F.paint, 'lp-concrete', 'columns'),
+    P(reliefs, FLAT, 'gothic-shadow', 'reliefs'),
+    P(roof, FLAT, 'lp-concrete', 'roof'),
+    P(cols, FLAT, 'lp-concrete', 'columns'),
     P(tables, F.stone, LIME, 'tables'),
-    P(boards, F.paint, 'gothic-shadow', 'boards'),
+    P(boards, FLAT, 'gothic-shadow', 'boards'),
     P(stools, F.stone, LIME, 'stools'),
     P(merge(king, cross), F.stone, LIME, 'king'),
     P(merge(queen, coronet), F.stone, LIME, 'queen'),
@@ -156,7 +162,7 @@ export function couchTomb(b, spec = {}) {
   }
   return { replace: true, pieces: [], meshes: [
     P(plinth, F.stone, LIME, 'plinth'), P(vault, F.stone, LIME, 'vault'), P(cornice, F.stone, LIME, 'cornice'), P(attic, F.stone, LIME, 'attic'),
-    P(door, F.paint, 'tomb-iron', 'door'), P(fence, F.paint, 'tomb-iron', 'fence'),
+    P(door, FLAT, 'tomb-iron', 'door'), P(fence, FLAT, 'tomb-iron', 'fence'),
   ] }
 }
 
@@ -183,7 +189,7 @@ export function lilyPool(b, spec = {}) {
     // the pond's surface, a hand above the park ground (OSM's pond sits flush with the grass and was lost under it)
     const pool = mesh(), tri = earcut(r.flat()), y = 0.25
     for (let i = 0; i < tri.length; i += 3) { const [a, bb, cc] = [r[tri[i]], r[tri[i + 1]], r[tri[i + 2]]]; slabTri(pool, [a[0], y, a[1]], [bb[0], y, bb[1]], [cc[0], y, cc[1]]) }
-    meshes.push(P(pool, F.paint, 'lp-pool', 'pool'))
+    meshes.push(P(pool, FLAT, 'lp-pool', 'pool'))
   } else {
     const N = 28, bankL = [], bankR = []
     for (let i = 0; i <= N; i++) {
@@ -198,7 +204,7 @@ export function lilyPool(b, spec = {}) {
       slabQuad(pool, [a[0], y, a[1]], [bb[0], y, bb[1]], [cc[0], y, cc[1]], [d[0], y, d[1]])
       banks.push([bankL[i], bankL[i + 1], [-1, 0]], [bankR[i], bankR[i + 1], [1, 0]])
     }
-    meshes.push(P(pool, F.paint, 'lp-pool', 'pool'))
+    meshes.push(P(pool, FLAT, 'lp-pool', 'pool'))
     clear.push([...bankL, ...[...bankR].reverse()])
   }
   // stratified limestone: thin courses stepping back from the water, two to four high
@@ -233,9 +239,9 @@ export function lilyPool(b, spec = {}) {
   return { replace: true, pieces: [], clear, meshes: [
     ...meshes,
     P(ledges, F.stone, 'lp-ledgestone', 'ledges'),
-    P(falls, F.paint, 'lp-falls', 'falls'),
+    P(falls, FLAT, 'lp-falls', 'falls'),
     P(piers, F.stone, LIME, 'pavilion-piers'),
-    P(roof, F.paint, 'lp-roof', 'pavilion-roof'),
+    P(roof, FLAT, 'lp-roof', 'pavilion-roof'),
     P(ring, F.stone, 'lp-ledgestone', 'council-ring'),
   ] }
 }
@@ -274,10 +280,305 @@ export function wavelandClock(b, spec = {}) {
     P(tower, F.wall, 'waveland-brick', 'tower'),
     P(merge(quoins, bands), F.stone, LIME, 'quoins'),
     P(clock, F.signal, 'waveland-clock', 'clock'),
-    P(belfry, F.paint, 'gothic-shadow', 'belfry'),
+    P(belfry, FLAT, 'gothic-shadow', 'belfry'),
     P(parapet, F.stone, LIME, 'parapet'),
     P(pinnacles, F.stone, LIME, 'pinnacles'),
   ] }
 }
 
-export const LINCOLN_PARK_BUILDERS = { chessPavilion, couchTomb, lilyPool, wavelandClock }
+// ── Lincoln Park Conservatory (Joseph Lyman Silsbee with M. E. Bell, 1890–95; B-2) ─────────────────────────────────
+// Four Victorian glass houses on iron frames, white-painted: the Palm House at the front (50 ft, 15.2 m, its tall
+// central pavilion over lower wings and a glazed entrance vestibule facing the formal garden), the Fern Room (sunk
+// 5.5 ft below grade), the Orchid House and the Show House; propagation ranges behind them; the French formal garden in
+// front with the Bates Fountain ("Storks at Play", Saint-Gaudens and MacMonnies, 1887) at its far end. Every house is
+// its own hero (its OSM outline); the conservatory's outline carries the ranges, the garden and the fountain.
+const GLASS = 'lp-glasshouse', IRON = 'lp-iron-white'
+// a Victorian bell: steep at the eave, swelling, then flattening to the crown (fractions of half-width and rise)
+const BELL = [[1, 0], [0.985, 0.1], [0.94, 0.22], [0.86, 0.36], [0.74, 0.5], [0.59, 0.63], [0.43, 0.75], [0.27, 0.86], [0.13, 0.95], [0.02, 1]]
+const bellProfile = (hw, eave, top, shape = BELL) => shape.map(([f, g]) => [Math.max(0.05, f * hw), eave + g * (top - eave)])
+const GLASS_FINE = new Set(['ribs', 'stanchions', 'beds', 'hedges', 'fountain-group', 'reeds', 'rail', 'finials'])
+const PG = (m, facade, style, part) => ({ mesh: m, facade, seed: 0.5, style, part, lod0Only: GLASS_FINE.has(part) })
+
+// One glass house over its OSM outline: glass walls on a stone base with white iron stanchions, then each roof in
+// spec.roofs — a bell (`top`) over a stadium (`halfW`, `spineHalf`) at frame offset `at` [a along the long axis, s
+// across], spine along the long axis (or across, `across: true`), its eave raised on a glazed drum when `eave` is
+// above the walls'. Defaults: one bell over the whole frame.
+export function glassHouse(b, spec = {}) {
+  const ring = b.polygons.reduce((a, p) => (Math.abs(polyArea(p.outer)) > Math.abs(polyArea(a.outer)) ? p : a)).outer
+  const fr = frameOf(b), wallH = spec.wallM ?? 4.6, base = spec.baseM ?? 0.7
+  const walls = prism(ring, 0, wallH), glass = into(mesh(), walls.walls, walls.top), ribs = mesh(), stone = mesh(), finials = mesh()
+  ringBand(stone, ring, 0, base, 0.08)
+  ringBand(ribs, ring, wallH - 0.18, wallH + 0.04, 0.06) // the white eave rail
+  // stanchions: a white iron upright at every corner and every 1.6 m along each wall
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], c = ring[(i + 1) % ring.length], L = len2(sub2(c, a)), t = norm2(sub2(c, a)), n = edgeNormal(ring, i), k = Math.max(1, Math.round(L / 1.6))
+    for (let j = 0; j < k; j++) slab(ribs, add2(add2(a, mul2(t, (j * L) / k)), mul2(n, 0.03)), t, 0.1, 0.08, base, wallH - 0.1)
+  }
+  const roofs = spec.roofs ?? [{ top: spec.heightM ?? 8 }]
+  for (const r of roofs) {
+    const ax = r.across ? fr.v : fr.u, len = r.across ? fr.W : fr.L, wid = r.across ? fr.L : fr.W
+    const hw = r.halfW ?? wid / 2, sh = r.spineHalf ?? Math.max(0, len / 2 - hw), c = at(fr, ...(r.at ?? [0, 0])), eave = r.eave ?? wallH
+    const prof = bellProfile(hw, eave, r.top)
+    if (eave > wallH + 0.05) prof.unshift([hw, wallH]) // the glazed drum up to the raised eave
+    const bell = bellRoof(c, ax, sh, prof, { K: Math.max(4, Math.round((2 * sh) / 1.8)), M: r.M ?? 12, purlins: eave > wallH + 0.05 ? [0, 1, 4] : [0, 3] })
+    into(glass, bell.glass); into(ribs, bell.ribs)
+    // a finial at each end of the crown
+    for (const e of sh > 0.5 ? [-1, 1] : [0]) into(finials, spire({ at: add2(c, mul2(ax, e * sh)), base: r.top - 0.05, top: r.top + (r.finialM ?? 1.4), r0: 0.12, sides: 6 }))
+  }
+  return { replace: true, pieces: [], meshes: [
+    PG(glass, FLAT, GLASS, 'glass'),
+    PG(ribs, FLAT, IRON, 'ribs'),
+    PG(stone, F.stone, 'lp-limestone', 'base'),
+    PG(finials, FLAT, IRON, 'finials'),
+  ] }
+}
+const polyArea = (r) => r.reduce((s, p, i) => { const q = r[(i + 1) % r.length]; return s + p[0] * q[1] - q[0] * p[1] }, 0) / 2
+
+// The Bates Fountain ("Storks at Play"): a round granite basin, a low pedestal, and the bronze group — three storks
+// among bronze reeds with three merboys — at the centre (figures procedural stand-ins, approximate).
+export function batesFountain(at0, { r = 6, rim = 0.55 } = {}) {
+  const granite = revolve(at0, [[r, 0], [r, rim], [r - 0.45, rim], [r - 0.45, 0.25]], { sides: 40 })
+  const water = mesh()
+  for (let k = 0; k < 40; k++) {
+    const a0 = (k / 40) * Math.PI * 2, a1 = ((k + 1) / 40) * Math.PI * 2, y = 0.36
+    tri(water, [at0[0], y, at0[1]], [at0[0] + (r - 0.45) * Math.cos(a1), y, at0[1] + (r - 0.45) * Math.sin(a1)], [at0[0] + (r - 0.45) * Math.cos(a0), y, at0[1] + (r - 0.45) * Math.sin(a0)], [0, 1, 0])
+  }
+  const pedestal = revolve(at0, [[1.5, 0.2], [1.5, 0.55], [1.0, 0.75], [0.75, 1.3], [1.05, 1.45], [0.001, 1.5]], { sides: 20 })
+  const group = mesh(), reeds = mesh()
+  for (let i = 0; i < 3; i++) {
+    const a = (i / 3) * Math.PI * 2 + 0.3, d = [Math.cos(a), Math.sin(a)], p = add2(at0, mul2(d, 0.55)), f = [-d[1], d[0]]
+    // a stork: legs, a long body tilted up, the S of its neck and the beak raised to spout
+    for (const s of [-0.12, 0.12]) tube(group, at3(add2(p, mul2(f, s)), 1.5), at3(add2(p, mul2(f, s * 0.6)), 2.25), 0.04, 5)
+    tube(group, at3(add2(p, mul2(d, -0.2)), 2.35), at3(add2(p, mul2(d, 0.35)), 2.65), 0.22, 8)
+    tube(group, at3(add2(p, mul2(d, 0.35)), 2.65), at3(add2(p, mul2(d, 0.5)), 3.15), 0.07, 6)
+    tube(group, at3(add2(p, mul2(d, 0.5)), 3.15), at3(add2(p, mul2(d, 0.9)), 3.45), 0.04, 5)
+    // a merboy between the storks, sitting on the pedestal's edge
+    const q = add2(at0, mul2([Math.cos(a + Math.PI / 3), Math.sin(a + Math.PI / 3)], 1.1))
+    into(group, revolve(q, [[0.22, 1.45], [0.2, 1.75], [0.14, 2.05], [0.05, 2.1], [0.11, 2.2], [0.001, 2.38]], { sides: 8 }))
+    for (let k = 0; k < 4; k++) { const rr = add2(at0, mul2([Math.cos(a + 0.6 + k * 0.25), Math.sin(a + 0.6 + k * 0.25)], 0.85 + 0.1 * k)); tube(reeds, at3(rr, 1.45), at3(add2(rr, mul2(d, 0.15)), 2.4 + 0.25 * (k % 2)), 0.035, 4) }
+  }
+  return [PG(granite, F.stone, 'plinth-granite', 'basin'), PG(water, FLAT, 'lp-pool', 'water'), PG(pedestal, F.stone, 'plinth-granite', 'pedestal'), PG(group, F.bronze, 'statue-bronze', 'fountain-group'), PG(reeds, F.bronze, 'statue-bronze', 'reeds')]
+}
+
+// The conservatory's own outline: the propagation ranges (the outline less the four display houses, which are heroes of
+// their own) as low ridge-and-furrow glass; the formal garden's beds (OSM leisure=garden ways, spec.garden.beds) as
+// clipped hedges round summer bedding; the Bates Fountain at spec.fountain.
+export function conservatoryGrounds(b, spec = {}) {
+  const ring = b.polygons[0].outer, houses = (spec.houses ?? []).map(siteBuilding).filter(Boolean).map((h) => h.polygons[0].outer)
+  const rangeH = spec.rangeM ?? 3.4, rise = 1.0, bay = 3.2, meshes = []
+  const close = (r) => [...r, r[0]]
+  const parts = houses.length ? polygonClipping.difference([close(ring)], ...houses.map((h) => [close(h)])) : [[close(ring)]]
+  const glass = mesh(), ribs = mesh(), stone = mesh()
+  for (const [outer] of parts) {
+    const r = outer.slice(0, -1)
+    if (Math.abs(polyArea(r)) < 30 || orientedBox(r).W < 4) continue // slivers where OSM's house outlines miss the compound's
+    const p = prism(r, 0, rangeH, { top: true })
+    into(glass, p.walls, p.top); ringBand(stone, r, 0, 0.6, 0.06)
+    // ridge-and-furrow: a ridge every 3.2 m along the range's long axis, clipped to its outline
+    const ob = orientedBox(r), n = left(ob.u)
+    for (const [a, c] of hatch(r, ob.u, bay)) {
+      if (len2(sub2(c, a)) < 1.5) continue
+      const A = at3(a, rangeH + rise), C = at3(c, rangeH + rise)
+      for (const s of [-1, 1]) quad(glass, at3(add2(a, mul2(n, (s * bay) / 2)), rangeH), at3(add2(c, mul2(n, (s * bay) / 2)), rangeH), C, A, [n[0] * s, 1.5, n[1] * s])
+      tube(ribs, A, C, 0.06, 4)
+    }
+  }
+  meshes.push(PG(glass, FLAT, GLASS, 'ranges'), PG(ribs, FLAT, IRON, 'ribs'), PG(stone, F.stone, 'lp-limestone', 'base'))
+  // the formal garden: hedge-edged beds of summer flowers
+  const beds = mesh(), hedges = mesh(), clearPts = []
+  for (const id of spec.garden?.beds ?? []) {
+    const g = siteGreen(id)
+    if (!g) continue
+    const r = g.outer, p = prism(offsetRing(r, -0.35), 0.08, 0.32, { top: true })
+    into(beds, p.top)
+    for (let i = 0; i < r.length; i++) {
+      const a = r[i], c = r[(i + 1) % r.length], L = len2(sub2(c, a))
+      if (L < 0.5) continue
+      const t = norm2(sub2(c, a)), nn = edgeNormal(r, i)
+      slab(hedges, add2(mul2(add2(a, c), 0.5), mul2(nn, -0.2)), t, L + 0.3, 0.4, 0.05, 0.6)
+    }
+    clearPts.push(...r)
+  }
+  if (beds.positions.length) meshes.push(PG(beds, FLAT, 'lp-flowers', 'beds'), PG(hedges, FLAT, 'lp-hedge', 'hedges'))
+  const clear = []
+  if (spec.fountain) {
+    const fc = project(spec.fountain.lon, spec.fountain.lat)
+    meshes.push(...batesFountain(fc, { r: spec.fountain.radiusM ?? 6 }))
+    clear.push(ringAround(fc, (spec.fountain.radiusM ?? 6) + 3, 20))
+  }
+  if (clearPts.length) clear.push(convexHull(clearPts))
+  return { replace: true, pieces: [], meshes, clear }
+}
+
+// ── Museums and pavilions (B-5) ──────────────────────────────────────────────────────────────────────────────────────
+const PM = (m, facade, style, part, fine = false) => ({ mesh: m, facade, seed: 0.5, style, part, lod0Only: fine })
+
+// The Elks National Veterans Memorial (Egerton Swartwout, 1926): Indiana limestone, a great domed rotunda ringed by a
+// colonnade of Ionic columns under Weinman's frieze, between two low wings round their courtyards; the dome rises
+// ~100 ft. The rotunda's centre and radius come from the OSM outline's round bay (spec.rotunda, local to its bbox centre).
+export function elksMemorial(b, spec = {}) {
+  const ring = b.polygons.reduce((a, p) => (Math.abs(polyArea(p.outer)) > Math.abs(polyArea(a.outer)) ? p : a)).outer
+  const xs = ring.map((p) => p[0]), zs = ring.map((p) => p[1]), cb = [(Math.min(...xs) + Math.max(...xs)) / 2, (Math.min(...zs) + Math.max(...zs)) / 2]
+  const R = spec.rotunda?.r ?? 20, c = add2(cb, spec.rotunda?.at ?? [0, 0]), wingH = spec.wingM ?? 12, drumH = spec.drumM ?? 18, top = spec.heightM ?? 35
+  const walls = mesh(), trim = mesh(), glass = mesh(), cols = mesh(), dome = mesh(), roofs = mesh()
+  // the wings: the outline less the rotunda's open half (its colonnade stands free in front of the drum, toward the
+  // park, spec.rotunda.faceDeg; the other half is engaged in the block behind it)
+  const fd = (((spec.rotunda?.faceDeg ?? 90) - 90) * Math.PI) / 180, span = ((spec.rotunda?.openDeg ?? 110) * Math.PI) / 180
+  const disc = [c, ...Array.from({ length: 25 }, (_, k) => { const a = fd - span + (2 * span * k) / 24; return add2(c, [(R + 2.5) * Math.cos(a), (R + 2.5) * Math.sin(a)]) })], close = (r) => [...r, r[0]]
+  for (const [outer] of polygonClipping.difference([close(ring)], [close(disc)])) {
+    const r = outer.slice(0, -1)
+    if (Math.abs(polyArea(r)) < 40 || orientedBox(r).W < 5) continue // slivers of the round bay
+    const w = prism(r, 0, wingH); into(walls, w.walls); into(roofs, w.top)
+    ringBand(trim, r, wingH - 1.2, wingH + 0.05, 0.3); ringBand(trim, r, 0, 1.2, 0.12)
+  }
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], q = ring[(i + 1) % ring.length], L = len2(sub2(q, a))
+    if (L < 6 || len2(sub2(mul2(add2(a, q), 0.5), c)) < R + 2) continue
+    const t = norm2(sub2(q, a)), n = edgeNormal(ring, i), k = Math.max(1, Math.floor((L - 4) / 4.5) + 1)
+    for (let j = 0; j < k; j++) wallPolygon(glass, add2(a, mul2(t, k === 1 ? L / 2 : 2 + ((L - 4) * j) / (k - 1))), t, n, [[-0.8, 2.2], [0.8, 2.2], [0.8, 8.2], [-0.8, 8.2]], 0.05)
+  }
+  // the rotunda: a drum behind its colonnade, the frieze over it, an attic, the dome and its lantern
+  const drum = revolve(c, [[R - 2.2, 0], [R - 2.2, drumH]], { sides: 48 }) // in the colonnade's shade
+  for (let k = 0; k < 24; k++) { const a = (k / 24) * Math.PI * 2, da = Math.atan2(Math.sin(a - fd), Math.cos(a - fd)); if (Math.abs(da) > span) continue; column(cols, add2(c, [R * Math.cos(a), R * Math.sin(a)]), 1.4, drumH - 3.2, 0.62, 12) }
+  into(trim, revolve(c, [[R + 0.9, 0], [R + 0.9, 1.4], [0.001, 1.4]], { sides: 48 })) // the stylobate
+  into(trim, revolve(c, [[R + 0.9, drumH - 3.2], [R + 0.9, drumH], [R - 2.2, drumH]], { sides: 48 })) // entablature with the frieze
+  into(trim, revolve(c, [[R - 1.2, drumH], [R - 1.2, drumH + 3.0], [R - 2.0, drumH + 3.2]], { sides: 48 })) // the attic
+  const dr = R - 2.0, d0 = drumH + 3.2
+  into(dome, revolve(c, Array.from({ length: 9 }, (_, k) => { const a = (k / 8) * (Math.PI / 2); return [Math.max(2.2, dr * Math.cos(a)), d0 + (top - 3.5 - d0) * Math.sin(a)] }), { sides: 48 }))
+  into(trim, revolve(c, [[2.6, top - 3.6], [2.6, top - 1.2], [1.8, top - 0.8], [0.001, top]], { sides: 16 })) // the lantern
+  const prof = Array.from({ length: 9 }, (_, k) => { const a = (k / 8) * (Math.PI / 2); return [Math.max(2.2, dr * Math.cos(a)) + 0.12, d0 + (top - 3.5 - d0) * Math.sin(a)] })
+  for (let k = 0; k < 16; k++) { const a = (k / 16) * Math.PI * 2, d = [Math.cos(a), Math.sin(a)]; for (let j = 0; j + 1 < prof.length - 1; j++) tube(dome, at3(add2(c, mul2(d, prof[j][0])), prof[j][1]), at3(add2(c, mul2(d, prof[j + 1][0])), prof[j + 1][1]), 0.18, 4) } // the dome's ribs
+  return { replace: true, pieces: [], meshes: [
+    PM(walls, F.stone, 'lp-limestone', 'walls'), PM(drum, F.stone, 'lp-ledgestone', 'drum'), PM(trim, F.stone, 'lp-limestone', 'trim', true), PM(cols, F.stone, 'lp-limestone', 'columns'),
+    PM(dome, F.stone, 'lp-dome', 'dome'), PM(glass, FLAT, 'gothic-shadow', 'windows', true), PM(roofs, FLAT, 'lp-slate', 'roof'),
+  ] }
+}
+
+// The Peggy Notebaert Nature Museum (Perkins & Will / Ellerbe Becket, 1999): a low, angular building of pale stone and
+// glass whose sloped roofs fold over the galleries, the glass Judy Istock Butterfly Haven (2,700 sq ft) at its south
+// end, and terraces stepping down west to North Pond (spec.terraces).
+export function natureMuseum(b, spec = {}) {
+  const base = modernPavilion(b, { eaveM: spec.eaveM ?? 9, wallStyle: 'lp-limestone', wallFacade: 'stone', glassBand: [1.0, 6.4], roofStyle: 'lp-green-roof', copingStyle: 'lp-steel' })
+  const extra = [], ring = b.polygons[0].outer, fr = frameOf(b)
+  if (spec.haven) {
+    const c = project(spec.haven.lon, spec.haven.lat), hw = spec.haven.halfW ?? 9, sh = spec.haven.spineHalf ?? 6
+    const d = bellRoof(c, fr.u, sh, bellProfile(hw, (spec.eaveM ?? 9) - 0.2, spec.haven.topM ?? 14.5), { K: 6, M: 10, purlins: [0, 3] })
+    extra.push(PM(d.glass, FLAT, GLASS, 'butterfly-haven'), PM(d.ribs, FLAT, 'lp-steel', 'haven-ribs', true))
+  }
+  if (spec.terraces) {
+    const steps = mesh(), dir = [Math.sin((spec.terraces.faceDeg * Math.PI) / 180), -Math.cos((spec.terraces.faceDeg * Math.PI) / 180)]
+    const o = project(spec.terraces.lon, spec.terraces.lat), along = [-dir[1], dir[0]]
+    for (let k = 0; k < 4; k++) slab(steps, add2(o, mul2(dir, k * 3.2)), along, spec.terraces.widthM ?? 40, 3.2, 0, 1.6 - k * 0.4)
+    extra.push(PM(steps, F.stone, 'lp-limestone', 'terraces'))
+  }
+  return { ...base, meshes: [...base.meshes, ...extra] }
+}
+
+// ── Recreation (B-7) ─────────────────────────────────────────────────────────────────────────────────────────────────
+// The North Avenue Beach House (Wheeler Kearns, 1999), built as an ocean liner: its OSM outline is the hull — white
+// walls with a blue band at the deck line and a row of portholes, an upper deck set in from the rails, the rooftop
+// deck (Castaways) under its blue railings and canopy, and two funnels (the stair towers), white with red bands.
+export function shipBeachHouse(b, spec = {}) {
+  const ring = b.polygons.reduce((a, p) => (Math.abs(polyArea(p.outer)) > Math.abs(polyArea(a.outer)) ? p : a)).outer
+  const fr = frameOf(b), h1 = spec.deckM ?? 4.4, h2 = spec.topM ?? 8.2
+  const white = mesh(), blue = mesh(), ports = mesh(), glass = mesh(), red = mesh(), roof = mesh()
+  const hull = prism(ring, 0, h1); into(white, hull.walls); into(roof, hull.top)
+  ringBand(blue, ring, h1 - 0.9, h1 - 0.35, 0.06)
+  ringBand(blue, ring, h1 + 0.05, h1 + 1.15, -0.02, 0.12) // the main deck's blue rail
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], q = ring[(i + 1) % ring.length], L = len2(sub2(q, a))
+    if (L < 2.4) continue
+    const t = norm2(sub2(q, a)), n = edgeNormal(ring, i), k = Math.floor(L / 2.4)
+    for (let j = 0; j < k; j++) {
+      const o = add2(a, mul2(t, (j + 0.5) * (L / k))), pts = Array.from({ length: 10 }, (_, m) => [0.42 * Math.cos((m / 10) * Math.PI * 2), 2.2 + 0.42 * Math.sin((m / 10) * Math.PI * 2)])
+      wallPolygon(ports, o, t, n, pts, 0.05)
+    }
+  }
+  const upper = offsetRing(ring, -(spec.insetM ?? 3.6))
+  if (Math.abs(polyArea(upper)) > 50) {
+    const u = prism(upper, h1, h2); into(white, u.walls); into(roof, u.top)
+    ringBand(glass, upper, h1 + 0.9, h2 - 0.7, 0.02, 0.0) // the upper deck's band of windows
+    ringBand(blue, upper, h2, h2 + 1.1, -0.02, 0.1) // the rooftop deck's railing
+  }
+  // two funnels on the upper deck (the stair towers), at a third and two thirds of the hull
+  for (const k of spec.funnels ?? [-0.18, 0.12]) {
+    const c = at(fr, k * fr.L), r = spec.funnelR ?? 1.8, top = h2 + (spec.funnelM ?? 4.6)
+    into(white, revolve(c, [[r, h2], [r, top - 1.2], [r * 0.98, top], [0.001, top]], { sides: 20 }))
+    into(red, revolve(c, [[r + 0.05, top - 1.1], [r + 0.05, top - 0.3], [0.001, top - 0.3]], { sides: 20 }))
+  }
+  // the rooftop bar's canopy at the stern
+  const cc = at(fr, (spec.canopyAt ?? 0.32) * fr.L)
+  into(blue, slab(mesh(), cc, fr.u, 14, Math.min(9, fr.W - 10), h2 + 3.0, h2 + 3.3))
+  for (const [a, s2] of [[-6.5, -1], [6.5, -1], [-6.5, 1], [6.5, 1]]) tube(blue, at3(add2(cc, add2(mul2(fr.u, a), mul2(fr.v, s2 * (Math.min(9, fr.W - 10) / 2 - 0.3)))), h2), at3(add2(cc, add2(mul2(fr.u, a), mul2(fr.v, s2 * (Math.min(9, fr.W - 10) / 2 - 0.3)))), h2 + 3.0), 0.09, 6)
+  return { replace: true, pieces: [], meshes: [
+    PM(white, FLAT, 'beachhouse-white', 'hull'), PM(blue, FLAT, 'beachhouse-blue', 'trim'), PM(red, FLAT, 'lighthouse-red', 'funnel-bands'),
+    PM(roof, FLAT, 'sidewalk-concrete', 'decks'), PM(ports, F.led, 'porthole-glow', 'portholes', true), PM(glass, FLAT, 'lp-window-lit', 'windows', true),
+  ] }
+}
+
+// The Lincoln Park Passerelle (Ralph H. Burke, 1940; NRHP): a welded-steel through-arch footbridge over Lake Shore
+// Drive at North Avenue — two arch ribs over the span, hangers to the deck, concrete approach ramps at each end.
+export function passerelle(b, spec = {}) {
+  const c = b.centroid, u = [Math.sin((spec.bearingDeg * Math.PI) / 180), -Math.cos((spec.bearingDeg * Math.PI) / 180)], v = left(u)
+  const span = spec.spanM ?? 46, deckY = spec.deckM ?? 5.6, rise = spec.riseM ?? 8, w = spec.widthM ?? 4.2, ramp = spec.rampM ?? 26
+  const steel = mesh(), deck = mesh(), concrete = mesh(), rail = mesh()
+  const A = (a, s, y) => at3(add2(add2(c, mul2(u, a)), mul2(v, s)), y)
+  slab(deck, c, u, span + 2, w, deckY - 0.55, deckY)
+  for (const e of [-1, 1]) {
+    // the approach ramp: a sloped deck down to the ground, on its concrete wall
+    const a0 = e * (span / 2 + 1), a1 = e * (span / 2 + 1 + ramp)
+    quad(concrete, A(a0, -w / 2, deckY), A(a1, -w / 2, 0.15), A(a1, w / 2, 0.15), A(a0, w / 2, deckY), [0, 1, 0])
+    for (const sd of [-1, 1]) quad(concrete, A(a0, sd * w / 2, deckY), A(a1, sd * w / 2, 0.15), A(a1, sd * w / 2, 0), A(a0, sd * w / 2, 0), [v[0] * sd, 0, v[1] * sd])
+    slab(concrete, add2(c, mul2(u, e * (span / 2 + 0.5))), u, 1.6, w + 0.8, 0, deckY - 0.5) // the abutment
+    for (const sd of [-1, 1]) tube(rail, A(a0, sd * (w / 2 - 0.1), deckY + 1.1), A(a1, sd * (w / 2 - 0.1), 1.25), 0.05, 4)
+  }
+  // the arch ribs and hangers
+  const N = 20
+  for (const sd of [-1, 1]) {
+    let prev = null
+    for (let k = 0; k <= N; k++) {
+      const a = -span / 2 + (span * k) / N, y = deckY + rise * (1 - (2 * a / span) ** 2), p = A(a, sd * (w / 2 + 0.15), y)
+      if (prev) tube(steel, prev, p, 0.22, 6)
+      if (k > 0 && k < N && k % 2 === 0) tube(steel, A(a, sd * (w / 2 + 0.15), deckY), p, 0.05, 4)
+      prev = p
+    }
+    tube(rail, A(-span / 2, sd * (w / 2 - 0.1), deckY + 1.1), A(span / 2, sd * (w / 2 - 0.1), deckY + 1.1), 0.05, 4)
+  }
+  for (let k = 2; k < N - 1; k += 3) { const a = -span / 2 + (span * k) / N, y = deckY + rise * (1 - (2 * a / span) ** 2); if (y > deckY + 4.6) tube(steel, A(a, -w / 2 - 0.15, y), A(a, w / 2 + 0.15, y), 0.1, 4) } // the struts overhead
+  return { replace: true, pieces: [], meshes: [PM(steel, FLAT, 'lp-passerelle', 'arch'), PM(deck, F.stone, 'sidewalk-concrete', 'deck'), PM(concrete, F.stone, 'sidewalk-concrete', 'ramps'), PM(rail, FLAT, 'lp-passerelle', 'rails', true)], clear: [rectRingP(c, u, span + 2 * ramp + 4, w + 6)] }
+}
+const rectRingP = (c, u, L, W) => { const v = left(u); return [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([a, s2]) => add2(add2(c, mul2(u, (a * L) / 2)), mul2(v, (s2 * W) / 2))) }
+
+// The Diversey Driving Range (since 1916): the two-storey hitting-bay canopy along its curved tee line (spec.bays, an
+// OSM roof outline, local to `bays.at`), the small tee house, and the tall net poles round the range to the north.
+export function drivingRange(b, spec = {}) {
+  const meshes = [], steel = mesh(), decks = mesh(), net = mesh(), back = mesh()
+  if (spec.bays) {
+    const o = project(spec.bays.lon, spec.bays.lat), ring = spec.bays.ring.map(([x, z]) => [o[0] + x, o[1] + z])
+    const lvl = [0, 3.4, 6.8]
+    for (const y of lvl.slice(1)) { const p = prism(ring, y - 0.3, y); into(decks, p.walls, p.top) }
+    // posts on the open (north) edge every ~4 m, a back wall on the south
+    for (let i = 0; i < ring.length; i++) {
+      const a = ring[i], q = ring[(i + 1) % ring.length], L = len2(sub2(q, a)), n = edgeNormal(ring, i)
+      if (L < 1) continue
+      const t = norm2(sub2(q, a)), k = Math.max(1, Math.round(L / 4))
+      if (n[1] < -0.2) for (let j = 0; j <= k; j++) tube(steel, at3(add2(a, mul2(t, (j * L) / k)), 0), at3(add2(a, mul2(t, (j * L) / k)), lvl[2]), 0.12, 6)
+      else if (n[1] > 0.2) quad(back, at3(a, 0), at3(q, 0), at3(q, lvl[2]), at3(a, lvl[2]), [n[0], 0, n[1]])
+    }
+  }
+  if (spec.nets) {
+    const pts = spec.nets.map((p) => project(p.lon, p.lat)), H = spec.netM ?? 22
+    for (let i = 0; i + 1 < pts.length; i++) {
+      const a = pts[i], q = pts[i + 1], L = len2(sub2(q, a)), t = norm2(sub2(q, a)), k = Math.max(1, Math.round(L / 18))
+      for (let j = 0; j <= k; j++) tube(steel, at3(add2(a, mul2(t, (j * L) / k)), 0), at3(add2(a, mul2(t, (j * L) / k)), H + 0.6), 0.25, 8)
+      for (const sd of [1, -1]) quad(net, at3(a, 1), at3(q, 1), at3(q, H), at3(a, H), [-t[1] * sd, 0, t[0] * sd]) // seen from both sides
+    }
+  }
+  const house = slab(mesh(), b.centroid, frameOf(b).u, frameOf(b).L, frameOf(b).W, 0, 3.6)
+  const hroof = hipRoof(b.centroid, frameOf(b).u, frameOf(b).L, frameOf(b).W, 3.6, 2.0, 0.6)
+  meshes.push(PM(steel, FLAT, 'lp-steel', 'posts'), PM(decks, F.stone, 'sidewalk-concrete', 'decks'), PM(back, FLAT, 'lp-steel', 'back-wall'), PM(net, F.grid, 'lp-net', 'nets'), PM(house, F.brick, 'lp-brick', 'tee-house'), PM(hroof, FLAT, 'lp-slate', 'roof'))
+  // the landing area is open turf: no tree inside the nets
+  return { replace: true, pieces: [], meshes, clear: spec.nets ? [spec.nets.map((p) => project(p.lon, p.lat))] : [] }
+}
+
+export const LINCOLN_PARK_BUILDERS = { chessPavilion, couchTomb, lilyPool, wavelandClock, glassHouse, conservatoryGrounds, elksMemorial, natureMuseum, shipBeachHouse, passerelle, drivingRange }

@@ -8,7 +8,7 @@ import { orientedBox } from './sacred.js'
 import { spire, drum, pyramid, doricColumn } from './crowns.js'
 import { add2, sub2, mul2, norm2, left, bearing, mesh, tri, quad, merge, tube, slab } from './meshkit.js'
 import { LANDMARK_FACADES as F } from './facadeIds.js'
-import { plinth, placeStatue } from './statues.js'
+import { plinth, placeStatue, steppedBase, exedra, totemPole } from './statues.js'
 
 const P = (m, facade, style, part, seed = 0.5) => ({ mesh: m, facade, seed, style, part })
 const local = (p) => (p && p.lat != null ? project(p.lon, p.lat) : p)
@@ -175,9 +175,17 @@ export function statues(b, { items }) {
   const meshes = []
   for (const it of items) {
     const at = it.local ? add2(b.centroid, it.local) : it.lat != null ? local(it) : b.centroid
-    meshes.push(P(plinth({ at, base: 0, w: it.plinthW ?? it.heightM * 0.8, h: it.plinthH }), F.stone, 'plinth-granite', 'plinth'))
-    const { mesh: m } = placeStatue(it, { at, base: it.plinthH, bearingDeg: it.bearingDeg ?? 0 }, it.preloaded)
-    meshes.push(P(m, F.bronze, 'statue-bronze', 'figure'))
+    // a stepped (or arched) granite base when the monument has one, else a plain plinth (Lincoln Park pass, B-6)
+    let top = it.plinthH
+    if (it.tiers) {
+      const base = steppedBase({ at, bearingDeg: it.bearingDeg ?? 0, tiers: it.tiers, arch: it.arch ?? null })
+      meshes.push(P(base.stone, F.stone, it.plinthStyle ?? 'plinth-granite', 'plinth'))
+      if (base.shadow.positions.length) meshes.push(P(base.shadow, F.steel, 'gothic-shadow', 'arch'))
+      top = base.top
+    } else meshes.push(P(plinth({ at, base: 0, w: it.plinthW ?? it.heightM * 0.8, h: it.plinthH }), F.stone, it.plinthStyle ?? 'plinth-granite', 'plinth'))
+    if (it.exedra) meshes.push(P(exedra({ at, bearingDeg: it.bearingDeg ?? 0, ...it.exedra }), F.stone, 'plinth-granite', 'exedra'))
+    const { mesh: m } = placeStatue(it, { at, base: top, bearingDeg: it.bearingDeg ?? 0 }, it.preloaded)
+    meshes.push(P(m, F.bronze, it.style ?? 'statue-bronze', 'figure'))
   }
   return { replace: true, pieces: [], meshes }
 }
@@ -210,6 +218,11 @@ export const P2_BUILDERS = {
   boardwalkArches: (b, s) => ({ replace: true, pieces: [], ...boardwalkArches({ at: atOf(b, s), count: s.count, spanM: s.spanM, heightM: s.heightM, bearingDeg: s.bearingDeg }) }),
   ribbonRink: (b, s) => ({ replace: true, pieces: [], ...ribbonRink(s.path.map(local), s.widthM) }),
   statues,
+  // Kwanusila (B-6): the painted cedar totem pole on its concrete pad
+  totem: (b, s) => {
+    const at = atOf(b, s), t = totemPole({ at, bearingDeg: s.bearingDeg ?? 0, heightM: s.heightM ?? 12.2 })
+    return { replace: true, pieces: [], meshes: [P(plinth({ at, base: 0, w: 2.4, h: 0.3 }), F.stone, 'sidewalk-concrete', 'pad'), P(t.cedar, F.steel, 'lp-cedar', 'pole'), P(t.black, F.steel, 'clock-hands', 'paint-black'), P(t.red, F.steel, 'gate-red', 'paint-red'), P(t.teal, F.steel, 'lp-totem-teal', 'paint-teal'), P(t.white, F.steel, 'lp-trim-white', 'paint-white')] }
+  },
   murals: (b, s) => ({ replace: true, pieces: [], ...muralQuads(s.walls.map((w) => ({ ...w, a: local(w.a), b: local(w.b) }))) }),
   canopy: (b, s) => ({ replace: true, pieces: [], ...canopy({ at: atOf(b, s), w: s.w, d: s.d, peakH: s.peakH, masts: s.masts, bearingDeg: s.bearingDeg }) }),
 }

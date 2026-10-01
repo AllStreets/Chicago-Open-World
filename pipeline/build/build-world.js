@@ -15,14 +15,14 @@ import { extrudeBuilding } from '../lib/extrude.js'
 import { tileKeyFor, tileBounds, TILE_SIZE, tileKeysForBBox } from '../lib/tiles.js'
 import { writeMeshGlb } from '../lib/glb.js'
 import { shapePieces } from '../lib/shapes.js'
-import { applyHero, findByOsm, matchesOsm } from '../lib/heroes.js'
+import { applyHero, findByOsm, matchesOsm, expandHeroGroups } from '../lib/heroes.js'
 import { VENUE_FACADES, STYLE, convexHull } from '../lib/venue.js'
 import { venueRecord, encodeAnchors, plazaAnchors } from '../lib/sportsSites.js'
 import { collectRuntime, validateLandmarkRegistry, landmarkEntry } from '../lib/landmarkRuntime.js'
 import { detectBridges, buildBridge, makeRibbonCutter, bridgeSidecar } from '../lib/bridges.js'
 import { shapeSacred } from '../lib/sacred.js'
 import { horizonBoxes } from '../lib/horizon.js'
-import { venueZones, filterTrees, assertNoVenueTrees, outsideZones, cutZones } from '../lib/trees.js'
+import { venueZones, filterTrees, assertNoVenueTrees, outsideZones, cutZones, cutWater } from '../lib/trees.js'
 import { createBlock, addTileToBlock, blockLayers, blockSidecar } from '../lib/blocks.js'
 import { bAcc, appendBuilding, appendLayer, asLayer } from '../lib/layers.js'
 import { preloadStatue } from '../lib/statues.js'
@@ -35,10 +35,12 @@ import { isPavingArea, pavingKind, pathHalfWidth, synthPlazas, pathSurface, clip
 import { buildWalkGraph, encodeWalkGraph } from '../lib/walkGraph.js'
 import { loadBlenderMesh } from '../lib/blenderMesh.js'
 import { setSeahorseMesh } from '../lib/landmarks.js'
+import { setSiteLookup } from '../lib/parkkit.js'
 import { createStyleRegistry, assignHeroStyles, meshStyle, writeStylePalettePng, addMaterialStyles, styleIndex, partStyle } from '../lib/styles.js'
 import { applyOsmLooks, applyTagOverrides } from '../lib/osmLook.js'
 import { applyRooftops, rooftopLots } from '../lib/rooftops.js'
 import { lakePolygons, landMinusWater, joinLines, lakeSide } from '../lib/lake.js'
+import { lakefrontBeaches, isSandPitch } from '../lib/beaches.js'
 import { bakeShore, SHORE } from '../lib/shore.js'
 import { bakeHeightfield, meshPoints, boundsUnion, HEIGHTFIELD } from '../lib/heightfield.js'
 import { encodeHeights } from '../lib/raster.js'
@@ -134,8 +136,13 @@ async function main() {
   log(`parts: ${parts.length}, buildings with parts: ${partsByB.size}`)
 
   const greens = osmPolys(uniq(chunks('parks')))
+  // the Lincoln Park sculpts read their neighbours (a conservatory's glass houses, a formal garden's beds) — B-2
+  const greenById = new Map(greens.map((g) => [g.id, g]))
+  let waterById = null
+  const waterOf = (id) => { waterById ??= Map.groupBy(osmPolys(uniq(chunks('water'))), (w) => w.id); return waterById.get(id) ?? [] }
+  setSiteLookup({ building: (ref) => findByOsm(buildings, ref), green: (id) => greenById.get(id) ?? null, water: waterOf })
   // ── Heroes + pieces ────────────────────────────────────────────────────────
-  const heroes = existsSync(join(ROOT, 'data', 'heroes.json')) ? loadJson(join(ROOT, 'data', 'heroes.json')).heroes : []
+  const heroes = existsSync(join(ROOT, 'data', 'heroes.json')) ? expandHeroGroups(loadJson(join(ROOT, 'data', 'heroes.json')).heroes) : []
   validateLandmarkRegistry(heroes)
   const heroFor = new Map()
   const seahorse = await loadBlenderMesh(join(ROOT, 'heroes', 'out', 'seahorse.glb'), { at: [0, 0], maxTris: 6000 })
@@ -180,7 +187,7 @@ async function main() {
   for (const b of buildings) if (!heroFor.has(b) && /\b(screen|scoreboard)\b/i.test(b.name ?? '')) { b.facadeOverride = 'screen'; b.seedOverride = STYLE.screen.video }
   for (const b of buildings) {
     const h = heroFor.get(b)
-    if (h) { const r = applyHero(b, h); b.pieces = r.pieces; b.extraMeshes = r.extraMeshes; b.venueMeshes = r.venueMeshes; b.clearPolys = r.clear; b.sculptReplaces = r.sculptReplaces; b.detached = r.detached; b.runtime = r.runtime; b.venueTop = (r.venueMeshes || []).reduce((t, v) => { for (let k = 1; k < v.mesh.positions.length; k += 3) t = Math.max(t, v.mesh.positions[k]); return t }, 0); b.venueTop = Math.max(b.venueTop, ...(r.detached ?? []).flatMap((d) => d.mesh.positions.filter((_, k) => k % 3 === 1))); b.hero = h.key; b.heroSacred = Boolean(h.sacred); b.crownTop = Math.max(0, ...r.extraMeshes.map((m) => m.positions.reduce((t, y, i) => (i % 3 === 1 && y > t ? y : t), 0)), ...(h.spireCounts ? r.pieces.map((q) => q.top) : [])) }
+    if (h) { const r = applyHero(b, h); b.pieces = r.pieces; b.extraMeshes = r.extraMeshes; b.venueMeshes = r.venueMeshes; b.clearPolys = r.clear; b.sculptReplaces = r.sculptReplaces; b.detached = r.detached; b.runtime = r.runtime; b.venueTop = (r.venueMeshes || []).reduce((t, v) => { for (let k = 1; k < v.mesh.positions.length; k += 3) t = Math.max(t, v.mesh.positions[k]); return t }, 0); b.venueTop = Math.max(b.venueTop, ...(r.detached ?? []).flatMap((d) => d.mesh.positions.filter((_, k) => k % 3 === 1))); b.hero = h.quiet ? null : h.key; b.heroSacred = Boolean(h.sacred); b.crownTop = Math.max(0, ...r.extraMeshes.map((m) => m.positions.reduce((t, y, i) => (i % 3 === 1 && y > t ? y : t), 0)), ...(h.spireCounts ? r.pieces.map((q) => q.top) : [])) }
     else b.pieces = shapePieces(b)
     if (h && (h.sculpt || h.bodyTopM)) { const tw = b.pieces.reduce((a, p) => (p.top > a.top ? p : a), { top: 0 }), bb = tw.outer ? ringBBox(tw.outer) : null; log(`hero ${h.key}: ${b.pieces.length} pieces, tower top ${tw.top.toFixed(1)} m, ${bb ? `${(bb.maxX - bb.minX).toFixed(1)} × ${(bb.maxZ - bb.minZ).toFixed(1)} m` : 'no ring'}, crown top ${b.crownTop.toFixed(1)} m, detail ${(b.extraMeshes.reduce((n, m) => n + m.positions.length / 9, 0) / 1000).toFixed(1)} k tris; pieces ${b.pieces.map((q) => { const bb = ringBBox(q.outer); return `${q.base ?? 0}–${q.top.toFixed(0)}:${(bb.maxX - bb.minX).toFixed(0)}×${(bb.maxZ - bb.minZ).toFixed(0)}` }).join(' ')}`) }
   }
@@ -221,8 +228,19 @@ async function main() {
   assertSkyline(sky)
 
   // ── Ground sources ─────────────────────────────────────────────────────────
-  const parks = greens.filter((p) => p.tags.natural !== 'beach' && p.tags.leisure !== 'pitch'), beaches = greens.filter((p) => p.tags.natural === 'beach')
-  const pitches = greens.filter((p) => p.tags.leisure === 'pitch')
+  const parks = greens.filter((p) => p.tags.natural !== 'beach' && p.tags.leisure !== 'pitch'), beaches = greens.filter((p) => p.tags.natural === 'beach' || (p.tags.leisure === 'pitch' && isSandPitch(p.tags)))
+  const pitches = greens.filter((p) => p.tags.leisure === 'pitch' && !isSandPitch(p.tags))
+  // the lake side of the shore (also cuts the land below), and Lincoln Park's unmapped beaches: sand from the
+  // Lakefront Trail to the water (data/beaches.json)
+  const coastEls = uniq(chunks('coast'))
+  const lakeRel = coastEls.find((e) => e.type === 'relation')
+  const outerIds = new Set((lakeRel?.members || []).filter((m) => m.role === 'outer').map((m) => m.ref))
+  const shoreLines = coastEls.filter((e) => e.type === 'way' && e.geometry && (!lakeRel || outerIds.has(e.id))).map((e) => e.geometry.map((p) => project(p.lon, p.lat)))
+  const lakeSideP = lakeSide(joinLines(shoreLines, 5), 60000)
+  const trailLines = uniq(chunks('trails')).filter((e) => e.geometry && e.tags?.name === 'Lakefront Trail').map((e) => e.geometry.map((p) => project(p.lon, p.lat)))
+  const sand = lakefrontBeaches(loadJson(join(ROOT, 'data', 'beaches.json')).beaches, { trail: trailLines, lake: lakeSideP })
+  for (const b of sand) beaches.push(b)
+  log(`beaches: ${beaches.length} (${sand.length} lakefront bands from data/beaches.json, ${beaches.filter((b) => b.tags.leisure === 'pitch').length} volleyball courts as sand)`)
   const water = osmPolys(uniq(chunks('water'))).filter((p) => keepWater(p.tags))
   const roads = uniq(chunks('roads')).filter((e) => e.geometry && roadHalfWidth(e.tags || {}))
   const rail = uniq(chunks('rail')).filter((e) => e.geometry)
@@ -262,6 +280,16 @@ async function main() {
   log(`parks cut around venues: ${parks.length} → ${parksCut.length} polygons`)
   parks.length = 0
   for (const p of parksCut) parks.push(p)
+  // the park grass never covers a pond, lagoon, harbour or beach (Lincoln Park's water and North Avenue Beach's sand
+  // were all hidden under it)
+  const parksDry = cutWater(parks, [...water, ...beaches])
+  log(`parks cut around water: ${parks.length} → ${parksDry.length} polygons`)
+  parks.length = 0
+  for (const p of parksDry) parks.push(p)
+  // no tree stands in a pond or on a beach
+  const wetCells = new Map(), WC = 200, wck = (i, j) => `${i}:${j}`
+  for (const w of [...water, ...beaches]) for (let i = Math.floor(w.bbox.minX / WC); i <= Math.floor(w.bbox.maxX / WC); i++) for (let j = Math.floor(w.bbox.minZ / WC); j <= Math.floor(w.bbox.maxZ / WC); j++) { if (!wetCells.has(wck(i, j))) wetCells.set(wck(i, j), []); wetCells.get(wck(i, j)).push(w) }
+  const wetNear = (p) => wetCells.get(wck(Math.floor(p[0] / WC), Math.floor(p[1] / WC))) ?? []
   // a hero's built form can spill past its OSM outline (a podium drawn on the oriented box): its hull keeps trees off
   for (const b of buildings) {
     if (!b.hero || zones.some((z) => z.key === b.hero)) continue
@@ -288,8 +316,8 @@ async function main() {
   const pavedAreas = osmPolys(uniq([...chunks('paving'), ...chunks('trails')]).filter((e) => isPavingArea(e.tags || {}))).filter((p) => pavingKind(p.tags))
   const pavedIdx = buildGridIndex(pavedAreas, 200, (p) => [(p.bbox.minX + p.bbox.maxX) / 2, (p.bbox.minZ + p.bbox.maxZ) / 2])
   const pavedNear = (p) => pavedIdx.query(p, 600).filter((q) => p[0] >= q.bbox.minX && p[0] <= q.bbox.maxX && p[1] >= q.bbox.minZ && p[1] <= q.bbox.maxZ).map((q) => q.outer)
-  const { kept: keptTrees, removed } = filterTrees(treeNodes, { zones: zones.map((z) => z.ring), clearings, nearBuildings: (p) => footIdx.query(p, 400), plazas: landmarkRuntime.plazas, rails: (p) => railIdx.query(p, 100).map((s) => s.line), paved: pavedNear })
-  log(`trees removed (canopy test) — venues ${removed.venue}, clearings ${removed.clearing}, plazas ${removed.plaza}, railways ${removed.rail}, footprints ${removed.building}, paving ${removed.paved}; kept ${keptTrees.length}; venue zones: ${zones.map((z) => z.key).join(', ')}`)
+  const { kept: keptTrees, removed } = filterTrees(treeNodes, { zones: zones.map((z) => z.ring), clearings, nearBuildings: (p) => footIdx.query(p, 400), plazas: landmarkRuntime.plazas, rails: (p) => railIdx.query(p, 100).map((s) => s.line), paved: pavedNear, wet: wetNear })
+  log(`trees removed (canopy test) — venues ${removed.venue}, clearings ${removed.clearing}, plazas ${removed.plaza}, railways ${removed.rail}, footprints ${removed.building}, paving ${removed.paved}, water ${removed.water}; kept ${keptTrees.length}; venue zones: ${zones.map((z) => z.key).join(', ')}`)
   treeNodes.length = 0
   for (const p of keptTrees) treeNodes.push(p)
   log(`parks ${parks.length}, water ${water.length}, roads ${roads.length}, rail ${rail.length}, trees ${treeNodes.length}`)
@@ -571,11 +599,6 @@ async function main() {
   // Land is solid: enclave holes in the city boundary (other municipalities) are still land, never lake.
   const landLimits = [...landPolys, ...region].map((p) => ({ outer: p.outer, holes: [] }))
   // The city limits run out into the lake; the real shore is Lake Michigan's own outline (its outer member ways).
-  const coastEls = uniq(chunks('coast'))
-  const lakeRel = coastEls.find((e) => e.type === 'relation')
-  const outerIds = new Set((lakeRel?.members || []).filter((m) => m.role === 'outer').map((m) => m.ref))
-  const shoreLines = coastEls.filter((e) => e.type === 'way' && e.geometry && (!lakeRel || outerIds.has(e.id))).map((e) => e.geometry.map((p) => project(p.lon, p.lat)))
-  const lakeSideP = lakeSide(joinLines(shoreLines, 5), 60000)
   const landSolid = lakeSideP.length ? landMinusWater({ land: landLimits, water: lakeSideP }) : landLimits
   log(`shoreline: ${shoreLines.length} ways, lake side ${lakeSideP.length ? 'cut' : 'MISSING — using city limits'}`)
   rmSync(join(OUT, 'ground'), { recursive: true, force: true }) // X-0b: drops the unused Phase-2 ground layers (roads, parks, …: 8 MB nothing loads)
