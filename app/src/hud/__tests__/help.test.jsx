@@ -65,3 +65,16 @@ describe('Phase 5 help', () => {
     expect(screen.getByText('Live city')).toBeInTheDocument()
   })
 })
+
+// E5-2: the Games paragraph — live behaviour, Y / Play a game, where the data comes from, CTA still simulated
+describe('help: Games paragraph', () => {
+  it('explains live games, Y, ESPN and that live trains stay simulated', () => {
+    useStore.setState({ helpOpen: true })
+    render(<HelpOverlay />)
+    const d = screen.getByRole('dialog', { name: 'Controls' })
+    expect(d).toHaveTextContent(/comes alive by itself/)
+    expect(d).toHaveTextContent(/Play a game — a 90-second preview/)
+    expect(d).toHaveTextContent(/ESPN and refresh on the live site/)
+    expect(d).toHaveTextContent(/live CTA trains stay simulated/)
+  })
+})

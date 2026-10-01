@@ -43,6 +43,7 @@ export default function GamesPanel() {
           )
         })}
       </ul>
+      <p className="games-explain">Real games come alive by themselves — the crowd, the lights, the players and the score. Press <b>Y</b> or ▶ Play a game on a ballpark’s card for a 90-second preview.</p>
       <p className="games-foot"><span className={`data-note${note.stale ? ' data-stale' : ''}`}>{note.text}</span></p>
     </div>
   )

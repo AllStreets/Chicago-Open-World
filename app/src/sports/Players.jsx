@@ -19,14 +19,15 @@ const ballGeo = new THREE.SphereGeometry(0.22, 10, 8) // ~2× true size so the a
 const ballMat = new THREE.MeshStandardMaterial({ color: '#ffffff', emissive: '#ffffff', emissiveIntensity: 0.3 })
 const FIELD_Y = 0.22
 
-export default function Players({ frame, sport, colors }) {
+const realClock = () => Date.now() / 1000
+export default function Players({ frame, sport, colors, clock = realClock }) {
   const ref = useRef()
   const m = useMemo(() => new THREE.Matrix4(), []), c = useMemo(() => new THREE.Color(), [])
   useFrame(() => {
     floodlit.value = 0.8 * facadeUniforms.uNight.value
     const mesh = ref.current
     if (!mesh) return
-    const list = formation(sport, Date.now() / 1000).slice(0, MAX)
+    const list = formation(sport, clock()).slice(0, MAX)
     list.forEach((p, i) => {
       const [x, z] = frameToWorld(frame, p.u, p.v)
       mesh.setMatrixAt(i, m.makeTranslation(x, FIELD_Y, z))
@@ -39,10 +40,10 @@ export default function Players({ frame, sport, colors }) {
   return <instancedMesh ref={ref} args={[capsule, playerMat, MAX]} frustumCulled={false} castShadow={false} receiveShadow={false} />
 }
 
-export function Ball({ frame, sport }) {
+export function Ball({ frame, sport, clock = realClock }) {
   const ref = useRef()
   useFrame(() => {
-    const b = ballAt(sport, Date.now() / 1000)
+    const b = ballAt(sport, clock())
     if (!ref.current) return
     ref.current.visible = !!b
     if (b) { const [x, z] = frameToWorld(frame, b[0], b[2]); ref.current.position.set(x, FIELD_Y + b[1], z) }

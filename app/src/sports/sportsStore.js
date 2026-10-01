@@ -28,6 +28,12 @@ export const useSports = create((set, get) => ({
   openCard: (cardVenue) => set({ cardVenue }),
   setBoardOverride: (key, lines) => set((s) => ({ boardOverrides: { ...s.boardOverrides, [key]: lines } })),
   pushSwell: (key, strength = 1) => set((s) => ({ swells: { ...s.swells, [key]: { at: Date.now(), strength } } })),
+  // E4 "Play a game": one 90-second showcase at a time ({ venueKey, team, startedAt }); the clock (SportsClock.tick)
+  // lays it over that venue's real state while the venue is idle or in its postgame hour, and ends it at 90 s.
+  // It never touches games, liveGames or boardOverrides.
+  showcase: null,
+  startShowcase: (venueKey, team, startedAt = Date.now()) => set({ showcase: { venueKey, team, startedAt } }),
+  stopShowcase: () => set({ showcase: null }),
 }))
 
 function simulated(nowMs) {

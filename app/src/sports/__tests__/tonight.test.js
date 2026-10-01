@@ -48,9 +48,10 @@ describe('tonight', () => {
 
 describe('gamePlaces', () => {
   beforeEach(() => { useStore.setState(useStore.getInitialState()); useSports.setState(useSports.getInitialState()) })
-  it('offers tonight’s game first, the panel, and one entry per venue', () => {
+  it('offers tonight’s game first, the panel, one entry per venue, then Play a game (E4-4)', () => {
     const p = gamePlaces({ venues: [W, U], states: { wrigleyfield: { state: 'pregame', game: g() }, unitedcenter: { state: 'idle' } }, nowMs: now })
-    expect(p.map((x) => x.id)).toEqual(['g:tonight', 'g:panel', 'g:wrigleyfield', 'g:unitedcenter'])
+    expect(p.map((x) => x.id)).toEqual(['g:tonight', 'g:panel', 'g:wrigleyfield', 'g:unitedcenter',
+      'g:play:wrigleyfield:cubs', 'g:play:ratefield:whitesox', 'g:play:soldierfield:bears', 'g:play:soldierfield:fire', 'g:play:stop'])
     expect(p[0]).toMatchObject({ kind: 'game', name: "Go to tonight's game" })
     expect(p[0].sub).toContain('MIL @ CHC')
     expect(p[2].aliases).toEqual(['Cubs'])

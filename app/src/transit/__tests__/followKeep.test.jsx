@@ -14,7 +14,7 @@ beforeEach(() => { useStore.setState(useStore.getInitialState()); useSoundStore.
 
 describe('C-fix: the safe-key list', () => {
   it('feature toggles, K and ? never end a follow', () => {
-    for (const [code, key] of [['KeyM', 'm'], ['KeyT', 't'], ['KeyG', 'g'], ['KeyB', 'b'], ['KeyJ', 'j'], ['KeyX', 'x'], ['KeyP', 'p'], ['KeyC', 'c'], ['KeyV', 'v'], ['KeyL', 'l'], ['KeyK', 'k'], ['Slash', '?']]) {
+    for (const [code, key] of [['KeyM', 'm'], ['KeyT', 't'], ['KeyG', 'g'], ['KeyB', 'b'], ['KeyJ', 'j'], ['KeyX', 'x'], ['KeyP', 'p'], ['KeyC', 'c'], ['KeyV', 'v'], ['KeyL', 'l'], ['KeyY', 'y'], ['KeyK', 'k'], ['Slash', '?']]) {
       expect(shouldExitFollow(ev(code, key)), code).toBe(false)
     }
   })
