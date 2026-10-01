@@ -1,17 +1,17 @@
 // V6 final-review fixes (app side): each test reproduces one reviewer finding.
 import { describe, it, expect, vi } from 'vitest'
 import * as THREE from 'three'
-import { renderCubeFaces } from '../cubeFaces.js'
+import { renderCubePart } from '../cubeFaces.js'
 import { showEmitters } from '../jets.js'
 
 describe('V6 review fixes', () => {
-  it('#1 rendering cube faces flags the mirror PMREM for a rebuild (the Bean must not freeze on its first frame)', () => {
+  it('#1 completing a cube face flags the mirror PMREM for a rebuild (the Bean must not freeze on its first frame)', () => {
     const rt = new THREE.WebGLCubeRenderTarget(8)
     const before = rt.texture.pmremVersion
-    const gl = { getRenderTarget: () => null, setRenderTarget: vi.fn(), render: vi.fn(), xr: { enabled: false }, shadowMap: { autoUpdate: true } }
+    const gl = { autoClear: true, getRenderTarget: () => null, setRenderTarget: vi.fn(), render: vi.fn(), xr: { enabled: false }, shadowMap: { autoUpdate: true } }
     let during = null
     gl.render = vi.fn(() => { during = gl.shadowMap.autoUpdate })
-    renderCubeFaces(gl, rt, new THREE.Scene(), new THREE.CubeCamera(1, 10, rt), [3])
+    renderCubePart(gl, rt, new THREE.Scene(), new THREE.CubeCamera(1, 10, rt), 3, 0, { parts: 1 })
     expect(rt.texture.pmremVersion).toBeGreaterThan(before)
     expect(during).toBe(false)                       // #7: no city shadow pass per cube face
     expect(gl.shadowMap.autoUpdate).toBe(true)       // restored

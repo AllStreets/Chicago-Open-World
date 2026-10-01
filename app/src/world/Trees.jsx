@@ -1,8 +1,10 @@
-// app/src/world/Trees.jsx — instanced seasonal trees (canopy + trunk).
+// app/src/world/Trees.jsx — instanced seasonal trees (canopy + trunk). Trunks drop out far from the camera.
 import { useEffect, useMemo, useRef } from 'react'
+import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { treePaletteFor, chicagoMonth } from '../lib/seasons.js'
 import { useStore } from '../state/store.js'
+import { TRUNK_M, sphereDistance } from '../lib/farDetail.js'
 
 const canopyGeo = new THREE.IcosahedronGeometry(1, 0) // 20 tris: ~29k trees stay within budget
 canopyGeo.scale(3.5, 3.9, 3.5).translate(0, 7.5, 0)
@@ -29,6 +31,13 @@ export default function Trees({ trees }) {
     for (const r of [canopy, trunk]) { r.current.instanceMatrix.needsUpdate = true; r.current.computeBoundingSphere() }
     if (canopy.current.instanceColor) canopy.current.instanceColor.needsUpdate = true
   }, [trees, pal])
+  // a trunk is ≈ 0.5 m wide and mostly under its canopy: beyond TRUNK_M it is under half a pixel (lib/farDetail.js)
+  useFrame(({ camera }) => {
+    const t = trunk.current
+    if (!t?.boundingSphere) return
+    const p = camera.position
+    t.visible = sphereDistance([p.x, p.y, p.z], t.boundingSphere) < TRUNK_M
+  })
   if (!trees?.length) return null
   return (
     <>

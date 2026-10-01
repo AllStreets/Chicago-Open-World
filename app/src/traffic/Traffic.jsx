@@ -12,6 +12,7 @@ import { presetDate } from '../lib/sun.js'
 import { facadeUniforms } from '../world/materials/facadeMaterial.js'
 import { decodeRoadGraph, buildNetwork, pointOnLink } from './graph.js'
 import { createTraffic, TYPES, CAP, RANGE_M } from './sim.js'
+import { skipInCube } from '../landmarks/cubeFaces.js'
 import { carGeometry, busGeometry, truckGeometry, lampGeometry, signalPoleGeometry, SIGNAL_LAMP_Y, SIGNAL_RGB, PAINTS } from './models.js'
 
 const IDLE = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('traffic') === 'idle'
@@ -115,6 +116,7 @@ export default function Traffic({ file, version }) {
   }, [file, version])
   useEffect(() => { state.current.sim?.setCap(CAP[quality] ?? CAP.HIGH) }, [quality])
   useEffect(() => () => { for (const m of Object.values(meshes)) { m.geometry.dispose(); m.material.dispose() } }, [meshes])
+  useEffect(() => skipInCube([meshes.car, meshes.bus, meshes.truck, meshes.poles]), [meshes]) // the Bean's 128 px faces: lamps only
 
   useFrame(({ camera, clock }, dt) => {
     const st = state.current, sim = st.sim, vis = on && !!sim
