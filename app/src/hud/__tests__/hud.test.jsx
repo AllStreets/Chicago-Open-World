@@ -55,14 +55,18 @@ describe('responsive HUD', () => {
   })
 })
 
-import { FEATURE_CONTROLS } from '../featureControls.js'
+import { FEATURE_CONTROLS, DOCK_FEATURES } from '../featureControls.js'
 describe('dock feature row (G3)', () => {
   // a winter night: no scheduled fountain show or fireworks running (the result must not depend on the hour)
   beforeEach(() => { vi.useFakeTimers({ toFake: ['Date'], now: new Date('2026-01-15T03:00:00Z') }); useStore.setState({ ...useStore.getInitialState(), transit: { lines: [], routes: [], stations: [] } }) })
   afterEach(() => vi.useRealTimers())
   it('has exactly one button per dock feature anywhere in the HUD, pressed state tracks the feature (Sound lives on M)', () => {
     render(<Hud />)
-    for (const c of FEATURE_CONTROLS.filter((f) => f.id !== 'sound')) {
+    // the dock stays at six (user, 2026-09-30): Sound lives on M, Traffic on C — both in ⌘K and the help card
+    expect(DOCK_FEATURES).toHaveLength(6)
+    expect(FEATURE_CONTROLS.filter((f) => !DOCK_FEATURES.includes(f)).map((f) => f.id)).toEqual(['sound', 'traffic'])
+    expect(screen.queryByRole('button', { name: /^Traffic \(C\)$/ })).toBeNull()
+    for (const c of DOCK_FEATURES) {
       const btns = screen.getAllByRole('button', { name: new RegExp(`^${c.label} \\(${c.keyLabel}\\)$`) })
       expect(btns, c.id).toHaveLength(1)
       const was = c.isOn()

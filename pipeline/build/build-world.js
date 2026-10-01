@@ -29,6 +29,7 @@ import { preloadStatue } from '../lib/statues.js'
 import { poiRecord, dedupePois, anchorPoi, POI_CATEGORIES, POI_CAT_IDS } from '../lib/pois.js'
 import { buildNeighborhoods } from '../lib/zones.js'
 import { clearTracks } from '../lib/trackClearance.js'
+import { buildRoadGraph, encodeRoadGraph } from '../lib/traffic.js'
 import { isPavingArea, pavingKind, pathHalfWidth, synthPlazas } from '../lib/paving.js'
 import { loadBlenderMesh } from '../lib/blenderMesh.js'
 import { setSeahorseMesh } from '../lib/landmarks.js'
@@ -552,6 +553,11 @@ async function main() {
     log(`neighborhoods: ${hoods.zones.length} zones`)
   } else log('neighborhoods: no boundary cache (run fetch:world) — LIVE lens has no zones')
   await writeTrainsGlb(join(OUT, 'trains.glb'), loadCatalog())
+  // ── Traffic (user, 2026-09-30): the drivable road graph, int16 metres ─────────
+  const roadGraph = buildRoadGraph(roads, project), roadEnc = encodeRoadGraph(roadGraph)
+  if (roadEnc.some((v) => v < -32768 || v > 32767)) throw new Error('traffic graph: a value outside int16')
+  writeFileSync(join(OUT, 'traffic.bin'), Buffer.from(new Int16Array(roadEnc).buffer))
+  log(`traffic graph: ${roadGraph.nodes.length} nodes, ${roadGraph.edges.length} edges, ${((roadEnc.length * 2) / 1e3).toFixed(0)} kB`)
   writeFileSync(join(OUT, 'manifest.json'), JSON.stringify({
     version: MANIFEST_VERSION, ...manifestStamp(), origin: ORIGIN, tileSize: TILE_SIZE, bbox: WORLD_BBOX,
     core: { minX: r0x, maxX: r1x, minZ: r0z, maxZ: r1z },
@@ -570,7 +576,7 @@ async function main() {
       ...bridges.filter((b) => !b.generic).map((b) => ({ key: `bridge-${b.key}`, name: b.name, aliases: b.aliases, x: Math.round(b.centre[0]), z: Math.round(b.centre[1]), top: 8, beacon: [Math.round(b.centre[0]), 14, Math.round(b.centre[1])] })),
     ],
     tallest: buildings.filter((b) => !b.hero && b.name && b.pieces.length && Math.max(...b.pieces.map((p) => p.top)) > 150).map((b) => ({ key: b.id, name: b.name, x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(...b.pieces.map((p) => p.top))) })),
-    tiles, blocks: blockList, land: 'ground/land.glb', lake: 'ground/lake.glb', landMask: 'land.json', transit: 'transit.json', trains: 'trains.glb', styles: 'styles.json', stylePalette: 'style-palette.png',
+    tiles, blocks: blockList, land: 'ground/land.glb', lake: 'ground/lake.glb', landMask: 'land.json', transit: 'transit.json', trains: 'trains.glb', traffic: 'traffic.bin', styles: 'styles.json', stylePalette: 'style-palette.png',
     shore: { file: 'water/shore.png', ...shore.grid, maxDist: SHORE.maxDist },
     heightfield: { file: 'heightfield.png', ...hf.grid, scale: HEIGHTFIELD.scale }, minimap: { file: 'minimap.png', bounds: mmBounds, size: 2048 },
     neighborhoods: hoods ? 'neighborhoods.json' : null,
