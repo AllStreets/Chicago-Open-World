@@ -28,7 +28,7 @@ import { bAcc, appendBuilding, appendLayer, asLayer } from '../lib/layers.js'
 import { preloadStatue } from '../lib/statues.js'
 import { poiRecord, dedupePois, anchorPoi, POI_CATEGORIES, POI_CAT_IDS } from '../lib/pois.js'
 import { buildNeighborhoods } from '../lib/zones.js'
-import { buildingsOverTracks } from '../lib/trackClearance.js'
+import { clearTracks } from '../lib/trackClearance.js'
 import { isPavingArea, pavingKind, pathHalfWidth, synthPlazas } from '../lib/paving.js'
 import { loadBlenderMesh } from '../lib/blenderMesh.js'
 import { setSeahorseMesh } from '../lib/landmarks.js'
@@ -299,10 +299,11 @@ async function main() {
   const transit = buildTransit({ ...loadTransitCache(CACHE), catalog: loadCatalog(), styles })
   assertTransit(transit.validation)
   log(`transit: lines ${transit.json.lines.length} · routes ${transit.json.routes.length} · stations ${transit.json.stations.length} · tiles ${transit.tiles.size}`)
-  // no building stands on an at-grade or elevated track (user, 2026-09-30): footprints over the right-of-way go
-  const onTracks = new Set(buildingsOverTracks(buildings, transit.json.routes))
-  if (onTracks.size) { const kept = buildings.filter((b) => !onTracks.has(b)); buildings.length = 0; for (const b of kept) buildings.push(b) }
-  log(`buildings over tracks removed: ${onTracks.size}; e.g. ${[...onTracks].slice(0, 6).map((b) => `${b.id}@${b.centroid.map(Math.round).join(",")}`).join(" ")}`)
+  // no building stands in a track's right-of-way (user, 2026-09-30): footprints are cut back to the structure's
+  // corridor edge, or removed when mostly inside it
+  const cleared = clearTracks(buildings, transit.json.routes)
+  if (cleared.removed.size) { const kept = buildings.filter((b) => !cleared.removed.has(b)); buildings.length = 0; for (const b of kept) buildings.push(b) }
+  log(`track clearance: ${cleared.removed.size} buildings removed, ${cleared.clipped} cut back; e.g. ${[...cleared.removed].slice(0, 4).map((b) => `${b.id}@${b.centroid.map(Math.round).join(',')}`).join(' ')}`)
 
   log(`styles: ${styles.size - 1} rows`)
 
