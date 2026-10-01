@@ -7,6 +7,14 @@ import * as THREE from 'three'
 import { useStore } from '../state/store.js'
 import { CUBE, CUBE_STEPS, cubeStepFor, cubeActive, renderCubePart } from './cubeFaces.js'
 
+const _frustum = new THREE.Frustum(), _pv = new THREE.Matrix4(), _sphere = new THREE.Sphere(new THREE.Vector3(), 30)
+export function beanInView(camera, centre) {
+  camera.updateMatrixWorld()
+  _frustum.setFromProjectionMatrix(_pv.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse))
+  _sphere.center.set(centre[0], 5, centre[1])
+  return _frustum.intersectsSphere(_sphere)
+}
+
 export default function CloudGate({ file, version, centre }) {
   const { scene: glb } = useGLTF(worldUrl(file, version), false, true)
   const quality = useStore((s) => s.quality)
@@ -25,6 +33,9 @@ export default function CloudGate({ file, version, centre }) {
     const env = active && primed.current >= CUBE_STEPS ? rt.texture : null
     if (mat.envMap !== env) { mat.envMap = env; mat.needsUpdate = true }
     if (!active || !bean.current) { primed.current = 0; return }
+    // off screen, a filled mirror keeps what it has and stops redrawing (the cube was the frame peak of views that only
+    // look past the Bean); back in view it resumes from that image, never from blank
+    if (primed.current >= CUBE_STEPS && !beanInView(camera, centre)) return
     if (cubeCam.coordinateSystem !== gl.coordinateSystem) { cubeCam.coordinateSystem = gl.coordinateSystem; cubeCam.updateCoordinateSystem() }
     cubeCam.position.set(centre[0], 5, centre[1]); cubeCam.updateMatrixWorld(true)
     // first sight: one slice a frame through all six faces; then the refresh schedule
