@@ -3,6 +3,8 @@ import { readFileSync } from 'node:fs'
 import { leafGeometry, buildLeaves, buildPits, DECK, L_DECK_Y, buildBridge, pierBoxes, tailSweep, rotateLeafPoint, leafFramePoints, LIFT_MAX_DEG, WATER_CLEAR_M, PIT } from '../lib/bridges.js'
 import { MAX_LIFT_DEG } from '../../app/src/bridges/lift.js'
 import { LANDMARK_FACADES as F } from '../lib/facadeIds.js'
+import { dressBridgehouses } from '../lib/bridgehouses.js'
+import { polyIndex } from '../lib/riverLevel.js'
 
 const pts = (parts) => parts.flatMap((p) => { const o = []; for (let i = 0; i < p.mesh.positions.length; i += 3) o.push(p.mesh.positions.slice(i, i + 3)); return o })
 const B = (o = {}) => ({ key: 'b', leaf: 'deck-truss', decks: 1, span: 70, width: 22, centre: [0, 0], axis: [0, -1], houses: { count: 2, style: 'beaux-arts' }, ...o })
@@ -136,5 +138,24 @@ describe('D1-4: the river at RIVER_Y — piers, pits sized from the tail sweep, 
     const a = buildBridge(B(), { deckY })
     expect(a.piers).toEqual([])
     expect(Math.min(...pts(a.fixed.filter((m) => m.part === 'pit')).map((q) => q[1]))).toBeCloseTo(deckY - 9.4)
+  })
+})
+
+// A-9: the tender houses are dressed on their OSM footprints (lib/bridgehouses.js); the piers reach the riverbed (D1-4)
+describe('A-9: the four house styles and the pier depth', () => {
+  const houseData = JSON.parse(readFileSync(new URL('../data/bridgehouses.json', import.meta.url), 'utf8'))
+  const lv = { river: -6.3, riverwalk: -5.3, lower: -5.1 }
+  const waterIdx = polyIndex([{ outer: [[-300, -35], [300, -35], [300, 35], [-300, 35]], holes: [] }])
+  it('covers the four house styles, each down to the water at the pier', () => {
+    for (const style of ['beaux-arts', 'deco', 'moderne', 'modern']) {
+      const outer = [[13, -41], [19, -41], [19, -35.5], [13, -35.5]]
+      const h = { id: 'w1', name: 'Test Bridgehouse', polygons: [{ outer, holes: [] }], pieces: [{ outer, base: 0, top: 5 }] }
+      dressBridgehouses({ buildings: [h], bridges: [B({ houses: { count: 2, style } })], waterIdx, levels: lv, data: houseData })
+      expect(h.bridgehouse.style).toBe(style)
+      expect(Math.min(...h.extraMeshes.flatMap((m) => m.positions.filter((_, i) => i % 3 === 1)))).toBeCloseTo(lv.river - 0.5, 1)
+    }
+  })
+  it('every pier box reaches below the river', () => {
+    for (const p of pierBoxes(B(), deckY, lv)) expect(p.bottom).toBeLessThanOrEqual(lv.river - 0.5)
   })
 })
