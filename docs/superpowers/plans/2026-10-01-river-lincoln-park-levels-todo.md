@@ -122,9 +122,6 @@ Size key: **S** ≈ ≤ 2 h (look row, crown primitive, colour), **M** ≈ half 
 
 **Decision 1 (2026-10-01): all 43 rows are in scope; Tier 1 and Tier 2 ship first.** Order: A-3 → A-4 → A-6 (Tiers 1–2), then A-7 (Tier 3), with A-8/A-9/A-12 after D1. No row is dropped. The A-12 README pass waits until Tier 3 is in.
 
-- [ ] **A-8 †D1 River-level bases** for A1, A3, A4, A7, A9, A10, A11, A13, A14, A17, A24, A32: walls down to the water, plus each building's real riverfront (terraces, esplanade, marina slips, Opera's river face, Apple's steps). **Done when** no river-front building shows a gap between its wall and the dockwall (unit test: footprint edges within 3 m of the river polygon have `base = RIVER_Y`), and the river gallery poses show the terraces.
-- [ ] **A-9 Bridges.** Per-style bridge houses, the McCormick Bridgehouse Museum (DuSable SW house), bascule piers and abutments to the water (†D1), and the lower decks of the double-deck bridges at `LOWER_Y` (†D2). **Done when** `bridgeParts.test.js` covers the four house styles and pier depth, and the bridge lift still runs in e2e (`hero-view` bridges pose).
-- [ ] **A-12 README.** A "River icons" gallery section (12 frames, day and dusk) and Evolution rows ("Down the river, the same pose" and "Marina City and Trump at the water"), with the old frames moved to `docs/screenshots/evolution/`. **Done when** README links resolve and `docs/screenshots` has no orphan images.
 
 ---
 
@@ -249,10 +246,6 @@ Size key: **S** ≈ ≤ 2 h (look row, crown primitive, colour), **M** ≈ half 
 **D1 — The river at its real depth + the Riverwalk at river level (world rebuild)**
 
 **D2 — Lower streets you can see (app-built, no tile bytes)**
-- [ ] **D2-1** `pipeline/lib/lowerLevels.js` turns the 322 `layer<0` ways into compact centrelines with width, level and ramp ends → `public/world/lower-levels.json` (≤ 150 KB). **Done when** a unit test counts Lower Wacker, Lower Michigan, Lower Columbus and Lower Lower Randolph, and the file size is asserted.
-- [ ] **D2-2** `app/src/world/LowerLevels.jsx` builds decks, soffits, columns every 9 m, kerbs, lane marks and self-lit strip lights from that JSON. Drawn only when the camera is in a ride, in the cutaway, or below 120 m altitude within 600 m. **Done when** ≤ 3 extra draw calls when visible, 0 when not (draw census test), and `noPedestrians` still passes.
-- [ ] **D2-3** **U — Lower levels cutaway.** Fades the upper road and sidewalk ribbons over bilevel zones (a mask from `lower-levels.json`) and shows the lower decks and their traffic. Add it to `FEATURE_CONTROLS` (key U, ⌘K "Lower levels", help line). **Decision 7: no dock button** — leave it out of `DOCK_ORDER` (the dock keeps its six buttons), like Traffic and Scan. U must also be in the follow/tour/ride-safe key list (C-fix). **Done when** `featureControls.test.js`, `help.test.jsx` and `searchCoverage.test.js` pass, a test asserts `DOCK_FEATURES` does not contain `lowerLevels`, and a hero-view pose with U on is baselined.
-- [ ] **D2-4** Double-deck bridges' lower decks at LOWER_Y (DuSable lower deck = Lower Michigan, Outer Drive lower deck). **Done when** `bridgeWorld.test.js` checks both deck ys.
 
 **D3 — Traffic on the lower levels**
 - [ ] **D3-1** `traffic.js` keeps `layer<0` ways (not service/private) with a level, and ramps interpolate y. `traffic.bin` v2 header. **Done when** `traffic.test.js` covers a ramp edge and the v1 reader still parses the old file.
@@ -514,3 +507,5 @@ Done 2026-10-01 and removed: F-1 weather menu, F-3 keycaps, F-4 ride names, F-5 
 
 
 - [ ] **F-8 Beach polish.** The new lakefront sand (North Avenue, Fullerton) reads too pale/white and the grey Lakefront Trail spurs crossing it read like roads; warm the sand toward real Chicago beach colour and render paths on sand as packed-sand/concrete walks; add volleyball nets. **Done when** a day frame of North Avenue Beach compares well with real photos.
+
+- [ ] **F-9 Boats to the F1 bar.** The Marina City slip boats (and any other river/lake boats: tour boats, water taxis, harbour boats) are simple boxes. Rebuild them as scripted Blender models to the user's F1 Pixel Cup standard (`~/Desktop/My Projects (Programming)/F1_Pixel_Cup/tools/blender/build_f1_car.py`): real hull shapes, cabins, windscreens, rails, role-named recolourable materials, baked AO, LOD1. **Done when** a river-level frame at Marina City and a harbour frame compare well with real photos, within the triangle budget.
