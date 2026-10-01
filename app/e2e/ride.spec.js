@@ -61,18 +61,32 @@ test('a bus from ⌘K rides up Michigan Avenue', async ({ page }) => {
   expect((await st(page)).ride).toBeNull()
 })
 
-test('the Riverwalk at street level holds 55+ fps and names what is near', async ({ page }) => {
+test('the Riverwalk at river level (D1-7): the eye stays 1.5–1.9 m over the walk, 55+ fps, it names what is near, and it walks to the end', async ({ page }) => {
   await ready(page, 'view=river&time=DAY&ride=walk:riverwalk')
   await page.waitForFunction(() => window.__store.getState().rideHud?.kind === 'walk', null, { timeout: 20_000 })
   await page.waitForFunction(() => window.__tilesIdle === true, null, { timeout: 60_000 }).catch(() => {})
   await page.waitForTimeout(2000)
-  const s = await st(page)
-  expect(s.y).toBeGreaterThan(1); expect(s.y).toBeLessThan(4) // eye height
+  // the Riverwalk's height comes from the manifest (levels.river.riverwalk), never a constant
+  const walkY = await page.evaluate(() => window.__store.getState().manifest?.levels?.river?.riverwalk ?? 0.1)
+  const eyeOk = async () => { const y = (await st(page)).y; expect(y).toBeGreaterThan(walkY + 1.5); expect(y).toBeLessThan(walkY + 1.9) }
+  await eyeOk()
   const f = await fps(page)
-  console.log(`RIDE walk fps=${f.toFixed(1)}`)
+  console.log(`RIDE walk fps=${f.toFixed(1)} eye=${(await st(page)).y.toFixed(2)} (walk ${walkY})`)
+  // the plan's D1-7 target is 58 fps on a quiet machine (measured 57.8–58.9 with the box under load 7.5); the gate keeps
+  // the suite's own 55 floor so a busy machine does not fail it — the logged figure is what the stage reports
   expect(f).toBeGreaterThanOrEqual(55)
   expect((await st(page)).hud.nearby.length).toBeGreaterThan(0)
   await page.screenshot({ path: 'test-results/ride-walk.png' })
+  // ×4 through the rooms: under the bridges, past the River Theater — the eye never leaves the walk's level
+  await page.keyboard.press('>'); await page.keyboard.press('>')
+  for (let k = 0; k < 4; k++) { await page.waitForTimeout(1500); await eyeOk() }
+  // and on to its end at the Confluence
+  const total = await page.evaluate(() => window.__store.getState().rideHud?.progress)
+  expect(total).toBeGreaterThan(0)
+  await page.keyboard.press('Period') // skip stop by stop to the last
+  for (let k = 0; k < 30 && (await st(page)).ride; k++) { await page.keyboard.press('Period'); await page.waitForTimeout(150) }
+  const end = await page.evaluate(() => ({ done: window.__store.getState().rideHud?.done ?? null, ride: !!window.__store.getState().ride }))
+  expect(end.done === true || end.ride === false).toBe(true)
 })
 
 test('the glide: dive gains speed, the arrows steer and do not end it, Esc lands', async ({ page }) => {
