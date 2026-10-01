@@ -72,13 +72,13 @@ export function drawCrownFace(ctx, lines, style, W, H) {
   if (lines.rows.length) {
     lines.rows.forEach((r, i) => {
       const y = b + hb + H * (0.2 + i * 0.165)
-      ctx.fillStyle = LED_WHITE; ctx.font = F(800, H * 0.135)
+      ctx.fillStyle = LED_WHITE; ctx.font = F(800, H * 0.155)
       ctx.textAlign = 'left'; ctx.fillText(r.abbr, W * 0.09, y, W * 0.5)
       ctx.textAlign = 'right'; ctx.fillText(r.score == null ? '–' : String(r.score), W * 0.91, y)
     })
     ctx.fillStyle = red; ctx.fillRect(W * 0.09, b + hb + H * 0.2825, W * 0.82, H * 0.006)
     const live = !/FINAL|SOON|STARTS/.test(lines.status)
-    ctx.textAlign = 'center'; ctx.font = F(800, H * 0.1)
+    ctx.textAlign = 'center'; ctx.font = F(800, H * 0.115)
     ctx.fillStyle = live ? '#ff3b5c' : LED_WHITE
     ctx.fillText(live ? `● ${lines.status}` : lines.status, W / 2, fy + H * 0.1, W * 0.86)
   } else {
