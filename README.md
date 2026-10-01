@@ -257,11 +257,11 @@ Game days come from the real ESPN schedules of all seven Chicago teams, fetched 
 </tr>
 <tr>
 <td><img src="docs/screenshots/v6-crownfountain-night.png" alt="V6 — Crown Fountain's faces at night" width="100%"/></td>
-<td></td>
+<td><img src="docs/screenshots/v6-picasso-day.png" alt="V6 — the Chicago Picasso in Daley Plaza" width="100%"/></td>
 </tr>
 <tr>
-<td><em>Crown Fountain's LED faces pucker and spout on their cycle. Also new: Lurie Garden, the BP Bridge, the Art Institute lions, the Picasso, the Flamingo, the Cultural Center domes, Union Station, Navy Pier's Headhouse and Ballroom, the Riverwalk and the Zoo.</em></td>
-<td></td>
+<td><em>Crown Fountain's LED faces pucker and spout on their cycle. Also new: Lurie Garden, the BP Bridge, the Art Institute lions, the Flamingo, the Cultural Center domes, Union Station, Navy Pier's Headhouse and Ballroom, the Riverwalk and the Zoo.</em></td>
+<td><em>The Chicago Picasso in Daley Plaza — 50 ft of rust-red Cor-Ten steel on its granite base, under the Daley Center's dark glass.</em></td>
 </tr>
 </table>
 
@@ -299,11 +299,11 @@ Game days come from the real ESPN schedules of all seven Chicago teams, fetched 
 </tr>
 <tr>
 <td width="50%"><img src="docs/screenshots/v8-loop-night.png" alt="V8 — the Loop at night" width="100%"/></td>
-<td></td>
+<td width="50%"><img src="docs/screenshots/v8-riverwalk-night.png" alt="V8 — the main branch and the Riverwalk at night" width="100%"/></td>
 </tr>
 <tr>
 <td><em>The Loop at night: lit crowns, glowing L lines, trains and ballparks in one frame.</em></td>
-<td></td>
+<td><em>The Riverwalk at night: lamps along the promenade, Wacker's traffic, and the canyon's windows broken up on the water.</em></td>
 </tr>
 </table>
 
