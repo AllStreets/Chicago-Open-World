@@ -1,0 +1,16 @@
+{
+  "note": "Hand-shaped plazas the OSM data doesn't map as areas (user, 2026-09-30: Grant Park's brick). Shapes: disc (centre lat/lon, radius m) or rect (centre, w × d m, bearing deg).",
+  "plazas": [
+    {
+      "key": "buckingham-plaza",
+      "name": "Buckingham Fountain plaza",
+      "kind": "brick",
+      "shape": "disc",
+      "lat": 41.8758,
+      "lon": -87.61928,
+      "r": 68,
+      "note": "the red-granite apron around the 85 m pool (pool radius 42.5 m + a ~25 m paved ring), read from aerial photographs",
+      "source": ["https://en.wikipedia.org/wiki/Buckingham_Fountain", "https://www.chicagoparkdistrict.com/parks-facilities/clarence-f-buckingham-memorial-fountain"]
+    }
+  ]
+}

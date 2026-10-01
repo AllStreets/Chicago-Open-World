@@ -68,6 +68,10 @@ export const useStore = create((set) => ({
   setHiddenLines: (hiddenLines) => set({ hiddenLines }),
   toggleLine: (id) => set((s) => ({ hiddenLines: s.hiddenLines.includes(id) ? s.hiddenLines.filter((x) => x !== id) : [...s.hiddenLines, id] })),
   follow: null,
+  trafficOn: true, // cars, buses and trucks on the streets, and the traffic lights (C, ⌘K, help)
+  setTrafficOn: (trafficOn) => set({ trafficOn }),
+  underground: false, // the camera is in a subway tube (Tunnels.jsx): PostFX drops the city-scale AO there
+  setUnderground: (underground) => set({ underground }),
   followEnded: null,
   startFollow: (trainId, view = 'chase') => set({ follow: { trainId, view }, followEnded: null, flight: null, cameraMode: 'FLY' }),
   setFollowView: (view) => set((s) => (s.follow ? { follow: { ...s.follow, view } } : {})),

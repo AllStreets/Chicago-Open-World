@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <defs>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#030509"/>
+  <rect x="1" y="1" width="62" height="62" rx="13" fill="none" stroke="#45d8ff" stroke-opacity="0.25"/>
+  <!-- Chicago six-pointed star -->
+  <g filter="url(#glow)">
+    <path fill="#ff3b53" d="M32 12l4.2 12.4L48 20l-7.8 10.4L52 34.8l-13 1.6 1.6 13L32 38.9l-8.6 10.5 1.6-13-13-1.6 11.8-4.4L16 20l11.8 4.4z"/>
+  </g>
+  <circle cx="32" cy="32" r="2.4" fill="#45d8ff"/>
+</svg>

@@ -38,6 +38,16 @@ const ground = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0)
 const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), hit = new THREE.Vector3()
 const pose = (c) => { c.getTarget(tmpT); c.getPosition(tmpP); return { position: tmpP.toArray(), target: tmpT.toArray() } }
 
+// Riding a train through a subway tube: the camera comes within a few metres of the walls and the train, and looks
+// level along the track — lift the orbit limits and pull the near plane in; everywhere else they stay as they were.
+const LIMITS = { above: { minDistance: 60, maxPolarAngle: Math.PI * 0.47, near: 5 }, tube: { minDistance: 2, maxPolarAngle: Math.PI * 0.6, near: 0.25 } }
+function tubeLimits(c, camera, under) {
+  const L = under ? LIMITS.tube : LIMITS.above
+  if (c.minDistance === L.minDistance && camera.near === L.near) return
+  c.minDistance = L.minDistance; c.maxPolarAngle = L.maxPolarAngle
+  camera.near = L.near; camera.updateProjectionMatrix()
+}
+
 export default function AtlasRig() {
   const ref = useRef()
   const keys = useRef(new Set())
@@ -183,8 +193,14 @@ export default function AtlasRig() {
       const st = useStore.getState()
       const r = st.transitOn ? followStep(fw, getTrains(), undefined, (id) => getSim()?.trainById(id, Date.now())) : { ended: null }
       if (r.ended !== undefined) st.stopFollow(r.ended) // transit switched off: stop quietly
-      else { const cp = ensureClear(r.pose); c.setLookAt(...cp.position, ...cp.target, true); publishReadout(c, now); window.__camRest = false; return } // smoothed by camera-controls
+      else { // smoothed by camera-controls; in a subway tube the roof clearance doesn't apply
+        const under = !!r.pose.underground
+        tubeLimits(c, state.camera, under)
+        const cp = under ? r.pose : ensureClear(r.pose)
+        c.setLookAt(...cp.position, ...cp.target, true); publishReadout(c, now); window.__camRest = false; return
+      }
     }
+    tubeLimits(c, state.camera, false)
     // a guided tour drives the camera: its own clock, pushed to the store a few times a second for the tour bar
     const tr = useStore.getState().tour
     if (tr) {

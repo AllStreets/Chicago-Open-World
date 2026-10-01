@@ -68,7 +68,7 @@ export async function writeTileGlb(path, layers) {
 }
 
 // Ground surfaces share one mesh per tile; the shader picks the texture by layer index.
-export const GROUND_LAYERS = ['roads', 'sidewalks', 'parks', 'pitches', 'beaches', 'rail']
+export const GROUND_LAYERS = ['roads', 'sidewalks', 'parks', 'pitches', 'beaches', 'rail', 'paving'] // paving: brick plazas and paths (user, 2026-09-30)
 export function mergeGroundLayers(layers) {
   const out = { positions: [], normals: [], uvs: [], layer: [] }
   for (const [name, m] of Object.entries(layers)) {
