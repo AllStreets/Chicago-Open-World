@@ -410,6 +410,54 @@
       "base": "#353c44",
       "finish": "metal",
       "source": "photo-matched, 360 N Green dark core, crown and balcony stacks"
+    },
+    {
+      "key": "tribune-limestone",
+      "base": "#cfc6b3",
+      "finish": "limestone",
+      "source": "https://en.wikipedia.org/wiki/Tribune_Tower (Indiana limestone)",
+      "crownLight": {
+        "kind": "flood",
+        "color": "#ffe9c4",
+        "fromM": 100,
+        "toM": 142,
+        "intensity": 1.1,
+        "source": "https://sah-archipedia.org/buildings/IL-01-031-0089"
+      }
+    },
+    {
+      "key": "gothic-shadow",
+      "base": "#2a2b30",
+      "finish": "glass",
+      "source": "photo-matched, Gothic tracery and openings in shadow"
+    },
+    {
+      "key": "wrigley-terracotta",
+      "base": "#d9d1c1",
+      "finish": "terracotta",
+      "source": "https://en.wikipedia.org/wiki/Wrigley_Building (white glazed terra cotta)",
+      "crownLight": {
+        "kind": "flood",
+        "color": "#fff3dc",
+        "fromM": 0,
+        "toM": 140,
+        "intensity": 1.0,
+        "source": [
+          "https://en.wikipedia.org/wiki/Wrigley_Building"
+        ]
+      }
+    },
+    {
+      "key": "wrigley-clock",
+      "base": "#ece4d0",
+      "finish": "glass",
+      "source": "https://en.wikipedia.org/wiki/Wrigley_Building (four 19.7 ft clock faces, lit at night)"
+    },
+    {
+      "key": "clock-hands",
+      "base": "#1c1c1e",
+      "finish": "metal",
+      "source": "photo-matched, clock hands"
     }
   ]
 }

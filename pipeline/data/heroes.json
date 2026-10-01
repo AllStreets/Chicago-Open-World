@@ -731,10 +731,10 @@
       "look": {
         "material": "glazed white terra cotta in six shades, warmer below and cooler and whiter as it rises; floodlit since 1921",
         "finish": "terracotta",
-        "base": "#eee6d8",
+        "base": "#ddd5c5",
         "glass": "#3a3f44",
         "mullion": "#e6ddcc",
-        "spandrel": "#eee6d8",
+        "spandrel": "#ddd5c5",
         "top": "#f8f8f5",
         "topFromM": 0,
         "topM": 134,
@@ -752,7 +752,8 @@
         "source": [
           "https://www.architecture.org/online-resources/buildings-of-chicago/wrigley-building",
           "https://en.wikipedia.org/wiki/Wrigley_Building"
-        ]
+        ],
+        "note": "Tuned a step below pure white so the sunlit terra cotta keeps its detail under the bloom."
       },
       "match": {
         "osmId": 17460539
@@ -761,7 +762,27 @@
       "crowns": [],
       "aliases": [
         "Wrigley Building"
-      ]
+      ],
+      "sculpt": "wrigley",
+      "sculptParams": {
+        "clockStageM": 96,
+        "topM": 133.5,
+        "skybridges": [
+          [
+            8.5,
+            13
+          ],
+          [
+            51,
+            55.5
+          ]
+        ],
+        "note": "clock tower after Seville's Giralda: clock stage with four 19.7 ft faces, arcaded belfry, two octagonal tiers, cupola, finial; skybridges to the north addition at the 3rd and 14th floors",
+        "source": [
+          "https://en.wikipedia.org/wiki/Wrigley_Building",
+          "https://www.architecture.org/online-resources/buildings-of-chicago/wrigley-building"
+        ]
+      }
     },
     {
       "key": "tribune",
@@ -811,7 +832,21 @@
       "aliases": [
         "Tribune Tower"
       ],
-      "bodyTopM": 118
+      "bodyTopM": 118,
+      "sculpt": "tribune",
+      "sculptParams": {
+        "crownTop": 141,
+        "entranceFace": [
+          1,
+          0
+        ],
+        "rLantern": 7.5,
+        "note": "limestone pier ribs on the shaft, the pointed Gothic entrance on Michigan Avenue, lancet tracery and pinnacles on the octagonal lantern",
+        "source": [
+          "https://en.wikipedia.org/wiki/Tribune_Tower",
+          "https://sah-archipedia.org/buildings/IL-01-031-0089"
+        ]
+      }
     },
     {
       "key": "mart",

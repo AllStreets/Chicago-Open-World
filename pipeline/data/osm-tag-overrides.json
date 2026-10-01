@@ -1,0 +1,12 @@
+{
+  "note": "Fulton Market / West Loop fidelity: building:colour and building:material for notable buildings OSM leaves untagged. Colours are approximate, read from published photographs of each building; OSM's own tags always win.",
+  "buildings": {
+    "w210268993": { "name": "1K Fulton (Google Chicago)", "building:colour": "#7c4d3c", "building:material": "brick", "note": "the 1923 Fulton Market Cold Storage brick building, re-skinned with a glass addition on top", "source": "https://sterlingbay.com/properties/1k-fulton/" },
+    "w210270258": { "name": "The Emily Hotel", "building:colour": "#5e4637", "building:material": "brick", "note": "converted warehouse: dark brown brick, black steel windows", "source": "https://www.emilyhotel.com/" },
+    "w40785446": { "name": "167 Green Street", "building:colour": "#4a5868", "building:material": "glass", "source": "https://chicagoyimby.com/tag/167-north-green-street" },
+    "w691709744": { "name": "800 West Fulton Market", "building:colour": "#8a4c38", "building:material": "brick", "note": "brick and timber loft", "source": "https://www.800fulton.com/" },
+    "w337517716": { "name": "The Hoxton, Chicago", "building:colour": "#3f4044", "building:material": "brick", "note": "dark charcoal brick with tall industrial windows", "source": "https://thehoxton.com/chicago/" },
+    "w210269548": { "name": "Soho House Chicago", "building:colour": "#97573a", "building:material": "brick", "note": "the former Allis-Chalmers factory, orange-red brick", "source": "https://www.sohohouse.com/houses/soho-house-chicago" },
+    "w210270616": { "name": "900 West Randolph (restaurant row)", "building:colour": "#8f5a42", "building:material": "brick", "note": "two-storey brick storefronts of Randolph Street's restaurant row", "source": "https://en.wikipedia.org/wiki/Fulton_Market_District" }
+  }
+}

@@ -2,6 +2,7 @@
 import { shapePieces } from './shapes.js'
 import { spire, antenna, pyramid, drum, sloped, vault, stepdome, pavilion, gothicCrown } from './crowns.js'
 import { signedArea, ringCentroid, ringBBox } from './geom.js'
+import { orientedBox } from './sacred.js'
 import { insetRing } from './roofs.js'
 import { buildVenue, convexHull, STYLE, VENUE_FACADES } from './venue.js'
 import { buildLandmark } from './landmarks.js'
@@ -9,6 +10,7 @@ import { project } from '../../shared/project.js'
 import { aquaSlabs, AQUA } from './aqua.js'
 import { marinaTower, MARINA } from './marina.js'
 import { placeStatue } from './statues.js'
+import { tribuneDetail, wrigleyClockTower, skybridge } from './icons.js'
 import { LANDMARK_FACADES } from './facadeIds.js'
 
 // Mirror of the façade shader's curtain-glass tint buckets: g = fract(seed * 3.7).
@@ -99,6 +101,29 @@ export function applyHero(b, spec) {
     const [sx, sz] = ringCentroid(tower.outer), s = spec.statue
     const { mesh: m, source } = placeStatue(s, { at: [sx, sz], base: s.topM - s.heightM }, s.preloaded)
     extraMeshes.push(Object.assign(m, { facade: LANDMARK_FACADES.bronze, seed: 0.5, style: s.style, lod0Only: true, statueSource: source }))
+  }
+  // the river's icons, gone all out (icons.js): close-range detail on the procedural massing, LOD0 only
+  const asExtra = (ms) => ms.map(({ mesh: m, facade, seed, style }) => Object.assign(m, { facade, seed, style, lod0Only: true }))
+  if (spec.sculpt === 'tribune' && tower) {
+    const baseP = pieces.reduce((a, p) => (Math.abs(signedArea(p.outer)) > Math.abs(signedArea(a.outer)) ? p : a))
+    const sp = spec.sculptParams ?? {}
+    extraMeshes.push(...asExtra(tribuneDetail({ tower: tower.outer, towerBase: baseP.top, towerTop: spec.bodyTopM ?? tower.top, crownTop: sp.crownTop ?? 141, entranceFace: sp.entranceFace ?? [1, 0], base: baseP.outer, rLantern: sp.rLantern ?? 7.5 })))
+  }
+  if (spec.sculpt === 'wrigley' && pieces.length) {
+    const sp = spec.sculptParams ?? {}
+    const clock = pieces.reduce((a, p) => (p.top > a.top ? p : a)), clockTop = clock.top, shaftTop = sp.clockStageM ?? 96
+    pieces = pieces.map((p) => (p === clock ? { ...p, top: shaftTop } : p))
+    const ob = orientedBox(clock.outer), side = Math.min(ob.L, ob.W)
+    extraMeshes.push(...asExtra(wrigleyClockTower({ at: ringCentroid(clock.outer), side, base: shaftTop, top: sp.topM ?? clockTop, bearingDeg: (Math.atan2(ob.u[0], -ob.u[1]) * 180) / Math.PI })))
+    // the skybridges across the plaza, from the 1921 south building to the 1924 north addition
+    const big = pieces.filter((p) => p !== clock && Math.abs(signedArea(p.outer)) > 600).sort((a, b) => ringCentroid(a.outer)[1] - ringCentroid(b.outer)[1])
+    if (big.length >= 2) {
+      const north = big[0], south = big[big.length - 1], N = ringCentroid(north.outer), S = ringCentroid(south.outer)
+      const d = [N[0] - S[0], N[1] - S[1]], l = Math.hypot(...d), u = [d[0] / l, d[1] / l]
+      const reach = (ring, c, dir) => Math.max(...ring.map(([x, z]) => (x - c[0]) * dir[0] + (z - c[1]) * dir[1]))
+      const from = [S[0] + u[0] * reach(south.outer, S, u), S[1] + u[1] * reach(south.outer, S, u)], to = [N[0] - u[0] * reach(north.outer, N, [-u[0], -u[1]]), N[1] - u[1] * reach(north.outer, N, [-u[0], -u[1]])]
+      for (const [y0, y1] of sp.skybridges ?? [[8.5, 13], [51, 55.5]]) extraMeshes.push(Object.assign(skybridge({ from, to, width: 7, y0, y1 }), { facade: LANDMARK_FACADES.stone, seed: 0.5, style: 'wrigley-terracotta', lod0Only: false }))
+    }
   }
   let sculptReplaces = false
   if (spec.sculpt === 'marina') {

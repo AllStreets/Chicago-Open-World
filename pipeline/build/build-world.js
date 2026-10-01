@@ -32,7 +32,7 @@ import { buildNeighborhoods } from '../lib/zones.js'
 import { loadBlenderMesh } from '../lib/blenderMesh.js'
 import { setSeahorseMesh } from '../lib/landmarks.js'
 import { createStyleRegistry, assignHeroStyles, meshStyle, writeStylePalettePng, addMaterialStyles, styleIndex, partStyle } from '../lib/styles.js'
-import { applyOsmLooks } from '../lib/osmLook.js'
+import { applyOsmLooks, applyTagOverrides } from '../lib/osmLook.js'
 import { lakePolygons, landMinusWater, joinLines, lakeSide } from '../lib/lake.js'
 import { bakeShore, SHORE } from '../lib/shore.js'
 import { bakeHeightfield, meshPoints, boundsUnion, HEIGHTFIELD } from '../lib/heightfield.js'
@@ -292,6 +292,7 @@ async function main() {
   const styles = createStyleRegistry()
   assignHeroStyles(buildings, heroes, styles)
   addMaterialStyles(styles) // V6 materials: after the heroes, before the OSM looks — styleIndex() relies on this order
+  log(`OSM tag overrides: ${applyTagOverrides(buildings, loadJson(join(ROOT, 'data', 'osm-tag-overrides.json')).buildings)} buildings`)
   const osmLooks = applyOsmLooks(buildings, styles, loadJson(join(ROOT, 'data', 'osm-looks.json')))
   log(`OSM-tagged looks: ${osmLooks.styled} buildings, ${osmLooks.skipped} over the palette cap`)
   // ── Transit (V3): CTA + Metra tracks, stations and glow ────────────────────

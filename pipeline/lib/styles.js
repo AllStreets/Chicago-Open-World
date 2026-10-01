@@ -77,7 +77,8 @@ export function assignHeroStyles(buildings, heroes, registry) {
 const STYLES_JSON = new URL('../data/styles.json', import.meta.url)
 const HEROES_JSON = new URL('../data/heroes.json', import.meta.url)
 export const materialRows = () => JSON.parse(readFileSync(STYLES_JSON, 'utf8')).styles
-export const materialLook = (r) => ({ finish: r.finish, base: r.base, glass: r.base, mullion: r.base, spandrel: r.base })
+// a row may give its own glass/mullion/spandrel colours and a floodlight band (the night light of the building it dresses)
+export const materialLook = (r) => ({ finish: r.finish, base: r.base, glass: r.glass ?? r.base, mullion: r.mullion ?? r.base, spandrel: r.spandrel ?? r.base, ...(r.crownLight ? { crownLight: r.crownLight } : {}) })
 export function addMaterialStyles(registry, rows = materialRows()) { for (const r of rows) registry.add(r.key, materialLook(r)) }
 
 let defaultRegistry = null
