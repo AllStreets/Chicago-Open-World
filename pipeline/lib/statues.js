@@ -2,7 +2,7 @@
 // seahorse unit. A Blender export is used when present (heroes/out/*.glb); otherwise a low-poly procedural stand-in
 // that reads correctly as a silhouette from 80 m. Either way the figure stands exactly heightM tall on `base`.
 import { fileURLToPath } from 'node:url'
-import { mesh, tri, tube, merge, bearing } from './meshkit.js'
+import { mesh, tri, tube, merge, bearing, revolve } from './meshkit.js'
 import { lathe } from './sacred.js'
 import { loadBlenderMesh } from './blenderMesh.js'
 
@@ -80,6 +80,10 @@ const BUILD = {
   },
 }
 
+// Lincoln Park pass (B-6): stand-ins for the monuments whose Blender exports are heroes/out/statue_<kind>.glb
+for (const k of ['schiller', 'hamilton', 'franklin', 'altgeld', 'andersen']) BUILD[k] = BUILD.lincoln
+BUILD.signal = BUILD.grant
+
 // The figure scaled so it spans exactly base..base + heightM (a stand-in's parts may fall short of the top).
 function fit(m, base, heightM, at) {
   let lo = Infinity, hi = -Infinity
@@ -126,4 +130,102 @@ export function placeStatue(spec, { at, base, bearingDeg = spec.bearingDeg ?? 0 
   }
   if (!warned.has(spec.kind)) { warned.add(spec.kind); console.log(`statue ${spec.kind}: fallback`) }
   return { mesh: statueFallback(spec.kind, { at, base, heightM: spec.heightM, bearingDeg }), source: 'fallback' }
+}
+
+// ── Lincoln Park monument bases and furniture (B-6) ──────────────────────────────────────────────────────────────────
+// A stepped granite base: tiers [[w, d, h], …] from the ground up, each centred, turned to `bearingDeg`; an optional
+// arch (spanM wide, its crown riseM up) cut through the lowest tier front to back as a dark opening (the Grant
+// Memorial's arched terrace). Returns { stone, shadow, top }.
+// a turned shape: radii in metres, heights as fractions of h above y0
+const L = (at, y0, h, prof, sides = 12) => revolve(at, prof.map(([rr, g]) => [Math.max(0.001, rr), y0 + g * h]), { sides })
+const rot = (deg) => { const f = bearing(deg); return { f, r: [-f[1], f[0]] } }
+export function steppedBase({ at, bearingDeg = 0, tiers, arch = null }) {
+  const { f, r } = rot(bearingDeg), stone = mesh(), shadow = mesh()
+  let y = 0
+  for (const [w, d, h] of tiers) {
+    const q = (a, b, yy) => [at[0] + r[0] * a + f[0] * b, yy, at[1] + r[1] * a + f[1] * b]
+    const box = [[-w / 2, -d / 2], [w / 2, -d / 2], [w / 2, d / 2], [-w / 2, d / 2]]
+    for (let i = 0; i < 4; i++) {
+      const [a0, b0] = box[i], [a1, b1] = box[(i + 1) % 4], n = [r[0] * (a0 + a1) / 2 + f[0] * (b0 + b1) / 2, 0, r[1] * (a0 + a1) / 2 + f[1] * (b0 + b1) / 2]
+      tri(stone, q(a0, b0, y), q(a1, b1, y), q(a1, b1, y + h), n); tri(stone, q(a0, b0, y), q(a1, b1, y + h), q(a0, b0, y + h), n)
+    }
+    tri(stone, q(-w / 2, -d / 2, y + h), q(w / 2, -d / 2, y + h), q(w / 2, d / 2, y + h), [0, 1, 0]); tri(stone, q(-w / 2, -d / 2, y + h), q(w / 2, d / 2, y + h), q(-w / 2, d / 2, y + h), [0, 1, 0])
+    y += h
+  }
+  if (arch) {
+    const [w0, d0] = tiers[0], hs = arch.spanM / 2, spring = arch.riseM - hs, n = 12
+    for (const side of [-1, 1]) {
+      const q = (a, yy) => [at[0] + r[0] * a + f[0] * side * (d0 / 2 + 0.03), yy, at[1] + r[1] * a + f[1] * side * (d0 / 2 + 0.03)]
+      const pts = [[-hs, 0], [hs, 0]]
+      for (let k = 0; k <= n; k++) { const a = (k / n) * Math.PI; pts.push([hs * Math.cos(a), spring + hs * Math.sin(a)]) }
+      const c = [0, spring * 0.6]
+      for (let i = 0; i < pts.length; i++) { const A = pts[i], B = pts[(i + 1) % pts.length]; tri(shadow, q(...c), q(...A), q(...B), [f[0] * side, 0, f[1] * side]) }
+    }
+  }
+  return { stone, shadow, top: y }
+}
+
+// The Stanford White exedra behind the Standing Lincoln: a granite bench curving round the statue's back, `lengthM`
+// along its arc, a seat and a high back, with a block at each end.
+export function exedra({ at, bearingDeg = 0, radiusM = 9, lengthM = 18.3 }) {
+  const { f } = rot(bearingDeg), back = [-f[0], -f[1]], out = mesh()
+  const span = lengthM / radiusM, a0 = Math.atan2(back[1], back[0]) - span / 2, n = 24
+  const ring = (r, y0, y1, k) => {
+    const a = a0 + (span * k) / n, b = a0 + (span * (k + 1)) / n
+    const P = (ang, rr, y) => [at[0] + rr * Math.cos(ang), y, at[1] + rr * Math.sin(ang)]
+    return { P, a, b }
+  }
+  for (let k = 0; k < n; k++) {
+    const { P, a, b } = ring(0, 0, 0, k)
+    const seg = (r0, r1, y0, y1) => {
+      const o = [Math.cos((a + b) / 2), 0, Math.sin((a + b) / 2)]
+      tri(out, P(a, r1, y0), P(b, r1, y0), P(b, r1, y1), o); tri(out, P(a, r1, y0), P(b, r1, y1), P(a, r1, y1), o)
+      tri(out, P(a, r0, y0), P(b, r0, y1), P(b, r0, y0), o.map((x) => -x)); tri(out, P(a, r0, y0), P(a, r0, y1), P(b, r0, y1), o.map((x) => -x))
+      tri(out, P(a, r0, y1), P(b, r0, y1), P(b, r1, y1), [0, 1, 0]); tri(out, P(a, r0, y1), P(b, r1, y1), P(a, r1, y1), [0, 1, 0])
+    }
+    seg(radiusM - 0.9, radiusM, 0, 0.48) // the seat
+    seg(radiusM, radiusM + 0.45, 0, 1.5) // the back
+  }
+  for (const e of [a0 - 0.06, a0 + span + 0.06]) {
+    const c = [at[0] + (radiusM - 0.2) * Math.cos(e), at[1] + (radiusM - 0.2) * Math.sin(e)]
+    const m = L(c, 0, 1.9, [[0.85, 0], [0.85, 0.8], [0.7, 0.85], [0.7, 1]], 4)
+    for (const k of ['positions', 'normals', 'uvs']) out[k].push(...m[k])
+  }
+  return out
+}
+
+// Kwanusila, the Thunderbird totem pole at Addison (Tony Hunt, 1986, after the 1929 original): 40 ft of carved red
+// cedar — the sea monster at its foot, the man riding the whale, Kwanusila at the top with his wings spread — painted
+// in black, red and blue-green. Returns meshes by colour; the carving is suggested by turned figures.
+export function totemPole({ at, bearingDeg = 0, heightM = 12.2 }) {
+  const { f, r } = rot(bearingDeg), H = heightM, cedar = mesh(), black = mesh(), red = mesh(), teal = mesh(), white = mesh()
+  const add = (dst, m) => { for (const k of ['positions', 'normals', 'uvs']) dst[k].push(...m[k]) }
+  add(cedar, L(at, 0, H * 0.84, [[0.42, 0], [0.4, 0.3], [0.37, 0.7], [0.33, 1.0]], 12))
+  // three figures: each a bulge of the pole with a face — brows and eyes (black), mouth (red), cheeks (teal)
+  const face = (y, s) => {
+    const c = (a, b, yy) => [at[0] + r[0] * a + f[0] * b, yy, at[1] + r[1] * a + f[1] * b]
+    add(cedar, L(at, y - 0.9 * s, 1.8 * s, [[0.42, 0], [0.5, 0.3], [0.48, 0.75], [0.4, 1]], 12))
+    for (const sx of [-1, 1]) {
+      // the brow (black), the eye (black in a teal socket), a red nostril line — Northwest Coast formline, oversized to read
+      add(black, L([c(0.2 * sx, 0.46 * s, 0)[0], c(0.2 * sx, 0.46 * s, 0)[2]], y + 0.32 * s, 0.12 * s, [[0.22 * s, 0], [0.24 * s, 0.5], [0.001, 1]], 8))
+      add(teal, L([c(0.2 * sx, 0.47 * s, 0)[0], c(0.2 * sx, 0.47 * s, 0)[2]], y + 0.02 * s, 0.26 * s, [[0.17 * s, 0], [0.19 * s, 0.5], [0.001, 1]], 8))
+      add(black, L([c(0.2 * sx, 0.52 * s, 0)[0], c(0.2 * sx, 0.52 * s, 0)[2]], y + 0.08 * s, 0.14 * s, [[0.09 * s, 0], [0.1 * s, 0.5], [0.001, 1]], 8))
+      add(red, L([c(0.36 * sx, 0.36 * s, 0)[0], c(0.36 * sx, 0.36 * s, 0)[2]], y - 0.3 * s, 0.3 * s, [[0.1 * s, 0], [0.12 * s, 0.5], [0.001, 1]], 6))
+    }
+    add(red, L([c(0, 0.5 * s, 0)[0], c(0, 0.5 * s, 0)[2]], y - 0.62 * s, 0.22 * s, [[0.3 * s, 0], [0.32 * s, 0.5], [0.001, 1]], 10)) // the mouth
+    add(black, L(at, y - 0.92 * s, 0.14 * s, [[0.45, 0], [0.47, 0.5], [0.45, 1]], 12)) // a black band below each figure
+  }
+  face(H * 0.13, 1.1) // the sea monster
+  face(H * 0.42, 0.9) // the man riding the whale
+  tube(black, [at[0] + f[0] * 0.5, H * 0.33, at[1] + f[1] * 0.5], [at[0] + f[0] * 0.75, H * 0.36, at[1] + f[1] * 0.75], 0.14, 6) // the whale's fin
+  face(H * 0.72, 1.0) // Kwanusila
+  // Kwanusila's beak and his spread wings at the top
+  tube(black, [at[0], H * 0.8, at[1]], [at[0] + f[0] * 0.95, H * 0.77, at[1] + f[1] * 0.95], 0.13, 6)
+  for (const sx of [-1, 1]) {
+    const w = (a, y) => [at[0] + r[0] * a + f[0] * 0.1, y, at[1] + r[1] * a + f[1] * 0.1]
+    tri(teal, w(0.3 * sx, H * 0.78), w(2.1 * sx, H * 0.95), w(2.0 * sx, H * 0.83), [f[0], 0, f[1]]); tri(teal, w(0.3 * sx, H * 0.78), w(2.0 * sx, H * 0.83), w(2.1 * sx, H * 0.95), [-f[0], 0, -f[1]])
+    tri(white, w(0.3 * sx, H * 0.78), w(2.0 * sx, H * 0.83), w(1.2 * sx, H * 0.74), [f[0], 0, f[1]]); tri(white, w(0.3 * sx, H * 0.78), w(1.2 * sx, H * 0.74), w(2.0 * sx, H * 0.83), [-f[0], 0, -f[1]])
+  }
+  add(black, L(at, H * 0.84, H * 0.16, [[0.36, 0], [0.42, 0.4], [0.3, 0.8], [0.12, 1]], 10)) // the head and crest
+  return { cedar, black, red, teal, white }
 }
