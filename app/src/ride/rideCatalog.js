@@ -2,6 +2,7 @@
 // profile), the CTA bus routes and the walks from rides.json, and the glide. A ride definition is what rideRun drives.
 import { makePath } from '../transit/path.js'
 import { buildProfile } from '../transit/profile.js'
+import RIDES from '../data/rides.json'
 
 export const RIDE_KINDS = [
   ['L', 'L trains', 'Ride the L — the front window, alongside or behind; every stop announced'],
@@ -67,14 +68,11 @@ export function walkRides(json) {
   })
 }
 
-let ridesJson = null, ridesUrl = null
-export async function loadRidesJson(url = '/world/rides.json', fetchImpl = fetch) {
-  if (ridesJson && ridesUrl === url) return ridesJson
-  try { const r = await fetchImpl(url); ridesJson = r.ok ? await r.json() : { buses: [], walks: [] } } catch { ridesJson = { buses: [], walks: [] } }
-  ridesUrl = url
-  return ridesJson
-}
+// the buses and walks ship with the app (27 KB, pipeline/build/build-rides.js): public/world stays within its budget
+let ridesJson = RIDES
+export const loadRidesJson = async () => ridesJson
 export const ridesJsonNow = () => ridesJson
+export const setRidesJson = (j) => { ridesJson = j } // tests
 
 const memo = { sim: null, json: null, list: [] }
 export function allRides(sim, transit, json = ridesJson) {

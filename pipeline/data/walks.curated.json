@@ -1,0 +1,41 @@
+{
+  "about": "Ride the city's walks (P7). Off-street walks (graph: true) are routed over the walk graph (walk-graph.json, OSM footways, the Riverwalk, the Lakefront Trail) between these waypoints. Street walks (street: true) follow the street's centreline (OSM roads) and walk its sidewalk: the build tries offsets 12–28 m to the given side and keeps the first that never enters a building footprint. Waypoints are [lat, lon].",
+  "walks": [
+    {
+      "id": "riverwalk", "name": "The Riverwalk", "from": "Lake Shore Drive", "to": "Lake Street",
+      "blurb": "The Chicago Riverwalk along the main branch's south bank, under the bascule bridges, from the lake to the river's bend",
+      "graph": true,
+      "waypoints": [[41.88768, -87.61545], [41.88745, -87.62090], [41.88720, -87.62440], [41.88695, -87.62800], [41.88670, -87.63150], [41.88640, -87.63500], [41.88590, -87.63760]],
+      "sources": ["https://www.chicagoriverwalk.us/", "https://www.openstreetmap.org/ (Chicago Riverwalk footways)"]
+    },
+    {
+      "id": "magmile", "name": "The Magnificent Mile", "from": "the Michigan Avenue Bridge", "to": "Oak Street",
+      "blurb": "North Michigan Avenue's east sidewalk from the river past the Wrigley Building, Tribune Tower and the Water Tower to Oak Street",
+      "street": true, "side": "right",
+      "waypoints": [[41.88935, -87.62419], [41.89500, -87.62420], [41.89700, -87.62420], [41.90040, -87.62415]],
+      "sources": ["https://www.themagnificentmile.com/", "https://www.openstreetmap.org/ (North Michigan Avenue)"]
+    },
+    {
+      "id": "lakefront", "name": "The Lakefront Trail: Grant Park to the Museum Campus", "from": "Monroe Harbor", "to": "the Shedd Aquarium",
+      "blurb": "The Lakefront Trail south along Monroe Harbor, past Buckingham Fountain's lawns to the Field Museum and the Shedd",
+      "graph": true,
+      "waypoints": [[41.88070, -87.61640], [41.87600, -87.61700], [41.87150, -87.61620], [41.86780, -87.61560]],
+      "sources": ["https://www.chicagoparkdistrict.com/parks-facilities/lakefront-trail"]
+    },
+    {
+      "id": "fulton", "name": "Fulton Market and Restaurant Row", "from": "Randolph and Halsted", "to": "Fulton Market and Halsted",
+      "blurb": "West Randolph Street's restaurant row, then north on Morgan and back east along Fulton Market's old meatpacking blocks",
+      "street": true, "side": "right",
+      "waypoints": [[41.88443, -87.64770], [41.88435, -87.65180], [41.88672, -87.65185], [41.88681, -87.64770]],
+      "sources": ["https://www.openstreetmap.org/ (West Randolph Street, West Fulton Market)"]
+    },
+    {
+      "id": "lincolnpark", "name": "Lincoln Park: the Zoo to North Pond", "from": "the Lincoln Park Zoo", "to": "North Pond",
+      "blurb": "Through Lincoln Park on its paths: the Zoo, the Lincoln Park Conservatory and the Alfred Caldwell Lily Pool, to North Pond",
+      "graph": true,
+      "waypoints": [[41.91780, -87.63380], [41.92140, -87.63360], [41.92440, -87.63540], [41.92640, -87.63500], [41.92900, -87.63770]],
+      "sources": ["https://www.chicagoparkdistrict.com/parks-facilities/lincoln-park"]
+    }
+  ],
+  "buses": ["146", "151", "22", "36", "66", "8", "29", "20"]
+}
