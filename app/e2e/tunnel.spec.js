@@ -94,3 +94,36 @@ test('follows a Red Line train into the State Street subway: chase, side, and an
   await page.evaluate(() => window.__store.getState().stopFollow())
   await page.waitForFunction(() => window.__camera.position.y > 0, null, { timeout: 10_000 })
 })
+
+// C-fix (2026-10-01): "when I press M to switch the sound on/off while following a train it makes me stop following it"
+test('M, X and K keep a train follow; W takes the camera back', async ({ page }) => {
+  await page.addInitScript(() => { try { localStorage.setItem('chi-ow-help-seen', '1') } catch {} })
+  await page.goto('/?view=loop&time=day&sports=idle&stats')
+  await page.waitForFunction(() => window.__worldReady === true, null, { timeout: 90_000 })
+  await page.waitForFunction(() => window.__hudReady === true && !!window.__store.getState().transit, null, { timeout: 60_000 })
+  const id = await page.evaluate(() => {
+    const t = window.__live.trains().find((x) => x.cars?.[0] && x.head.p[1] > 0)
+    window.__store.getState().startFollow(t.id, 'chase')
+    return t.id
+  })
+  const follow = () => page.evaluate(() => { const s = window.__store.getState(); return { follow: s.follow, flight: Boolean(s.flight) } })
+  await page.waitForTimeout(1500)
+  await page.keyboard.press('KeyM')
+  await expect(page.locator('.sound-toast[data-state="on"]')).toBeVisible()
+  await page.waitForTimeout(1000)
+  expect((await follow()).follow?.trainId).toBe(id)
+  await expect(page.locator('.follow-chip')).toBeVisible()
+  await page.keyboard.press('KeyX') // fireworks: no flight while following, a toast says where the show is
+  await page.waitForTimeout(600)
+  let s = await follow()
+  expect(s.follow?.trainId).toBe(id); expect(s.flight).toBe(false)
+  await expect(page.locator('.toast')).toContainText('Navy Pier')
+  await page.keyboard.press('KeyK') // K changes the follow view, like in a ride
+  expect((await follow()).follow?.view).toBe('side')
+  await page.keyboard.press('KeyM') // and sound back off: still following
+  await expect(page.locator('.sound-toast[data-state="off"]')).toBeVisible()
+  expect((await follow()).follow?.trainId).toBe(id)
+  await page.keyboard.press('KeyW')
+  s = await follow()
+  expect(s.follow).toBeNull()
+})

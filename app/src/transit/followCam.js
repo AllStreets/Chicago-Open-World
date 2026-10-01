@@ -3,6 +3,7 @@
 // drawn: the camera stays inside the tube's walls, floor and ceiling; without them it rides along the surface.
 import { clearanceAt } from '../lib/clearance.js'
 import { activeTunnelRoom, TUNNEL } from './tunnels.js'
+import { KEEP_CAMERA_CODES } from '../lib/cameraKeepKeys.js'
 
 export const FOLLOW = { chase: { back: 38, up: 14, ahead: 70, side: 0 }, side: { back: -4, up: 5, ahead: 0, side: 26 } }
 
@@ -90,8 +91,9 @@ export function followStep(follow, trains, clearance = clearanceAt, lookup = nul
 const MODIFIERS = new Set(['Shift', 'Meta', 'Control', 'Alt', 'CapsLock'])
 // Tab, and Enter/Space on a focused button, are someone using the HUD by keyboard — not taking the camera back.
 const HUD_KEYS = new Set(['Enter', ' ', 'Spacebar'])
+// M, X and the other city-life toggles, K and ? keep the follow too (C-fix): only Esc, moving and camera commands end it.
 export const shouldExitFollow = (e) => {
-  if (MODIFIERS.has(e.key) || e.key === 'Tab') return false
+  if (MODIFIERS.has(e.key) || e.key === 'Tab' || KEEP_CAMERA_CODES.has(e.code)) return false
   const tag = e.target?.tagName
   return !(HUD_KEYS.has(e.key) && (tag === 'BUTTON' || tag === 'A' || e.target?.getAttribute?.('role') === 'button'))
 }

@@ -13,7 +13,7 @@ import { liveLift } from '../bridges/BridgeLeaves.jsx'
 import { liftShowTime, nearestMoving, fountainMusicRange } from './showClock.js'
 
 const HEAR_BRIDGE_M = 3000
-const SOUND_OFF = 'Sound is off — press M (or the Sound button) to hear the music'
+const SOUND_OFF = 'Sound is off — press M (or ⌘K “Sound”) to hear the music'
 
 export default function ShowMusic({ fountainCentre, bridges }) {
   const soundOn = useSoundStore((s) => s.soundOn)

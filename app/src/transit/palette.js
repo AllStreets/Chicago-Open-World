@@ -13,8 +13,8 @@ export function transitPlaces(state) {
   }))
   for (const l of t.lines) {
     out.push({ id: `ln:${l.id}`, name: `Show ${l.name}`, sub: l.operator === 'cta' ? 'CTA L line' : 'Metra line', run: () => showLine(l.id) })
-    out.push({ id: `fo:${l.id}`, name: `Follow a ${l.name} train`, sub: running.has(l.id) ? 'Ride along · any key stops' : 'No trains right now', run: () => { followNearest(l.id) } })
+    out.push({ id: `fo:${l.id}`, name: `Follow a ${l.name} train`, sub: running.has(l.id) ? 'Ride along · Esc or a move key stops, K changes the view' : 'No trains right now', run: () => { followNearest(l.id) } })
   }
-  if (t.lines.some((l) => l.operator === 'metra')) out.push({ id: 'fo:metra', name: 'Follow a Metra train', sub: 'Any Metra line · any key stops', run: () => { followNearest('metra') } })
+  if (t.lines.some((l) => l.operator === 'metra')) out.push({ id: 'fo:metra', name: 'Follow a Metra train', sub: 'Any Metra line · Esc or a move key stops', run: () => { followNearest('metra') } })
   return out
 }

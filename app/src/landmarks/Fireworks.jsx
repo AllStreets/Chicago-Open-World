@@ -82,7 +82,8 @@ export default function Fireworks() {
   useEffect(() => { if (!soundOn) { audio.current?.stop(); music.current?.stop(); audio.current = music.current = null } }, [soundOn])
   useEffect(() => () => { audio.current?.stop(); music.current?.stop() }, [])
   const preview = useStore((s) => s.fireworksPreview)
-  useEffect(() => { if (preview && !useSoundStore.getState().soundOn) useStore.getState().showToast('Sound is off — press M (or the Sound button) to hear the fireworks') }, [preview])
+  // (following, touring or riding, X's own toast already says where the show is and how to hear it)
+  useEffect(() => { const s = useStore.getState(); if (preview && !useSoundStore.getState().soundOn && !(s.follow || s.tour || s.ride)) s.showToast('Sound is off — press M (or ⌘K “Sound”) to hear the fireworks') }, [preview])
   // X from far away (or facing elsewhere) flies you to a view of the barge
   useEffect(() => {
     useStore.setState({ requestFireworksView: () => {
