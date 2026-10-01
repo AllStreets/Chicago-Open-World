@@ -1,582 +1,172 @@
-# Phase 7 — Traversal: Glide and Ride-a-Train Implementation Plan
+# Phase 7 — Ride the City: L Trains, Buses, Walks and the Glide Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 >
-> **Later-phase plan (master-plan ruling, 2026-09-29).** This plan is written at task, interface and test level. Code-level implementation steps are completed at phase start, because they depend on what V1–V8 and Phases 3–6 actually shipped (especially V1's clearance, V4's follow cam and train poses, Phase 5's live trains, and Phase 6's ring bounds). Every task carries a **Refresh at phase start** note. Do that refresh first, edit this plan in place, then execute.
+> **Reworked 2026-09-30 at the user's direction.** The original Phase 7 plan was a glide plus a board-at-a-station train ride. The user asked for more ("instead of just gliding let's make it about rides around the city on certain bus routes or L routes as well as the planned glide but also walking routes to see things from streetview and for potential VR incorporation later"). This plan replaces it. Phase 6 (the wider city) is deferred by the user, so nothing here depends on its ring bounds.
 
-**Goal:** Add a second way to move through Chicago, and a third:
-- **Glide:** a playable hang-glider over the Loop, with a button and the key G, that never passes through a building;
-- **Ride a train:** board an L train at a station, ride in the cab or at a window, and get off at any stop.
+**Goal:** a second way to be in Chicago — **Ride** — with four kinds of ride, all reachable by a person who never touches code:
+1. **L train rides** — every CTA line and direction, riding a real V4 train consist along V3's track: the camera in the front window (cab), alongside, or chasing; stops announced; nearby landmarks and places named; pause, speed ×1/×2/×4, skip to the next or previous stop. Through the subway tubes once the ground fork's tunnels are in the scene.
+2. **Bus rides** — CTA routes on the major arterials (Michigan Ave, Clark, Chicago Ave, Halsted, State, Madison, Broadway, Lake Shore Drive's #146), from OpenStreetMap `route=bus` relations, with a CTA bus you ride in.
+3. **Walks** — street-view walks at 1.7 m eye height: the Riverwalk, the Magnificent Mile, the Lakefront Trail from Grant Park to the Museum Campus, Fulton Market's restaurant row, and Lincoln Park's paths. Mouse look, the places you pass named, the nearest tiles at full detail, never through a wall.
+4. **Glide** — the planned hang-glider over the city: energy-based flight that never passes through a building.
 
 **Architecture:**
-- **Modes.** Both are new camera modes (`GLIDE`, `RIDE`) in the existing store. Each is driven by a pure, tested state module (`traversal/glide.js`, `traversal/ride.js`) and a thin rig component that writes the camera pose each frame.
-- **Glide.** Energy-based flight (dive to gain speed, climb to trade it away). It reads V1's `clearanceAt` both ahead and underneath, so it lifts and slides instead of colliding.
-- **Ride.** A state machine over V4's train objects (or Phase 5's live trains through `pickTrains`), and V4's follow-cam pose sampling. Alighting flies the camera back to a clearance-safe station overview.
-
-Neither mode adds world content beyond one glider mesh (1 draw call).
+- **One generic engine for every path ride** (`ride/rideRun.js`, pure): a *ride definition* (a path, its stops, a speed profile, an optional vehicle) and a *run* (its own clock, paused or not, a speed multiplier). L rides reuse V4's own services and speed profiles (`sim.services[i].path / stops / profile`), so the ride train accelerates, brakes and dwells exactly like the simulated trains; buses and walks get a profile from V4's `buildProfile` with their own limits. Because the run has its own clock, pause, speed and skip-to-stop are exact.
+- **The vehicle** — an L ride's train is a V4 consist (`consistFor` + `carPoses`) added to the instanced train renderer's list for the frame (0 extra draw calls); simulated trains of the same service close to it step aside (hidden) so two trains never overlap. A bus ride draws one CTA bus (1 draw call, only during a bus ride). Walks have no vehicle. The glider is one mesh.
+- **The camera** — `AtlasRig` hands the camera to the ride each frame (as it does for the V4 follow cam and the P4 tours): CameraControls input is switched off, its polar limit is lifted so you can look at the horizon from the street, and the pose comes from `ridePose` (cab / side / chase / eye). Mouse drag looks around (yaw ±150°, pitch ±60°) without leaving the ride.
+- **Data** — `app/public/world/rides.json`, built by `pipeline/build/build-rides.js` from cached OSM bus relations (`pipeline/fetch/fetch-rides.js`) and curated walk routes (`pipeline/data/walks.curated.json`), every walk sample checked against the OSM building footprints. When the ground fork's `walk-graph.json` is in the manifest, walk legs on the off-street network are re-routed over it at runtime (shortest path between the curated waypoints).
 
 **Tech Stack:** React 19, R3F 9, drei 10, zustand 5, three 0.186, Vitest 5 + RTL, Playwright. No new dependencies.
 
-**Spec:** `docs/superpowers/specs/2026-09-28-chi-atlas-open-world-design.md`: §1 ("Traversal mode (glide/swing) is a later phase, toggled as a second mode"), §6 Camera (limits: min altitude 30 m, soft bounds), §11 (reduced motion), §14 (street-level walking is out of scope), Addendum B.3 Controls (follow a train, exit on any key), B.7 (clearance: height + 25 m; follow-train uses the same clearance), B.1.4 (human-first). Backlog: I-7.1, I-7.2, C15, G1, G6. Master plan: the P7 row.
-
 ## Global Constraints
 
-- **Human-first (B.1.4).** Glide has a **Glide** dock button, the key **G**, ⌘K `Glide over the city` / `Stop gliding`, a help-card group and an on-screen glide HUD that states its own controls. Ride has a **Ride from here** button on every station card, **Ride this train** on every train card, ⌘K `Ride the <line> from <station>`, and a ride HUD with **Get off at next stop**, **Cab / Window** and **Stop riding** buttons. URL parameters are for tests only.
-- **Familiar keys.**
-  - Glide: ↑/W = nose down (faster), ↓/S = nose up (climb), ←/→ and A/D = bank and turn, Shift = boost, G or Esc = land.
-  - Ride: Enter = get off at the next stop, V = cab or window, Esc = stop riding.
-  - These keys are active only in their mode. Any other key in RIDE does nothing (a deliberate exception to "follow exits on any key", because a ride is chosen).
-- **Clearance (B.7, G1, G6).** No camera or glider pose is ever inside a building.
-  - Glide keeps ≥ 12 m above `clearanceAt(x, z)`, looks 1.5 s ahead, and lifts or slides, never stops dead.
-  - Ride cameras sit on the train (exempt from the 30 m `MIN_ALT`, like V4's follow cam).
-  - Every exit pose is lifted to `max(MIN_ALT, clearanceAt + 25)`.
-- **Bounds.** Glide stays inside the union of built rings (Phase 6 `clampToRings`), banking back gently near the edge.
-- **Budgets (B.1.6):** +1 draw call (the glider), and 0 for ride; ≤ 900 at HIGH; glide physics ≤ 0.1 ms per frame. At LOW the glider has no trail.
-- **Reduced motion (§11):** no camera roll in glide (the horizon stays level), no FOV kick, and instant cuts instead of the boarding fly-in.
-- **Realism with a restrained neon accent:** the glider is a sourced hang-glider silhouette (≈ 10 m span) in dark fabric, with a thin cyan leading-edge light that is subtle by day and glows at night.
+- **Human-first (B.1.4).** Ride has a **Ride the city** dock button (a full-width row under Search: the 3 × 2 feature grid keeps no dead space), the key **L**, ⌘K rows (`Ride: Brown Line toward Kimball`, `Bus: #146 …`, `Walk: The Riverwalk`, `Glide over the city`), a Ride panel listing every ride in plain words, and a help-card group. During a ride a bar at the bottom states its own controls and has buttons for each. URL parameters are for tests only (`?ride=<id>`).
+- **Keys.**
+  - Any path ride: **Space** pause / resume, **.** next stop, **,** previous stop, **>** faster, **<** slower, **C** change the view (cab → side → chase; walks have one eye view), drag to look around.
+  - Glide: ↑/W nose down (faster), ↓/S nose up, ←/→ and A/D bank and turn, Shift boost.
+  - **Exit:** Esc, the bar's **Stop** button, or L — and for path rides any movement key (arrows, WASD, Q/E, R/F, +/−) also takes the camera back, exactly like the follow cam and the tours. In the glide the arrows steer, so only Esc, L and the button land it.
+  - Free keys verified against the keymap: L, C, `<`, `>` (Shift+, Shift+.) are unused outside a ride; Space, `,` and `.` are the tour keys and mean the same here.
+- **Clearance (B.7, G1, G6).** No camera is ever inside a building:
+  - L and bus cameras sit on the vehicle (exempt from the 30 m `MIN_ALT`, as V4's follow cam is); the side and chase views use V4's clearance-safe `followPose`.
+  - A walk path is checked at build time: every 2 m sample lies outside every OSM building footprint (the build fails otherwise).
+  - The glide keeps ≥ 12 m above `clearanceAt` and looks 1.5 s ahead.
+  - Every exit flies to a pose lifted to `max(120 m, clearanceAt + 25)`.
+- **Underground.** On subway stretches the cab rides at track depth inside the tunnel when the ground fork's tubes (`scene` object `tunnels`) exist; until they do, the cab rides 3 m above the street over the subway and the bar says "above the subway". Side and chase views are never used underground (the cab is).
+- **Budgets (B.1.6):** L ride +0 draw calls; bus ride +1; glide +1; walks +0; ≤ 900 at HIGH; ride logic ≤ 0.2 ms per frame; **60 fps at street level** (HIGH, M-series).
+- **Reduced motion (§11):** no camera roll in the glide; the view changes cut instead of easing.
 - **README gallery only appends:** `docs/screenshots/p7-<subject>-<time>.png`.
-- Ledger: `.superpowers/sdd/2026-09-29-phase-7-traversal/progress.md`. Push after each task and at the end of the phase.
+- Ledger: `.superpowers/sdd/2026-09-29-phase-7-traversal/progress.md`.
 
 ## Review Focus
 
-1. **Gliding straight at Willis Tower at full speed, or diving into the Loop canyon.** The glider must lift or slide along the façade, never clip through or stop dead, and never be pushed underground. This is pinned in Task 2 (the look-ahead lift and hard-floor tests over a synthetic 440 m block).
-2. **Frame hitches** (a tab switch, a 2 s GC pause) producing a huge `dt`. Glide must not tunnel through a building or launch to space. This is pinned in Task 2 (`dt` is clamped and sub-stepped; one 2 s step equals twenty 0.1 s steps within tolerance and stays above clearance).
-3. **The boarded train vanishing mid-ride** (a live feed drop, a Phase 6 edge despawn, or a live/sim source switch). The rider must be set down gracefully at the last station passed, with a plain message, and never left staring at empty track. This is pinned in Task 4 (the `TRAIN_LOST` transition test).
-4. **Waiting at a station where no train will come** (owl hours, a line not running, a Metra station off-peak, offline with a line the sim does not run). The waiting HUD must say so within a bounded time and offer another line or Cancel. This is pinned in Task 4 (the waiting timeout test and the "no service" check at boarding).
-5. **Mode collisions.** Pressing G while riding, ⌘K while gliding, starting a tour while riding, or Scan (X) while gliding must each resolve to one clear mode, with no stuck camera and no double rig writing the camera. This is pinned in Task 1 (the `enterMode` arbitration tests).
+1. **Riding into the ground fork's tunnels before they merge** — the camera must never sit underground looking at the underside of the city. Pinned in Task 1 (`ridePose` underground with and without tunnels).
+2. **A ride train colliding with a simulated train on the same track.** Pinned in Task 2 (`hideNearRide`).
+3. **Walks through walls** — pinned in Task 4 (the build-time footprint check and its test on a synthetic block).
+4. **Mode collisions** — starting a tour, a flight or a follow during a ride, or a ride during a tour, must end the other cleanly with one camera owner. Pinned in Task 2 (store arbitration tests).
+5. **Huge `dt`** (a tab switch) must not launch the glider through a tower or jump a ride past its last stop without stopping. Pinned in Tasks 1 and 5.
 
----
+## Upstream contracts (verified 2026-09-30 against `main` 2863a52 + this branch)
 
-## Upstream contracts assumed (verify at phase start)
-
-| Symbol | From | Assumed shape | Refresh check |
-|---|---|---|---|
-| `clearanceAt(x, z) → metres` | V1 (G1) | maximum roof height near (x, z), from `heightfield.png` (8 m cells) | `grep -rn "export function clearanceAt" app/src` |
-| `MIN_ALT = 30` | Phase 2.5 | `cameraMath.js` | unchanged? |
-| `clampToRings([x, z], rects, margin)`, `boundsFromManifest` | P6 | `cameraMath.js` | read P6 |
-| Train objects | V4 / P5 | `{ id, lineId, pathId, s, dir, speed, cars, dwellStationId|null, live? }` from `pickTrains` (P5) or `trainsAt` (V4) | read `trainSource.js`, `sim.js` |
-| `trainPose(train, transit, carIndex = 0) → { position: [x, y, z], forward: [x, y, z] }` | V4 (follow cam) | the pose of a car on its path | read V4's follow cam |
-| Follow mode | V4 (C15) | `cameraMode === 'FOLLOW'`, `follow: { trainId }`, exits on any key | read V4's rig |
-| Station and train cards | V4 (C16) + P5 | `selection.kind === 'station'|'train'` | read the card component |
-| `transit.json` stations and paths | V3 | `stations[] { id, name, x, z, y, lines }`, `lines[].paths[] { id, dir, points }` plus terminus names | `jq` |
-| Dock, help, ⌘K groups | V7 | final layout | read V7 |
-| Tours, Scan | P4, P5 | `cameraMode 'TOUR'`, `scan` | read the store |
-
----
+| Symbol | From | Shape |
+|---|---|---|
+| `getSim().services[]` | V4 | `{ id, line, inbound, spec, path: makePath(pts), stops: [{ station, name, s }], profile, to }` |
+| `sAt(profile, tau)`, `tauAtS(profile, s)`, `buildProfile(path, stopS, { vmax, accel, brake, dwellS, limitAt })` | V4 `transit/profile.js` | seconds ↔ arc length |
+| `consistFor(spec, period, inbound)`, `carPoses(path, sHead, consist, dims)` | V4 `transit/consist.js` | the cars of a train |
+| `followPose(head, dir, view, clearance, len)` | V4 `transit/followCam.js` | clearance-safe chase / side camera |
+| `trainsNow()` | P5 `transit/liveStore.js` | the frame's trains (live CTA or simulated) |
+| `clearanceAt(x, z)` | V1 `lib/clearance.js` | roof height near a point |
+| `walk-graph.json` | ground fork (pending merge) | `{ nodes: [x0, z0, …], edges: [a, b, surface, lengthM, k, x, z × k, …] }` |
+| Tunnels | ground fork (pending merge) | scene object named `tunnels`, tubes along the route paths |
 
 ## File Structure
 
 ```
+pipeline/
+  fetch/fetch-rides.js            (create) Overpass: CTA route=bus relations with geometry → cache/world/osm-bus-routes.json
+  lib/rides.js                    (create) chainWays, clipToBox, busRide, walkSamplesClear, walkRide
+  data/walks.curated.json         (create) the five walks: waypoints, blurbs, sources
+  build/build-rides.js            (create) → app/public/world/rides.json (buses + walks), footprint-checked
+  tests/rides.test.js             (create)
 app/src/
-  traversal/modes.js            (create) enterMode(store, mode, payload) arbitration; MODE_EXIT_POSE
-  traversal/glide.js            (create) GLIDE consts, createGlider, glideStep, chasePose
-  traversal/ride.js             (create) stationStops, stopsAhead, nextArrival, rideReducer, ridePose, alightPose, serviceAt
-  camera/GlideRig.jsx           (create) keyboard → input; glideStep per frame (sub-stepped); camera from chasePose
-  camera/RideRig.jsx            (create) rideReducer on TICK; camera from ridePose; fly-out on alight
-  camera/AtlasRig.jsx           (modify) yield control in GLIDE/RIDE (no clamp, no key handling)
-  world/GliderAvatar.jsx        (create) one mesh, cyan leading-edge light (uNight-scaled)
-  hud/GlideHud.jsx              (create) speed · altitude · boost meter · "G or Esc to land"
-  hud/RideHud.jsx               (create) waiting / riding / alighting states with buttons
-  hud/cards/...                 (modify V4 cards) "Ride from here" (line × direction), "Ride this train"
-  hud/ControlDock.jsx           (modify) Glide button
-  hud/CommandPalette.jsx        (modify) Glide / Ride commands
-  hud/HelpOverlay.jsx, HintBar.jsx (modify) "Glide & ride" group; mode-specific hints
-  state/store.js                (modify) cameraMode += 'GLIDE' | 'RIDE'; ride; glideHud
-  */__tests__/*.test.js(x)      (create per task)
-app/e2e/traversal.spec.js       (create) glide over the Loop; board at Merchandise Mart, alight at Chicago
+  ride/rideRun.js                 (create) pure engine: createRun, stepRun, runState, skipStop, setSpeed, ridePose, exitPose
+  ride/rideCatalog.js             (create) lRides(sim, transit), busRides(json), walkRides(json, graph), RIDE_KINDS
+  ride/walkGraph.js               (create) parseWalkGraph, routeOnGraph (Dijkstra between waypoints)
+  ride/rideSession.js             (create) the running ride (module state): start, stop, frame(dt), hud snapshot, look offsets
+  ride/glide.js                   (create) GLIDE, createGlider, glideStep, chasePose, glideInput
+  ride/RideVehicles.jsx           (create) the bus mesh and the glider mesh (only while riding)
+  ride/useRideKeys.js             (create) Space , . < > C and drag-to-look
+  hud/RidePanel.jsx, RideBar.jsx, Ride.css (create) the chooser and the in-ride bar
+  hud/ControlDock.jsx             (modify) "Ride the city" row
+  hud/featureControls.js          (modify) Ride (L)
+  lib/paletteSources.js           (modify) rideCommands()
+  camera/AtlasRig.jsx             (modify) hand the camera to the ride; exits
+  transit/Trains.jsx, liveStore.js (modify) the ride train in the frame's list; nearby same-service trains hidden
+  state/store.js                  (modify) ride, rideHud, ridePanelOpen, startRide, stopRide, setRide
+app/e2e/ride.spec.js              (create) L cab ride, bus ride, walk, glide — screenshots and fps at street level
 ```
 
 ---
 
-### Task 1: Traversal modes, arbitration and controls shell
-
-**Files:**
-- Create: `app/src/traversal/modes.js`
-- Modify: `app/src/state/store.js`, `app/src/camera/AtlasRig.jsx`, `app/src/hud/ControlDock.jsx`, `app/src/hud/CommandPalette.jsx`, `app/src/hud/HelpOverlay.jsx`, `app/src/hud/HintBar.jsx`
-- Test: `app/src/traversal/__tests__/modes.test.js`, `app/src/hud/__tests__/traversalControls.test.jsx`
+### Task 1: The ride engine — pure, tested (I-7.2)
 
 **Interfaces:**
-- Produces:
-  - `cameraMode` values: `'FLY'|'ORBIT'|'TOUR'|'FOLLOW'|'GLIDE'|'RIDE'`
-  - `enterMode(mode, payload?) → void` (store action):
-    - **One mode at a time.** Entering GLIDE or RIDE ends TOUR (keeping its resume chip, P4), FOLLOW and any flight, and closes the palette.
-    - **Glide and ride are exclusive.** Pressing G while riding does nothing and shows the hint "Get off the train first (Esc)".
-    - **Scan (X) is allowed in both.** It is a render state, not a camera mode.
-    - Entering FLY from GLIDE or RIDE calls `MODE_EXIT_POSE` so the camera lands safely.
-  - `MODE_EXIT_POSE(currentPose, clearanceAt) → { position, target }`: it lifts to `max(MIN_ALT, clearanceAt(x, z) + 25)` and looks ahead along the current heading.
-  - Keys: G toggles GLIDE (ignored while typing or with the palette open). The dock gets a **Glide** button with `aria-pressed`. ⌘K gets `Glide over the city` and `Stop gliding`.
-  - Help group **Glide & ride**:
-    - "G or the Glide button — hang-glide over the city";
-    - "↑ dive, ↓ climb, ← → turn, Shift boost, G or Esc to land";
-    - "Station card — Ride from here; Enter gets off at the next stop; V switches cab / window".
+- `createRun(def, { fromStop = 0 } = {}) → { tau, paused: false, speed: 1 }` — starts dwelling at stop `fromStop`.
+- `stepRun(def, run, dt) → run` — pure; `dt` clamped to 0.25 s; a paused run is unchanged; speed ∈ {1, 2, 4}; the run ends at the last stop (`done: true`).
+- `runState(def, run) → { s, head: { p, dir }, next, prev, etaS, dwelling, progress }`.
+- `skipStop(def, run, ±1) → run` — to the next (or previous) stop, arriving.
+- `ridePose(def, state, view, look, { underground, tunnels, clearance }) → { position, target }`:
+  - cab: 1.2 m behind the head, 2.7 m above the rail (L) / 2.4 m above the road (bus), looking 80 m along the path; eye (walks): 1.7 m above the path;
+  - side / chase: V4's `followPose`, never underground;
+  - underground without tunnels: 3 m above the street over the line.
+  - `look = { yaw, pitch }` turns the view from the travel direction.
+- `exitPose(pose, clearance) → { position, target }` — lifted to `max(120, clearanceAt + 25)`, looking ahead and down.
 
-- [ ] **Step 1: Write the failing tests**
+**Tests:** `app/src/ride/__tests__/rideRun.test.js` — a straight 2 km path with stops at 0 / 1000 / 2000 m:
+- starts dwelling at the first stop, accelerates, dwells at the second, ends done at the third;
+- pause freezes; ×4 covers ~4× the distance; a 10 s hitch steps ≤ 0.25 s;
+- `skipStop(+1)` lands at the next stop dwelling, `skipStop(-1)` at the previous;
+- cab pose sits above the rail and looks forward; walk eye at 1.7 m; yaw 90° looks sideways;
+- underground: inside the tube with tunnels, 3 m above the street without; side view falls back to the cab underground;
+- the exit pose is ≥ 120 m and above clearance + 25.
 
-```js
-// app/src/traversal/__tests__/modes.test.js
-import { describe, it, expect, beforeEach } from 'vitest'
-import { useStore } from '../../state/store.js'
-import { MODE_EXIT_POSE } from '../modes.js'
-
-describe('mode arbitration', () => {
-  beforeEach(() => useStore.setState(useStore.getInitialState()))
-  it('entering GLIDE ends a tour and a flight and closes the palette', () => {
-    const s = useStore.getState()
-    s.setTour({ id: 'river', t: 12, playing: true }); s.startFlight({ position: [0, 300, 0], target: [0, 0, 0] }); s.setPaletteOpen(true)
-    s.enterMode('GLIDE')
-    const n = useStore.getState()
-    expect(n.cameraMode).toBe('GLIDE'); expect(n.tour?.playing ?? false).toBe(false); expect(n.flight).toBeNull(); expect(n.paletteOpen).toBe(false)
-  })
-  it('GLIDE is refused while riding, with a hint', () => {
-    const s = useStore.getState()
-    s.enterMode('RIDE', { stationId: 'merch', lineId: 'brown', pathId: 'brown-s' })
-    s.enterMode('GLIDE')
-    expect(useStore.getState().cameraMode).toBe('RIDE'); expect(useStore.getState().hint).toMatch(/get off the train first/i)
-  })
-  it('Scan can be toggled while gliding without leaving GLIDE', () => {
-    const s = useStore.getState(); s.enterMode('GLIDE'); s.toggleScan()
-    expect(useStore.getState().cameraMode).toBe('GLIDE'); expect(useStore.getState().scan).toBe(true)
-  })
-  it('exit pose is lifted above clearance and MIN_ALT', () => {
-    const p = MODE_EXIT_POSE({ position: [0, 12, 0], target: [0, 12, -100] }, () => 440)
-    expect(p.position[1]).toBeGreaterThanOrEqual(465)
-    const q = MODE_EXIT_POSE({ position: [0, 12, 0], target: [0, 12, -100] }, () => 0)
-    expect(q.position[1]).toBeGreaterThanOrEqual(30)
-  })
-})
-```
-
-```jsx
-// app/src/hud/__tests__/traversalControls.test.jsx
-import { describe, it, expect, beforeEach } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
-import ControlDock from '../ControlDock.jsx'
-import { useStore } from '../../state/store.js'
-import { installTraversalKeys } from '../../traversal/modes.js'
-
-describe('glide controls', () => {
-  let off
-  beforeEach(() => { useStore.setState(useStore.getInitialState()); off?.(); off = installTraversalKeys() })
-  it('the Glide dock button and the G key both toggle GLIDE', () => {
-    render(<ControlDock />)
-    fireEvent.click(screen.getByRole('button', { name: /glide/i })); expect(useStore.getState().cameraMode).toBe('GLIDE')
-    fireEvent.keyDown(window, { code: 'KeyG', key: 'g' }); expect(useStore.getState().cameraMode).toBe('FLY')
-  })
-  it('G is ignored while the palette is open', () => {
-    useStore.getState().setPaletteOpen(true)
-    fireEvent.keyDown(window, { code: 'KeyG', key: 'g' }); expect(useStore.getState().cameraMode).toBe('FLY')
-  })
-})
-```
-
-- [ ] **Step 2: Run to verify they fail.** Run `npm test --prefix app -- src/traversal src/hud/__tests__/traversalControls.test.jsx`. Expected: FAIL.
-- [ ] **Step 3: Implement to the Interfaces block.** Write the code at phase start. Add `hint` and `setHint` (a transient string, auto-cleared after 3 s) if V7 has no equivalent.
-- [ ] **Step 4: Run the tests to verify they pass.** Commit. `git commit -m "feat(p7): traversal modes, arbitration, Glide button and G key"`
-
-**Acceptance:**
-- One mode at a time.
-- Every mode switch lands the camera at a safe pose.
-- A non-coder can start and stop gliding with a button.
-
-**Refresh at phase start:**
-- Read V4's `FOLLOW` implementation and V7's keymap (G, V and Enter must be free outside their modes).
-- Check whether V7 added a transient hint or toast primitive (reuse it).
-
----
-
-### Task 2: Glide physics — pure, clearance-safe (I-7.1)
-
-**Files:**
-- Create: `app/src/traversal/glide.js`
-- Test: `app/src/traversal/__tests__/glide.test.js`
+### Task 2: Ride mode — catalog, store, camera, vehicles, controls (I-7.2, C15, G6)
 
 **Interfaces:**
-- Produces:
-  - `GLIDE = { MIN_V: 18, MAX_V: 75, V_TRIM: 32, DRAG: 0.08, G: 9.81, CLEAR_M: 12, LOOKAHEAD_S: 1.5, MAX_BANK: 0.7, PITCH_DOWN: -0.44, PITCH_UP: 0.35, PITCH_NEUTRAL: -0.05, PITCH_RATE: 1.2, BOOST_A: 6, BOOST_DRAIN: 0.2, BOOST_RECHARGE: 0.1, MAX_ALT: 1500, MAX_DT: 0.1 }`. Speeds are m/s and angles are rad.
-  - `createGlider({ position: [x, y, z], heading: rad, speed = 35 }) → Glider`, where `Glider = { pos: [x, y, z], heading, pitch, bank, speed, boost: 1 }`. The heading follows camera-controls' azimuth convention (0 = north, −Z).
-  - `glideStep(g, input: { pitch: -1..1, turn: -1..1, boost: boolean }, dt, env: { clearanceAt(x, z), clamp?([x, z]) → [x, z] }) → Glider`:
-    - It is pure and deterministic, and sub-steps internally at ≤ `MAX_DT`.
-    - Speed: `dv/dt = −G·sin(pitch) − DRAG·(v − V_TRIM) + (boost ? BOOST_A : 0)`, clamped to `[MIN_V, MAX_V]`.
-    - Boost drains at 0.2/s while held and recharges at 0.1/s.
-    - Stall: below `MIN_V + 2`, the pitch target is forced to `PITCH_DOWN / 2`.
-    - Turn rate is `G·tan(bank)/v`.
-    - Look-ahead: when `y < clearanceAt(ahead) + CLEAR_M + 10`, the pitch target becomes `PITCH_UP`.
-    - Hard floor: `y ≥ clearanceAt(x, z) + CLEAR_M`. Vertical motion into the floor is removed and horizontal motion kept (slide).
-    - `y ≤ MAX_ALT`.
-    - `env.clamp` keeps the position in the built world. Near the edge, the heading turns toward the inside.
-  - `chasePose(g, { back = 18, up = 5, reducedMotion = false }) → { position, target, roll }`, where `roll = reducedMotion ? 0 : g.bank × 0.5`.
+- `lRides(sim, transit) → def[]` — one per CTA service (line × direction × branch): `{ id: 'l:<svc>', kind: 'L', name: 'Brown Line toward Kimball', line, colour, path, stops, profile, spec, inbound }`.
+- Store: `ride: null | { id, kind, name, view, paused, speed }`, `ridePanelOpen`, `rideHud` (5 Hz snapshot), `startRide(id)` (ends tour, flight, follow; closes the palette and panel), `stopRide()`, `setRide(patch)`.
+- `trainsNow()` gains the ride train (id `ride`) and hides same-service trains within −250…+400 m of it (`hideNearRide`).
+- AtlasRig: while `ride` is set, the ride session owns the camera; Esc / L / movement keys (not in the glide) stop it and fly to `exitPose`.
+- Controls: L (feature registry → help, hints, ⌘K), the dock row, the Ride panel (L trains grouped by line, buses, walks, glide), the in-ride bar: name, "Next: Clark/Lake · 1 min", "Nearby: The Chicago Theatre, Lake & State", buttons ⏸ / ⏭ / ⏮ / ×1 ×2 ×4 / View / Stop.
 
-- [ ] **Step 1: Write the failing test**
+**Tests:** `ride/__tests__/rideCatalog.test.js`, `hud/__tests__/ridePanel.test.jsx` (L opens the panel; picking a ride starts it; the bar's buttons pause, skip, change speed and stop; Esc stops; movement keys stop a path ride but steer the glide), `transit/__tests__/rideTrain.test.js`.
 
-```js
-// app/src/traversal/__tests__/glide.test.js
-import { describe, it, expect } from 'vitest'
-import { GLIDE, createGlider, glideStep, chasePose } from '../glide.js'
+### Task 3: Buses (I-7.2b)
 
-const flat = { clearanceAt: () => 0 }
-// A 440 m tower occupying x ∈ [-40, 40], z ∈ [-1040, -960] (north of the start)
-const tower = { clearanceAt: (x, z) => (Math.abs(x) <= 40 && z >= -1040 && z <= -960 ? 440 : 0) }
-const run = (g, input, seconds, env, dt = 1 / 60) => { for (let t = 0; t < seconds; t += dt) g = glideStep(g, input, dt, env); return g }
-const none = { pitch: 0, turn: 0, boost: false }
+- Ruling: bus routes come from OpenStreetMap `route=bus` relations (network CTA), fetched once by `fetch-rides.js` and cached, not from CHI (`/api/cta/bus-routes` needs `CTA_BUS_KEY` and gives no geometry). The relation's ways are chained in member order (flipping where needed), clipped to the world box (the longest piece kept), and its `stop`/`platform` members become the stops (named; ≤ 25 m from the route, else dropped).
+- Routes: 146 Inner Drive/Michigan Express, 151 Sheridan, 22 Clark, 36 Broadway, 66 Chicago, 8 Halsted, 29 State, 20 Madison (one direction each, toward or through downtown).
+- Profile: vmax 40 km/h, accel 1.0, brake 1.3 m/s², dwell 12 s.
+- **Tests:** `pipeline/tests/rides.test.js` — chaining reversed ways, clipping, stop snapping.
 
-describe('glide physics', () => {
-  it('neutral flight sinks gently (0.5–3 m/s) at a steady trim speed', () => {
-    const g0 = createGlider({ position: [0, 800, 0], heading: 0, speed: 35 })
-    const g = run(g0, none, 20, flat)
-    const sink = (g0.pos[1] - g.pos[1]) / 20
-    expect(sink).toBeGreaterThan(0.5); expect(sink).toBeLessThan(3)
-    expect(g.speed).toBeGreaterThan(30); expect(g.speed).toBeLessThan(45)
-  })
-  it('diving gains speed; climbing trades it away', () => {
-    const g0 = createGlider({ position: [0, 900, 0], heading: 0, speed: 35 })
-    expect(run(g0, { ...none, pitch: 1 }, 5, flat).speed).toBeGreaterThan(45)
-    expect(run(g0, { ...none, pitch: -1 }, 5, flat).speed).toBeLessThan(30)
-  })
-  it('speed stays within [MIN_V, MAX_V]', () => {
-    const g0 = createGlider({ position: [0, 1400, 0], heading: 0, speed: 35 })
-    for (const p of [1, -1]) { const g = run(g0, { ...none, pitch: p, boost: p > 0 }, 30, flat); expect(g.speed).toBeGreaterThanOrEqual(GLIDE.MIN_V); expect(g.speed).toBeLessThanOrEqual(GLIDE.MAX_V) }
-  })
-  it('flying straight at a 440 m tower never goes inside it', () => {
-    let g = createGlider({ position: [0, 300, 0], heading: 0, speed: 60 })
-    for (let t = 0; t < 30; t += 1 / 60) {
-      g = glideStep(g, { ...none, pitch: 1 }, 1 / 60, tower)
-      expect(g.pos[1]).toBeGreaterThanOrEqual(tower.clearanceAt(g.pos[0], g.pos[2]) + GLIDE.CLEAR_M - 1e-6)
-    }
-  })
-  it('a 2 s hitch equals 20 × 0.1 s steps and stays above clearance (no tunnelling)', () => {
-    const g0 = createGlider({ position: [0, 460, -900], heading: 0, speed: 60 })
-    const big = glideStep(g0, none, 2, tower)
-    let small = g0; for (let i = 0; i < 20; i++) small = glideStep(small, none, 0.1, tower)
-    for (let k = 0; k < 3; k++) expect(big.pos[k]).toBeCloseTo(small.pos[k], 3)
-    expect(big.pos[1]).toBeGreaterThanOrEqual(440 + GLIDE.CLEAR_M - 1e-6)
-  })
-  it('banking turns the glider', () => {
-    const g = run(createGlider({ position: [0, 800, 0], heading: 0, speed: 35 }), { ...none, turn: 1 }, 5, flat)
-    expect(Math.abs(g.heading)).toBeGreaterThan(0.3)
-  })
-  it('boost is limited by its meter', () => {
-    const g = run(createGlider({ position: [0, 800, 0], heading: 0, speed: 35 }), { ...none, boost: true }, 10, flat)
-    expect(g.boost).toBe(0)
-  })
-  it('the world clamp keeps the glider inside the built rings', () => {
-    const clamp = ([x, z]) => [Math.max(-1000, Math.min(1000, x)), Math.max(-1000, Math.min(1000, z))]
-    const g = run(createGlider({ position: [900, 800, 0], heading: -Math.PI / 2, speed: 50 }), none, 20, { ...flat, clamp })
-    expect(Math.abs(g.pos[0])).toBeLessThanOrEqual(1000); expect(Math.abs(g.pos[2])).toBeLessThanOrEqual(1000)
-  })
-  it('reduced motion keeps the horizon level', () => {
-    const g = { ...createGlider({ position: [0, 500, 0], heading: 0 }), bank: 0.6 }
-    expect(chasePose(g, { reducedMotion: true }).roll).toBe(0); expect(chasePose(g).roll).toBeCloseTo(0.3)
-  })
-})
-```
+### Task 4: Walks (I-7.2c)
 
-- [ ] **Step 2: Run to verify it fails.** Run `npm test --prefix app -- src/traversal/__tests__/glide.test.js`. Expected: FAIL.
-- [ ] **Step 3: Implement to the Interfaces block.** Write the code at phase start. Tune the constants only within the test bounds, and record any change in the ledger.
-- [ ] **Step 4: Run the tests to verify they pass.** Commit. `git commit -m "feat(p7): glide physics — energy flight, look-ahead lift, hard floor (I-7.1)"`
+- The five walks are curated waypoint lists (`walks.curated.json`, each with a blurb and a source), sampled every 2 m and rejected if any sample is inside a building footprint (OSM `allbuildings` cache).
+- At runtime, legs flagged `graph: true` (park paths, the Riverwalk, the Lakefront Trail) are re-routed over `walk-graph.json` when the manifest lists it (`routeOnGraph`, Dijkstra; a leg whose ends are > 40 m from the graph, or with no path, keeps its straight line).
+- Speed 1.4 m/s (×2 brisk, ×4 jog); stops are the named sights along the way (the bar names each as you reach it).
+- Callouts: the three nearest landmarks and places within 250 m, by name, refreshed as you walk.
+- Near tiles: the tile plan centres on the walker (the readout's x/z), so the ground and façades around you are LOD0 (pinned by a test on `planWorld`).
+- **Tests:** `ride/__tests__/walkGraph.test.js` (routing on a small graph, fallback), `pipeline/tests/rides.test.js` (a walk crossing a synthetic building fails the check).
 
-**Acceptance:** all eight properties hold, including no tunnelling under a hitch.
+### Task 5: The glide (I-7.1)
 
-**Refresh at phase start:**
-- Confirm `clearanceAt`'s semantics: roof height only, or roof + margin already? `CLEAR_M` must not double-count V1's 25 m.
-- Confirm the azimuth convention in `cameraMath.glideVector`.
+The original Task 2/3 interfaces carry over (energy flight, look-ahead lift, hard floor, sub-stepping), with G → **L** for the key (G is Games) and "Ride panel → Glide" as the button:
+- `GLIDE = { MIN_V: 18, MAX_V: 75, V_TRIM: 32, DRAG: 0.08, G: 9.81, CLEAR_M: 12, LOOKAHEAD_S: 1.5, MAX_BANK: 0.7, PITCH_DOWN: -0.44, PITCH_UP: 0.35, PITCH_NEUTRAL: -0.05, PITCH_RATE: 1.2, BOOST_A: 6, BOOST_DRAIN: 0.2, BOOST_RECHARGE: 0.1, MAX_ALT: 1500, MAX_DT: 0.1 }`
+- `createGlider`, `glideStep` (pure, sub-stepped), `chasePose`, `glideInput(keys)`.
+- The world clamp is the built bbox (Phase 6 is deferred).
+- **Tests:** the original eight glide properties (`ride/__tests__/glide.test.js`).
 
----
+### Task 6: Phase close
 
-### Task 3: Glide rig, avatar and HUD — playable over the Loop (I-7.1)
+- e2e `app/e2e/ride.spec.js`: an L cab ride (Brown Line into the Loop), a bus ride (#146 on Michigan Ave), the Riverwalk, the glide — each a screenshot I look at, plus fps ≥ 55 at street level on HIGH.
+- Help card group **Ride the city**; hints in-ride; README gallery `p7-*.png`; roadmap: Phase 7 reworked.
+- Gate (one worker): hero-view, hud-layout, perf, hover, tour, ride.
 
-**Files:**
-- Create: `app/src/camera/GlideRig.jsx`, `app/src/world/GliderAvatar.jsx`, `app/src/hud/GlideHud.jsx`
-- Modify: `app/src/world/Scene.jsx`, `app/src/hud/Hud.jsx`, `app/src/camera/AtlasRig.jsx` (disable CameraControls input in GLIDE)
-- Create: `app/e2e/traversal.spec.js` (the glide part)
-- Test: `app/src/hud/__tests__/glideHud.test.jsx`, `app/src/camera/__tests__/glideInput.test.js`
+## Future: VR (not in this phase)
 
-**Interfaces:**
-- Consumes: `glideStep`, `chasePose`, `createGlider` (Task 2); `clearanceAt` (V1); `clampToRings`, `boundsFromManifest` (P6); `enterMode`, `MODE_EXIT_POSE` (Task 1); `keyIntent` codes (`controls.js`).
-- Produces:
-  - `glideInput(keys: Set<string>) → { pitch, turn, boost }`: ArrowUp or KeyW → pitch +1 (nose down); ArrowDown or KeyS → −1; ArrowLeft or KeyA → turn −1; ArrowRight or KeyD → +1; either Shift → boost.
-  - `<GlideRig/>`:
-    - on entry, it creates the glider from the current camera: position lifted to ≥ clearance + 60, heading = camera azimuth, speed 35;
-    - each frame, it steps with `min(dt, 0.25)` (`glideStep` sub-steps) and writes the camera from `chasePose`;
-    - it publishes `glideHud: { speedKmh, altM, boost }` at 10 Hz;
-    - on exit, it calls `MODE_EXIT_POSE`.
-  - `<GliderAvatar/>`: one mesh (≈ 10 m span hang glider with a pilot silhouette, ≤ 3 k triangles). Its cyan leading-edge emissive is scaled by `uNight` (≤ 15 % by day, B.1.1), and it has no trail at LOW.
-  - `<GlideHud/>`: "142 km/h · 380 m", a boost meter, and "G or Esc to land" as a button that exits.
+The ride modes were shaped so a WebXR headset can use them later without new content:
+- **Session:** three's `WebXRManager` (`gl.xr.enabled = true`, an `XRButton`), `local-floor` reference space. A ride becomes the XR camera's *rig* (a `Group` the headset camera sits in): `ridePose` places the rig, the headset adds the head pose on top. The 2D HUD becomes a small in-world panel on the vehicle's dashboard (walks: a wrist panel).
+- **Comfort:** the head is never rotated by the app — only by the user's head. Turning is **snap turn** (30° steps on the thumbstick), never smooth yaw. A **vignette** (a black ring that tightens with angular and linear acceleration) during the L's curves and stops, the bus's turns and every glide manoeuvre. Rides start and stop with ease-in/out already (V4 profile); add a 0.3 s fade at skip-to-stop instead of a cut. The glide is offered only as "seated" with a horizon-locked cockpit frame; banking rolls the world's horizon line, not the head.
+- **Scale and height:** eye height comes from the headset in `local-floor`; the cab's 2.7 m and the walk's 1.7 m become the rig's floor offset (rail + 1.1 m floor; ground).
+- **Performance:** 72–90 fps per eye halves the budget — VR rides would run the LOW tile plan with LOD0 radius 600 m, no shadows beyond 300 m, no rain particles, fixed foveation (`gl.xr.setFoveation(1)`), and the bloom pass off.
+- **Input:** controllers' trigger = pause, thumbstick left/right = snap turn, A/B = next/previous stop; hand-tracking pinch on the dashboard panel.
+- **What would change:** `AtlasRig` hands the pose to the XR rig instead of CameraControls; `PostFX` gains an XR path (EffectComposer does not render to XR layers — bloom off or a custom pass); HUD components get 3D twins. Nothing in the pipeline or `rides.json` changes.
 
-- [ ] **Step 1: Write the failing tests**
+## Rulings made while rewriting this plan
 
-```js
-// app/src/camera/__tests__/glideInput.test.js
-import { describe, it, expect } from 'vitest'
-import { glideInput } from '../GlideRig.jsx'
-describe('glide input', () => {
-  it('maps familiar keys', () => {
-    expect(glideInput(new Set(['ArrowUp']))).toEqual({ pitch: 1, turn: 0, boost: false })
-    expect(glideInput(new Set(['KeyS', 'KeyD', 'ShiftLeft']))).toEqual({ pitch: -1, turn: 1, boost: true })
-    expect(glideInput(new Set(['ArrowLeft', 'ArrowRight']))).toEqual({ pitch: 0, turn: 0, boost: false })
-  })
-})
-```
-
-```jsx
-// app/src/hud/__tests__/glideHud.test.jsx
-import { describe, it, expect, beforeEach } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
-import GlideHud from '../GlideHud.jsx'
-import { useStore } from '../../state/store.js'
-
-describe('glide HUD', () => {
-  beforeEach(() => { useStore.setState(useStore.getInitialState()); useStore.getState().enterMode('GLIDE'); useStore.setState({ glideHud: { speedKmh: 142, altM: 380, boost: 0.6 } }) })
-  it('shows speed and altitude and lands with its button', () => {
-    render(<GlideHud />)
-    expect(screen.getByText(/142 km\/h/)).toBeInTheDocument(); expect(screen.getByText(/380 m/)).toBeInTheDocument()
-    fireEvent.click(screen.getByRole('button', { name: /land/i }))
-    expect(useStore.getState().cameraMode).toBe('FLY')
-  })
-})
-```
-
-```js
-// app/e2e/traversal.spec.js — glide part
-import { test, expect } from '@playwright/test'
-test('a playable glide over the Loop', async ({ page }) => {
-  await page.goto('/?view=loop&stats')
-  await page.waitForFunction(() => window.__worldReady === true)
-  await page.getByRole('button', { name: /glide/i }).click()
-  await page.keyboard.down('ArrowUp'); await page.waitForTimeout(3000); await page.keyboard.up('ArrowUp')
-  await page.keyboard.down('ArrowLeft'); await page.waitForTimeout(2000); await page.keyboard.up('ArrowLeft')
-  const s = await page.evaluate(() => window.__store.getState())
-  expect(s.cameraMode).toBe('GLIDE'); expect(s.glideHud.speedKmh).toBeGreaterThan(60)
-  await expect(page).toHaveScreenshot('glide-loop.png', { maxDiffPixelRatio: 0.03 })
-  await page.keyboard.press('g')
-  expect(await page.evaluate(() => window.__store.getState().cameraMode)).toBe('FLY')
-})
-```
-
-- [ ] **Step 2: Run to verify they fail.** Expected: FAIL.
-- [ ] **Step 3: Implement to the Interfaces block.** Write the code at phase start.
-- [ ] **Step 4: Run the tests and e2e.** Then do a manual playtest (one heavy process): 5 minutes over the Loop, River and lakefront, deliberately flying into Willis, Trump and the Aon. Log any clip. Evaluate and revert the avatar (day and night).
-- [ ] **Step 5: Perf.** +1 draw call, and glide logic ≤ 0.1 ms per frame. Commit and push. `git commit -m "feat(p7): playable glide over the Loop — rig, avatar, HUD (I-7.1)"`
-
-**Acceptance:**
-- Per I-7.1, a playable glide over the Loop, with a button and a key.
-- It never passes through a building.
-- Landing returns to FLY at a safe pose.
-
-**Refresh at phase start:**
-- Check how AtlasRig exposes the camera and its controls (the CameraControls ref) so GlideRig can take over without fighting it; V4's FOLLOW solved the same problem, so reuse its pattern.
-- Check the `?stats` debug hooks (`__store`, `__gl`) still exist.
-
----
-
-### Task 4: Ride a train — board, ride, alight (I-7.2, C15, G6)
-
-**Files:**
-- Create: `app/src/traversal/ride.js`, `app/src/camera/RideRig.jsx`, `app/src/hud/RideHud.jsx`
-- Modify: V4's station and train cards (**Ride from here** with one button per line × direction; **Ride this train**), `app/src/hud/CommandPalette.jsx` (`Ride the <line> from <station>` rows when the query contains "ride"), `app/src/world/Scene.jsx`, `app/src/hud/Hud.jsx`
-- Test: `app/src/traversal/__tests__/ride.test.js`, `app/src/hud/__tests__/rideHud.test.jsx`, `app/e2e/traversal.spec.js` (append the ride part)
-
-**Interfaces:**
-- Consumes: `pickTrains` (P5) or `trainsAt` (V4); `trainPose` (V4); `transit.json`; `MODE_EXIT_POSE`, `enterMode` (Task 1); `clearanceAt` (V1); `startFlight`.
-- Produces:
-  - `stationStops(transit) → Map<stationId, [{ pathId, lineId, s }]>`: each station projected onto each path of each line it serves (≤ 40 m off-path, else skipped).
-  - `stopsAhead(train, stops) → [{ stationId, s, etaS }]`: the stops on `train.pathId` with `s > train.s`, ascending; `etaS = (s − train.s) / max(train.speed, 8)`.
-  - `serviceAt({ stationId, lineId, pathId }, trains) → boolean`: whether any train is currently on that line and path.
-  - `nextArrival({ stationId, lineId, pathId }, trains, stops) → { trainId, etaS } | null`: the approaching train with the smallest ETA.
-  - `rideReducer(state, event) → state`, where:
-    - `state = { phase: 'idle'|'waiting'|'riding'|'alighting', stationId?, lineId?, pathId?, trainId?, view: 'cab'|'window', alightAt?: stationId, lastPassed?: stationId, missedTicks?: number, since: tMs, message?: string }`. Every riding TICK updates `lastPassed`.
-    - `event` is one of `BOARD_REQUEST { stationId, lineId, pathId, tMs }`, `BOARD_TRAIN { trainId, tMs }`, `TICK { trains, stops, tMs }`, `REQUEST_ALIGHT { stationId: 'next'|id, trains, stops }`, `TOGGLE_VIEW`, `CANCEL`.
-    - The HUD never calls the reducer directly. Enter and the button set `ride.alightRequested = true` in the store, and `RideRig` turns that into `REQUEST_ALIGHT` on its next TICK. The store's `ride` also carries `next: { name, etaS }` for the HUD.
-  - Transitions:
-    - **waiting → riding** when a matching train is dwelling at the station (`dwellStationId === stationId`, or `|s − stop.s| < 15` with speed < 1).
-    - **waiting → idle** with the message "No <line> trains toward <terminus> right now" after 15 min, or immediately when `!serviceAt` on the first TICK.
-    - **riding → alighting** when the train dwells at `alightAt`.
-    - **riding → alighting at the last passed stop** with the message "The train left the map — you got off at <station>" when the train disappears (`TRAIN_LOST`: absent from `trains` on 2 consecutive TICKs).
-    - **alighting → idle** after the fly-out.
-    - **CANCEL** goes from any phase to idle.
-  - `ridePose(train, view, trainPose) → { position, target }`:
-    - cab: the lead car front, 2.8 m above the rail, looking forward 60 m;
-    - window: the second car's right side, 2.2 m up, looking out perpendicular, with a slight forward bias.
-  - `alightPose(station, clearanceAt) → { position, target }`: a station overview lifted by `MODE_EXIT_POSE` rules.
-  - `<RideRig/>` dispatches `TICK` at 10 Hz, writes the camera each frame from `ridePose` (exempt from `MIN_ALT`), and on alight calls `startFlight(alightPose)`.
-  - `<RideHud/>`:
-    - waiting: "Waiting for a Brown Line train toward the Loop — about 3 min", plus **Cancel**;
-    - riding: a line swatch, "Next: Chicago · 1 min", **Get off at next stop** (Enter), **Cab / Window** (V) and **Stop riding** (Esc);
-    - alighting: "Arriving at Chicago".
-
-- [ ] **Step 1: Write the failing tests**
-
-```js
-// app/src/traversal/__tests__/ride.test.js
-import { describe, it, expect } from 'vitest'
-import { stationStops, stopsAhead, nextArrival, serviceAt, rideReducer } from '../ride.js'
-
-const transit = {
-  lines: [{ id: 'brown', kind: 'cta', paths: [{ id: 'brown-s', dir: 'S', points: [[0, -3000], [0, 0]] }] }],
-  stations: [{ id: 'chicago', name: 'Chicago', x: 5, z: -2000, lines: ['brown'] }, { id: 'merch', name: 'Merchandise Mart', x: -3, z: -1000, lines: ['brown'] }, { id: 'far', name: 'Far', x: 900, z: 0, lines: ['brown'] }],
-}
-const stops = stationStops(transit)
-const train = (o) => ({ id: 't1', lineId: 'brown', pathId: 'brown-s', s: 500, speed: 12, dwellStationId: null, ...o })
-const idle = { phase: 'idle', view: 'cab', since: 0 }
-
-describe('ride helpers', () => {
-  it('projects stations onto paths and skips far ones', () => {
-    expect(stops.get('chicago')[0].s).toBeCloseTo(1000, 0); expect(stops.get('merch')[0].s).toBeCloseTo(2000, 0); expect(stops.has('far')).toBe(false)
-  })
-  it('lists stops ahead with ETAs', () => {
-    expect(stopsAhead(train({ s: 1200 }), stops).map((x) => x.stationId)).toEqual(['merch'])
-  })
-  it('finds the next approaching train and reports service', () => {
-    const trains = [train({ id: 'a', s: 100 }), train({ id: 'b', s: 1500 }), train({ id: 'c', s: 1900 })]
-    expect(nextArrival({ stationId: 'merch', lineId: 'brown', pathId: 'brown-s' }, trains, stops).trainId).toBe('c')
-    expect(serviceAt({ stationId: 'merch', lineId: 'brown', pathId: 'brown-s' }, [])).toBe(false)
-  })
-})
-
-describe('rideReducer', () => {
-  const board = rideReducer(idle, { type: 'BOARD_REQUEST', stationId: 'chicago', lineId: 'brown', pathId: 'brown-s', tMs: 0 })
-  it('boards when a train dwells at the station', () => {
-    expect(board.phase).toBe('waiting')
-    const r = rideReducer(board, { type: 'TICK', trains: [train({ s: 1000, speed: 0, dwellStationId: 'chicago' })], stops, tMs: 60_000 })
-    expect(r.phase).toBe('riding'); expect(r.trainId).toBe('t1')
-  })
-  it('gives up with a plain message when no service or after 15 min', () => {
-    expect(rideReducer(board, { type: 'TICK', trains: [], stops, tMs: 1000 })).toMatchObject({ phase: 'idle', message: expect.stringMatching(/No Brown Line trains/i) })
-    const w = rideReducer(board, { type: 'TICK', trains: [train({ s: 100 })], stops, tMs: 1000 })
-    expect(rideReducer(w, { type: 'TICK', trains: [train({ s: 100 })], stops, tMs: 15 * 60_000 + 1 }).phase).toBe('idle')
-  })
-  it('gets off at the next stop on request', () => {
-    let r = { phase: 'riding', trainId: 't1', view: 'cab', since: 0 }
-    r = rideReducer(r, { type: 'REQUEST_ALIGHT', stationId: 'next', trains: [train({ s: 1200 })], stops })
-    expect(r.alightAt).toBe('merch')
-    r = rideReducer(r, { type: 'TICK', trains: [train({ s: 2000, speed: 0, dwellStationId: 'merch' })], stops, tMs: 5000 })
-    expect(r.phase).toBe('alighting'); expect(r.stationId).toBe('merch')
-  })
-  it('sets the rider down at the last passed stop if the train vanishes', () => {
-    let r = { phase: 'riding', trainId: 't1', view: 'cab', since: 0, lastPassed: 'chicago' }
-    r = rideReducer(r, { type: 'TICK', trains: [], stops, tMs: 1000 })
-    r = rideReducer(r, { type: 'TICK', trains: [], stops, tMs: 1100 })
-    expect(r).toMatchObject({ phase: 'alighting', stationId: 'chicago', message: expect.stringMatching(/left the map|got off/i) })
-  })
-  it('cancel always returns to idle; V toggles the view', () => {
-    expect(rideReducer({ phase: 'riding', trainId: 't1', view: 'cab' }, { type: 'CANCEL' }).phase).toBe('idle')
-    expect(rideReducer({ phase: 'riding', trainId: 't1', view: 'cab' }, { type: 'TOGGLE_VIEW' }).view).toBe('window')
-  })
-  it('can hop straight onto a selected train mid-route', () => {
-    expect(rideReducer(idle, { type: 'BOARD_TRAIN', trainId: 't1', tMs: 0 })).toMatchObject({ phase: 'riding', trainId: 't1' })
-  })
-})
-```
-
-```jsx
-// app/src/hud/__tests__/rideHud.test.jsx
-import { describe, it, expect, beforeEach } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
-import RideHud from '../RideHud.jsx'
-import { useStore } from '../../state/store.js'
-
-describe('ride HUD', () => {
-  beforeEach(() => { useStore.setState(useStore.getInitialState()); useStore.getState().enterMode('RIDE', { stationId: 'merch', lineId: 'brown', pathId: 'brown-s' }) })
-  it('riding shows the next stop and plain buttons; Enter requests the next stop; Esc stops riding', () => {
-    useStore.setState({ ride: { phase: 'riding', trainId: 't1', view: 'cab', lineId: 'brown', next: { name: 'Chicago', etaS: 60 } } })
-    render(<RideHud />)
-    expect(screen.getByText(/Next: Chicago/)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /get off at next stop/i })).toBeInTheDocument()
-    fireEvent.keyDown(window, { key: 'Enter', code: 'Enter' }); expect(useStore.getState().ride.alightRequested).toBe(true)
-    fireEvent.keyDown(window, { key: 'Escape', code: 'Escape' }); expect(useStore.getState().cameraMode).toBe('FLY')
-  })
-})
-```
-
-```js
-// append to app/e2e/traversal.spec.js — ride part (simulated trains; VITE_CHI_API_URL unset)
-test('board at Merchandise Mart and get off at Chicago', async ({ page }) => {
-  await page.goto('/?view=river')
-  await page.waitForFunction(() => window.__worldReady === true)
-  await page.getByRole('button', { name: /search/i }).click()
-  await page.keyboard.type('Ride the Brown Line from Merchandise Mart'); await page.keyboard.press('Enter')
-  await page.waitForFunction(() => window.__store.getState().ride?.phase === 'riding', null, { timeout: 20 * 60_000 / 20 }) // tests run the sim clock ×20 (refresh: V4 test clock hook)
-  await page.getByRole('button', { name: /get off at next stop/i }).click()
-  await page.waitForFunction(() => window.__store.getState().cameraMode === 'FLY', null, { timeout: 120_000 })
-  const s = await page.evaluate(() => window.__store.getState())
-  expect(s.readout.altitude).toBeGreaterThanOrEqual(30)
-})
-```
-
-- [ ] **Step 2: Run to verify they fail.** Expected: FAIL.
-- [ ] **Step 3: Implement to the Interfaces block.** Write the code at phase start. The ⌘K ride rows are generated only when the query includes "ride", so 150+ stations × lines never flood the default list.
-- [ ] **Step 4: Run the unit tests and e2e.** Then do a manual ride (one heavy process): Brown around the Loop in both views, live (CHI local) and simulated. Force a live→sim switch mid-ride (stop the backend) to check `TRAIN_LOST` handling. Log it.
-- [ ] **Step 5: Evaluate and revert** the cab and window views (day, night, and rain if P5 shipped it). Commit and push. `git commit -m "feat(p7): ride a train — board, cab/window, get off at any stop (I-7.2)"`
-
-**Acceptance:**
-- Per I-7.2, board and alight at stations, from the station card, the train card and ⌘K.
-- Riding works with live and simulated trains.
-- Every exit lands the camera at a safe pose.
-
-**Refresh at phase start:**
-- Read V4's train object and `trainPose`, and whether a test clock hook exists for e2e (the ×20 sim time).
-- Read P5's `pickTrains` and whether live train ids survive the source switch (they do not: `rn:` versus sim ids, hence `TRAIN_LOST`).
-- Check whether V3 station data already carries per-path arc positions (if so, `stationStops` reuses them).
-
----
-
-### Task 5: Phase close — help, hints, gallery, push
-
-**Files:**
-- Modify: `app/src/hud/HelpOverlay.jsx`, `app/src/hud/HintBar.jsx` (mode-specific hints: in GLIDE "↑ dive · ↓ climb · ← → turn · Shift boost · G land"; in RIDE "Enter next stop · V view · Esc stop riding"), `README.md`, `docs/screenshots/p7-*.png` (append only)
-- Test: `app/src/hud/__tests__/help.test.jsx` (append), `app/src/hud/__tests__/hud.test.jsx` (append)
-
-**Interfaces:**
-- Produces: `hintsFor(cameraMode) → [key, label][]`, exported from `HintBar.jsx`.
-
-- [ ] **Step 1: Write the failing tests**
-
-```jsx
-// append to app/src/hud/__tests__/hud.test.jsx
-import { hintsFor } from '../HintBar.jsx'
-it('the hint bar switches to glide and ride controls in those modes', () => {
-  expect(hintsFor('GLIDE').map(([k]) => k)).toEqual(expect.arrayContaining(['↑', '↓', 'G']))
-  expect(hintsFor('RIDE').map(([k]) => k)).toEqual(expect.arrayContaining(['Enter', 'V', 'Esc']))
-  expect(hintsFor('FLY').map(([k]) => k)).toContain('⌘K')
-})
-```
-
-```jsx
-// append to app/src/hud/__tests__/help.test.jsx
-it('help card explains gliding and riding in plain words', () => {
-  useStore.getState().setHelpOpen(true)
-  render(<HelpOverlay />)
-  expect(screen.getByText(/Glide & ride/i)).toBeInTheDocument()
-  expect(screen.getByText(/Ride from here/i)).toBeInTheDocument()
-})
-```
-
-- [ ] **Step 2: Run them to fail, implement, then run them to pass.**
-- [ ] **Step 3: Run the end-of-phase checklist.**
-- [ ] **Step 4: README.** Append `p7-glide-over-the-loop-dusk.png`, `p7-ride-brown-line-cab-day.png` and `p7-ride-window-night.png`, with captions, and tick Phase 7.
-- [ ] **Step 5: Commit and push.** `git commit -m "feat(p7): traversal complete — help, hints, gallery"`, then `git push origin main`.
-
-**Acceptance:** I-7.1 and I-7.2 are ticked, and budgets are logged.
-
-**Refresh at phase start:** check V7's hint-bar implementation (whether it is already mode-aware).
-
----
-
-## End-of-phase checklist
-
-1. `npm test --prefix pipeline` and `npm test --prefix app` are green.
-2. There is no world rebuild (this is an app-only phase), and the existing e2e baselines are unchanged.
-3. e2e `traversal.spec.js`: 3 consecutive green runs, simulated (deterministic).
-4. Perf at the wide Streeterville and Loop poses while gliding and while riding: ≤ 900 draw calls, ≤ 4 M triangles, 60 fps.
-5. The manual clip-hunt log (glide into the 10 tallest heroes) is in the ledger with zero penetrations.
-6. Evaluate-and-revert lines for the avatar, the cab view and the window view.
-7. Push.
-
-## Rulings made while writing this plan
-
-- Ruling: traversal is **glide only**. Swing (spec §1's "glide/swing") is deferred, because swinging needs anchor physics on façades and street-level readability, which §14 puts out of scope. Cost if wrong: no Spider-Man-style swinging this phase.
-- Ruling: the glider is a sourced hang-glider silhouette with a thin cyan leading edge, not a character or superhero. Realism with a restrained neon accent (B.1.1). Cost if wrong: less playful; the model is a single swap.
-- Ruling: glide steering is ↑ = dive and ↓ = climb (flight-sim convention, and consistent with ↑ = forward in FLY). Cost if wrong: some players expect inverted pitch; an "Invert pitch" help-card toggle can be added in one line.
-- Ruling: the glide and ride cameras are exempt from `MIN_ALT` (as V4's follow cam is) but never from clearance. Every exit lifts to `max(MIN_ALT, clearance + 25)`. Cost if wrong: none; street-level walking stays out of scope (§14).
-- Ruling: in RIDE, stray keys do nothing (only Enter, V and Esc act), unlike FOLLOW's exit on any key, because a ride is an explicit choice. Cost if wrong: a user expecting any key to exit must press Esc or the button, and both are on screen.
-- Ruling: if a boarded train disappears (live feed drop, source switch or edge despawn), the rider is set down at the last station passed, with a plain message, rather than silently re-attached to another train. Cost if wrong: an occasional early exit during feed flaps.
-- Ruling: ⌘K ride rows appear only when the query contains "ride", so they never flood the default palette. Cost if wrong: discoverability relies on the station card button and the help card, both present.
+- Ruling: the user's "traversal mode" is **Ride**, with four kinds (L, bus, walk, glide) behind one button, one key (L) and one panel, instead of a GLIDE camera mode plus a board-at-a-station train ride. Cost if wrong: one menu to split.
+- Ruling: an L ride runs **its own train on V4's track and timetable physics** (the service's own speed profile and consist), not by attaching to a simulated train, because the user asked for pause, speed and skip-to-stop and a shared train cannot pause. Simulated trains of the same service near the ride train step aside. Cost if wrong: during a ride, your train is not one of the city's scheduled runs.
+- Ruling: rides are CTA L only (Metra rides later). Cost if wrong: Metra's 11 lines have no ride yet.
+- Ruling: the glide key is **L → Glide** (the original G is Games since V5); the glide is listed in the Ride panel and ⌘K `Glide over the city`. Cost if wrong: one more keystroke.
+- Ruling: path rides exit on any movement key (like the follow cam and tours), not only Esc, because the user's controls promise "any arrow takes back the camera". The glide is the exception (arrows steer). Cost if wrong: an accidental arrow press ends a ride; L restarts it from the panel.
+- Ruling: walks follow curated waypoints validated against OSM footprints at build time; the ground fork's walk graph re-routes their off-street legs at runtime once merged. Street sidewalks are not in that graph, so the Mag Mile and Fulton Market stay curated. Cost if wrong: a walk corner cuts across a plaza.
+- Ruling: VR is a written section only (above) — not implemented. Cost if wrong: none.
+- Ruling: Ride does not take a slot in the 3 × 2 feature grid (no dead space); it is a full-width dock row under Search. Cost if wrong: one row of the dock.

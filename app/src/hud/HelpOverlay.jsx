@@ -14,6 +14,7 @@ const GROUPS = [
     ['⌘K', '“Follow a train” rides along (any key stops) · “Go to Clark/Lake” · type “tonight” for tonight’s game'],
   ]],
   ['Guide', [['Lenses', 'the lens rail at the top — Visit, Live, Work (also ⌘K “Lens: Visit”)'], ['Hover', 'hover a building for its name and year; click it for its card'], ['P', 'places — pins for food, bars, venues and more; click one for its hours and website'], ['Tours', 'in the Visit lens or ⌘K “Tour:” — Space pauses, , and . step, any arrow key takes back the camera'], ['Work', 'set office (click the map) or type an address in ⌘K, like “333 N Green”, to see commute times'], ['Esc', 'close the card, then the lens']]],
+  ['Live city', [['Chip', 'top left — LIVE CTA when real trains are shown, SIMULATED when they run on typical schedules; click it for the data sources'], ['V', 'or the SCAN button — holographic Scan: the city turns to dark glass with cyan lines; in the Live lens, light columns show transit, nightlife, green space or rent'], ['Weather', 'button (top right) — follows Chicago live, or choose clear, overcast, rain, snow or lake fog (also ⌘K “Weather”)']]],
   ['Time and quality', [['1 – 7', 'live Chicago time, dawn, day, dusk, night, a sunny summer day, a snowy Christmas (snow falling, the lake frozen)'], ['Quality', 'button on the right if things feel slow · Low also turns off water reflections'], ['Stats', '⌘K “performance” shows draw calls and frame rate']]],
 ]
 
