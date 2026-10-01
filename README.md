@@ -732,15 +732,15 @@ Chicago's double- and triple-decker streets are now under the city where they re
 <td width="50%"><img src="docs/screenshots/d2-u-loop-night.png" alt="D2 — the U cut-away at night: the lower streets' lights" width="100%"/></td>
 </tr>
 <tr>
-<td><em>Press U over the river: the street opens along Wacker Drive and up Michigan Avenue, and the lower level shows underneath, its traffic driving (D3).</em></td>
-<td><em>The same view at night: Lower Wacker's strip lights glow under the opened street, and its cars' headlights with them.</em></td>
+<td><em>Press U over the river: the street opens along Wacker Drive and up Michigan Avenue, the lower level shows underneath with its traffic (D3), and its streets and the Riverwalk's rooms are named (D4).</em></td>
+<td><em>The same view at night: Lower Wacker's strip lights glow under the opened street, its cars' headlights with them, the names still crisp.</em></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/screenshots/d2-lower-wacker-day.png" alt="D2 — down into Lower Wacker between Michigan and Columbus" width="100%"/></td>
 <td width="50%"><img src="docs/screenshots/d2-lower-wacker-night.png" alt="D2 — Lower Wacker at night under the cut-away" width="100%"/></td>
 </tr>
 <tr>
-<td><em>Down into Lower Wacker east of Michigan: its lanes, the column rows every 32 ft and a ramp leaving for the street.</em></td>
+<td><em>Down into Lower Wacker east of Michigan: its lanes, the column rows every 32 ft, the side streets named, and the Stetson ramp climbing to the street in its open trench, its header signed (D4).</em></td>
 <td><em>Lower Wacker at night: the lamps pool light on the roadway; the street above stays dark.</em></td>
 </tr>
 <tr>
@@ -755,7 +755,7 @@ Chicago's double- and triple-decker streets are now under the city where they re
 
 ### Workstream D3 · Traffic under the street — *Lower Wacker's cars, buses and trucks, and a drive down there*
 
-The lower streets now carry traffic. Cars, buses and trucks come down the ramps from the street at the ramp's grade, run along Lower Wacker, Lower Michigan, Lower Columbus and Lower Randolph 5.1 m down (and the third level 9.5 m down), and climb back out to the street; the DuSable and Outer Drive bridges carry them across the river on their lower decks. Their lanes keep every vehicle, even a 2.6 m truck, clear of the walls and of each row of columns, and under the deck their headlights are on at any hour. They appear in the U cut-away and when you are down there yourself; from above the street hides them and they cost nothing. The street level obeys its lights as before, and ramps that come up at a signalled junction wait at its line.
+The lower streets now carry traffic. Cars, buses and trucks come down the ramps from the street at the ramp's grade, run along Lower Wacker, Lower Michigan, Lower Columbus and Lower Randolph 5.1 m down (and the third level 9.5 m down), and climb back out to the street; the DuSable and Outer Drive bridges carry them across the river on their lower decks. Their lanes keep every vehicle, even a 2.6 m truck, clear of the walls and of each row of columns, and under the deck their headlights are on at any hour. They appear in the U cut-away and when you are down there yourself; from above the street hides them and they cost nothing (on the ramps, since D4, you see them drive down into the open trench). The street level obeys its lights as before, and ramps that come up at a signalled junction wait at its line.
 
 Raising the bridges (`B`) now stops the traffic: the gates come down ten seconds before the leaves move, cars queue at both ends (most turn away), nobody is ever left on a rising leaf, and traffic crosses again once the bridge is down.
 
@@ -777,6 +777,31 @@ Raising the bridges (`B`) now stops the traffic: the gates come down ten seconds
 <tr>
 <td><em>U at dusk, closer in: a truck and cars on Lower Wacker behind the Riverwalk, headlights on under the deck.</em></td>
 <td><em>B raises the bridges: the leaves are empty, and the traffic waits on Wacker until they come down.</em></td>
+</tr>
+</table>
+
+### Workstream D4 · Portals and names — *the ramps open to the sky, and what lies under the street named*
+
+Every ramp between the street and the lower levels is now a real opening in the street: where OpenStreetMap's ramp leaves the street, the road surface opens over a trench that falls at the ramp's grade between retaining walls, their parapets rising to a metre above the pavement, until it passes under the street at a concrete header — the tunnel's mouth, dark beyond it. Traffic drives visibly down into them and up out of them at any time, U or not. The famous ramps carry their street's name on the header in Chicago's green: Lower Columbus at Randolph, Lower Lower Wacker at Stetson, Lower Michigan at Lake, Lower Wacker from Congress at Franklin, at Lake Street, east of Michigan and at the Drive, Lower Randolph and Lower Grand. Everywhere else the street is exactly as it was.
+
+With **U** on, the lower streets are named where they run — Lower Wacker Dr, Lower Michigan Ave, Lower Columbus Dr, Lower Randolph, Lower Lower Wacker — the famous ones from across the Loop, the side streets once you are close; and the Riverwalk's rooms are named on the water's edge, each with the bridges it lies between. Fly down by the river and the rooms name themselves without U. Click any name to fly there.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/d4-portal-michigan-day.png" alt="D4 — the Lower Michigan ramp at Lake Street, cars driving down into it" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/d4-portal-columbus-close-day.png" alt="D4 — the Lower Columbus portal at Randolph, its header signed" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Michigan Avenue at Lake Street: the street opens over the Lower Michigan ramp and traffic drives down into the tunnel.</em></td>
+<td><em>Columbus Drive at Randolph: the two ramps of Lower Columbus between their parapets, the header lettered LOWER COLUMBUS DR.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/d4-u-labels-day.png" alt="D4 — the U view with the lower streets and the Riverwalk's rooms named" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/d4-riverwalk-rooms-day.png" alt="D4 — down by the river, the Riverwalk's rooms named" width="100%"/></td>
+</tr>
+<tr>
+<td><em>U: Lower Michigan, Lower Wacker and the service drives named where they run, and the Riverwalk's rooms from Michigan–Wabash to the Cove.</em></td>
+<td><em>Down by the river the rooms name themselves: Riverwalk East, Michigan–Wabash and the Vietnam Veterans Memorial Plaza.</em></td>
 </tr>
 </table>
 
@@ -1020,20 +1045,28 @@ It wasn't made right in one attempt. Here are the same places through each pass,
 </tr>
 </table>
 
-**Lower Wacker** — the U cut-away, the same pose, before and after its traffic
+**Lower Wacker** — the U cut-away, the same pose: empty, then its traffic, then its names
 
 <table>
 <tr>
-<td width="25%"><img src="docs/screenshots/evolution/d2-u-loop-day-before-d3.png" alt="D2 — the U cut-away by day, the lower level empty" width="100%"/></td>
-<td width="25%"><img src="docs/screenshots/d2-u-loop-day.png" alt="D3 — the U cut-away by day with the lower level's traffic" width="100%"/></td>
-<td width="25%"><img src="docs/screenshots/evolution/d2-u-loop-night-before-d3.png" alt="D2 — the U cut-away at night, the lower level empty" width="100%"/></td>
-<td width="25%"><img src="docs/screenshots/d2-u-loop-night.png" alt="D3 — the U cut-away at night, headlights under the street" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/evolution/d2-u-loop-day-before-d3.png" alt="D2 — the U cut-away by day, the lower level empty" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/evolution/before-d4-d2-u-loop-day.png" alt="D3 — the U cut-away by day with the lower level's traffic" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/d2-u-loop-day.png" alt="D4 — the U cut-away by day, the lower streets and the Riverwalk's rooms named" width="100%"/></td>
 </tr>
 <tr>
 <td><sub>D2 · Oct 1<br/>the decks, empty</sub></td>
 <td><sub>D3 · Oct 1<br/>cars, buses and trucks down there</sub></td>
+<td><sub>D4 · Oct 1<br/>the streets and the Riverwalk's rooms named</sub></td>
+</tr>
+<tr>
+<td width="33%"><img src="docs/screenshots/evolution/d2-u-loop-night-before-d3.png" alt="D2 — the U cut-away at night, the lower level empty" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/evolution/before-d4-d2-u-loop-night.png" alt="D3 — the U cut-away at night, headlights under the street" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/d2-u-loop-night.png" alt="D4 — the U cut-away at night with its names" width="100%"/></td>
+</tr>
+<tr>
 <td><sub>D2 · Oct 1<br/>its strip lights alone</sub></td>
 <td><sub>D3 · Oct 1<br/>headlights at any hour</sub></td>
+<td><sub>D4 · Oct 1<br/>named, legible by night</sub></td>
 </tr>
 </table>
 

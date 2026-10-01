@@ -13,10 +13,10 @@ import { worldUrl } from '../lib/manifest.js'
 import { QUALITY } from '../lib/quality.js'
 import { chicagoClock } from '../lib/chicagoTime.js'
 import { presetDate } from '../lib/sun.js'
-import { isCutOpen, cutUniforms } from '../world/materials/cutaway.js'
+import { isCutOpen, cutUniforms, portalOpenDepth } from '../world/materials/cutaway.js'
 import { facadeUniforms } from '../world/materials/facadeMaterial.js'
 import { lowerShared } from '../world/LowerLevels.jsx'
-import { hideThroughDecks } from '../world/lowerLevels.js'
+import { shownPieces } from '../world/lowerLevels.js'
 import { liveLift } from '../bridges/BridgeLeaves.jsx'
 import { vehiclePose } from '../ride/rideSession.js'
 import { decodeRoadGraph, buildNetwork, pointOnLink, bridgeCrossings, closedBridges, deckHides, hiddenAt, DEEP_M } from './graph.js'
@@ -29,6 +29,8 @@ const ROAD_Y = 0.13 // on the road ribbons (pipeline GROUND_Y.roads 0.12); a veh
 const RIBBON_Y = 0.12 // pipeline GROUND_Y.roads: the street the link heights are measured from
 const UNDER_DECK_M = -1.5 // under the street's slab: headlights on at any hour
 const RAISED_RAD = 0.02 // a leaf this far off its deck has nobody on it
+const PORTAL_EDGE_M = 0.5 // D4-1: a street car this far over a ramp portal's opening is not drawn (the street is open there)
+const PORTAL_TAIL_M = 3 // … and a ramp's vehicles are drawn in its open trench (and just into the tunnel's dark) whatever the decks do
 const RIDE_CLEAR_M = 9 // half the ride bus plus a car
 const UNDER_CAM_M = -0.5 // the camera itself is under the street (a drive, the Riverwalk at river level)
 const LOWER_NEAR_M = 450 // from down there the roadway falls into the dark within a few hundred metres
@@ -148,7 +150,7 @@ export default function Traffic({ file, version }) {
     // street hides them (the ramps keep theirs either way). And which ramp stretches the deck mesh leaves out.
     const lowerOn = lowerShared.visible
     const lowerMode = !lowerOn ? 'off' : cutUniforms.uCut.value > 0.5 ? 'all' : camera.position.y < UNDER_CAM_M ? 'near' : 'off'
-    if (lowerShared.json && st.decks !== lowerShared.json) { st.decks = lowerShared.json; deckHides(st.net, hideThroughDecks(lowerShared.json).ways, RIBBON_Y) }
+    if (lowerShared.json && st.decks !== lowerShared.json) { st.decks = lowerShared.json; deckHides(st.net, shownPieces(lowerShared.json), RIBBON_Y) }
     if (lowerMode !== st.lowerMode) { st.lowerMode = lowerMode; if (!idle) st.last = -1e9 }
     // raised bridges: closed a little before the leaves move, and while they're up
     const closed = closedBridges(liveLift), raised = new Set()
@@ -175,8 +177,8 @@ export default function Traffic({ file, version }) {
       const mesh = meshes[v.type], i = buckets[v.type]
       if (i >= VEHICLE_CAP[v.type]) continue
       const l = v.link, T = TYPES[v.type], under = v.y < -DEEP_M
-      if (!l.ys && isCutOpen(v.x, v.z)) continue // D2-3: none on the street the U cut-away has opened
-      if (under && !lowerOn) continue // under the street, and the lower decks aren't drawn
+      if (!l.ys && (isCutOpen(v.x, v.z) || portalOpenDepth(v.x, v.z) > PORTAL_EDGE_M)) continue // D2-3 / D4-1: none on a street that is open
+      if (under && !lowerOn && portalOpenDepth(v.x, v.z) < -PORTAL_TAIL_M) continue // under the street (not in a portal's trench), the decks not drawn
       if (l.hide && (hiddenAt(l, v.s) || hiddenAt(l, v.s - T.length))) continue // where the deck mesh leaves a ramp out
       if (!clearOfRide(v)) continue
       buckets[v.type]++
