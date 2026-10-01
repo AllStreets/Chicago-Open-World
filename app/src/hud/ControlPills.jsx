@@ -5,6 +5,9 @@ import { phaseFor } from '../lib/skyPalette.js'
 import { cycleQuality } from '../lib/quality.js'
 import { PRESETS } from '../lib/atmosphere.js'
 import { WEATHER_MODES, WEATHER_NAMES } from '../weather/weatherState.js'
+import { RiBroadcastLine, RiSunLine, RiCloudyLine, RiRainyLine, RiSnowyLine, RiMistLine } from 'react-icons/ri'
+
+const WEATHER_ICON = { LIVE: RiBroadcastLine, CLEAR: RiSunLine, OVERCAST: RiCloudyLine, RAIN: RiRainyLine, SNOW: RiSnowyLine, FOG: RiMistLine }
 
 function livePhase() {
   const s = sunForPreset('LIVE', new Date())
@@ -71,6 +74,14 @@ function WeatherPill() {
     window.addEventListener('keydown', close)
     return () => { clearTimeout(t); window.removeEventListener('pointerdown', close); window.removeEventListener('keydown', close) }
   }, [open])
+  const item = (m) => {
+    const Icon = WEATHER_ICON[m]
+    return (
+      <button key={m} type="button" role="menuitem" className={`hud-pill ${mode === m ? 'active' : ''}`} onClick={() => { useStore.getState().setWeatherMode(m); setOpen(false) }}>
+        <Icon aria-hidden="true" />{m === 'LIVE' ? 'Live Chicago weather' : WEATHER_NAMES[m]}
+      </button>
+    )
+  }
   const label = mode === 'LIVE' ? `WEATHER · ${weather.kind === 'clear' ? 'LIVE' : weather.kind.toUpperCase()}` : `WEATHER · ${WEATHER_NAMES[mode].toUpperCase()}`
   return (
     <span className="weather-pill" onPointerDown={(e) => e.stopPropagation()}>
@@ -78,11 +89,10 @@ function WeatherPill() {
         title="Weather — follows Chicago live; or choose a sky" onClick={() => setOpen(!open)}>{label}</button>
       {open && (
         <div className="hud-panel weather-menu" role="menu" aria-label="Weather">
-          {WEATHER_MODES.map((m) => (
-            <button key={m} type="button" role="menuitem" className={`hud-pill ${mode === m ? 'active' : ''}`} onClick={() => { useStore.getState().setWeatherMode(m); setOpen(false) }}>
-              {m === 'LIVE' ? 'Live Chicago weather' : WEATHER_NAMES[m]}
-            </button>
-          ))}
+          <span className="hud-label wm-label" aria-hidden="true">Weather</span>
+          {item('LIVE')}
+          <span className="wm-sub" aria-hidden="true">or choose a sky</span>
+          <div className="wm-skies">{WEATHER_MODES.filter((m) => m !== 'LIVE').map(item)}</div>
         </div>
       )}
     </span>

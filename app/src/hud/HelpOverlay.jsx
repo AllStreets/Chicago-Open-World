@@ -1,21 +1,26 @@
 // app/src/hud/HelpOverlay.jsx — every control in plain words (opens on "?" and on a first visit).
+// F-3 (2026-10-01): a key named inside a sentence is a keycap too ({Space}, {,}, {⌘K} … drawn by withKeys).
 import { useEffect } from 'react'
 import { useStore } from '../state/store.js'
 import { FEATURE_CONTROLS } from './featureControls.js'
+import { Kbd, withKeys } from './Keycap.jsx'
 
 const GROUPS = [
-  ['Move around', [['↑ ↓ ← →', 'or W A S D — glide over the city'], ['Shift', '+ W A S D to go faster'], ['R / F', 'or Page Up / Down — rise and descend'], ['Scroll', 'or + / − — zoom in and out']]],
-  ['Look around', [['Drag', 'with the mouse to turn and tilt'], ['Shift + arrows', 'or Q / E — turn and tilt'], ['N', 'face north'], ['O', 'slowly orbit where you are']]],
-  ['Search and fly', [['⌘K', 'or / — find any landmark by name or nickname (the Bean, the pagoda, the lighthouse), a neighborhood or a view'], ['Double-click', 'anywhere to fly there'], ['[ ]', 'previous / next view'], ['H', 'back home'], ['Minimap', 'click to fly']]],
+  ['Move around', [['↑ ↓ ← →', 'or {W} {A} {S} {D} — glide over the city'], ['Shift', 'with {W} {A} {S} {D} to go faster'], ['R / F', 'or {Page Up} and {Page Down} — rise and descend'], ['Scroll', 'or {+} and {−} — zoom in and out']]],
+  ['Look around', [['Drag', 'with the mouse to turn and tilt'], ['Shift + arrows', 'or {Q} and {E} — turn and tilt'], ['N', 'face north'], ['O', 'slowly orbit where you are']]],
+  ['Search and fly', [['⌘K', 'or {/} — find any landmark by name or nickname (the Bean, the pagoda, the lighthouse), a neighborhood or a view'], ['Double-click', 'anywhere to fly there'], ['[ ]', 'previous or next view'], ['H', 'back home'], ['Minimap', 'click to fly']]],
   ['City life', [
     ...FEATURE_CONTROLS.map((c) => [c.keyLabel, `${c.label} button — ${c.help}`]),
-    ['Legend', 'click a transit line to hide or show it; All / None'],
+    ['Legend', 'click a transit line to hide or show it; All or None'],
     ['Click', 'a train, a station or a ballpark for its card'],
-    ['⌘K', '“Follow a train” rides along (any key stops) · “Go to Clark/Lake” · type “tonight” for tonight’s game'],
+    ['⌘K', '“Follow a train” rides along — {Esc} or a move key stops, {K} changes the view, and {M}, {X} and the other toggles keep following · “Go to Clark/Lake” · type “tonight” for tonight’s game'],
   ]],
-  ['Guide', [['Lenses', 'the lens rail at the top — Visit, Live, Work (also ⌘K “Lens: Visit”)'], ['Hover', 'hover a building for its name and year; click it for its card'], ['P', 'places — pins for food, bars, venues and more; click one for its hours and website'], ['Tours', 'in the Visit lens or ⌘K “Tour:” — Space pauses, , and . step, any arrow key takes back the camera'], ['Work', 'set office (click the map) or type an address in ⌘K, like “333 N Green”, to see commute times'], ['Esc', 'close the card, then the lens']]],
-  ['Live city', [['Chip', 'top left — LIVE CTA when real trains are shown, SIMULATED when they run on typical schedules; click it for the data sources'], ['V', 'or the SCAN button — holographic Scan: the city turns to dark glass with cyan lines; in the Live lens, light columns show transit, nightlife, green space or rent'], ['Weather', 'button (top right) — follows Chicago live, or choose clear, overcast, rain, snow or lake fog (also ⌘K “Weather”)']]],
-  ['Time and quality', [['1 – 7', 'live Chicago time, dawn, day, dusk, night, a sunny summer day, a snowy Christmas (snow falling, the lake frozen)'], ['Quality', 'button on the right if things feel slow · Low also turns off water reflections'], ['Stats', '⌘K “performance” shows draw calls and frame rate']]],
+  ['Guide', [['Lenses', 'the lens rail at the top — Visit, Live, Work (also {⌘K} “Lens: Visit”)'], ['Hover', 'hover a building for its name and year; click it for its card'], ['P', 'places — pins for food, bars, venues and more; click one for its hours and website'], ['Tours', 'in the Visit lens or {⌘K} “Tour:” — {Space} pauses, {,} and {.} step, any arrow key takes back the camera'],
+    ['Rides', 'in a ride {Space} pauses, {.} {,} next or previous stop, {>} {<} faster or slower, {Drag} looks around, {Esc} gets off'],
+    ['K', 'change the view — in a ride, or while following a train'],
+    ['Work', 'set office (click the map) or type an address in {⌘K}, like “333 N Green”, to see commute times'], ['Esc', 'close the card, then the lens']]],
+  ['Live city', [['Chip', 'top left — LIVE CTA when real trains are shown, SIMULATED when they run on typical schedules; click it for the data sources'], ['V', 'or the SCAN button — holographic Scan: the city turns to dark glass with cyan lines; in the Live lens, light columns show transit, nightlife, green space or rent'], ['Weather', 'button (top right) — follows Chicago live, or choose clear, overcast, rain, snow or lake fog (also {⌘K} “Weather”)']]],
+  ['Time and quality', [['1 – 7', 'live Chicago time, dawn, day, dusk, night, a sunny summer day, a snowy Christmas (snow falling, the lake frozen)'], ['Quality', 'button on the right if things feel slow · Low also turns off water reflections'], ['Stats', '{⌘K} “performance” shows draw calls and frame rate']]],
 ]
 
 export default function HelpOverlay() {
@@ -37,7 +42,7 @@ export default function HelpOverlay() {
           {GROUPS.map(([title, rows]) => (
             <section key={title}>
               <h3 className="hud-label">{title}</h3>
-              {rows.map(([k, v]) => <p key={k}><span className="hud-kbd">{k}</span> {v}</p>)}
+              {rows.map(([k, v]) => <p key={k}><Kbd k={k} /> <span>{withKeys(v)}</span></p>)}
             </section>
           ))}
         </div>

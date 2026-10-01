@@ -1,21 +1,35 @@
 /* app/src/hud/Ride.css — the Ride panel (beside the dock, like Games) and the in-ride bar (bottom centre, over the hints) */
-.ride-panel { position: absolute; right: 224px; bottom: 228px; width: 340px; max-height: 66vh; overflow: auto; padding: 10px 12px; animation: hud-rise 0.3s ease both; display: flex; flex-direction: column; gap: 6px; }
+/* F-6 (2026-10-01): the panel hangs from just under the time and weather pill rows (never over them) and stops above
+   the hint bar; when the HUD is compact (a phone) the lens strip sits under the pills, so the panel starts below it and
+   spans the free width beside the dock. */
+.ride-panel { position: absolute; right: 224px; top: 120px; width: 340px; max-height: calc(100% - 120px - 64px); overflow: auto; padding: 10px 12px; animation: hud-rise 0.3s ease both; display: flex; flex-direction: column; gap: 6px; }
+.hud-root[data-compact="true"] .ride-panel { top: 184px; left: 16px; width: auto; max-height: calc(100% - 184px - 16px); }
 .ride-head { display: flex; align-items: center; gap: 8px; }
 .ride-head .dock-btn { flex: 0 0 32px; margin-left: auto; }
-.ride-sub, .ride-blurb { margin: 0; font: 500 11.5px/1.4 var(--font-ui); color: var(--text-muted); }
+.ride-sub, .ride-blurb { margin: 0; font: 500 11.5px/1.45 var(--font-ui); color: var(--text-muted); }
+/* F-3: the ride keys as keycap rows, two columns */
+.ride-panel ul.ride-keys { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 5px 12px; padding: 8px 10px; margin: 2px 0; border: 1px solid var(--border); border-radius: var(--r-sm); background: rgba(255, 255, 255, 0.02); }
+.ride-keys li { display: flex; align-items: center; gap: 3px; min-width: 0; font: 500 11px var(--font-ui); color: var(--text-muted); white-space: nowrap; }
+.ride-keys li span { margin-left: 4px; overflow: hidden; text-overflow: ellipsis; }
+.ride-keys .hud-kbd, .ride-blurb .hud-kbd, .rb-keys .hud-kbd { min-width: 20px; justify-content: center; color: var(--text); padding: 0 5px; line-height: 16px; }
+.ride-blurb .hud-kbd { margin: 0 1px; vertical-align: 1px; line-height: 14px; }
 .ride-panel section { display: flex; flex-direction: column; gap: 4px; margin-top: 4px; }
 .ride-panel h3 { display: flex; align-items: center; gap: 6px; margin: 4px 0 0; }
 .ride-panel ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
-.ride-row { width: 100%; display: flex; align-items: center; gap: 8px; text-align: left; padding: 6px 8px; border-radius: var(--r-sm); border: 1px solid transparent; background: transparent; color: var(--text); font: 500 12px var(--font-ui); cursor: pointer; }
+.ride-row { width: 100%; display: flex; align-items: center; gap: 10px; text-align: left; padding: 6px 8px; border-radius: var(--r-sm); border: 1px solid transparent; background: transparent; color: var(--text); font: 500 12px/1.35 var(--font-ui); cursor: pointer; }
 .ride-row:hover, .ride-row:focus-visible { border-color: var(--border-strong); background: rgba(var(--accent-rgb), 0.08); outline: none; }
 .ride-row span:first-of-type { flex: 1; }
-.ride-n { font-family: var(--font-mono); font-size: 10px; color: var(--text-faint); }
+.ride-name { display: flex; flex-direction: column; gap: 1px; }
+.ride-name small { font: 500 11px/1.35 var(--font-ui); color: var(--text-muted); }
+/* F-5: the line's own colour at full strength, ringed in a lighter tint of it (lib/lineSwatch.js) */
+.ride-swatch { flex: 0 0 12px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid; }
+.ride-n { font-family: var(--font-mono); font-size: 10px; color: var(--text-faint); white-space: nowrap; }
 .ride-bar { position: absolute; left: 332px; right: 228px; bottom: 16px; max-width: 900px; margin: 0 auto; padding: 10px 14px; display: flex; align-items: center; gap: 14px; z-index: 5; animation: hud-rise 0.3s ease both; }
 .rb-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
 .rb-info .hud-title { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .rb-line { font: 500 12px var(--font-ui); color: var(--accent); }
 .rb-near, .rb-keys { font: 500 11px var(--font-ui); color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.rb-keys .hud-kbd { margin: 0 2px 0 6px; }
+.rb-keys .hud-kbd { margin: 0 1px; vertical-align: 1px; line-height: 14px; }
 .rb-progress, .rb-boost { height: 3px; border-radius: 2px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
 .rb-progress i, .rb-boost i { display: block; height: 100%; background: var(--accent); }
 .rb-buttons { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
