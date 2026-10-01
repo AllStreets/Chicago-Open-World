@@ -31,7 +31,8 @@ import { poiRecord, dedupePois, anchorPoi, buildingPoi, capByTile, POI_CATEGORIE
 import { buildNeighborhoods } from '../lib/zones.js'
 import { clearTracks } from '../lib/trackClearance.js'
 import { buildRoadGraph, encodeRoadGraph } from '../lib/traffic.js'
-import { isPavingArea, pavingKind, pathHalfWidth, synthPlazas } from '../lib/paving.js'
+import { isPavingArea, pavingKind, pathHalfWidth, synthPlazas, pathSurface, clipOutside } from '../lib/paving.js'
+import { buildWalkGraph, encodeWalkGraph } from '../lib/walkGraph.js'
 import { loadBlenderMesh } from '../lib/blenderMesh.js'
 import { setSeahorseMesh } from '../lib/landmarks.js'
 import { createStyleRegistry, assignHeroStyles, meshStyle, writeStylePalettePng, addMaterialStyles, styleIndex, partStyle } from '../lib/styles.js'
@@ -341,23 +342,39 @@ async function main() {
     }
   }
   // ── Plazas and park paths (user, 2026-09-30): Grant Park's brick, the promenades, every pedestrian plaza ──
-  const pavingEls = uniq(chunks('paving'))
+  const pavingEls = uniq([...chunks('paving'), ...chunks('trails')])
   const plazas = [
     ...osmPolys(pavingEls.filter((e) => isPavingArea(e.tags || {}))).map((p) => ({ ...p, kind: pavingKind(p.tags) })).filter((p) => p.kind),
     ...synthPlazas(existsSync(join(ROOT, 'data', 'plazas.json')) ? loadJson(join(ROOT, 'data', 'plazas.json')).plazas : [], project), // OSM leaves these unmapped
   ]
-  let pathsLaid = 0
-  for (const e of pavingEls) {
-    const tg = e.tags || {}, kind = pavingKind(tg)
-    if (e.type !== 'way' || !e.geometry || isPavingArea(tg) || !kind) continue
-    const hw = pathHalfWidth(tg)
-    for (const [k, pieces] of splitLineWithContext(e.geometry.map((p) => project(p.lon, p.lat)))) for (const { line: l, before, after } of pieces) {
-      if (kind === 'brick') append(tile(k).paving, bufferPolyline(l, hw, GROUND_Y.paving, { before, after }))
-      else append(tile(k).walks, bufferPolyline(l, hw, GROUND_Y.sidewalks, { before, after }))
+  // every path in the material it's made of (walking paths pass, 2026-09-30): brick, blacktop trail, crushed gravel or
+  // concrete — each on its ground layer, so the GROUND_Y order settles overlaps — and cut out of building footprints
+  const BC = 100, bGrid = new Map(), bKey = (i, j) => `${i},${j}`
+  for (const b of buildings) {
+    if (!b.polygons?.length) continue
+    const bb = ringBBox(b.polygons.flatMap((p) => p.outer))
+    for (let i = Math.floor(bb.minX / BC); i <= Math.floor(bb.maxX / BC); i++) for (let j = Math.floor(bb.minZ / BC); j <= Math.floor(bb.maxZ / BC); j++) {
+      const k = bKey(i, j); if (!bGrid.has(k)) bGrid.set(k, []); bGrid.get(k).push({ b, bb })
     }
-    pathsLaid++
   }
-  log(`paving: ${plazas.length} plazas (${plazas.filter((p) => p.kind === 'brick').length} brick), ${pathsLaid} paths`)
+  const insideBuilding = ([x, z]) => (bGrid.get(bKey(Math.floor(x / BC), Math.floor(z / BC))) ?? []).some(({ b, bb }) =>
+    x > bb.minX && x < bb.maxX && z > bb.minZ && z < bb.maxZ && b.polygons.some((p) => pointInRing([x, z], p.outer) && !(p.holes ?? []).some((h) => pointInRing([x, z], h))))
+  const PATH_LAYER = { brick: ['paving', GROUND_Y.paving], asphalt: ['roads', GROUND_Y.roads], gravel: ['rail', GROUND_Y.rail], concrete: ['walks', GROUND_Y.sidewalks] }
+  const pathCount = { brick: 0, asphalt: 0, gravel: 0, concrete: 0 }
+  let pathsLaid = 0, pathsCut = 0
+  for (const e of pavingEls) {
+    const tg = e.tags || {}, surf = pathSurface(tg)
+    if (e.type !== 'way' || !e.geometry || !surf) continue
+    const hw = pathHalfWidth(tg), [layer, y] = PATH_LAYER[surf], runs = clipOutside(e.geometry.map((p) => project(p.lon, p.lat)), insideBuilding)
+    if (runs.length !== 1) pathsCut++
+    for (const run of runs) for (const [k, pieces] of splitLineWithContext(run)) for (const { line: l, before, after } of pieces) append(tile(k)[layer], bufferPolyline(l, hw, y, { before, after }))
+    pathsLaid++; pathCount[surf]++
+  }
+  log(`walking paths: ${pathsLaid} laid (${Object.entries(pathCount).map(([k, n]) => `${n} ${k}`).join(', ')}), ${pathsCut} cut at building footprints`)
+  const walk = encodeWalkGraph(buildWalkGraph(pavingEls, project))
+  writeFileSync(join(OUT, 'walk-graph.json'), JSON.stringify(walk))
+  log(`walk graph: ${walk.nodes.length / 2} nodes, ${(statSync(join(OUT, 'walk-graph.json')).size / 1e3).toFixed(0)} kB`)
+  log(`paving: ${plazas.length} plazas (${plazas.filter((p) => p.kind === 'brick').length} brick)`)
   for (const k of transit.tiles.keys()) tile(k) // a tile that holds only track still gets written
   for (const [x, z] of treeNodes) {
     const t = tile(tileKeyFor([x, z]))
@@ -585,7 +602,7 @@ async function main() {
       ...bridges.filter((b) => !b.generic).map((b) => ({ key: `bridge-${b.key}`, name: b.name, aliases: b.aliases, x: Math.round(b.centre[0]), z: Math.round(b.centre[1]), top: 8, beacon: [Math.round(b.centre[0]), 14, Math.round(b.centre[1])] })),
     ],
     tallest: buildings.filter((b) => !b.hero && b.name && b.pieces.length && Math.max(...b.pieces.map((p) => p.top)) > 150).map((b) => ({ key: b.id, name: b.name, x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(...b.pieces.map((p) => p.top))) })),
-    tiles, blocks: blockList, land: 'ground/land.glb', lake: 'ground/lake.glb', landMask: 'land.json', transit: 'transit.json', trains: 'trains.glb', traffic: 'traffic.bin', styles: 'styles.json', stylePalette: 'style-palette.png',
+    tiles, blocks: blockList, land: 'ground/land.glb', lake: 'ground/lake.glb', landMask: 'land.json', transit: 'transit.json', trains: 'trains.glb', traffic: 'traffic.bin', walkGraph: 'walk-graph.json', styles: 'styles.json', stylePalette: 'style-palette.png',
     shore: { file: 'water/shore.png', ...shore.grid, maxDist: SHORE.maxDist },
     heightfield: { file: 'heightfield.png', ...hf.grid, scale: HEIGHTFIELD.scale }, minimap: { file: 'minimap.png', bounds: mmBounds, size: 2048 },
     neighborhoods: hoods ? 'neighborhoods.json' : null,

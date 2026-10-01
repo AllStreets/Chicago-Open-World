@@ -11443,6 +11443,7 @@
  "transit": "transit.json",
  "trains": "trains.glb",
  "traffic": "traffic.bin",
+ "walkGraph": "walk-graph.json",
  "styles": "styles.json",
  "stylePalette": "style-palette.png",
  "shore": {

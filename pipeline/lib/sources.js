@@ -40,6 +40,8 @@ const FILTERS = {
   // sidewalks (lib/paving.js sorts brick from concrete)
   paving: ['way["highway"="pedestrian"]', 'way["area:highway"]', 'way["place"="square"]', 'relation["place"="square"]',
     'way["highway"~"^(footway|path|steps)$"]["footway"!~"^(sidewalk|crossing|traffic_island)$"]'],
+  // walking paths, second pass (2026-09-30): the cycle trails people walk too — the Lakefront Trail, the 606
+  trails: ['way["highway"="cycleway"]'],
 }
 
 // Transit (V3): route relations with their member tracks + stop nodes; stations and platforms.
@@ -62,4 +64,4 @@ export function overpassQuery(kind, { s, w, n, e }) {
 }
 
 // chunk grid per kind for the world fetch (nx × ny sub-boxes)
-export const FETCH_KINDS = { allbuildings: [6, 8], parts: [2, 3], water: [2, 3], parks: [2, 3], roads: [3, 4], trees: [2, 3], rail: [2, 3], stadiums: [1, 1], shore: [2, 3], coast: [1, 2], routes: [1, 1], stations: [1, 1], pois: [3, 4], paving: [3, 4] }
+export const FETCH_KINDS = { allbuildings: [6, 8], parts: [2, 3], water: [2, 3], parks: [2, 3], roads: [3, 4], trees: [2, 3], rail: [2, 3], stadiums: [1, 1], shore: [2, 3], coast: [1, 2], routes: [1, 1], stations: [1, 1], pois: [3, 4], paving: [3, 4], trails: [2, 3] }
