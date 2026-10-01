@@ -1,6 +1,6 @@
 // pipeline/tests/icons.test.js — the Tribune Tower and the Wrigley Building, gone all out (user request).
 import { describe, it, expect } from 'vitest'
-import { tribuneDetail, wrigleyClockTower, skybridge, pointedArch } from '../lib/icons.js'
+import { tribuneDetail, wrigleyClockTower, skybridge, pointedArch, carbideDetail, willisDetail } from '../lib/icons.js'
 
 const sq = (cx, cz, w, d) => [[cx - w / 2, cz - d / 2], [cx + w / 2, cz - d / 2], [cx + w / 2, cz + d / 2], [cx - w / 2, cz + d / 2]]
 const ys = (ms, part) => ms.filter((m) => !part || m.part === part).flatMap(({ mesh }) => mesh.positions.filter((_, i) => i % 3 === 1))
@@ -70,5 +70,61 @@ describe('pointed arch', () => {
     expect(apex(inner)[1]).toBeCloseTo(9 + 9 * Math.sin(Math.PI / 3), 3)
     expect(apex(outer)[1]).toBeGreaterThan(apex(inner)[1]); expect(outer[0][0]).toBeCloseTo(-5.8)
     expect(inner).toHaveLength(outer.length)
+  })
+})
+
+describe('Willis Tower detail (user: the other icons to the same standard)', () => {
+  // three of the nine 23 m tubes: a tall one, a middle one beside it, a short one beside that
+  const tube = (i, top) => ({ outer: sq(i * 23, 0, 23, 23), holes: [], base: 0, top })
+  const pieces = [tube(0, 442), tube(1, 269), tube(2, 205)]
+  const ms = willisDetail({ pieces, belts: [[119, 131], [263, 271], [361, 369], [427, 439]], ledge: { face: [-1, 0], y: 412 } })
+  const part = (p) => ms.filter((m) => m.part === p)
+  it('black mullion fins on every exposed face, none buried where two tubes meet', () => {
+    const fins = part('fins')[0].mesh, P = []
+    for (let i = 0; i < fins.positions.length; i += 3) P.push(fins.positions.slice(i, i + 3))
+    // the wall shared by tubes 0 and 1 (x = 11.5) carries fins only above the shorter tube's roof
+    const shared = P.filter((p) => Math.abs(p[0] - 11.5) < 0.6 && Math.abs(p[2]) < 11)
+    expect(shared.length).toBeGreaterThan(0)
+    expect(lo(shared.map((p) => p[1]))).toBeGreaterThanOrEqual(269 - 1e-6)
+    expect(hi(P.map((p) => p[1]))).toBeCloseTo(442, 0)
+  })
+  it('the mechanical belts wrap each tube that reaches them, and stop at its roof', () => {
+    const b = ys(ms, 'belts')
+    expect(hi(b)).toBeCloseTo(439, 0)
+    const shortTube = part('belts')[0].mesh.positions.filter((_, i) => i % 3 === 0).some((x) => x > 40)
+    expect(shortTube).toBe(true) // tube 2 (x 34.5–57.5) reaches the first belt
+  })
+  it('the Skydeck Ledge: four glass boxes out from the 103rd floor on the west face', () => {
+    const l = part('ledge')
+    expect(l[0].style).toBe('willis-ledge')
+    const xs = l[0].mesh.positions.filter((_, i) => i % 3 === 0)
+    expect(lo(xs)).toBeLessThan(-11.5 - 1); expect(hi(xs)).toBeLessThanOrEqual(-11.5 + 1e-6)
+    expect(lo(ys(l))).toBeCloseTo(412, 0)
+    for (const m of ms) expect(frontFacing(m.mesh), m.part).toBe(true)
+  })
+})
+
+describe('Carbide & Carbon detail (user: the other icons to the same standard)', () => {
+  const r = carbideDetail({ tower: sq(0, 0, 40, 26), bodyTop: 137, graniteTop: 9, setbacks: [[118, 0.78], [131, 0.6]], key: 'carbidecarbon' })
+  const xs = (ms, part) => ms.filter((m) => m.part === part).flatMap(({ mesh }) => mesh.positions.filter((_, i) => i % 3 === 0))
+  it('steps back twice into the gold-crowned tower: each tier narrower, the last ending at the body top', () => {
+    expect(r.tiers).toHaveLength(2)
+    expect(r.tiers.map((t) => [t.base, t.top])).toEqual([[118, 131], [131, 137]])
+    expect(r.shaftTop).toBe(118)
+    const w = (t) => hi(t.outer.map((p) => p[0])) - lo(t.outer.map((p) => p[0]))
+    expect(w(r.tiers[0])).toBeCloseTo(40 * 0.78); expect(w(r.tiers[1])).toBeCloseTo(40 * 0.6)
+  })
+  it('a polished black granite base, dark green terra-cotta piers up the shaft, gold-leaf caps and a gold crown', () => {
+    const style = (p) => r.meshes.find((m) => m.part === p)?.style
+    expect(style('granite')).toBe('cc-granite'); expect(hi(ys(r.meshes, 'granite'))).toBeCloseTo(9, 0)
+    expect(style('piers')).toBe('carbidecarbon')
+    expect(lo(ys(r.meshes, 'piers'))).toBeCloseTo(9, 0); expect(hi(ys(r.meshes, 'piers'))).toBeCloseTo(118, 0)
+    for (const p of ['pier-caps', 'gold-piers', 'gold-bands']) expect(style(p), p).toBe('gold-leaf')
+    expect(lo(ys(r.meshes, 'gold-piers'))).toBeGreaterThanOrEqual(118 - 1e-6); expect(hi(ys(r.meshes, 'gold-bands'))).toBeCloseTo(137, 0)
+  })
+  it('stays on its footprint (a metre of relief at most) and every face points outward', () => {
+    for (const p of ['granite', 'piers', 'pier-caps', 'gold-piers', 'gold-bands']) { const x = xs(r.meshes, p); expect(lo(x), p).toBeGreaterThan(-21.01); expect(hi(x), p).toBeLessThan(21.01) }
+    for (const m of r.meshes) expect(frontFacing(m.mesh), m.part).toBe(true)
+    expect(tris(r.meshes)).toBeLessThan(20000)
   })
 })

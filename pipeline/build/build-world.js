@@ -37,6 +37,7 @@ import { loadBlenderMesh } from '../lib/blenderMesh.js'
 import { setSeahorseMesh } from '../lib/landmarks.js'
 import { createStyleRegistry, assignHeroStyles, meshStyle, writeStylePalettePng, addMaterialStyles, styleIndex, partStyle } from '../lib/styles.js'
 import { applyOsmLooks, applyTagOverrides } from '../lib/osmLook.js'
+import { applyRooftops, rooftopLots } from '../lib/rooftops.js'
 import { lakePolygons, landMinusWater, joinLines, lakeSide } from '../lib/lake.js'
 import { bakeShore, SHORE } from '../lib/shore.js'
 import { bakeHeightfield, meshPoints, boundsUnion, HEIGHTFIELD } from '../lib/heightfield.js'
@@ -94,6 +95,8 @@ async function main() {
     buildings.push({ id: `s${s.tags.name ?? Math.round(c[0])}`, osmId: null, source: 'osm-stadium', tags: { building: 'stadium', ...s.tags }, name: s.tags.name ?? null, address: null, stories: null, year: null,
       polygons: [{ outer: s.outer, holes: s.holes }], area, centroid: c, bbox: s.bbox, height: 24, heightSource: 'default', parts: null })
   }
+  // the Wrigley rooftop lots OSM leaves empty (3627 and 3633 N Sheffield) — dressed with the other clubs below
+  buildings.push(...rooftopLots(loadJson(join(ROOT, "data", "rooftops.json")).clubs))
   log(`osm buildings: ${buildings.length}`)
   const cityRows = sortCacheFiles(readdirSync(CACHE), 'footprints-').flatMap((f) => loadJson(join(CACHE, f)).data)
   const city = cityRows.map(normalizeFootprint).filter(Boolean).map((c) => ({ id: c.id, centroid: c.centroid, stories: c.stories, year: c.year, address: c.address }))
@@ -133,7 +136,16 @@ async function main() {
     const b = { id: `p-${h.key}`, osmId: null, source: 'park', tags: {}, name: h.name, address: null, stories: null, year: null, polygons: [{ outer: p.outer, holes: p.holes }], area: Math.abs(signedArea(p.outer)), centroid: ringCentroid(p.outer), bbox: p.bbox, height: 0, heightSource: 'default', parts: null }
     buildings.push(b); heroFor.set(b, h)
   }
-  for (const h of heroes.filter((x) => !x.match.synthetic && !x.match.parkOsmId)) {
+  // landmarks that are a mapped pond (the Lily Pool) get the water's outline as their footprint; the water itself
+  // still draws as water
+  const ponds = heroes.some((x) => x.match.waterOsmId) ? osmPolys(uniq(chunks('water'))) : []
+  for (const h of heroes.filter((x) => x.match.waterOsmId)) {
+    const p = ponds.find((g) => g.id === h.match.waterOsmId)
+    if (!p) throw new Error(`hero pond not found in OSM data: ${h.name} (${h.match.waterOsmId})`)
+    const b = { id: `w-${h.key}`, osmId: null, source: 'pond', tags: {}, name: h.name, address: null, stories: null, year: null, polygons: [{ outer: p.outer, holes: p.holes }], area: Math.abs(signedArea(p.outer)), centroid: ringCentroid(p.outer), bbox: p.bbox, height: 0, heightSource: 'default', parts: null }
+    buildings.push(b); heroFor.set(b, h)
+  }
+  for (const h of heroes.filter((x) => !x.match.synthetic && !x.match.parkOsmId && !x.match.waterOsmId)) {
     let b = h.match.osmId ? findByOsm(buildings, h.match.osmId) : null
     if (!b && h.match.lat) { const p = project(h.match.lon, h.match.lat); b = bIdx.query(p, 200).find((x) => x.polygons.some((q) => pointInRing(p, q.outer))) }
     if (!b) throw new Error(`hero not found in OSM data: ${h.name} (${JSON.stringify(h.match)})`)
@@ -154,6 +166,11 @@ async function main() {
     if (h && (h.sculpt || h.bodyTopM)) { const tw = b.pieces.reduce((a, p) => (p.top > a.top ? p : a), { top: 0 }), bb = tw.outer ? ringBBox(tw.outer) : null; log(`hero ${h.key}: ${b.pieces.length} pieces, tower top ${tw.top.toFixed(1)} m, ${bb ? `${(bb.maxX - bb.minX).toFixed(1)} × ${(bb.maxZ - bb.minZ).toFixed(1)} m` : 'no ring'}, crown top ${b.crownTop.toFixed(1)} m; pieces ${b.pieces.map((q) => { const bb = ringBBox(q.outer); return `${q.base ?? 0}–${q.top.toFixed(0)}:${(bb.maxX - bb.minX).toFixed(0)}×${(bb.maxZ - bb.minZ).toFixed(0)}` }).join(' ')}`) }
   }
   log(`heroes applied: ${heroFor.size}`)
+  // ── Wrigley rooftop clubs (user item 13): bleachers on the Waveland and Sheffield roofs, facing home plate ──
+  const roofData = loadJson(join(ROOT, 'data', 'rooftops.json'))
+  const roofVenue = buildings.find((b) => b.hero === roofData.homePlateFrom)?.venueMeshes?.find((v) => v.venue)?.venue
+  const rooftops = roofVenue?.frame ? applyRooftops(buildings, roofData.clubs, roofVenue.frame.origin) : { places: [], seats: [], matched: 0 }
+  log(`rooftop clubs: ${rooftops.matched} grandstands, ${rooftops.places.length} places, ${rooftops.seats.length} seats`)
   const landmarkRuntime = collectRuntime(buildings.filter((b) => b.hero && (b.runtime || b.detached)).map((b) => ({ key: b.hero, runtime: b.runtime, detached: b.detached })))
   rmSync(join(OUT, 'landmarks'), { recursive: true, force: true })
   for (const b of buildings) for (const d of b.detached ?? []) await writeMeshGlb(join(OUT, 'landmarks', `${d.key}.glb`), d.mesh)
@@ -226,10 +243,34 @@ async function main() {
   log(`parks cut around venues: ${parks.length} → ${parksCut.length} polygons`)
   parks.length = 0
   for (const p of parksCut) parks.push(p)
-  const footIdx = buildGridIndex(buildings.filter((b) => b.area > 30), 200, (b) => b.centroid)
+  // a hero's built form can spill past its OSM outline (a podium drawn on the oriented box): its hull keeps trees off
+  for (const b of buildings) {
+    if (!b.hero || zones.some((z) => z.key === b.hero)) continue
+    const xz = b.polygons.flatMap((p) => p.outer).concat((b.pieces ?? []).flatMap((p) => p.outer))
+    for (const m of [...(b.venueMeshes ?? []).map((v) => v.mesh), ...(b.extraMeshes ?? [])]) for (let i = 0; i < m.positions.length; i += 9) xz.push([m.positions[i], m.positions[i + 2]])
+    const hull = convexHull(xz)
+    // a sprawling landmark (a riverwalk, a park's trellis) would sweep whole blocks: only a compact built form counts
+    if (Math.abs(signedArea(hull)) <= 2.5 * b.area + 2000) b.treeHull = hull
+  }
+  const footIdx = buildGridIndex(buildings.filter((b) => b.area > 30 || b.treeHull), 200, (b) => b.centroid)
   const clearings = buildings.flatMap((b) => b.clearPolys ?? [])
-  const { kept: keptTrees, removed } = filterTrees(treeNodes, { zones: zones.map((z) => z.ring), clearings, nearBuildings: (p) => footIdx.query(p, 400) })
-  log(`trees removed — venues ${removed.venue}, clearings ${removed.clearing}, footprints ${removed.building}; venue zones: ${zones.map((z) => z.key).join(', ')}`)
+  // railways at grade and elevated (not in tunnels), cut into ≤ 80 m pieces for the grid index
+  const railSegs = []
+  for (const e of rail) {
+    if (e.tags?.tunnel === 'yes' || e.tags?.railway === 'subway') continue
+    const pts = e.geometry.map((p) => project(p.lon, p.lat))
+    for (let i = 0; i + 1 < pts.length; i++) {
+      const [a, b] = [pts[i], pts[i + 1]], n = Math.max(1, Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / 80))
+      for (let k = 0; k < n; k++) { const p0 = [a[0] + ((b[0] - a[0]) * k) / n, a[1] + ((b[1] - a[1]) * k) / n], p1 = [a[0] + ((b[0] - a[0]) * (k + 1)) / n, a[1] + ((b[1] - a[1]) * (k + 1)) / n]; railSegs.push({ line: [p0, p1], c: [(p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2] }) }
+    }
+  }
+  const railIdx = buildGridIndex(railSegs, 100, (s) => s.c)
+  // paved squares and plazas (the same areas the paving layer draws): no trunk stands on the paving
+  const pavedAreas = osmPolys(uniq([...chunks('paving'), ...chunks('trails')]).filter((e) => isPavingArea(e.tags || {}))).filter((p) => pavingKind(p.tags))
+  const pavedIdx = buildGridIndex(pavedAreas, 200, (p) => [(p.bbox.minX + p.bbox.maxX) / 2, (p.bbox.minZ + p.bbox.maxZ) / 2])
+  const pavedNear = (p) => pavedIdx.query(p, 600).filter((q) => p[0] >= q.bbox.minX && p[0] <= q.bbox.maxX && p[1] >= q.bbox.minZ && p[1] <= q.bbox.maxZ).map((q) => q.outer)
+  const { kept: keptTrees, removed } = filterTrees(treeNodes, { zones: zones.map((z) => z.ring), clearings, nearBuildings: (p) => footIdx.query(p, 400), plazas: landmarkRuntime.plazas, rails: (p) => railIdx.query(p, 100).map((s) => s.line), paved: pavedNear })
+  log(`trees removed (canopy test) — venues ${removed.venue}, clearings ${removed.clearing}, plazas ${removed.plaza}, railways ${removed.rail}, footprints ${removed.building}, paving ${removed.paved}; kept ${keptTrees.length}; venue zones: ${zones.map((z) => z.key).join(', ')}`)
   treeNodes.length = 0
   for (const p of keptTrees) treeNodes.push(p)
   log(`parks ${parks.length}, water ${water.length}, roads ${roads.length}, rail ${rail.length}, trees ${treeNodes.length}`)
@@ -253,6 +294,10 @@ async function main() {
       const plaza = plazaAnchors(hull, { seed: h.sports.slot + 11 }, (p) => !inBuilding(p))
       rec.plaza = `venues/${h.key}.plaza.bin`; rec.plazaCount = plaza.length
       writeFileSync(join(OUT, rec.plaza), encodeAnchors(plaza, rec.center))
+    }
+    if (h.key === roofData.homePlateFrom && rooftops.seats.length) {
+      rec.rooftops = `venues/${h.key}.rooftops.bin`; rec.rooftopCount = rooftops.seats.length
+      writeFileSync(join(OUT, rec.rooftops), encodeAnchors(rooftops.seats, rec.center))
     }
     venueList.push(rec)
   }
@@ -395,7 +440,7 @@ async function main() {
   const buildingRecs = capByTile(buildings.map(buildingPoi).filter(Boolean).map((r) => ({ ...r, tile: tileKeyFor([r.x, r.z]) })), { apartments: 12, offices: 12 })
   // websites: OSM tags, then the cached Wikidata official sites (fetch/fetch-wikidata-sites.js)
   const wdFile = join(ROOT, 'cache', 'wikidata-sites.json'), wd = existsSync(wdFile) ? loadJson(wdFile) : {}
-  const poiRecs = mergeSites(dedupePois([...amenityRecs, ...buildingRecs]), wd)
+  const poiRecs = mergeSites(dedupePois([...amenityRecs, ...buildingRecs, ...rooftops.places]), wd)
   const withSite = (list) => list.filter((r) => r.tags?.website).length
   log(`places with a website: ${withSite(dedupePois([...amenityRecs, ...buildingRecs]))} from OSM tags → ${withSite(poiRecs)} with Wikidata`)
   const poisByTile = new Map()
@@ -423,7 +468,7 @@ async function main() {
       for (const pc of parapets) appendBuilding(L0, extrudeBuilding(pc), PARAPET_FACADE, seed, i, st)
       const crownStyle = (m) => (m.style ? styleIndex(m.style) : m.facade != null ? meshStyle(b, 'crown') : st) // own-surface crowns skip the wall recolour; sculpted detail names its material row
       for (const m of b.extraMeshes || []) appendBuilding(L0, m, m.facade ?? family, m.seed ?? seed, i, crownStyle(m))
-      for (const v of b.venueMeshes || []) { const vs = partStyle(b, v); appendBuilding(L0, v.mesh, v.facade, v.seed, i, vs); appendBuilding(L1, v.mesh, v.facade, v.seed, i, vs) }
+      for (const v of b.venueMeshes || []) { const vs = partStyle(b, v); appendBuilding(L0, v.mesh, v.facade, v.seed, i, vs); if (!v.lod0Only) appendBuilding(L1, v.mesh, v.facade, v.seed, i, vs) } // fine landmark detail (merlons, ledges, carving) is close-range only
       // LOD1: heroes and part-buildings keep their shape (they are the skyline); plain footprints simplify
       if (keepsShapeAtDistance(b)) { for (const pc of b.pieces) appendBuilding(L1, extrudeBuilding(pc), family, seed, i, st); for (const m of b.extraMeshes || []) if (!m.lod0Only) appendBuilding(L1, m, m.facade ?? family, m.seed ?? seed, i, crownStyle(m)) }
       else if (b.area >= 80) for (const pc of lod1Pieces(b)) appendBuilding(L1, extrudeBuilding(pc), family, seed, i, st)

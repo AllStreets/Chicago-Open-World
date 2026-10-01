@@ -1,7 +1,7 @@
 // pipeline/lib/heroes.js — hand-shaped landmark specs (data/heroes.json) → extrusion pieces + crown meshes.
 import { shapePieces } from './shapes.js'
 import { spire, antenna, pyramid, drum, sloped, vault, stepdome, pavilion, gothicCrown } from './crowns.js'
-import { signedArea, ringCentroid, ringBBox } from './geom.js'
+import { signedArea, ringCentroid, ringBBox, pointInRing } from './geom.js'
 import { orientedBox } from './sacred.js'
 import { insetRing } from './roofs.js'
 import { buildVenue, convexHull, STYLE, VENUE_FACADES } from './venue.js'
@@ -10,7 +10,7 @@ import { project } from '../../shared/project.js'
 import { aquaSlabs, AQUA } from './aqua.js'
 import { marinaTower, MARINA } from './marina.js'
 import { placeStatue } from './statues.js'
-import { tribuneDetail, wrigleyClockTower, skybridge } from './icons.js'
+import { tribuneDetail, wrigleyClockTower, skybridge, carbideDetail, willisDetail } from './icons.js'
 import { LANDMARK_FACADES } from './facadeIds.js'
 
 // Mirror of the façade shader's curtain-glass tint buckets: g = fract(seed * 3.7).
@@ -19,10 +19,18 @@ export const seedForTint = (tint) => TINT_G[tint] / 3.7
 
 const scaleRing = (ring, [cx, cz], s, [ox, oz] = [0, 0]) => ring.map(([x, z]) => [cx + (x - cx) * s + ox, cz + (z - cz) * s + oz])
 const merge = (ms) => ms.reduce((o, m) => { o.positions.push(...m.positions); o.normals.push(...m.normals); o.uvs.push(...m.uvs); return o }, { positions: [], normals: [], uvs: [] })
-// Phase 3: four corner pavilions on the tower's roof (900 N Michigan), inset `inset` m from the bounding-box corners
-function pavilions({ ring, base, top, w, d = w, roofH, inset = 0 }) {
-  const bb = ringBBox(ring), hx = w / 2 + inset, hz = d / 2 + inset
-  return merge([[bb.minX + hx, bb.minZ + hz], [bb.maxX - hx, bb.minZ + hz], [bb.maxX - hx, bb.maxZ - hz], [bb.minX + hx, bb.maxZ - hz]].map((at) => pavilion({ at, base, top, w, d, roofH })))
+// Phase 3: four corner pavilions on the tower's roof (900 N Michigan), inset `inset` m from the bounding-box corners.
+// An irregular footprint can leave a bounding-box corner over empty air (user fix: a pavilion floated in the sky), so
+// each one walks in from its corner toward the centre until its whole footprint, plus the inset, is on the roof.
+export function pavilions({ ring, base, top, w, d = w, roofH, inset = 0 }) {
+  const bb = ringBBox(ring), hx = w / 2 + inset, hz = d / 2 + inset, [cx, cz] = ringCentroid(ring)
+  const fits = ([x, z]) => [[-1, -1], [1, -1], [1, 1], [-1, 1]].every(([a, b]) => pointInRing([x + a * hx, z + b * hz], ring))
+  const place = (k) => {
+    const d0 = [cx - k[0], cz - k[1]], len = Math.hypot(...d0)
+    for (let t = 0; t <= len; t += 0.5) { const p = [k[0] + (d0[0] * t) / len, k[1] + (d0[1] * t) / len]; if (fits(p)) return p }
+    return [cx, cz]
+  }
+  return merge([[bb.minX + hx, bb.minZ + hz], [bb.maxX - hx, bb.minZ + hz], [bb.maxX - hx, bb.maxZ - hz], [bb.minX + hx, bb.maxZ - hz]].map((k) => pavilion({ at: place(k), base, top, w, d, roofH })))
 }
 const gothic = (c) => { const g = gothicCrown(c); return merge([g.lantern, g.piers, g.buttresses, g.pinnacles]) }
 const CROWNS = { spire, antenna, pyramid, drum, sloped, vault, stepdome, pavilion, pavilions, gothic }
@@ -108,6 +116,17 @@ export function applyHero(b, spec) {
     const baseP = pieces.reduce((a, p) => (Math.abs(signedArea(p.outer)) > Math.abs(signedArea(a.outer)) ? p : a))
     const sp = spec.sculptParams ?? {}
     extraMeshes.push(...asExtra(tribuneDetail({ tower: tower.outer, towerBase: baseP.top, towerTop: spec.bodyTopM ?? tower.top, crownTop: sp.crownTop ?? 141, entranceFace: sp.entranceFace ?? [1, 0], base: baseP.outer, rLantern: sp.rLantern ?? 7.5 })))
+  }
+  if (spec.sculpt === 'willis' && pieces.length) {
+    const sp = spec.sculptParams ?? {}, tubes = pieces.filter((p) => Math.abs(signedArea(p.outer)) >= (sp.minTubeM2 ?? 200))
+    extraMeshes.push(...asExtra(willisDetail({ pieces: tubes, belts: sp.belts ?? [], ledge: sp.ledge ?? null })))
+  }
+  if (spec.sculpt === 'carbide' && tower) {
+    const sp = spec.sculptParams ?? {}, top = spec.bodyTopM ?? tower.top
+    const shaft = pieces.reduce((a, p) => (p.top > a.top ? p : a))
+    const r = carbideDetail({ tower: shaft.outer, bodyTop: top, graniteTop: sp.graniteTop ?? 9, setbacks: sp.setbacks ?? [], key: spec.key })
+    pieces = [...pieces.map((p) => (p === shaft ? { ...p, top: r.shaftTop } : p)), ...r.tiers]
+    extraMeshes.push(...asExtra(r.meshes))
   }
   if (spec.sculpt === 'wrigley' && pieces.length) {
     const sp = spec.sculptParams ?? {}

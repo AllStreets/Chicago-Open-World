@@ -1064,6 +1064,43 @@
    "kindLine": "Landmark"
   },
   {
+   "key": "couchtomb",
+   "name": "Couch Tomb",
+   "aliases": [
+    "Ira Couch Tomb",
+    "Couch Mausoleum"
+   ],
+   "x": -297,
+   "z": -3432,
+   "top": 5,
+   "beacon": [
+    -297,
+    9,
+    -3432
+   ],
+   "kind": "landmark",
+   "kindLine": "Tomb"
+  },
+  {
+   "key": "chesspavilion",
+   "name": "Chess Pavilion",
+   "aliases": [
+    "North Avenue Beach Chess Pavilion",
+    "Lincoln Park Chess Pavilion",
+    "chess"
+   ],
+   "x": 236,
+   "z": -3252,
+   "top": 3,
+   "beacon": [
+    235,
+    10,
+    -3251
+   ],
+   "kind": "landmark",
+   "kindLine": "Pavilion"
+  },
+  {
    "key": "northavebeach",
    "name": "North Avenue Beach House",
    "aliases": [
@@ -1135,6 +1172,24 @@
    ],
    "kind": "venue",
    "kindLine": "Ballpark · home of the Cubs"
+  },
+  {
+   "key": "wavelandclock",
+   "name": "Waveland Clock Tower",
+   "aliases": [
+    "Waveland Fieldhouse",
+    "Lincoln Park Carillon Tower"
+   ],
+   "x": -1101,
+   "z": -7759,
+   "top": 38,
+   "beacon": [
+    -1119,
+    42,
+    -7746
+   ],
+   "kind": "landmark",
+   "kindLine": "Clock tower"
   },
   {
    "key": "buckingham",
@@ -1426,6 +1481,25 @@
    ],
    "kind": "landmark",
    "kindLine": "Riverwalk"
+  },
+  {
+   "key": "lilypool",
+   "name": "Alfred Caldwell Lily Pool",
+   "aliases": [
+    "Lily Pool",
+    "Caldwell Lily Pool",
+    "Lincoln Park Lily Pool"
+   ],
+   "x": -513,
+   "z": -4770,
+   "top": 3,
+   "beacon": [
+    -520,
+    8,
+    -4806
+   ],
+   "kind": "landmark",
+   "kindLine": "Garden"
   },
   {
    "key": "bridge-franklin-orleans",
@@ -8212,7 +8286,7 @@
    "lod0": "tiles/-2_-10.glb",
    "lod1": "tiles/-2_-10.lod1.glb",
    "meta": "tiles/-2_-10.json",
-   "buildings": 88,
+   "buildings": 89,
    "maxHeight": 114
   },
   {
@@ -8632,7 +8706,7 @@
    "lod0": "tiles/-5_-15.glb",
    "lod1": "tiles/-5_-15.lod1.glb",
    "meta": "tiles/-5_-15.json",
-   "buildings": 334,
+   "buildings": 336,
    "maxHeight": 53.2
   },
   {
@@ -11477,7 +11551,7 @@
  "neighborhoods": "neighborhoods.json",
  "pois": {
   "index": "pois-index.json",
-  "count": 7980,
+  "count": 7996,
   "categories": [
    {
     "id": "food",

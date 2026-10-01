@@ -17,7 +17,7 @@ import { uniformColors } from './formations.js'
 import { useSports } from './sportsStore.js'
 import { useStore } from '../state/store.js'
 import { lightLevel } from './venueStates.js'
-import { shirtColors, crowdDensity, lifeVisible, shownCount, flagMask, homeTeamFor, celebration } from './crowd.js'
+import { shirtColors, crowdDensity, lifeVisible, shownCount, flagMask, homeTeamFor, celebration, rooftopCount } from './crowd.js'
 import { fetchAnchors, fieldFans } from './anchors.js'
 
 const MOUNT_M = 3000
@@ -40,6 +40,18 @@ function SeatCrowd({ venue, st }) {
   const density = Math.max(crowdDensity(st?.state ?? 'idle', st?.game, venue.capacity), party.minDensity)
   return <Crowd anchors={anchors} split={split} seatCount={shownCount(split, density)} fanCount={party.fans} shirts={shirts} flags={flags}
     wave={party.wave} cheer={() => swellNow(useSports.getState().states[venue.key]?.state, venue.slot + 1, Date.now() / 1000, useSports.getState().swells[venue.key])} level={lightLevel(st?.state)} center={venue.center} radius={venue.radius} />
+}
+
+// The rooftop clubs across Waveland and Sheffield (user item 13): the same billboard crowd, on the roof bleachers.
+function RoofCrowd({ venue, st }) {
+  const [anchors, setAnchors] = useState(null)
+  useEffect(() => { let alive = true; fetchAnchors(venue.rooftops, venue.center).then((a) => alive && setAnchors(a)); return () => { alive = false } }, [venue])
+  const home = homeTeamFor(venue, st)
+  const shirts = useMemo(() => (anchors ? shirtColors(anchors.length / 4, home.colors, null, venue.slot + 31) : []), [anchors, home, venue])
+  const flags = useMemo(() => (anchors ? flagMask(anchors.length / 4) : new Float32Array(0)), [anchors])
+  if (!anchors?.length) return null
+  const n = anchors.length / 4
+  return <Crowd anchors={anchors} split={n} seatCount={rooftopCount(venue, st)} shirts={shirts} flags={flags} level={lightLevel(st?.state)} center={venue.center} radius={venue.radius + 60} />
 }
 
 const BOARD_RANGE_M = 3000
@@ -70,6 +82,7 @@ function VenueLife({ venue }) {
     <>
       <group ref={group}>
         {quality !== 'LOW' && venue.seats && <SeatCrowd venue={venue} st={st} />}
+        {quality !== 'LOW' && venue.rooftops && <RoofCrowd venue={venue} st={st} />}
         {quality !== 'LOW' && venue.frame && st?.state === 'live' && st.game && (
           <>
             <Players frame={venue.frame} sport={st.game.sport} colors={uniformColors(st.game.sport, homeTeamFor(venue, st))} />

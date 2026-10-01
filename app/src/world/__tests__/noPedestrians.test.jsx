@@ -4,7 +4,8 @@ import { describe, it, expect } from 'vitest'
 import { readFileSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 
-const src = (p) => join(process.cwd(), 'src', p)
+const APP = existsSync(join(process.cwd(), 'src')) ? process.cwd() : join(process.cwd(), 'app') // run from app/ or the repo root
+const src = (p) => join(APP, 'src', p)
 describe('no pedestrians', () => {
   it('Landmarks mounts no plaza people and the plaza-people modules are gone', () => {
     expect(readFileSync(src('world/Landmarks.jsx'), 'utf8')).not.toMatch(/PlazaPeople/)

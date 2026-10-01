@@ -1,11 +1,12 @@
 // app/src/lib/__tests__/searchCoverage.test.js — ⌘K finds everything we add (user, 2026-09-30): every landmark in the
 // shipped manifest is the first or near-first result for its own name, and for each of its aliases.
 import { describe, it, expect } from 'vitest'
-import { readFileSync } from 'node:fs'
+import { readFileSync, existsSync } from 'node:fs'
 import { buildPlaces, searchPlaces } from '../places.js'
 import { BOOKMARKS } from '../bookmarks.js'
 
-const manifest = JSON.parse(readFileSync(`${process.cwd()}/public/world/manifest.json`, 'utf8')) // the shipped world (tests run in app/)
+const APP = existsSync(`${process.cwd()}/public/world`) ? process.cwd() : `${process.cwd()}/app` // run from app/ or the repo root
+const manifest = JSON.parse(readFileSync(`${APP}/public/world/manifest.json`, 'utf8')) // the shipped world (tests run in app/)
 describe('search coverage', () => {
   const all = buildPlaces(manifest, BOOKMARKS)
   it('every manifest landmark is found by its name and each alias (top 5)', () => {
