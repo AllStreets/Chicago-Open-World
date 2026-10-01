@@ -31,3 +31,24 @@ export function crossStreets(x, z, isWater) {
   if (isWater ? isWater(x, z) : ew > LAKE_EW) return 'LAKE MICHIGAN'
   return `${nearest(NS_STREETS, ew)} & ${nearest(EW_STREETS, ns)}`
 }
+
+// Typed addresses (P4 WORK): "233 S Wacker", "333 N Green St" → world metres. The parser knows more streets than the
+// cross-street readout (whose table stays as it is): the West Loop and Fulton Market grid included.
+const ADDRESS_NS = [...NS_STREETS, [-540, 'CLINTON'], [-650, 'DESPLAINES'], [-832, 'GREEN'], [-900, 'PEORIA'], [-932, 'SANGAMON'], [-1032, 'CARPENTER'],
+  [-1100, 'ABERDEEN'], [-1132, 'MAY'], [-1232, 'ELIZABETH'], [-1300, 'ADA'], [-1400, 'NOBLE'], [-1500, 'GREENVIEW'], [-1700, 'PAULINA'], [-1800, 'WOOD'],
+  [-600, 'LARRABEE'], [-400, 'ORLEANS'], [-75, 'RUSH'], [-50, 'STATE'], [130, 'ST CLAIR'], [-1000, 'HALSTED']].filter((r, i, a) => a.findIndex((q) => q[1] === r[1]) === i)
+const SUFFIX = /\s+(st|street|ave|avenue|dr|drive|blvd|boulevard|rd|road|pl|place|pkwy|parkway|ct|court|way)\.?$/i
+export function parseGridAddress(query) {
+  const m = /^\s*(\d{1,5})\s+([nsew])\.?\s+(.+?)\s*$/i.exec(String(query ?? ''))
+  if (!m) return null
+  const n = Number(m[1]), dir = m[2].toUpperCase(), street = m[3].replace(SUFFIX, '').toUpperCase().replace(/\s+/g, ' ').trim()
+  const find = (table) => table.find(([, name]) => name === street || name.startsWith(street) || street.startsWith(name))
+  if (dir === 'N' || dir === 'S') { // a north–south street: its number is the east–west position
+    const row = find(ADDRESS_NS)
+    if (!row) return null
+    return { x: row[0] * M_PER_NUMBER, z: (dir === 'S' ? n : -n) * M_PER_NUMBER, label: `${n} ${dir} ${row[1]}` }
+  }
+  const row = find(EW_STREETS)
+  if (!row) return null
+  return { x: (dir === 'E' ? n : -n) * M_PER_NUMBER, z: -row[0] * M_PER_NUMBER, label: `${n} ${dir} ${row[1]}` }
+}

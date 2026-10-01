@@ -76,7 +76,9 @@ export const useStore = create((set) => ({
   lens: null,
   setLens: (l) => set((s) => ({ lens: s.lens === l ? null : l })),
   office: null,
-  setOffice: (office) => set({ office }),
+  setOffice: (office) => set({ office, officeArmed: false }),
+  officeArmed: false, // WORK: the next map click sets the office
+  setOfficeArmed: (officeArmed) => set({ officeArmed }),
   poiCats: 'all',
   setPoiCats: (poiCats) => set({ poiCats }),
   placesOn: false,

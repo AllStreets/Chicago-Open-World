@@ -9,6 +9,7 @@ import { useStore } from '../state/store.js'
 import { bldgIndexFromHit, buildingInfo, tooltipLines } from '../lib/picking.js'
 import { pickPin } from './PoiPins.jsx'
 import { zoneAt } from '../lib/neighborhoods.js'
+import { crossStreets } from '../lib/grid.js'
 import { POI_CATEGORIES } from '../data/poiCategories.js'
 
 THREE.BufferGeometry.prototype.computeBoundsTree = computeBoundsTree
@@ -78,6 +79,12 @@ export default function Picker() {
     const onUp = (e) => {
       const d = down; down = null
       if (!d || e.button !== 0 || Math.hypot(e.clientX - d.x, e.clientY - d.y) > 4 || performance.now() - d.t > 400) return // a drag, not a click
+      if (useStore.getState().officeArmed) { // WORK: this click sets the office (on a building, or the ground under the pointer)
+        const s = useStore.getState(), hitB = pick(e), g = new THREE.Vector3()
+        const at = hitB ? hitB.hit.point : ray.current.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), g)
+        if (at) s.setOffice({ x: at.x, z: at.z, label: hitB?.info?.name || hitB?.info?.address || crossStreets(at.x, at.z) })
+        return
+      }
       const pin = pickPin(e.clientX, e.clientY)
       if (pin) { useStore.getState().select({ kind: 'poi', id: pin.id, data: pin }); return }
       const p = pick(e)

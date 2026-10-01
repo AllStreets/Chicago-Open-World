@@ -36,3 +36,15 @@ describe('wider world streets', () => {
     expect(crossStreets(0, 0, () => false)).toBe('STATE & MADISON')
   })
 })
+
+import { parseGridAddress } from '../grid.js'
+describe('grid addresses (P4 Task 8)', () => {
+  it('parses grid addresses into world metres', () => {
+    const r = parseGridAddress('233 S Wacker')
+    expect(r.label).toBe('233 S WACKER'); expect(r.z).toBeCloseTo(233 * M_PER_NUMBER, 0); expect(r.x).toBeCloseTo(-360 * M_PER_NUMBER, 0)
+    expect(parseGridAddress('800 N Michigan').z).toBeCloseTo(-800 * M_PER_NUMBER, 0)
+    expect(parseGridAddress('333 N Green St').x).toBeCloseTo(-832 * M_PER_NUMBER, 0) // Green is 832 W
+    expect(parseGridAddress('100 W Madison')).toMatchObject({ x: expect.closeTo(-100 * M_PER_NUMBER, 0), z: expect.closeTo(0, 0) })
+    expect(parseGridAddress('pizza')).toBeNull()
+  })
+})

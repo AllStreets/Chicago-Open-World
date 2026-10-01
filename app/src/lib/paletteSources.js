@@ -3,6 +3,7 @@
 import { useStore } from '../state/store.js'
 import { POI_CATEGORIES } from '../data/poiCategories.js'
 import { TOURS, startTour } from './tourPoses.js'
+import { parseGridAddress } from './grid.js'
 import { transitPlaces } from '../transit/palette.js'
 import { gamePlaces } from '../sports/palette.js'
 import { useSports } from '../sports/sportsStore.js'
@@ -44,4 +45,16 @@ export function placeCommands() {
 // Tours (P4): each of the three guided tours, from ⌘K
 export function tourCommands() {
   return TOURS.map((t) => ({ id: `tour:${t.id}`, kind: 'guide', name: `Tour: ${t.name}`, sub: `${t.stops.length} stops · Space pauses, , and . step, Esc exits`, aliases: ['tour', t.name], run: () => startTour(t.id, useStore) }))
+}
+
+// Typed addresses (P4 WORK): "333 N Green" → set it as the office (and open WORK), or fly there
+export function addressRows(query) {
+  const a = parseGridAddress(query)
+  if (!a) return []
+  const s = () => useStore.getState()
+  const pose = { position: [a.x + 260, 220, a.z + 320], target: [a.x, 20, a.z] }
+  return [
+    { id: `addr:office:${a.label}`, kind: 'guide', name: `Set office at ${a.label}`, sub: 'Work lens · commute estimate', run: () => { s().setOffice(a); if (s().lens !== 'WORK') s().setLens('WORK'); s().startFlight(pose, a.label) } },
+    { id: `addr:fly:${a.label}`, kind: 'guide', name: `Fly to ${a.label}`, sub: 'Address', run: () => s().startFlight(pose, a.label) },
+  ]
 }
