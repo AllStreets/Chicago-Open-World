@@ -101,10 +101,12 @@ test('M, X and K keep a train follow; W takes the camera back', async ({ page })
   await page.goto('/?view=loop&time=day&sports=idle&stats')
   await page.waitForFunction(() => window.__worldReady === true, null, { timeout: 90_000 })
   await page.waitForFunction(() => window.__hudReady === true && !!window.__store.getState().transit, null, { timeout: 60_000 })
-  // the simulator can still be empty right after the HUD is ready — wait for an elevated train to follow
-  await page.waitForFunction(() => window.__live?.trains().some((x) => x.cars?.[0] && x.head.p[1] > 0), null, { timeout: 30_000 })
+  // the simulator can still be empty right after the HUD is ready — wait for a train to follow. Overnight only the
+  // Red and Blue owl services run (both in the subway here), so prefer an elevated train but take any.
+  await page.waitForFunction(() => window.__live?.trains().some((x) => x.cars?.[0]), null, { timeout: 30_000 })
   const id = await page.evaluate(() => {
-    const t = window.__live.trains().find((x) => x.cars?.[0] && x.head.p[1] > 0)
+    const all = window.__live.trains().filter((x) => x.cars?.[0])
+    const t = all.find((x) => x.head.p[1] > 0) ?? all[0]
     window.__store.getState().startFollow(t.id, 'chase')
     return t.id
   })
