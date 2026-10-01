@@ -23,6 +23,6 @@ describe('POI colours (user fixes)', () => {
     expect(new Set(POI_CATEGORIES.map((c) => c.color)).size).toBe(POI_CATEGORIES.length)
     render(<PoiFilters />)
     const bars = screen.getByRole('button', { name: 'Bars' })
-    expect(bars.style.getPropertyValue('--cat')).toBe('#7048E8')
+    expect(bars.style.getPropertyValue('--cat')).toBe('#9C36B5')
   })
 })

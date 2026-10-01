@@ -5,6 +5,10 @@
 export const BLOOM_LIMIT = 0.55 // PostFX bloom: luminanceThreshold 0.55 (smoothstep from there up)
 // the pin's outline and glyph: the lightest grey that stays under the bloom — reads as white against the deep fills
 export const PIN_WHITE = '#c3c8cd'
+// a thin near-black rim (and a soft drop shadow) separates the pin from the city instead of a white halo
+export const PIN_OUTLINE = '#14171c'
+// at night the pins step down so they sit in the dark scene like painted markers, not lamps
+export const PIN_NIGHT_DIM = 0.72
 
 export function srgbToLinear(hex) {
   const n = parseInt(hex.replace('#', ''), 16)

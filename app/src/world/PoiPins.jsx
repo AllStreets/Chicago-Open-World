@@ -10,7 +10,8 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { poiPinIcon } from '../data/poiIcons.js'
 import { useStore } from '../state/store.js'
 import { POI_CATEGORIES } from '../data/poiCategories.js'
-import { pinInput, PIN_WHITE } from '../lib/pinColors.js'
+import { pinInput, PIN_WHITE, PIN_OUTLINE, PIN_NIGHT_DIM } from '../lib/pinColors.js'
+import { facadeUniforms } from './materials/facadeMaterial.js'
 import { filterPois, MAX_PINS, pinBudget, pinFocus } from '../lib/poiFilter.js'
 import { allTilePois, usePoiVersion } from './poiRegistry.js'
 import { loadLivePlaces } from './livePlaces.js'
@@ -20,6 +21,7 @@ const PIN_PX = 30, CELL = 128, N = POI_CATEGORIES.length
 // as chosen — deep and distinct — instead of washed out and glowing
 const CAT_RGB = POI_CATEGORIES.map((c) => pinInput(c.color))
 const WHITE = pinInput(PIN_WHITE)
+const OUTLINE = pinInput(PIN_OUTLINE)
 // the badge's centre sits this far above the pin's tip (as a fraction of PIN_PX): picking aims at the badge
 export const BADGE_UP = 0.62
 
@@ -42,7 +44,8 @@ function glyphAtlas(maxAniso = 8) {
 }
 
 // A map pin drawn with signed distances in pixels (crisp at any size, anti-aliased with fwidth): a round badge in the
-// category colour with a short tail down to the roof it marks, a white 1.5 px outline, a soft drop shadow, a white glyph.
+// category colour with a short tail down to the roof it marks, a thin dark outline, a soft drop shadow, a white glyph. Matte:
+// every colour stays under the bloom threshold, and the whole pin dims at night.
 const vert = /* glsl */ `
 attribute vec3 aPos; attribute float aIcon; attribute float aHot; attribute vec3 aCol;
 uniform vec2 uViewport; uniform float uPx;
@@ -58,7 +61,7 @@ void main() {
   vP = vec2(position.x, position.y + 0.5) * 1.2; vS = s; vIcon = aIcon; vHot = aHot; vCol = aCol;
 }`
 const frag = /* glsl */ `
-uniform sampler2D uAtlas; uniform float uN; uniform vec3 uWhite;
+uniform sampler2D uAtlas; uniform float uN; uniform vec3 uWhite; uniform vec3 uOutline; uniform float uDim;
 varying vec2 vP; varying float vIcon; varying float vHot; varying vec3 vCol; varying float vS;
 float pinSd(vec2 p) {             // p in units of the pin size; badge centre (0, 0.62), radius 0.36, tail to (0, 0.02)
   vec2 c = vec2(0.0, ${BADGE_UP.toFixed(2)});
@@ -75,7 +78,7 @@ void main() {
   float body = 1.0 - smoothstep(-aa, aa, d);
   float shadow = (1.0 - smoothstep(-0.02, 0.12, pinSd(vP + vec2(0.0, 0.06)))) * 0.38;
   float edge = 1.0 - smoothstep(-aa, aa, d + 1.6 * px); // inside the outline
-  vec3 col = mix(uWhite, vCol * (1.0 + 0.12 * vHot), edge);   // white 1.5 px outline around the fill (under the bloom threshold)
+  vec3 col = mix(uOutline, vCol * uDim * (1.0 + 0.12 * vHot), edge); // dark 1.5 px rim around the fill
   vec2 g = (vP - vec2(0.0, ${BADGE_UP.toFixed(2)})) / 0.72 + 0.5;  // the glyph inside the badge
   float glyph = (g.x > 0.0 && g.x < 1.0 && g.y > 0.0 && g.y < 1.0) ? texture2D(uAtlas, vec2((vIcon + g.x) / uN, g.y)).a : 0.0;
   col = mix(col, uWhite, glyph * edge);
@@ -122,7 +125,7 @@ export default function PoiPins({ max: maxProp } = {}) {
     g.setAttribute('aCol', new THREE.InstancedBufferAttribute(new Float32Array(MAX_PINS.ULTRA * 3), 3))
     g.instanceCount = 0
     const m = new THREE.ShaderMaterial({ vertexShader: vert, fragmentShader: frag, transparent: true, depthWrite: false,
-      uniforms: { uAtlas: { value: atlas }, uN: { value: N }, uWhite: { value: new THREE.Vector3(...WHITE) }, uViewport: { value: new THREE.Vector2(1, 1) }, uPx: { value: PIN_PX } } })
+      uniforms: { uAtlas: { value: atlas }, uN: { value: N }, uWhite: { value: new THREE.Vector3(...WHITE) }, uOutline: { value: new THREE.Vector3(...OUTLINE) }, uDim: { value: 1 }, uViewport: { value: new THREE.Vector2(1, 1) }, uPx: { value: PIN_PX } } })
     const mesh = new THREE.Mesh(g, m)
     mesh.frustumCulled = false
     mesh.renderOrder = 5
@@ -146,6 +149,7 @@ export default function PoiPins({ max: maxProp } = {}) {
   const tgt = useMemo(() => new THREE.Vector3(), []), lastPick = useRef(0)
   useFrame((state) => {
     mesh.material.uniforms.uViewport.value.set(size.width, size.height)
+    mesh.material.uniforms.uDim.value = 1 - (1 - PIN_NIGHT_DIM) * facadeUniforms.uNight.value
     view.camera = camera; view.el = gl.domElement
     if (!on) return
     // the focus follows the camera (the target is where it looks: the controls' target, or ahead along the view)
