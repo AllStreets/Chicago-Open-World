@@ -9,16 +9,21 @@ import { pointAt } from './path.js'
 import { consistFor, carPoses } from './consist.js'
 import { chicagoClock, periodOf } from './clock.js'
 
-let tracker = null, trackerSim = null
+let tracker = null, trackerSim = null, pending = null
 export function getTracker() {
   const sim = getSim()
   if (!sim) return null
-  if (!tracker || trackerSim !== sim) { tracker = createLiveTracker({ paths: servicePaths(sim), project }); trackerSim = sim }
+  if (!tracker || trackerSim !== sim) {
+    tracker = createLiveTracker({ paths: servicePaths(sim), project }); trackerSim = sim
+    if (pending) { tracker.ingest(pending.trains, pending.tMs); pending = null } // a report that came before the track did
+  }
   return tracker
 }
 
 export function ingestLiveTrains(json, tMs = Date.now()) {
-  getTracker()?.ingest(json?.trains ?? [], tMs)
+  const t = getTracker(), trains = json?.trains ?? []
+  if (t) t.ingest(trains, tMs)
+  else pending = { trains, tMs } // transit.json still loading: keep the latest report for when it lands
 }
 
 export const liveReports = () => tracker?.reports() ?? []
@@ -43,5 +48,5 @@ export function decorateLive(t, sim = getSim(), tMs = Date.now()) {
 export function trainsNow(tMs = Date.now()) {
   const sim = getSim()
   if (!sim) return []
-  return pickTrains({ ctaStatus: useStore.getState().feeds.cta, tracker, simTrainsAt: (ms) => sim.trainsAt(ms), tMs, decorate: (t) => decorateLive(t, sim, tMs) })
+  return pickTrains({ ctaStatus: useStore.getState().feeds.cta, tracker: getTracker(), simTrainsAt: (ms) => sim.trainsAt(ms), tMs, decorate: (t) => decorateLive(t, sim, tMs) })
 }

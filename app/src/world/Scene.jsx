@@ -37,6 +37,8 @@ import StationHits from '../transit/StationHits.jsx'
 import Landmarks from './Landmarks.jsx'
 import TrainAudio from '../transit/TrainAudio.jsx'
 import { followNearest } from '../transit/actions.js'
+import { getTracker } from '../transit/liveStore.js'
+import { getTrains } from '../transit/simStore.js'
 import PerfProbe from './PerfProbe.jsx'
 import { PRESETS } from '../lib/atmosphere.js'
 import { WEATHER_MODES } from '../weather/weatherState.js'
@@ -89,7 +91,7 @@ export default function Scene() {
   const threeCamera = useThree((s) => s.camera)
   // test-only ?perf turns the exact draw probe on (it owns renderer.info while on, so ?stats specs that read it stay unaffected)
   useEffect(() => { if (new URLSearchParams(window.location.search).has('perf')) useStore.getState().setPerfOn(true) }, [])
-  useEffect(() => { if (new URLSearchParams(window.location.search).has('stats')) { window.__gl = gl; window.__store = useStore; window.__clearanceAt = clearanceAt; window.__scene = threeScene; window.__camera = threeCamera } }, [gl, threeScene, threeCamera])
+  useEffect(() => { if (new URLSearchParams(window.location.search).has('stats')) { window.__gl = gl; window.__store = useStore; window.__clearanceAt = clearanceAt; window.__scene = threeScene; window.__camera = threeCamera; window.__live = { tracker: getTracker, trains: getTrains } } }, [gl, threeScene, threeCamera])
 
   return (
     <>
