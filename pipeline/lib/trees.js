@@ -4,6 +4,7 @@
 import { pointInRing, ringBBox } from './geom.js'
 import { convexHull } from './venue.js'
 import polygonClipping from 'polygon-clipping'
+import { hashSeed } from './buildings.js'
 
 // Arenas and plazas without a field mesh that must still stay clear.
 export const TREE_FREE_HEROES = new Set(['unitedcenter', 'wintrust', 'buckingham'])
@@ -23,13 +24,40 @@ export function venueZones(buildings, specFor) {
     .map((b) => ({ key: specFor(b).key, ring: convexHull(b.polygons.flatMap((p) => p.outer)) }))
 }
 
-export function filterTrees(points, { zones = [], clearings = [], nearBuildings = () => [] } = {}) {
-  const kept = [], removed = { venue: 0, clearing: 0, building: 0 }
+// A tree is its canopy, not its trunk (user fix: trees grew out of the BCG podium and through Soldier Field's
+// colonnade). The canopy is CANOPY_M × the tree's scale — the same hash the tile writer uses for that scale.
+export const CANOPY_M = 3.5
+export const VENUE_MARGIN_M = 14 // colonnades, concourses and gates around a stadium's hull
+export const RAIL_CLEAR_M = 2.4 // half a mainline right-of-way
+export const treeScale = ([x, z]) => 0.8 + hashSeed(`${Math.round(x)}:${Math.round(z)}`) * 0.6
+export const canopyRadius = (p) => CANOPY_M * treeScale(roundTree(p))
+
+function segDist([px, pz], [ax, az], [bx, bz]) {
+  const dx = bx - ax, dz = bz - az, l2 = dx * dx + dz * dz
+  const t = l2 ? Math.max(0, Math.min(1, ((px - ax) * dx + (pz - az) * dz) / l2)) : 0
+  return Math.hypot(px - ax - t * dx, pz - az - t * dz)
+}
+export const ringDist = (p, ring) => ring.reduce((m, a, i) => Math.min(m, segDist(p, a, ring[(i + 1) % ring.length])), Infinity)
+// inside the ring, or within r of its edge
+const nearRing = (p, ring, r) => pointInRing(p, ring) || ringDist(p, ring) < r
+// a canopy over any part of a footprint: inside its walls (not in a courtyard), or reaching any wall, courtyard walls
+// included; a hero's built form (treeHull) counts too when it spills past the OSM outline
+export function canopyOverFootprint(p, b, r) {
+  if (b.bbox && (p[0] < b.bbox.minX - r || p[0] > b.bbox.maxX + r || p[1] < b.bbox.minZ - r || p[1] > b.bbox.maxZ + r) && !b.treeHull) return false
+  if (insideFootprint(p, b)) return true
+  if (b.polygons.some((q) => ringDist(p, q.outer) < r || (q.holes || []).some((h) => ringDist(p, h) < r))) return true
+  return Boolean(b.treeHull && nearRing(p, b.treeHull, r))
+}
+
+export function filterTrees(points, { zones = [], clearings = [], nearBuildings = () => [], plazas = [], rails = () => [] } = {}) {
+  const kept = [], removed = { venue: 0, clearing: 0, building: 0, plaza: 0, rail: 0 }
   for (const raw of points) {
-    const p = roundTree(raw)
-    if (zones.some((z) => pointInRing(p, z))) removed.venue++
-    else if (clearings.some((c) => pointInRing(p, c))) removed.clearing++
-    else if (nearBuildings(p).some((b) => insideFootprint(p, b))) removed.building++
+    const p = roundTree(raw), r = canopyRadius(p)
+    if (zones.some((z) => nearRing(p, z, r + VENUE_MARGIN_M))) removed.venue++
+    else if (clearings.some((c) => nearRing(p, c, r))) removed.clearing++
+    else if (plazas.some((q) => Math.hypot(p[0] - q.c[0], p[1] - q.c[1]) < q.r + r)) removed.plaza++
+    else if (rails(p).some((line) => line.some((a, i) => i + 1 < line.length && segDist(p, a, line[i + 1]) < r + RAIL_CLEAR_M))) removed.rail++
+    else if (nearBuildings(p).some((b) => canopyOverFootprint(p, b, r))) removed.building++
     else kept.push(p)
   }
   return { kept, removed }

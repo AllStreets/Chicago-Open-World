@@ -230,10 +230,30 @@ async function main() {
   log(`parks cut around venues: ${parks.length} → ${parksCut.length} polygons`)
   parks.length = 0
   for (const p of parksCut) parks.push(p)
-  const footIdx = buildGridIndex(buildings.filter((b) => b.area > 30), 200, (b) => b.centroid)
+  // a hero's built form can spill past its OSM outline (a podium drawn on the oriented box): its hull keeps trees off
+  for (const b of buildings) {
+    if (!b.hero || zones.some((z) => z.key === b.hero)) continue
+    const xz = b.polygons.flatMap((p) => p.outer).concat((b.pieces ?? []).flatMap((p) => p.outer))
+    for (const m of [...(b.venueMeshes ?? []).map((v) => v.mesh), ...(b.extraMeshes ?? [])]) for (let i = 0; i < m.positions.length; i += 9) xz.push([m.positions[i], m.positions[i + 2]])
+    const hull = convexHull(xz)
+    // a sprawling landmark (a riverwalk, a park's trellis) would sweep whole blocks: only a compact built form counts
+    if (Math.abs(signedArea(hull)) <= 2.5 * b.area + 2000) b.treeHull = hull
+  }
+  const footIdx = buildGridIndex(buildings.filter((b) => b.area > 30 || b.treeHull), 200, (b) => b.centroid)
   const clearings = buildings.flatMap((b) => b.clearPolys ?? [])
-  const { kept: keptTrees, removed } = filterTrees(treeNodes, { zones: zones.map((z) => z.ring), clearings, nearBuildings: (p) => footIdx.query(p, 400) })
-  log(`trees removed — venues ${removed.venue}, clearings ${removed.clearing}, footprints ${removed.building}; venue zones: ${zones.map((z) => z.key).join(', ')}`)
+  // railways at grade and elevated (not in tunnels), cut into ≤ 80 m pieces for the grid index
+  const railSegs = []
+  for (const e of rail) {
+    if (e.tags?.tunnel === 'yes' || e.tags?.railway === 'subway') continue
+    const pts = e.geometry.map((p) => project(p.lon, p.lat))
+    for (let i = 0; i + 1 < pts.length; i++) {
+      const [a, b] = [pts[i], pts[i + 1]], n = Math.max(1, Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / 80))
+      for (let k = 0; k < n; k++) { const p0 = [a[0] + ((b[0] - a[0]) * k) / n, a[1] + ((b[1] - a[1]) * k) / n], p1 = [a[0] + ((b[0] - a[0]) * (k + 1)) / n, a[1] + ((b[1] - a[1]) * (k + 1)) / n]; railSegs.push({ line: [p0, p1], c: [(p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2] }) }
+    }
+  }
+  const railIdx = buildGridIndex(railSegs, 100, (s) => s.c)
+  const { kept: keptTrees, removed } = filterTrees(treeNodes, { zones: zones.map((z) => z.ring), clearings, nearBuildings: (p) => footIdx.query(p, 400), plazas: landmarkRuntime.plazas, rails: (p) => railIdx.query(p, 100).map((s) => s.line) })
+  log(`trees removed (canopy test) — venues ${removed.venue}, clearings ${removed.clearing}, plazas ${removed.plaza}, railways ${removed.rail}, footprints ${removed.building}; kept ${keptTrees.length}; venue zones: ${zones.map((z) => z.key).join(', ')}`)
   treeNodes.length = 0
   for (const p of keptTrees) treeNodes.push(p)
   log(`parks ${parks.length}, water ${water.length}, roads ${roads.length}, rail ${rail.length}, trees ${treeNodes.length}`)
