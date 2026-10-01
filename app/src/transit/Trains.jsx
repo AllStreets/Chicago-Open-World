@@ -10,6 +10,7 @@ import { worldUrl } from '../lib/manifest.js'
 import { QUALITY } from '../lib/quality.js'
 import { toPoolGeometry } from './pools.js'
 import { getSim, publishTrains } from './simStore.js'
+import { trainsNow } from './liveStore.js'
 import { MODELS, LOD_M, SHADOW_CASTERS, layoutCars } from './layout.js'
 import { createTrainMaterial, createLightsMaterial } from './trainMaterial.js'
 import { refreshPickBounds } from './pick.js'
@@ -63,7 +64,7 @@ export default function Trains({ file, version }) {
 
   useFrame(({ camera }) => {
     const s = useStore.getState(), sim = getSim()
-    const trains = sim && s.transitOn ? sim.trainsAt(Date.now()) : []
+    const trains = sim && s.transitOn ? trainsNow(Date.now()) : [] // P5: live CTA when the feed is LIVE, else the simulator
     publishTrains(trains)
     const colours = coloursFor(s.transit)
     const L = layoutCars(trains, camera.position.toArray(), { lod: LOD_M[s.quality] ?? LOD_M.HIGH, hidden: s.hiddenLines, colours })

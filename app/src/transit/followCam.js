@@ -40,11 +40,25 @@ export function followPose(head, dir, view = 'chase', clearance = clearanceAt, l
 }
 
 // `lookup` resolves a train missing from the last published frame (it may not have been drawn yet) before giving up.
+// P5: a live/simulated source switch renames every CTA train; `follow.last` ({ line, p }) lets the follow carry on
+// with the nearest train of the same line within 1.5 km instead of ending.
+const SWITCH_M = 1500
+function sameLineNear(last, trains) {
+  let best = null, bestD = SWITCH_M
+  for (const x of trains) {
+    if (x.line !== last.line || !x.head) continue
+    const d = Math.hypot(x.head.p[0] - last.p[0], x.head.p[2] - last.p[2])
+    if (d < bestD) { best = x; bestD = d }
+  }
+  return best
+}
+
 export function followStep(follow, trains, clearance = clearanceAt, lookup = null) {
-  const t = trains.find((x) => x.id === follow.trainId) ?? lookup?.(follow.trainId) ?? null
+  let t = trains.find((x) => x.id === follow.trainId) ?? lookup?.(follow.trainId) ?? null, retarget
+  if (!t && follow.last) { t = sameLineNear(follow.last, trains); retarget = t?.id }
   if (!t) return { ended: 'left' }
   const len = (t.cars ?? []).reduce((a, c) => a + (c?.length ?? 0), 0)
-  return { pose: followPose(t.head.p, t.head.dir, follow.view, clearance, len), train: t }
+  return { pose: followPose(t.head.p, t.head.dir, follow.view, clearance, len), train: t, ...(retarget ? { retarget } : {}) }
 }
 
 const MODIFIERS = new Set(['Shift', 'Meta', 'Control', 'Alt', 'CapsLock'])

@@ -42,6 +42,7 @@ export default function AtlasRig() {
   const ref = useRef()
   const keys = useRef(new Set())
   const tourPosesRef = useRef({ id: null, poses: [] })
+  const followLast = useRef(null) // the followed train's line and position (P5: survives a live/simulated switch)
   const lastReadout = useRef(0)
   const flightRun = useRef(null)
   const introStart = useRef(null)
@@ -181,9 +182,14 @@ export default function AtlasRig() {
     const fw = useStore.getState().follow
     if (fw) {
       const st = useStore.getState()
-      const r = st.transitOn ? followStep(fw, getTrains(), undefined, (id) => getSim()?.trainById(id, Date.now())) : { ended: null }
-      if (r.ended !== undefined) st.stopFollow(r.ended) // transit switched off: stop quietly
-      else { const cp = ensureClear(r.pose); c.setLookAt(...cp.position, ...cp.target, true); publishReadout(c, now); window.__camRest = false; return } // smoothed by camera-controls
+      const lookup = (id) => (String(id).startsWith('rn:') ? null : getSim()?.trainById(id, Date.now()))
+      const r = st.transitOn ? followStep({ ...fw, last: followLast.current }, getTrains(), undefined, lookup) : { ended: null }
+      if (r.ended !== undefined) { followLast.current = null; st.stopFollow(r.ended) } // transit switched off: stop quietly
+      else {
+        followLast.current = { line: r.train.line, p: r.train.head.p }
+        if (r.retarget) useStore.setState({ follow: { ...fw, trainId: r.retarget } }) // live ↔ simulated switch: same line, nearest train
+        const cp = ensureClear(r.pose); c.setLookAt(...cp.position, ...cp.target, true); publishReadout(c, now); window.__camRest = false; return // smoothed by camera-controls
+      }
     }
     // a guided tour drives the camera: its own clock, pushed to the store a few times a second for the tour bar
     const tr = useStore.getState().tour

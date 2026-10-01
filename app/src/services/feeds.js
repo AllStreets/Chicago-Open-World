@@ -4,13 +4,14 @@
 import { useStore } from '../state/store.js'
 import { chiBase, chiGet, probeHealth, createFeed, FEEDS } from './chiApi.js'
 import { applyLineAlerts } from '../transit/lineAlerts.js'
+import { ingestLiveTrains } from '../transit/liveStore.js'
 
 const REPROBE_MS = 60_000
 let running = null // the live session's feeds, so the chip's "Try live again" and ⌘K can refresh them
 
 // What each feed does with a good answer (and with a failure, where the app must forget stale live data).
 export const FEED_WIRING = {
-  cta: { parse: (j) => { if (!Array.isArray(j?.trains)) throw new Error('no trains'); return j }, onData: () => {}, onFail: () => {} },
+  cta: { parse: (j) => { if (!Array.isArray(j?.trains)) throw new Error('no trains'); return j }, onData: (j) => ingestLiveTrains(j), onFail: () => {} }, // offline: the simulator takes over; stale live trains age out
   alerts: { parse: (j) => j, onData: (j) => applyLineAlerts(j), onFail: () => applyLineAlerts(null) },
   weather: { parse: (j) => j, onData: () => {}, onFail: () => {} },
   sports: { parse: (j) => j, onData: () => {}, onFail: () => {} },
