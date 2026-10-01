@@ -4,7 +4,7 @@
 
 **THE CITY, AT FULL SCALE**
 
-<img alt="phase" src="https://img.shields.io/badge/phase-3_heroes_complete-45d8ff?style=for-the-badge&labelColor=030509"/>
+<img alt="phase" src="https://img.shields.io/badge/phase-4_guide_complete-45d8ff?style=for-the-badge&labelColor=030509"/>
 <img alt="buildings" src="https://img.shields.io/badge/real_buildings-105,971-ff3b53?style=for-the-badge&labelColor=030509"/>
 <img alt="landmarks" src="https://img.shields.io/badge/landmarks-107-45d8ff?style=for-the-badge&labelColor=030509"/>
 <img alt="draw calls" src="https://img.shields.io/badge/draw_calls-≤900-ff3b53?style=for-the-badge&labelColor=030509"/>
@@ -340,6 +340,29 @@ The recognisable towers got their sculptural signatures, and twenty more landmar
 </tr>
 </table>
 
+### Phase 4 · Guide — *Visit, Live, Work*
+
+The city became a guide: hover any building for its name and year, click for its card with the nearest L; 6,900 places pinned on the roofs they belong to; and three lenses — VISIT (landmark beacons, CHI ATLAS's curated picks, three guided tours), LIVE (22 neighbourhoods with character, rent and five feel scores) and WORK (set your office, or type an address, and see how far the L gets you).
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/p4-visit-beacons-dusk.png" alt="Phase 4 — the Visit lens at dusk: tours, places and landmark beacons" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/p4-live-zones-night.png" alt="Phase 4 — the Live lens at night: neighbourhood zones and names" width="100%"/></td>
+</tr>
+<tr>
+<td><em>VISIT at dusk: three guided tours, place filters and the curated landmarks, their labels never overlapping.</em></td>
+<td><em>LIVE at night: 22 official neighbourhood boundaries as soft ground light — click one for its profile.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/p4-work-isochrones-day.png" alt="Phase 4 — the Work lens: commute shells from an office at 333 N Green" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/p4-hover-card-day.png" alt="Phase 4 — hovering a Loop building and its card" width="100%"/></td>
+</tr>
+<tr>
+<td><em>WORK from an office at 333 N Green: 15, 30 and 45-minute shells and every neighbourhood ranked by commute.</em></td>
+<td><em>Hover a building for its name and year; click for its card — address, floors and the nearest L.</em></td>
+</tr>
+</table>
+
 ### Fireworks, snow and a sunny day
 
 Navy Pier's summer fireworks, fired from the barge off the pier's south side on the real schedule (Wednesdays at 9, Saturdays at 10) or any time with `X` — the camera flies to the harbour view, the bursts light the towers and shimmer on the lake, and with Sound on each boom arrives late by the speed of sound. Two new views: a clear midsummer day and a snowy Christmas Eve, with the lake frozen along the shore.
@@ -437,7 +460,7 @@ npm run e2e --prefix app          # hero-view screenshot baselines (Playwright)
 - [x] **2.5 · Expanded city** — Wrigleyville → 35th St, verified top-50 skyline, 41 landmarks, stadiums, sacred buildings, civic icons, horizon fill, streaming, human-first controls
 - [x] **Vision pass** — one lake & river, CTA and Metra in true colours with a restrained glow and running trains, stadium game nights & crowds, detailed bridges & landmarks with music-and-light shows, true building colours, camera clearance, ≤ 900 draw calls
 - [x] **3 · Heroes** — Aqua's waves, Marina City's petals and spiral, the 900 N Michigan / CBOT / Tribune / Carbide crowns, Blender Ceres, sea horses and Lincoln Park statues, 20 P2 landmarks
-- [ ] **4 · Guide** — VISIT / LIVE / WORK lenses: places (bars, restaurants, venues), neighbourhoods, jobs, tours
+- [x] **4 · Guide** — VISIT / LIVE / WORK lenses: places, tours, neighbourhood profiles, commute estimates; hover cards; Navy Pier fireworks; snow and sunny views
 - [ ] **5 · Alive** — live L trains and weather via the CHI ATLAS API, Scan mode
 - [ ] **6 · Further rings** — streaming the rest of the city
 - [ ] **7 · Traversal** — glide mode
