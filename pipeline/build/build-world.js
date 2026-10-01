@@ -26,7 +26,7 @@ import { venueZones, filterTrees, assertNoVenueTrees, outsideZones, cutZones } f
 import { createBlock, addTileToBlock, blockLayers, blockSidecar } from '../lib/blocks.js'
 import { bAcc, appendBuilding, appendLayer, asLayer } from '../lib/layers.js'
 import { preloadStatue } from '../lib/statues.js'
-import { poiRecord, dedupePois, anchorPoi, POI_CATEGORIES, POI_CAT_IDS } from '../lib/pois.js'
+import { poiRecord, dedupePois, anchorPoi, buildingPoi, capByTile, POI_CATEGORIES, POI_CAT_IDS } from '../lib/pois.js'
 import { buildNeighborhoods } from '../lib/zones.js'
 import { loadBlenderMesh } from '../lib/blenderMesh.js'
 import { setSeahorseMesh } from '../lib/landmarks.js'
@@ -344,7 +344,10 @@ async function main() {
 
   // ── Places (P4 · I-4.1): named OSM amenities, one per venue, pinned on the roof they belong to ──────────
   const inWorld = (r) => r.lat >= WORLD_BBOX.s && r.lat <= WORLD_BBOX.n && r.lon >= WORLD_BBOX.w && r.lon <= WORLD_BBOX.e
-  const poiRecs = dedupePois(uniq(chunks('pois')).map(poiRecord).filter((r) => r && inWorld(r)).map((r) => { const [x, z] = project(r.lon, r.lat); return { ...r, x, z } }))
+  const amenityRecs = uniq(chunks('pois')).map(poiRecord).filter((r) => r && inWorld(r)).map((r) => { const [x, z] = project(r.lon, r.lat); return { ...r, x, z } })
+  // named apartment and office buildings join as places, at most a dozen of each per tile (the tallest)
+  const buildingRecs = capByTile(buildings.map(buildingPoi).filter(Boolean).map((r) => ({ ...r, tile: tileKeyFor([r.x, r.z]) })), { apartments: 12, offices: 12 })
+  const poiRecs = dedupePois([...amenityRecs, ...buildingRecs])
   const poisByTile = new Map()
   for (const r of poiRecs) { const k = tileKeyFor([r.x, r.z]); if (!poisByTile.has(k)) poisByTile.set(k, []); poisByTile.get(k).push(r) }
   const poiIndex = []

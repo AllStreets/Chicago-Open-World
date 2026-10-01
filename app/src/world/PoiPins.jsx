@@ -10,14 +10,16 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { poiPinIcon } from '../data/poiIcons.js'
 import { useStore } from '../state/store.js'
 import { POI_CATEGORIES } from '../data/poiCategories.js'
+import { pinInput, PIN_WHITE } from '../lib/pinColors.js'
 import { filterPois, MAX_PINS, pinBudget, pinFocus } from '../lib/poiFilter.js'
 import { allTilePois, usePoiVersion } from './poiRegistry.js'
 import { loadLivePlaces } from './livePlaces.js'
 
 const PIN_PX = 30, CELL = 128, N = POI_CATEGORIES.length
-// linear RGB: the scene renders in linear light and the composer tone-maps and sRGB-encodes afterwards (display-space
-// colours here were encoded twice and came out washed out)
-const CAT_RGB = POI_CATEGORIES.map((c) => new THREE.Color(c.color).toArray())
+// pre-compensated through the ACES tone map and kept under the bloom (lib/pinColors.js): the colours arrive on screen
+// as chosen — deep and distinct — instead of washed out and glowing
+const CAT_RGB = POI_CATEGORIES.map((c) => pinInput(c.color))
+const WHITE = pinInput(PIN_WHITE)
 // the badge's centre sits this far above the pin's tip (as a fraction of PIN_PX): picking aims at the badge
 export const BADGE_UP = 0.62
 
@@ -56,7 +58,7 @@ void main() {
   vP = vec2(position.x, position.y + 0.5) * 1.2; vS = s; vIcon = aIcon; vHot = aHot; vCol = aCol;
 }`
 const frag = /* glsl */ `
-uniform sampler2D uAtlas; uniform float uN;
+uniform sampler2D uAtlas; uniform float uN; uniform vec3 uWhite;
 varying vec2 vP; varying float vIcon; varying float vHot; varying vec3 vCol; varying float vS;
 float pinSd(vec2 p) {             // p in units of the pin size; badge centre (0, 0.62), radius 0.36, tail to (0, 0.02)
   vec2 c = vec2(0.0, ${BADGE_UP.toFixed(2)});
@@ -73,10 +75,10 @@ void main() {
   float body = 1.0 - smoothstep(-aa, aa, d);
   float shadow = (1.0 - smoothstep(-0.02, 0.12, pinSd(vP + vec2(0.0, 0.06)))) * 0.38;
   float edge = 1.0 - smoothstep(-aa, aa, d + 1.6 * px); // inside the outline
-  vec3 col = mix(vec3(0.92), vCol * (0.9 + 0.1 * vHot), edge);   // white 1.5 px outline around the fill (under the bloom threshold)
+  vec3 col = mix(uWhite, vCol * (1.0 + 0.12 * vHot), edge);   // white 1.5 px outline around the fill (under the bloom threshold)
   vec2 g = (vP - vec2(0.0, ${BADGE_UP.toFixed(2)})) / 0.72 + 0.5;  // the glyph inside the badge
   float glyph = (g.x > 0.0 && g.x < 1.0 && g.y > 0.0 && g.y < 1.0) ? texture2D(uAtlas, vec2((vIcon + g.x) / uN, g.y)).a : 0.0;
-  col = mix(col, vec3(0.95), glyph * edge);
+  col = mix(col, uWhite, glyph * edge);
   float a = max(body, shadow);
   if (a < 0.01) discard;
   gl_FragColor = vec4(mix(vec3(0.0), col, body / max(a, 1e-3)), a);
@@ -111,7 +113,7 @@ export default function PoiPins({ max: maxProp } = {}) {
     g.setAttribute('aCol', new THREE.InstancedBufferAttribute(new Float32Array(MAX_PINS.ULTRA * 3), 3))
     g.instanceCount = 0
     const m = new THREE.ShaderMaterial({ vertexShader: vert, fragmentShader: frag, transparent: true, depthWrite: false,
-      uniforms: { uAtlas: { value: atlas }, uN: { value: N }, uViewport: { value: new THREE.Vector2(1, 1) }, uPx: { value: PIN_PX } } })
+      uniforms: { uAtlas: { value: atlas }, uN: { value: N }, uWhite: { value: new THREE.Vector3(...WHITE) }, uViewport: { value: new THREE.Vector2(1, 1) }, uPx: { value: PIN_PX } } })
     const mesh = new THREE.Mesh(g, m)
     mesh.frustumCulled = false
     mesh.renderOrder = 5

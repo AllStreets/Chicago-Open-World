@@ -16,6 +16,6 @@ describe('places in ⌘K', () => {
     run('Show places'); expect(useStore.getState().placesOn).toBe(true)
     run('Show only: Bars'); expect(useStore.getState().poiCats).toEqual(['drinks']); expect(useStore.getState().placesOn).toBe(true)
     run('Hide places'); expect(useStore.getState().placesOn).toBe(false)
-    expect(c.filter((x) => x.name.startsWith('Show only:'))).toHaveLength(10)
+    expect(c.filter((x) => x.name.startsWith('Show only:'))).toHaveLength(12)
   })
 })

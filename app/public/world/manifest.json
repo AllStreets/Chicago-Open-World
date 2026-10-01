@@ -11435,7 +11435,7 @@
  "neighborhoods": "neighborhoods.json",
  "pois": {
   "index": "pois-index.json",
-  "count": 6901,
+  "count": 7980,
   "categories": [
    {
     "id": "food",
@@ -11486,6 +11486,16 @@
     "id": "services",
     "label": "Services",
     "icon": "RiFirstAidKitLine"
+   },
+   {
+    "id": "apartments",
+    "label": "Apartments",
+    "icon": "RiHome4Line"
+   },
+   {
+    "id": "offices",
+    "label": "Offices",
+    "icon": "RiBuilding2Line"
    }
   ]
  },
