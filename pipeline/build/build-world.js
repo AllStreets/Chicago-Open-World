@@ -45,7 +45,7 @@ import { encodeHeights } from '../lib/raster.js'
 import { MANIFEST_VERSION, manifestStamp, sortCacheFiles } from '../lib/manifest.js'
 import { parapetPiece, PARAPET_FACADE } from '../lib/roofs.js'
 import { roofProps } from '../lib/props.js'
-import { minimapSvg } from '../lib/minimap.js'
+import { minimapSvg, encodeMinimap, MINIMAP_FILE } from '../lib/minimap.js'
 import { bufferPolyline } from '../lib/ribbon.js'
 import { roadHalfWidth, scatterInPolygon, GROUND_Y, flatMesh } from '../lib/ground.js'
 import { buildTransit, loadTransitCache } from './build-transit.js'
@@ -55,7 +55,9 @@ import { assertTransit } from '../lib/transit/validate.js'
 import { waterLayer, keepWater, breakwaterBuildings, CALM } from '../lib/water.js'
 import { WORLD_BBOX, RING0_BBOX } from '../lib/sources.js'
 import { validateSkyline, assertSkyline } from '../lib/skyline.js'
-import { clipPolysToTile, splitLineByTiles, splitLineWithContext, writeTileGlb, mergeGroundLayers, blockKeyFor, BLOCK_TILES, concatLayers } from '../lib/tilepack.js'
+import { clipPolysToTile, splitLineByTiles, splitLineWithContext, writeTileGlb, quantizationError, mergeGroundLayers, blockKeyFor, BLOCK_TILES, concatLayers } from '../lib/tilepack.js'
+import { encodeTileMeta } from '../../shared/tileMeta.js'
+import { BUDGET, worldLedger, ledgerReport, checkBudget, sweepStale } from '../lib/budget.js'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const CACHE = join(ROOT, 'cache', 'world')
@@ -78,6 +80,23 @@ function osmPolys(elements) {
     }
   }
   return out.filter((p) => p.outer.length >= 3).map((p) => ({ ...p, bbox: ringBBox(p.outer) }))
+}
+
+// X-0f / V2: QUANT_REPORT=<file.json> measures every tile and block glb's quantisation error against its unquantised
+// source (max position / normal / UV error per LOD and layer) and writes the report there.
+const quantReport = process.env.QUANT_REPORT ? {} : null
+async function writeWorldGlb(path, layers, opts) {
+  await writeTileGlb(path, layers, opts)
+  if (!quantReport) return
+  const per = (quantReport[opts.lod] ??= { files: 0, layers: {} })
+  per.files++
+  for (const [name, r] of Object.entries(await quantizationError(layers, opts))) {
+    const m = (per.layers[name] ??= { verts: 0, positionM: 0, normalDeg: 0, uvM: 0, customExact: true, fracErr: 0, bits: r.bits, floatMeshes: 0, worst: null })
+    if (r.bits === 32) m.floatMeshes++; else m.bits = r.bits
+    if (r.positionM > m.positionM) m.worst = path.split('/').slice(-2).join('/')
+    m.verts += r.verts; m.customExact &&= r.customExact
+    for (const k of ['positionM', 'normalDeg', 'uvM', 'fracErr']) m[k] = Math.max(m[k], r[k])
+  }
 }
 
 const acc = () => ({ positions: [], normals: [], uvs: [] })
@@ -503,8 +522,8 @@ async function main() {
     const ground1 = mergeGroundLayers({ roads: t.roadsLod1, parks: parksM, pitches: pitchesM, beaches: beachesM, paving: brickM })
     const tr = transit.tiles.get(key) ?? {}
     const asLeafLayer = (a) => { const l = asLayer(a); l.extra.LEAF = new Float32Array(a.leaf); return l }
-    await writeTileGlb(join(OUT, 'tiles', `${key}.glb`), { buildings: asLayer(L0), leaves: LV.positions.length ? asLeafLayer(LV) : null, ground: ground0, water: waterM, transit: tr.transit, ties: tr.ties, stations: tr.stations, glow: tr.glow })
-    await writeTileGlb(join(OUT, 'tiles', `${key}.lod1.glb`), { buildings: asLayer(L1), ground: ground1, water: waterM, glow: tr.glowLod })
+    await writeWorldGlb(join(OUT, 'tiles', `${key}.glb`), { buildings: asLayer(L0), leaves: LV.positions.length ? asLeafLayer(LV) : null, ground: ground0, water: waterM, transit: tr.transit, ties: tr.ties, stations: tr.stations, glow: tr.glow }, { lod: 'lod0' })
+    await writeWorldGlb(join(OUT, 'tiles', `${key}.lod1.glb`), { buildings: asLayer(L1), ground: ground1, water: waterM, glow: tr.glowLod }, { lod: 'lod1' })
     // accumulate the tile's far-detail content into its 2 km block
     const bk = blockKeyFor(key)
     if (!blocks.has(bk)) blocks.set(bk, createBlock())
@@ -519,7 +538,7 @@ async function main() {
       poiIndex.push([r.id, r.name, c, Math.round(a.x), Math.round(a.z), key])
       return { id: r.id, n: r.name, c, x: r1(a.x), y: r1(a.y), z: r1(a.z), b: a.bldg, ...(addr ? { a: addr } : {}), ...(Object.keys(tg).length ? { t: tg } : {}) }
     })
-    writeFileSync(join(OUT, 'tiles', `${key}.json`), JSON.stringify({ buildings: meta, trees: t.trees, props: t.props, ...(pois.length ? { pois } : {}) }))
+    writeFileSync(join(OUT, 'tiles', `${key}.json`), JSON.stringify(encodeTileMeta({ buildings: meta, trees: t.trees, props: t.props, ...(pois.length ? { pois } : {}) }))) // compact v2 (X-0a)
     tiles.push({ key, block: bk, bounds, lod0: `tiles/${key}.glb`, lod1: `tiles/${key}.lod1.glb`, meta: `tiles/${key}.json`, buildings: t.b.length, maxHeight: Math.max(0, ...meta.map((m) => m.height)) })
     if (++n % 50 === 0) log(`tiles written: ${n}`)
   }
@@ -532,7 +551,7 @@ async function main() {
   for (const [bk, B] of blocks) {
     const [bx, bz] = bk.split('_').map(Number), size = TILE_SIZE * BLOCK_TILES
     const gl = blockGlow.get(bk)
-    await writeTileGlb(join(OUT, 'blocks', `${bk}.glb`), { ...blockLayers(B), glow: gl?.length ? concatLayers(gl) : undefined })
+    await writeWorldGlb(join(OUT, 'blocks', `${bk}.glb`), { ...blockLayers(B), glow: gl?.length ? concatLayers(gl) : undefined }, { lod: 'block' })
     writeFileSync(join(OUT, 'blocks', `${bk}.json`), JSON.stringify(blockSidecar(B)))
     blockList.push({ key: bk, file: `blocks/${bk}.glb`, meta: `blocks/${bk}.json`, bounds: { minX: bx * size, maxX: (bx + 1) * size, minZ: bz * size, maxZ: (bz + 1) * size } })
   }
@@ -558,6 +577,7 @@ async function main() {
   const lakeSideP = lakeSide(joinLines(shoreLines, 5), 60000)
   const landSolid = lakeSideP.length ? landMinusWater({ land: landLimits, water: lakeSideP }) : landLimits
   log(`shoreline: ${shoreLines.length} ways, lake side ${lakeSideP.length ? 'cut' : 'MISSING — using city limits'}`)
+  rmSync(join(OUT, 'ground'), { recursive: true, force: true }) // X-0b: drops the unused Phase-2 ground layers (roads, parks, …: 8 MB nothing loads)
   mkdirSync(join(OUT, 'ground'), { recursive: true })
   await writeMeshGlb(join(OUT, 'ground', 'land.glb'), flatMesh(landMinusWater({ land: landSolid, water }), 0))
   writeFileSync(join(OUT, 'land.json'), JSON.stringify({ rings: [...landPolys, ...region].map((p) => simplifyRing(p.outer, 20).map(([x, z]) => [Math.round(x), Math.round(z)])) }))
@@ -575,7 +595,7 @@ async function main() {
   })
   for (const [k, acc0] of hChunks) {
     const [bx, bz] = k.slice(2).split('_').map(Number)
-    await writeTileGlb(join(OUT, 'blocks', `${k}.glb`), { buildings: asLayer(acc0) })
+    await writeWorldGlb(join(OUT, 'blocks', `${k}.glb`), { buildings: asLayer(acc0) }, { lod: 'block' })
     blockList.push({ key: k, file: `blocks/${k}.glb`, horizon: true, bounds: { minX: bx * HSIZE, maxX: (bx + 1) * HSIZE, minZ: bz * HSIZE, maxZ: (bz + 1) * HSIZE } })
   }
   log(`horizon: ${hBoxes.length} buildings in ${hChunks.size} chunks`)
@@ -602,7 +622,7 @@ async function main() {
     roads: roads.map((e) => e.geometry.map((p) => project(p.lon, p.lat))),
     buildings: buildings.filter((b) => b.area > 60).flatMap((b) => b.polygons.map((p) => p.outer)),
   }, mmBounds, 2048)
-  await sharp(Buffer.from(svg), { limitInputPixels: false }).png().toFile(join(OUT, 'minimap.png'))
+  writeFileSync(join(OUT, MINIMAP_FILE), await encodeMinimap(svg)) // lossless WebP (X-0c)
   log('minimap written')
   writeFileSync(join(OUT, 'styles.json'), JSON.stringify(styles.toJSON()))
   await writeStylePalettePng(join(OUT, 'style-palette.png'), styles.toJSON())
@@ -649,17 +669,23 @@ async function main() {
     tallest: buildings.filter((b) => !b.hero && b.name && b.pieces.length && Math.max(...b.pieces.map((p) => p.top)) > 150).map((b) => ({ key: b.id, name: b.name, x: Math.round(b.centroid[0]), z: Math.round(b.centroid[1]), top: Math.round(Math.max(...b.pieces.map((p) => p.top))) })),
     tiles, blocks: blockList, land: 'ground/land.glb', lake: 'ground/lake.glb', landMask: 'land.json', transit: 'transit.json', trains: 'trains.glb', traffic: 'traffic.bin', walkGraph: 'walk-graph.json', styles: 'styles.json', stylePalette: 'style-palette.png',
     shore: { file: 'water/shore.png', ...shore.grid, maxDist: SHORE.maxDist },
-    heightfield: { file: 'heightfield.png', ...hf.grid, scale: HEIGHTFIELD.scale }, minimap: { file: 'minimap.png', bounds: mmBounds, size: 2048 },
+    heightfield: { file: 'heightfield.png', ...hf.grid, scale: HEIGHTFIELD.scale }, minimap: { file: MINIMAP_FILE, bounds: mmBounds, size: 2048 },
     neighborhoods: hoods ? 'neighborhoods.json' : null,
     pois: poiIndex.length ? { index: 'pois-index.json', count: poiIndex.length, categories: POI_CATEGORIES } : null,
     venues: 'venues.json', bridges: 'bridges.json', landmarkRuntime: 'landmarks.json', schedules: existsSync(join(ROOT, 'data', 'schedules.json')) ? 'schedules.json' : null,
-  }, null, 1))
+  })) // minified (X-0d)
   if (poiIndex.length) { writeFileSync(join(OUT, 'pois-index.json'), JSON.stringify(poiIndex)); log(`pois-index.json: ${(statSync(join(OUT, 'pois-index.json')).size / 1e6).toFixed(2)} MB`) }
   log('manifest written')
-  const dirBytes = (d) => readdirSync(d, { withFileTypes: true }).reduce((sum, e) => sum + (e.isDirectory() ? dirBytes(join(d, e.name)) : statSync(join(d, e.name)).size), 0)
-  const worldBytes = dirBytes(OUT)
-  log(`public/world: ${(worldBytes / 1e6).toFixed(1)} MB`)
-  if (worldBytes > 200e6) throw new Error(`public/world is ${(worldBytes / 1e6).toFixed(1)} MB — over the 200 MB budget (B.1.6)`)
+  const swept = sweepStale(OUT)
+  if (swept.length) log(`stale outputs removed (nothing loads them): ${swept.join(', ')}`)
+  // ── Budget ledger (X-0e): MB per folder, the delta against the last build, the 197 MB content cap ──────────
+  const ledgerFile = join(ROOT, 'world-ledger.json'), prevLedger = existsSync(ledgerFile) ? loadJson(ledgerFile) : null
+  const ledger = worldLedger(OUT)
+  log(`world budget ledger (vs the previous build):\n${ledgerReport(ledger, prevLedger).join('\n')}`)
+  writeFileSync(ledgerFile, `${JSON.stringify(ledger, null, 1)}\n`)
+  log(`public/world: ${(ledger.total / 1e6).toFixed(1)} MB (content cap ${BUDGET.contentMB} MB, hard cap ${BUDGET.hardMB} MB)`)
+  if (quantReport) { writeFileSync(process.env.QUANT_REPORT, `${JSON.stringify(quantReport, null, 1)}\n`); log(`quantisation report → ${process.env.QUANT_REPORT}`) }
+  checkBudget(ledger.total)
 }
 
 await main()

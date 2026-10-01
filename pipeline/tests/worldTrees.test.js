@@ -9,6 +9,7 @@ import { osmToBuilding } from '../lib/osm.js'
 import { buildGridIndex } from '../lib/enrich.js'
 import { sortCacheFiles } from '../lib/manifest.js'
 import { canopyOverFootprint, canopyRadius } from '../lib/trees.js'
+import { decodeTileMeta } from '../../shared/tileMeta.js'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const CACHE = join(ROOT, 'cache', 'world'), TILES = join(ROOT, '..', 'app', 'public', 'world', 'tiles')
@@ -31,7 +32,7 @@ describe.skipIf(!ready)('trees in the built world', () => {
     let trees = 0
     const bad = []
     for (const f of readdirSync(TILES).filter((n) => n.endsWith('.json'))) {
-      for (const [x, z] of load(join(TILES, f)).trees ?? []) {
+      for (const [x, z] of decodeTileMeta(load(join(TILES, f))).trees ?? []) {
         trees++
         const p = [x, z], r = canopyRadius(p)
         const hit = idx.query(p, 400).find((b) => canopyOverFootprint(p, b, r))

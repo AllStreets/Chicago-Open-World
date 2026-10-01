@@ -11,6 +11,7 @@ import { disposeObject } from './dispose.js'
 import { waterMaterial, REFLECT_LAYER } from './materials/waterSurface.js'
 import { TRANSIT_LAYERS, addTileLayer, removeTileLayer } from '../transit/pools.js'
 import { registerTilePois, unregisterTilePois } from './poiRegistry.js'
+import { fetchTileSidecar } from '../lib/tileSidecar.js'
 
 export const groundMaterial = createGroundMaterial()
 
@@ -61,7 +62,7 @@ export default function TileContent({ id, file, meta, lod, mats, version, onRead
   useEffect(() => {
     if (lod !== 'lod0' || !meta) return
     let alive = true
-    fetch(worldUrl(meta, version)).then((r) => r.json()).then((j) => alive && setSide(j)).catch(() => {})
+    fetchTileSidecar(worldUrl(meta, version)).then((j) => alive && setSide(j)).catch(() => {}) // v1 or compact v2 (X-0a)
     return () => { alive = false }
   }, [meta, lod, version])
   useEffect(() => { retain(url); return () => release(url, scene) }, [scene, url])

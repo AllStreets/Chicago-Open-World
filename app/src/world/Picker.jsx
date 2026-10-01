@@ -12,6 +12,7 @@ import { zoneAt } from '../lib/neighborhoods.js'
 import { crossStreets } from '../lib/grid.js'
 import { POI_CATEGORIES } from '../data/poiCategories.js'
 import { usePlacePopup } from '../hud/placePopup.js'
+import { fetchTileSidecar } from '../lib/tileSidecar.js'
 
 THREE.BufferGeometry.prototype.computeBoundsTree = computeBoundsTree
 THREE.BufferGeometry.prototype.disposeBoundsTree = disposeBoundsTree
@@ -23,7 +24,7 @@ function sidecar(url) {
   if (!url) return null
   const s = sidecars.get(url)
   if (s && s !== 'loading') return s
-  if (!s) { sidecars.set(url, 'loading'); fetch(url).then((r) => r.json()).then((j) => sidecars.set(url, j)).catch(() => sidecars.delete(url)) }
+  if (!s) { sidecars.set(url, 'loading'); fetchTileSidecar(url).then((j) => sidecars.set(url, j)).catch(() => sidecars.delete(url)) }
   return null
 }
 
