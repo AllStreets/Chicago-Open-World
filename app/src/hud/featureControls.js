@@ -1,13 +1,14 @@
 // app/src/hud/featureControls.js — every city-life feature and every way to reach it (backlog G3).
 // The dock row, the keyboard, ⌘K, the help card and the hint bar all read this list, so a control can never be added
 // in one place and forgotten in another. The adapters (use/isOn/toggle/available) are the only lines naming feature state.
-import { RiTrainLine, RiTrophyLine, RiVolumeUpLine, RiVolumeMuteLine, RiShip2Line, RiDropLine, RiMapPin2Line, RiSparkling2Line, RiCarLine, RiRadarLine, RiRouteLine, RiPlayCircleLine } from 'react-icons/ri'
+import { RiTrainLine, RiTrophyLine, RiVolumeUpLine, RiVolumeMuteLine, RiShip2Line, RiDropLine, RiMapPin2Line, RiSparkling2Line, RiCarLine, RiRadarLine, RiRouteLine, RiPlayCircleLine, RiStackLine } from 'react-icons/ri'
 import { useStore } from '../state/store.js'
 import { useSoundStore } from '../audio/soundStore.js'
 import { fountainShow } from '../landmarks/fountainSchedule.js'
 import { fireworksShow } from '../landmarks/fireworksSchedule.js'
 import { useSports } from '../sports/sportsStore.js'
 import { toggleShowcase } from '../sports/showcaseActions.js'
+import { readLowerLevels } from '../lib/levels.js'
 
 const storeFlag = (field, setter) => ({
   use: () => useStore((s) => Boolean(s[field])),
@@ -85,6 +86,20 @@ export const FEATURE_CONTROLS = [
     use: () => useSports((s) => s.showcase != null),
     isOn: () => useSports.getState().showcase != null,
     toggle: () => toggleShowcase(), ...always },
+  // D2-3 (Decision 7): the streets under the streets — U, ⌘K and the help card; not in the dock (it stays at six).
+  // Turning it on from far away flies you over the Loop's lower levels — never while following, touring or riding (C-fix)
+  { id: 'lowerLevels', label: 'Lower', key: 'KeyU', keyLabel: 'U', icon: RiStackLine, hint: 'lower levels', hintP: 3, commandName: 'Lower levels: see Lower Wacker under the street',
+    help: 'lower levels — the street over Lower Wacker, Lower Michigan, Lower Columbus and the other double-decker streets opens like a cut-away drawing, showing the roadway, columns and lights underneath; press again to close',
+    use: () => useStore((s) => s.lowerLevelsOn),
+    isOn: () => Boolean(useStore.getState().lowerLevelsOn),
+    toggle: () => {
+      const s = useStore.getState(), on = !s.lowerLevelsOn
+      s.setLowerLevelsOn(on)
+      if (!on) return
+      if (s.follow || s.tour || s.ride) { s.showToast('Lower levels on — the cut-away shows over Lower Wacker and the Loop’s river streets · U closes it'); return }
+      s.requestLowerLevelsView?.()
+    },
+    available: () => Boolean(readLowerLevels(useStore.getState().manifest)), useAvailable: () => useStore((s) => Boolean(readLowerLevels(s.manifest))) },
 ]
 
 export const featureById = (id) => FEATURE_CONTROLS.find((c) => c.id === id)

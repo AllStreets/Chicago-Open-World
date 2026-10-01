@@ -63,9 +63,10 @@ describe('dock feature row (G3)', () => {
   it('has exactly one button per dock feature anywhere in the HUD, pressed state tracks the feature (Sound lives on M)', () => {
     render(<Hud />)
     // the dock stays at six (user, 2026-09-30): Sound lives on M, Traffic on C — both in ⌘K and the help card; Scan is the
-    // SCAN pill (V), Ride its own full-width dock row (L), Play a game on Y and the ballpark cards (E4)
+    // SCAN pill (V), Ride its own full-width dock row (L), Play a game on Y and the ballpark cards (E4), Lower levels on U
+    // (D2-3, Decision 7: no dock button)
     expect(DOCK_FEATURES).toHaveLength(6)
-    expect(FEATURE_CONTROLS.filter((f) => !DOCK_FEATURES.includes(f)).map((f) => f.id)).toEqual(['sound', 'traffic', 'scan', 'ride', 'showcase'])
+    expect(FEATURE_CONTROLS.filter((f) => !DOCK_FEATURES.includes(f)).map((f) => f.id)).toEqual(['sound', 'traffic', 'scan', 'ride', 'showcase', 'lowerLevels'])
     expect(screen.queryByRole('button', { name: /^Traffic \(C\)$/ })).toBeNull()
     for (const c of DOCK_FEATURES) {
       const btns = screen.getAllByRole('button', { name: new RegExp(`^${c.label} \\(${c.keyLabel}\\)$`) })
