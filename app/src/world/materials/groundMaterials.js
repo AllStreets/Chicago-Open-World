@@ -1,5 +1,6 @@
 // app/src/world/materials/groundMaterials.js — textured, world-scaled ground surfaces.
 import * as THREE from 'three'
+import { patchCutaway } from './cutaway.js'
 
 const loader = new THREE.TextureLoader()
 function tex(g, name) {
@@ -15,9 +16,12 @@ function tex(g, name) {
 const mat = (o) => new THREE.MeshStandardMaterial({ roughness: 0.95, metalness: 0, ...o })
 
 export function groundMaterials(g) {
+  const land = mat({ map: tex(g, 'concrete'), color: '#86827a', polygonOffset: true, polygonOffsetFactor: 0, polygonOffsetUnits: 2 })
+  land.onBeforeCompile = patchCutaway // D2-3: the land under the streets opens with them in the U view
+  land.customProgramCacheKey = () => 'land-cut-v1'
   return {
     // a constant nudge back (no slope term, so the lake 2 m below can't overtake it at grazing angles)
-    land: mat({ map: tex(g, 'concrete'), color: '#86827a', polygonOffset: true, polygonOffsetFactor: 0, polygonOffsetUnits: 2 }),
+    land,
     parks: mat({ map: tex(g, 'grass'), color: '#d6e8c4', polygonOffset: true, polygonOffsetFactor: -3 }),
     pitches: mat({ map: tex(g, 'pitch'), color: '#ffffff', polygonOffset: true, polygonOffsetFactor: -3.5 }),
     beaches: mat({ map: tex(g, 'sand'), color: '#fff7e6', polygonOffset: true, polygonOffsetFactor: -3 }),

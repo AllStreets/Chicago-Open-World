@@ -34,6 +34,7 @@ import PerfWatch from './PerfWatch.jsx'
 import { QUALITY } from '../lib/quality.js'
 import { loadHeightfield, clearanceAt } from '../lib/clearance.js'
 import Tunnels from '../transit/Tunnels.jsx'
+import LowerLevels from './LowerLevels.jsx'
 import Traffic from '../traffic/Traffic.jsx'
 import { getSim } from '../transit/simStore.js'
 import TransitLayer from '../transit/TransitLayer.jsx'
@@ -125,6 +126,7 @@ export default function Scene() {
       {manifest && <Landmarks manifest={manifest} />}
       <TransitLayer />
       <Tunnels />
+      <LowerLevels />
       {manifest?.traffic && <Traffic file={manifest.traffic} version={manifest.version} />}
       <StationHits />
       <Picker />

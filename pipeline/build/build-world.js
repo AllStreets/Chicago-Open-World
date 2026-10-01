@@ -64,6 +64,7 @@ import { riverLevels, sunkWater, wallRuns, wallMesh, runsByTile, cutMeshOutside,
 import { buildRiverwalk, meshByTile } from '../lib/riverwalk.js'
 import { pierRing } from '../lib/bridges.js'
 import { setRiverwalkAtRiverLevel } from '../lib/civic.js'
+import { buildLowerLevels, lowerLevelsOn, lowerManifestEntry, LOWER_LEVELS_FILE, MAX_BYTES as LOWER_MAX_BYTES } from '../lib/lowerLevels.js'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const CACHE = join(ROOT, 'cache', 'world')
@@ -734,6 +735,18 @@ async function main() {
     }))
     log(`${RIVER_LEVELS_FILE}: ${(statSync(join(OUT, RIVER_LEVELS_FILE)).size / 1e3).toFixed(0)} kB`)
   }
+  // ── The multi-level streets (D2-1): Lower Wacker, Lower Michigan, Lower Columbus … as centrelines the app builds ──
+  rmSync(join(OUT, LOWER_LEVELS_FILE), { force: true })
+  let lowerEntry = null
+  if (lowerLevelsOn(levelsData, process.env)) {
+    const rr = (r) => simplifyRing(r, 1.5).map(([x, z]) => [r1(x), r1(z)]) // the river-levels.json rings, so build-lower-levels.js agrees
+    const lowerJson = buildLowerLevels({ roads: uniq(chunks('roads')), levels: levelsData.levels, water: sunk.map((p) => rr(p.outer)), tracks: transit.json.routes.map((r) => r.path), tubeClear: levelsData.tubeDips.tunnelClearM })
+    const raw = JSON.stringify(lowerJson)
+    if (raw.length > LOWER_MAX_BYTES) throw new Error(`${LOWER_LEVELS_FILE}: ${raw.length} B over its ${LOWER_MAX_BYTES} B budget`)
+    writeFileSync(join(OUT, LOWER_LEVELS_FILE), raw)
+    lowerEntry = lowerManifestEntry(lowerJson)
+    log(`${LOWER_LEVELS_FILE}: ${lowerJson.ways.length} lower-street pieces, ${(raw.length / 1e3).toFixed(1)} kB (D2)`)
+  } else log('lower levels: off (LEVELS_LOWER=0) — nothing under the street')
   // ── Neighbourhoods (P4 · I-4.3): official boundaries + curated profiles, measured for their feel ─────────
   const hoodFile = join(ROOT, 'cache', 'neighborhoods-y6yq.geojson')
   let hoods = null
@@ -777,7 +790,7 @@ async function main() {
     neighborhoods: hoods ? 'neighborhoods.json' : null,
     pois: poiIndex.length ? { index: 'pois-index.json', count: poiIndex.length, categories: POI_CATEGORIES } : null,
     venues: 'venues.json', bridges: 'bridges.json', landmarkRuntime: 'landmarks.json', schedules: existsSync(join(ROOT, 'data', 'schedules.json')) ? 'schedules.json' : null,
-    ...(lv ? { levels: { river: { y: lv.river, riverwalk: lv.riverwalk, file: RIVER_LEVELS_FILE } } } : {}), // D1-8: absent = the flat world
+    ...(lv || lowerEntry ? { levels: { ...(lv ? { river: { y: lv.river, riverwalk: lv.riverwalk, file: RIVER_LEVELS_FILE } } : {}), ...(lowerEntry ? { lower: lowerEntry } : {}) } } : {}), // D1-8 / D2: absent = the flat world
   })) // minified (X-0d)
   if (poiIndex.length) { writeFileSync(join(OUT, 'pois-index.json'), JSON.stringify(poiIndex)); log(`pois-index.json: ${(statSync(join(OUT, 'pois-index.json')).size / 1e6).toFixed(2)} MB`) }
   log('manifest written')

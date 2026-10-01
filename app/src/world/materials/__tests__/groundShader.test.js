@@ -26,7 +26,14 @@ describe('ground shader', () => {
     const [roads, sidewalks, , , , , paving] = LAYER_RANK
     expect(paving).toBeGreaterThan(sidewalks); expect(paving).toBeLessThan(roads)
     expect(patchGroundShader(std()).fragmentShader).toMatch(/li == 6/)
-    expect(createGroundMaterial().customProgramCacheKey()).toBe('ground-v6')
+    expect(createGroundMaterial().customProgramCacheKey()).toBe('ground-v7')
+  })
+  it('D2-3: the ground also takes the U cut-away (a no-op while uCut is 0)', () => {
+    const shader = std()
+    createGroundMaterial().onBeforeCompile(shader)
+    expect(shader.fragmentShader).toMatch(/cutDepthAt/)
+    expect(shader.fragmentShader).toMatch(/li == 6/)
+    expect(shader.uniforms.uCut.value).toBe(0)
   })
   it('orders overlapping layers in depth by rank, independent of quantized heights', () => {
     const s = patchGroundShader(std())
