@@ -101,6 +101,23 @@
       "spireCounts": true,
       "aliases": [
         "Trump Tower"
+      ],
+      "sculpt": "trump",
+      "sculptParams": {
+        "roofM": 357,
+        "spireTopM": 423.2,
+        "finEvery": 3,
+        "note": "OSM maps the setbacks (60 m Wrigley cornice line, 120 m River Plaza/Marina line, 200 m 330 N Wabash line) and the 357 m core; the sculpt adds the polished-stainless mullion fins (drawn at every other 1.5 m mullion so they read without shimmering), stainless ledges at each rounded setback and the telescoping stainless spire to 423.2 m. The 6 m TRUMP sign on the south face is not modelled.",
+        "source": [
+          "https://www.skyscrapercenter.com/building/trump-international-hotel-tower/203",
+          "https://en.wikipedia.org/wiki/Trump_International_Hotel_and_Tower_(Chicago)",
+          "https://www.architecture.org/online-resources/buildings-of-chicago/trump-tower"
+        ],
+        "podiumM": 60
+      },
+      "sources": [
+        "https://www.skyscrapercenter.com/building/trump-international-hotel-tower/203",
+        "https://en.wikipedia.org/wiki/Trump_International_Hotel_and_Tower_(Chicago)"
       ]
     },
     {
@@ -129,6 +146,358 @@
       "aliases": [
         "Vista Tower",
         "Wanda Vista"
+      ],
+      "sculpt": "stregis",
+      "sculptParams": {
+        "moduleM": 47,
+        "waistScale": 0.89,
+        "gapM": 300,
+        "gapH": 7.2,
+        "stackMinM": 100,
+        "note": "three stacks (47, 71 and 93+ floors) of frustums that lean out 5 ft 3 in (1.6 m) over 13 floors and back over the next 13 (floor plates 80–90 ft, 24.4–27.4 m); the middle stack's belts meet the outer stacks' waists; the open blow-through floor (floor 83, about 300 m) on the tallest stack. The glass is darkest at a frustum's waist and brightest at its belt; six shades are drawn as three. Stack phase and the blow-through height are read from photographs (approximate).",
+        "source": [
+          "https://en.wikipedia.org/wiki/St._Regis_Chicago",
+          "https://www.doka.com/us/references/north-america/vista-tower",
+          "https://www.archdaily.com/619529/studio-gang-goes-public-with-chicago-s-newest-tower-wanda-vista"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/St._Regis_Chicago",
+        "https://studiogang.com/projects/vista-tower/"
+      ]
+    },
+    {
+      "key": "wacker333",
+      "name": "333 West Wacker",
+      "aliases": [
+        "333 Wacker Drive",
+        "333 W Wacker"
+      ],
+      "match": {
+        "osmId": "w116017092"
+      },
+      "look": {
+        "material": "green reflective glass on the river bend, brushed stainless bands at every floor; a base of Vermont Verde Antique serpentine and grey Vermont granite",
+        "finish": "glass",
+        "base": "#6d8f86",
+        "glass": "#5d8479",
+        "mullion": "#b8bdbf",
+        "spandrel": "#7b9a91",
+        "note": "glass and stainless colours read from photographs (the glass reads blue-grey under an overcast sky)",
+        "source": [
+          "https://en.wikipedia.org/wiki/333_Wacker_Drive",
+          "https://vtverde.com/portfolio/wacker/"
+        ]
+      },
+      "heightM": 149,
+      "facade": "curtain-glass",
+      "tint": "green",
+      "crowns": [],
+      "sculpt": "wacker333",
+      "sculptParams": {
+        "baseM": 16.5,
+        "floors": 32,
+        "courseM": 1.1,
+        "riverFace": 315,
+        "riverTol": 55,
+        "columnEvery": 9,
+        "note": "149 m (489 ft), 36 floors; the curved river front follows the bend (OSM footprint). Four-storey striped serpentine/granite base (about 16.5 m) with octagonal granite columns under the curved face; stainless bands at every floor. Base height and column spacing read from photographs (approximate).",
+        "source": [
+          "https://en.wikipedia.org/wiki/333_Wacker_Drive",
+          "https://vtverde.com/portfolio/wacker/"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/333_Wacker_Drive",
+        "https://sah-archipedia.org/buildings/IL-01-031-0002"
+      ]
+    },
+    {
+      "key": "wabash330",
+      "name": "AMA Plaza",
+      "aliases": [
+        "330 North Wabash",
+        "IBM Building",
+        "The Langham Chicago"
+      ],
+      "match": {
+        "osmId": "w64596068"
+      },
+      "look": {
+        "material": "bronze-tinted glass in black-bronze anodised aluminium; I-beam mullions on a 5 ft module",
+        "finish": "glass",
+        "base": "#2a2622",
+        "glass": "#4a3f35",
+        "mullion": "#1e1b18",
+        "spandrel": "#24201c",
+        "note": "colours read from photographs",
+        "source": [
+          "https://en.wikipedia.org/wiki/330_North_Wabash"
+        ]
+      },
+      "heightM": 211.84,
+      "facade": "curtain-glass",
+      "tint": "dark",
+      "crowns": [],
+      "sculpt": "wabash330",
+      "sculptParams": {
+        "lobbyM": 7.9,
+        "lobbySetbackM": 3,
+        "moduleM": 1.524,
+        "bayM": 9.14,
+        "louvreM": 8,
+        "note": "212 m (695 ft), 52 floors, 36.6 × 82.3 m slab; 26 ft (7.9 m) glass lobby set behind the columns on 30 ft bays; I-beam mullions at every 5 ft (1.52 m) module; the louvred mechanical floors at the top (height read from photographs).",
+        "source": [
+          "https://en.wikipedia.org/wiki/330_North_Wabash"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/330_North_Wabash"
+      ]
+    },
+    {
+      "key": "jewelers35",
+      "name": "35 East Wacker",
+      "aliases": [
+        "Jewelers Building",
+        "Pure Oil Building",
+        "35 E Wacker"
+      ],
+      "match": {
+        "osmId": "w124865488"
+      },
+      "look": {
+        "material": "buff terra cotta over a grey limestone base, dark green terra cotta on floors 20–22; the belvedere and corner tempietti floodlit gold",
+        "finish": "terracotta",
+        "base": "#cdb48a",
+        "glass": "#2f3438",
+        "mullion": "#c4ab82",
+        "spandrel": "#c6ad85",
+        "note": "colours read from photographs",
+        "crownLight": {
+          "kind": "flood",
+          "color": "#ffd9a0",
+          "fromM": 92,
+          "toM": 160,
+          "intensity": 1.2,
+          "source": [
+            "https://en.wikipedia.org/wiki/35_East_Wacker",
+            "https://chicagology.com/skyscrapers/skyscrapers024/"
+          ]
+        },
+        "source": [
+          "https://en.wikipedia.org/wiki/35_East_Wacker",
+          "https://chicagology.com/skyscrapers/skyscrapers024/"
+        ]
+      },
+      "facade": "loop-limestone",
+      "crowns": [],
+      "sculpt": "jewelers35",
+      "sculptParams": {
+        "blockM": 92,
+        "towerM": [
+          124,
+          135
+        ],
+        "topM": 159.4,
+        "chamferM": 3.5,
+        "upperScale": 0.84,
+        "templeR": 7.6,
+        "templeColH": 9.5,
+        "tempiettoR": 2.8,
+        "tempiettoInsetM": 6.5,
+        "greenBandM": [
+          78,
+          89
+        ],
+        "note": "523 ft (159.4 m), 40 floors on a 162 × 140 ft site; the 23-floor block (about 92 m) with four columned corner tempietti (they hid water tanks), a chamfered tower with a setback, and the domed belvedere temple (floors 38–40). Block, tower and temple heights read from photographs (approximate).",
+        "source": [
+          "https://en.wikipedia.org/wiki/35_East_Wacker",
+          "https://chicagology.com/skyscrapers/skyscrapers024/"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/35_East_Wacker",
+        "https://chicagology.com/skyscrapers/skyscrapers024/"
+      ]
+    },
+    {
+      "key": "londonhouse",
+      "name": "London Guarantee Building",
+      "aliases": [
+        "LondonHouse Chicago",
+        "LondonHouse",
+        "360 North Michigan"
+      ],
+      "match": {
+        "osmId": "w147399567"
+      },
+      "look": {
+        "material": "Bedford limestone; Corinthian colonnade on the river corner and a tholos cupola, floodlit warm white",
+        "finish": "limestone",
+        "base": "#d9cbae",
+        "glass": "#30363b",
+        "mullion": "#cfc0a2",
+        "spandrel": "#d2c4a7",
+        "note": "colours read from photographs",
+        "crownLight": {
+          "kind": "flood",
+          "color": "#ffe6bf",
+          "fromM": 62,
+          "toM": 103,
+          "intensity": 1.1,
+          "source": [
+            "https://en.wikipedia.org/wiki/London_Guarantee_Building"
+          ]
+        },
+        "source": [
+          "https://en.wikipedia.org/wiki/London_Guarantee_Building",
+          "https://chicagology.com/skyscrapers/skyscrapers027/"
+        ]
+      },
+      "facade": "loop-limestone",
+      "crowns": [],
+      "sculpt": "londonhouse",
+      "sculptParams": {
+        "roofM": 79,
+        "topM": 102.9,
+        "colonnadeM": [
+          66,
+          78
+        ],
+        "avenueFace": 89,
+        "tholosR": 4.6,
+        "tholosColH": 9,
+        "note": "102.9 m to the cupola (CTBUH), highest floor 78.8 m; the concave corner on the Michigan/Wacker river plaza carries the three-storey Corinthian colonnade under the cornice; four columns at the Michigan Avenue entrance; the tholos after the Lysicrates monument. Colonnade height and tholos radius read from photographs (approximate).",
+        "source": [
+          "https://www.skyscrapercenter.com/building/london-guarantee-building/10469",
+          "https://en.wikipedia.org/wiki/London_Guarantee_Building"
+        ],
+        "cornerFace": 18,
+        "cornerTol": 22
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/London_Guarantee_Building",
+        "https://www.skyscrapercenter.com/building/london-guarantee-building/10469"
+      ]
+    },
+    {
+      "key": "mather",
+      "name": "Mather Tower",
+      "aliases": [
+        "75 East Wacker",
+        "Club Quarters Wacker at Michigan"
+      ],
+      "match": {
+        "osmId": "w147399564"
+      },
+      "look": {
+        "material": "cream semi-glazed terra cotta (Northwestern Terra Cotta); the octagon uplit cool white at night",
+        "finish": "terracotta",
+        "base": "#e6dcc3",
+        "glass": "#30363b",
+        "mullion": "#dcd1b6",
+        "spandrel": "#ddd2b8",
+        "note": "colours read from photographs",
+        "crownLight": {
+          "kind": "flood",
+          "color": "#eef3ff",
+          "fromM": 93,
+          "toM": 152,
+          "intensity": 1.1,
+          "source": [
+            "https://schulershook.com/projects/mather-tower-75-e-wacker-drive"
+          ]
+        },
+        "source": [
+          "https://en.wikipedia.org/wiki/Mather_Tower",
+          "https://chicagology.com/skyscrapers/skyscrapers031/"
+        ]
+      },
+      "facade": "loop-limestone",
+      "crowns": [],
+      "sculpt": "mather",
+      "sculptParams": {
+        "boxM": 93,
+        "topM": 158.8,
+        "stages": [
+          [
+            93,
+            117,
+            8.5
+          ],
+          [
+            117,
+            133,
+            6.5
+          ],
+          [
+            133,
+            145,
+            4.6
+          ]
+        ],
+        "lantern": [
+          145,
+          152,
+          2.9
+        ],
+        "note": "521 ft (158.8 m), 42 floors on a 100 × 65 ft (30.5 × 19.8 m) lot; a 24-storey box, then an octagonal tower of three stages (about 17, 13 and 9 m across) with buttress piers, the lantern and the gilded cupola (replica, 2002). Stage heights read from photographs (approximate).",
+        "source": [
+          "https://en.wikipedia.org/wiki/Mather_Tower",
+          "https://schulershook.com/projects/mather-tower-75-e-wacker-drive"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Mather_Tower",
+        "https://chicagology.com/skyscrapers/skyscrapers031/"
+      ]
+    },
+    {
+      "key": "reidmurdoch",
+      "name": "Reid Murdoch Center",
+      "aliases": [
+        "Reid, Murdoch & Co. Building",
+        "325 North LaSalle"
+      ],
+      "match": {
+        "osmId": "w117996137"
+      },
+      "look": {
+        "material": "deep red brick with dark brown terra-cotta trim, Prairie school",
+        "finish": "terracotta",
+        "base": "#8b3a2b",
+        "glass": "#2c3135",
+        "mullion": "#5a3a28",
+        "spandrel": "#7a3427",
+        "note": "colours read from photographs",
+        "source": [
+          "https://en.wikipedia.org/wiki/Reid,_Murdoch_%26_Co._Building",
+          "https://chicagology.com/skyscrapers/skyscrapers150/"
+        ]
+      },
+      "facade": "prewar-brick",
+      "crowns": [],
+      "sculpt": "reidmurdoch",
+      "sculptParams": {
+        "bodyM": 33,
+        "towerTopM": 53,
+        "towerPlanM": [
+          12,
+          10
+        ],
+        "clockR": 1.85,
+        "riverFace": 182,
+        "pierEvery": 6.1,
+        "note": "1914 warehouse of 8–9 storeys (about 33 m) with a 320 ft river front (about 90 m since LaSalle was widened in 1930); the clock tower at the centre of the river front, 175 ft (53 m). Tower plan and clock size read from photographs (approximate).",
+        "source": [
+          "https://chicagology.com/skyscrapers/skyscrapers150/",
+          "https://en.wikipedia.org/wiki/Reid,_Murdoch_%26_Co._Building"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Reid,_Murdoch_%26_Co._Building",
+        "https://chicagology.com/skyscrapers/skyscrapers150/"
       ]
     },
     {
@@ -606,7 +975,222 @@
       "tint": "blue",
       "crowns": [],
       "aliases": [
-        "Salesforce Tower"
+        "Salesforce Tower",
+        "Wolf Point South"
+      ],
+      "heightM": 255,
+      "sculpt": "wolfpoint",
+      "sculptParams": {
+        "form": "slabs",
+        "topM": 255,
+        "splits": [
+          -0.17,
+          0.17
+        ],
+        "drops": [
+          22,
+          0,
+          14
+        ],
+        "floorM": 4.2,
+        "lineEvery": 2,
+        "lineH": 0.25,
+        "lineD": 0.3,
+        "lineStyle": "salesforce-accent",
+        "note": "835 ft (255 m), 60 floors; several glass volumes of rising height sandwiched toward a central peak with curved corners and horizontal accents tapering toward them. The slab split and drops are read from photographs (approximate).",
+        "source": [
+          "https://en.wikipedia.org/wiki/Salesforce_Tower_Chicago",
+          "https://www.archpaper.com/2025/01/pelli-clarke-partners-salesforce-tower-chicago/"
+        ]
+      },
+      "sources": [
+        "https://www.archpaper.com/2025/01/pelli-clarke-partners-salesforce-tower-chicago/",
+        "https://www.skyscrapercenter.com/complex/677"
+      ]
+    },
+    {
+      "key": "wolfpointeast",
+      "name": "Wolf Point East",
+      "aliases": [
+        "Wolf Point East Tower",
+        "313 West Wolf Point Plaza"
+      ],
+      "match": {
+        "osmId": "w509957160"
+      },
+      "look": {
+        "material": "continuous blue-tinted reflective curtain wall, radiused corners with white sunshades; a crown of lighter vertical bands",
+        "finish": "glass",
+        "base": "#6f93b0",
+        "glass": "#5f87a8",
+        "mullion": "#d6dee4",
+        "spandrel": "#7c9bb5",
+        "note": "colours read from photographs",
+        "source": [
+          "https://en.wikipedia.org/wiki/Wolf_Point_East_Tower",
+          "https://www.skyscrapercenter.com/complex/677"
+        ]
+      },
+      "heightM": 204,
+      "facade": "curtain-glass",
+      "tint": "blue",
+      "crowns": [],
+      "sculpt": "wolfpoint",
+      "sculptParams": {
+        "form": "crown",
+        "topM": 204,
+        "crownM": 18,
+        "setbackM": 1.8,
+        "floorM": 3.3,
+        "lineEvery": 2,
+        "lineH": 0.22,
+        "lineD": 0.45,
+        "lineStyle": "wolfpoint-sunshade",
+        "crownStyle": "wolfpoint-crown",
+        "note": "660–668 ft (201–204 m), 60 floors; radiused sunshades at every floor and the crown of lighter vertical bands at the final setback (crown depth read from photographs, approximate).",
+        "source": [
+          "https://en.wikipedia.org/wiki/Wolf_Point_East_Tower",
+          "https://www.skyscrapercenter.com/complex/677"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Wolf_Point_East_Tower",
+        "https://www.skyscrapercenter.com/complex/677"
+      ]
+    },
+    {
+      "key": "wolfpointwest",
+      "name": "Wolf Point West",
+      "aliases": [
+        "343 West Wolf Point Plaza"
+      ],
+      "match": {
+        "osmId": "w330745077"
+      },
+      "look": {
+        "material": "tinted vision glass and opaque glass in layered planes, banded by horizontal aluminium tubes",
+        "finish": "glass",
+        "base": "#4e6e80",
+        "glass": "#4e6e80",
+        "mullion": "#bfc4c6",
+        "spandrel": "#2f3a42",
+        "note": "colours read from photographs",
+        "source": [
+          "https://bklarchitecture.com/projects/wolf-point-west/",
+          "https://www.skyscrapercenter.com/complex/677"
+        ]
+      },
+      "heightM": 148,
+      "facade": "curtain-glass",
+      "tint": "dark",
+      "crowns": [],
+      "sculpt": "wolfpoint",
+      "sculptParams": {
+        "form": "planes",
+        "topM": 148,
+        "drops": [
+          0,
+          9
+        ],
+        "floorM": 3,
+        "lineEvery": 2,
+        "lineH": 0.35,
+        "lineD": 0.45,
+        "lineStyle": "wolfpoint-aluminium",
+        "note": "148 m (485 ft), 48 floors; layered planes sliding past each other (one half three floors lower, read from photographs) with 3D bands of aluminium tubes.",
+        "source": [
+          "https://bklarchitecture.com/projects/wolf-point-west/",
+          "https://www.skyscrapercenter.com/complex/677"
+        ]
+      },
+      "sources": [
+        "https://bklarchitecture.com/projects/wolf-point-west/",
+        "https://www.skyscrapercenter.com/complex/677"
+      ]
+    },
+    {
+      "key": "boeing",
+      "name": "Boeing International Headquarters",
+      "aliases": [
+        "Boeing Building",
+        "100 North Riverside"
+      ],
+      "match": {
+        "osmId": "w124434705"
+      },
+      "look": {
+        "material": "dark-tinted glass in a grid of grey marble and granite; exposed light grey roof trusses",
+        "finish": "granite",
+        "base": "#8c8c8a",
+        "glass": "#2e3b44",
+        "mullion": "#6e6f70",
+        "spandrel": "#7d7d7b",
+        "note": "colours read from photographs",
+        "source": [
+          "https://en.wikipedia.org/wiki/Boeing_Building",
+          "https://www.skyscrapercenter.com/building/100-north-riverside-plaza/2704"
+        ]
+      },
+      "facade": "curtain-glass",
+      "tint": "dark",
+      "crowns": [],
+      "sculpt": "boeing",
+      "sculptParams": {
+        "topM": 171,
+        "trussDepthM": 8,
+        "cornerFace": [
+          180,
+          270
+        ],
+        "hangToM": 18,
+        "note": "561 ft (171 m), 36 floors; the south-west corner hangs over the Metra tracks from cantilever trusses on the roof, left exposed. Truss depth and bay spacing read from photographs (approximate).",
+        "source": [
+          "https://en.wikipedia.org/wiki/Boeing_Building",
+          "https://buildingsdb.com/IL/chicago/boeing-international-headquarters/"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Boeing_Building",
+        "https://www.skyscrapercenter.com/building/100-north-riverside-plaza/2704"
+      ]
+    },
+    {
+      "key": "riversideplaza",
+      "name": "Riverside Plaza",
+      "aliases": [
+        "Chicago Daily News Building",
+        "2 North Riverside Plaza"
+      ],
+      "match": {
+        "osmId": "w149215037"
+      },
+      "look": {
+        "material": "light brown Indiana limestone, Art Deco, low-relief carving by Alvin Meyer",
+        "finish": "limestone",
+        "base": "#cfc2a6",
+        "glass": "#3a3f44",
+        "mullion": "#c4b79b",
+        "spandrel": "#8a7f6e",
+        "note": "colours read from photographs",
+        "source": [
+          "https://en.wikipedia.org/wiki/Riverside_Plaza_(Chicago)",
+          "https://buildingsdb.com/IL/chicago/riverside-plaza-building/"
+        ]
+      },
+      "facade": "art-deco",
+      "crowns": [],
+      "sculpt": "riversideplaza",
+      "sculptParams": {
+        "floorM": 3.54,
+        "pierEvery": 2.6,
+        "note": "302 ft (92 m), 26 floors (3.54 m a floor applied to OSM's level counts); end pavilions stepping down by setbacks; continuous piers. The river plaza at river level waits for the river drop (D1).",
+        "source": [
+          "https://en.wikipedia.org/wiki/Riverside_Plaza_(Chicago)"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Riverside_Plaza_(Chicago)",
+        "https://buildingsdb.com/IL/chicago/riverside-plaza-building/"
       ]
     },
     {
@@ -631,7 +1215,28 @@
       "heightM": 248,
       "facade": "curtain-glass",
       "tint": "silver",
-      "crowns": []
+      "crowns": [],
+      "aliases": [
+        "110 N Wacker",
+        "Bank of America Tower Chicago"
+      ],
+      "sculpt": "wacker110",
+      "sculptParams": {
+        "riverFace": 270,
+        "overhangM": 17,
+        "tridentM": 16.8,
+        "tridents": 3,
+        "finEvery": 3,
+        "note": "248.97 m, 57 floors; the river face steps back 5 ft per 30 ft bay (OSM outline); the tower overhangs the Riverwalk by 55 ft (17 m) on three steel tridents 55 ft (16.8 m) tall; vertical glass fins (drawn every 3 m). The tridents' branch geometry is read from photographs (approximate).",
+        "source": [
+          "https://www.thorntontomasetti.com/project/110-north-wacker",
+          "https://en.wikipedia.org/wiki/110_North_Wacker"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/110_North_Wacker",
+        "https://www.thorntontomasetti.com/project/110-north-wacker"
+      ]
     },
     {
       "key": "1000m",
@@ -901,7 +1506,8 @@
       "crowns": [],
       "aliases": [
         "Merchandise Mart",
-        "theMART"
+        "theMART",
+        "Art on theMART"
       ],
       "landmark": {
         "type": "martRiverFace",
@@ -916,7 +1522,258 @@
       },
       "sources": [
         "https://en.wikipedia.org/wiki/Merchandise_Mart",
+        "https://artonthemart.com/how-it-works/",
         "OpenStreetMap way 28293211"
+      ],
+      "sculpt": "mart",
+      "sculptParams": {
+        "levelTops": {
+          "8": 32,
+          "18": 78,
+          "19": 82,
+          "22": 92
+        },
+        "riverFace": 180,
+        "pierEvery": 6.1,
+        "blockM": 78,
+        "heads": 56,
+        "artM": [
+          14,
+          64.3
+        ],
+        "artWidthM": 169.5,
+        "note": "340 ft (103.6 m) central tower of 25 floors over the 18-storey block (about 78 m, read from photographs); corner towers of 19 and 22 storeys (OSM parts) with stepped parapets; the 56 terra-cotta heads of Native American chiefs (3.5 × 7 ft) ringing the tower crown; piers on every face. Art on theMART's image is 556 × 165 ft (169.5 × 50.3 m) on the river façade; its height on the wall is read from photographs.",
+        "source": [
+          "https://chicagology.com/skyscrapers/skyscrapers033/",
+          "https://artonthemart.com/how-it-works/",
+          "https://en.wikipedia.org/wiki/Merchandise_Mart"
+        ]
+      }
+    },
+    {
+      "key": "civicopera",
+      "name": "Civic Opera House",
+      "aliases": [
+        "Civic Opera Building",
+        "Lyric Opera of Chicago",
+        "20 North Wacker"
+      ],
+      "match": {
+        "osmId": "w124865443"
+      },
+      "look": {
+        "material": "Indiana (Bedford) limestone on the lower storeys, matching soft grey brick and terra cotta above; the Wacker portico lit by its lanterns",
+        "finish": "limestone",
+        "base": "#cfc7b5",
+        "glass": "#3a3f45",
+        "mullion": "#c2bbaa",
+        "spandrel": "#c6bfae",
+        "note": "colours read from photographs",
+        "source": [
+          "https://en.wikipedia.org/wiki/Civic_Opera_Building",
+          "https://chicagology.com/skyscrapers/skyscrapers014/"
+        ]
+      },
+      "facade": "loop-limestone",
+      "crowns": [],
+      "sculpt": "opera",
+      "sculptParams": {
+        "towerM": 169.2,
+        "porticoM": 12,
+        "piers": 24,
+        "note": "555 ft (169 m), 45 floors; the armchair facing the river: the tower along Wacker, 22-storey wings (OSM parts) and the opera house between them; the two-storey portico runs the 400 ft Wacker front with 55 lanterns. Pier count and portico height read from photographs (approximate).",
+        "source": [
+          "https://chicagology.com/skyscrapers/skyscrapers014/",
+          "https://en.wikipedia.org/wiki/Civic_Opera_Building"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Civic_Opera_Building",
+        "https://chicagology.com/skyscrapers/skyscrapers014/"
+      ]
+    },
+    {
+      "key": "oldpostoffice",
+      "name": "Old Chicago Main Post Office",
+      "aliases": [
+        "Old Post Office",
+        "The Post Office",
+        "433 West Van Buren"
+      ],
+      "match": {
+        "osmId": "w24989834"
+      },
+      "look": {
+        "material": "grey Bedford limestone over a black granite base; fluted piers; the roof park since 2022",
+        "finish": "limestone",
+        "base": "#c9c2b2",
+        "glass": "#2f363c",
+        "mullion": "#bdb6a6",
+        "spandrel": "#c0b9a9",
+        "note": "colours read from photographs",
+        "source": [
+          "https://en.wikipedia.org/wiki/Old_Chicago_Main_Post_Office",
+          "https://www.architecture.org/online-resources/buildings-of-chicago/old-chicago-main-post-office"
+        ]
+      },
+      "facade": "loop-limestone",
+      "crowns": [],
+      "sculpt": "postoffice",
+      "sculptParams": {
+        "levelTops": {
+          "6": 38.6,
+          "9": 58,
+          "10": 62,
+          "11": 65.5
+        },
+        "portalZ": [
+          697,
+          727
+        ],
+        "portalM": 7.2,
+        "pierW": 4.5,
+        "pierEvery": 3.4,
+        "note": "about 190 ft (58 m) for most of the building, 65.5 m at the corner towers (OSM); the Eisenhower Expressway passes through the base in two 40 ft (12.2 m) bores (OSM maps the bridging floors from level 1); clearance of about 7 m and the central pier width are read from photographs (approximate). The 3.5-acre roof park with its running track.",
+        "source": [
+          "https://chicagology.com/skyscrapers/skyscrapers029/",
+          "https://news.wttw.com/2016/02/03/ask-geoffrey-which-came-first-eisenhower-or-old-main-post-office"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Old_Chicago_Main_Post_Office",
+        "https://chicagology.com/skyscrapers/skyscrapers029/"
+      ]
+    },
+    {
+      "key": "riverside150",
+      "name": "150 North Riverside",
+      "aliases": [
+        "150 N Riverside"
+      ],
+      "match": {
+        "osmId": "w330879260"
+      },
+      "look": {
+        "material": "unitized curtain wall, vertical silver fins at every mullion; a narrow core base clad in dark glass",
+        "finish": "glass",
+        "base": "#8d9aa3",
+        "glass": "#7c8e9a",
+        "mullion": "#b9c0c5",
+        "spandrel": "#5e6b74",
+        "note": "colours read from photographs",
+        "source": [
+          "https://en.wikipedia.org/wiki/150_North_Riverside",
+          "https://www.architectmagazine.com/project-gallery/150-north-riverside/"
+        ]
+      },
+      "facade": "curtain-glass",
+      "tint": "silver",
+      "crowns": [],
+      "sculpt": "riverside150",
+      "sculptParams": {
+        "roofM": 221,
+        "topM": 229,
+        "coreM": 31.7,
+        "plateM": 42,
+        "coreWidthM": 12,
+        "coreLengthFrac": 0.72,
+        "lobbyM": 9,
+        "finEvery": 4.5,
+        "rippleM": 8.4,
+        "note": "221 m architectural height (CTBUH), 229 m to the mechanical screen; the core is 39 ft (12 m) wide for 8 storeys (104 ft, 31.7 m), then the plate splays to 120 ft (36.6 m) on sloping steel (to about 42 m, read from photographs); fin depth 4–10 in, changing every two floors (drawn every third mullion on the wide east and west faces).",
+        "source": [
+          "https://www.skyscrapercenter.com/building/150-north-riverside/15587",
+          "https://en.wikipedia.org/wiki/150_North_Riverside"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/150_North_Riverside",
+        "https://www.skyscrapercenter.com/building/150-north-riverside/15587"
+      ]
+    },
+    {
+      "key": "riverpoint",
+      "name": "River Point",
+      "aliases": [
+        "444 West Lake"
+      ],
+      "match": {
+        "osmId": "w330309437"
+      },
+      "look": {
+        "material": "curving green low-e glass with spandrel glass, silver mullions; red travertine behind the base arch",
+        "finish": "glass",
+        "base": "#6f8c88",
+        "glass": "#6f8c88",
+        "mullion": "#a9b1b0",
+        "spandrel": "#4f6663",
+        "note": "colours read from photographs",
+        "source": [
+          "https://en.wikipedia.org/wiki/River_Point",
+          "https://www.pickardchilton.com/work/river-point"
+        ]
+      },
+      "facade": "curtain-glass",
+      "tint": "green",
+      "crowns": [],
+      "sculpt": "riverpoint",
+      "sculptParams": {
+        "topM": 223,
+        "archFace": 75,
+        "archHalfM": 17,
+        "archH": 26,
+        "crownArchH": 14,
+        "columnEvery": 8.5,
+        "note": "732 ft (223 m), 52 floors of 13 ft; the convex east face carries the parabolic base arch framing the red travertine lobby wall and the shorter inverted arch at the crown; perimeter columns about 28 ft (8.5 m) apart. Arch span and heights read from photographs (approximate).",
+        "source": [
+          "https://en.wikipedia.org/wiki/River_Point",
+          "https://www.mka.com/projects/river-point-tower/"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/River_Point",
+        "https://www.pickardchilton.com/work/river-point"
+      ]
+    },
+    {
+      "key": "houseofblues",
+      "name": "House of Blues Chicago",
+      "aliases": [
+        "Marina City theater",
+        "Marina City saddle"
+      ],
+      "match": {
+        "osmId": "w1177923721"
+      },
+      "look": {
+        "material": "board-formed concrete walls under a lead-sheathed saddle roof (Bertrand Goldberg)",
+        "finish": "concrete",
+        "base": "#d9d4c8",
+        "glass": "#3c3a36",
+        "mullion": "#cfcabe",
+        "spandrel": "#d4cfc3",
+        "note": "colours read from photographs",
+        "source": [
+          "https://en.wikipedia.org/wiki/Marina_City",
+          "https://bertrandgoldberg.org/works/view/marina-city"
+        ]
+      },
+      "facade": "precast-concrete",
+      "crowns": [],
+      "sculpt": "saddle",
+      "sculptParams": {
+        "midM": 13,
+        "endRiseM": 6,
+        "sideDropM": 4,
+        "note": "the Marina City theater (1967): a four-storey hall under a saddle roof of steel arches and sprayed concrete sheathed in lead, about 19 m at its high ends and 9 m at the low middle of its sides (read from photographs).",
+        "source": [
+          "https://www.marinacity.org/history/mobi/theatrical_flourish.htm",
+          "https://en.wikipedia.org/wiki/Marina_City"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Marina_City",
+        "https://bertrandgoldberg.org/works/view/marina-city"
       ]
     },
     {
@@ -2155,12 +3012,8 @@
         "type": "unionStation",
         "facingBearing": 90,
         "columns": 20,
-        "columnH": 16,
-        "hall": {
-          "L": 67,
-          "W": 30,
-          "rise": 8
-        }
+        "columnH": 11.9,
+        "hall": false
       },
       "aliases": [
         "Chicago Union Station",
@@ -2175,6 +3028,1168 @@
       "sources": [
         "https://en.wikipedia.org/wiki/Chicago_Union_Station",
         "OpenStreetMap way 203442440"
+      ],
+      "look": {
+        "material": "Bedford (Indiana) limestone; the Great Hall's skylight in the office block's light court",
+        "finish": "limestone",
+        "base": "#d9d0bc",
+        "glass": "#30363b",
+        "mullion": "#cec5b1",
+        "spandrel": "#d2c9b5",
+        "note": "colours read from photographs",
+        "source": [
+          "https://www.architecture.org/online-resources/buildings-of-chicago/union-station",
+          "https://chicagology.com/skyscrapers/skyscrapers044/"
+        ]
+      },
+      "facade": "loop-limestone",
+      "sculpt": "unionstation",
+      "sculptParams": {
+        "baseM": 20,
+        "topM": 40,
+        "officeSetbackM": 10.5,
+        "courtM": [
+          76,
+          36
+        ],
+        "hall": {
+          "L": 66.8,
+          "W": 30.5,
+          "rise": 9
+        },
+        "note": "the base fills the 372 × 320 ft block; the 8-storey office block is set back 30 ft 4 in (Canal) to 39 ft (Clinton) round the light court; the Great Hall's barrel-vault skylight is 219 ft (66.8 m) long; the Canal St colonnade's Roman Doric columns are 39 ft (11.9 m). Base and block heights read from photographs (approximate).",
+        "source": [
+          "https://chicagology.com/skyscrapers/skyscrapers044/",
+          "https://www.architecture.org/online-resources/buildings-of-chicago/union-station"
+        ]
+      }
+    },
+    {
+      "key": "rivercity",
+      "name": "River City",
+      "aliases": [
+        "800 South Wells",
+        "River City Chicago"
+      ],
+      "match": {
+        "osmId": "w148788175"
+      },
+      "suppress": [
+        "r20355402"
+      ],
+      "look": {
+        "material": "poured-in-place concrete shells with curved punched windows (Bertrand Goldberg)",
+        "finish": "concrete",
+        "base": "#b3afa6",
+        "glass": "#3c4448",
+        "mullion": "#aaa69d",
+        "spandrel": "#b0aca3",
+        "note": "colours read from photographs",
+        "source": [
+          "https://en.wikipedia.org/wiki/River_City_(building)",
+          "https://www.chicagomag.com/real-estate/may-2019/river-city-returns-to-its-roots/"
+        ]
+      },
+      "facade": "precast-concrete",
+      "crowns": [],
+      "sculpt": "rivercity",
+      "sculptParams": {
+        "plinthM": 15,
+        "floorM": 3,
+        "storeys": [
+          7,
+          10,
+          12,
+          14,
+          12,
+          10
+        ],
+        "wingDepthM": 13,
+        "atriumW": 10,
+        "atriumStoreys": 10,
+        "note": "two serpentine wings of 7–14 storeys on a 4-storey plinth with the 10-storey skylit River Road atrium between them (OSM's serpentine outline; the step pattern and wing depth are read from photographs, approximate). OSM's second, overlapping outline of the complex is suppressed (it z-fought the roof).",
+        "source": [
+          "https://en.wikipedia.org/wiki/River_City_(building)"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/River_City_(building)",
+        "https://www.archpaper.com/2019/01/bertrand-goldberg-brutalist-river-city-condos-controversial-paint-job/"
+      ]
+    },
+    {
+      "key": "michigan333",
+      "name": "333 North Michigan",
+      "aliases": [
+        "333 N Michigan"
+      ],
+      "match": {
+        "osmId": "w144710192"
+      },
+      "look": {
+        "material": "limestone over a dark polished stone base, Fred M. Torrey's frieze; the top setbacks floodlit",
+        "finish": "limestone",
+        "base": "#d6cdb8",
+        "glass": "#3b4045",
+        "mullion": "#cbc2ad",
+        "spandrel": "#cfc6b1",
+        "note": "colours read from photographs",
+        "crownLight": {
+          "kind": "flood",
+          "color": "#ffe2b0",
+          "fromM": 85,
+          "toM": 121,
+          "intensity": 0.9,
+          "source": [
+            "https://en.wikipedia.org/wiki/333_North_Michigan"
+          ]
+        },
+        "source": [
+          "https://en.wikipedia.org/wiki/333_North_Michigan",
+          "https://chicagology.com/skyscrapers/skyscrapers062/"
+        ]
+      },
+      "facade": "art-deco",
+      "crowns": [],
+      "sculpt": "michigan333",
+      "sculptParams": {
+        "topM": 121,
+        "slabM": 85,
+        "towerFrac": 0.42,
+        "setbacks": [
+          [
+            85,
+            98,
+            1
+          ],
+          [
+            98,
+            110,
+            0.86
+          ],
+          [
+            110,
+            121,
+            0.72
+          ]
+        ],
+        "pierEvery": 2.4,
+        "baseM": 6,
+        "friezeM": 18.5,
+        "note": "396 ft (121 m), 35 floors; the 24-storey slab (about 85 m) and the north tower stepping back three times; the carved frieze above the base. Setback heights read from photographs (approximate).",
+        "source": [
+          "https://en.wikipedia.org/wiki/333_North_Michigan",
+          "https://chicagology.com/skyscrapers/skyscrapers062/"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/333_North_Michigan",
+        "https://chicagology.com/skyscrapers/skyscrapers062/"
+      ]
+    },
+    {
+      "key": "lasalle300",
+      "name": "300 North LaSalle",
+      "aliases": [
+        "300 N LaSalle"
+      ],
+      "match": {
+        "osmId": "w1274706595"
+      },
+      "look": {
+        "material": "floor-to-ceiling low-e glass with stainless shade fins; a luminous stainless crown",
+        "finish": "glass",
+        "base": "#7b909d",
+        "glass": "#6f8796",
+        "mullion": "#c7cccf",
+        "spandrel": "#8496a2",
+        "note": "colours read from photographs",
+        "source": [
+          "https://en.wikipedia.org/wiki/300_North_LaSalle",
+          "https://www.architecturalrecord.com/articles/5947-300-north-lasalle"
+        ]
+      },
+      "facade": "curtain-glass",
+      "tint": "silver",
+      "crowns": [],
+      "sculpt": "lasalle300",
+      "sculptParams": {
+        "topM": 239.1,
+        "steps": [
+          207,
+          215,
+          223,
+          231
+        ],
+        "stepInsetM": 3,
+        "finEvery": 3,
+        "note": "785 ft (239 m), 60 floors; the east and west ends step in over the top eight floors to the stainless crown, lit as a beacon on the river. Step heights and insets read from photographs (approximate).",
+        "source": [
+          "https://en.wikipedia.org/wiki/300_North_LaSalle",
+          "https://www.architecturalrecord.com/articles/5947-300-north-lasalle"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/300_North_LaSalle",
+        "https://www.skyscrapercenter.com/building/300-north-lasalle/1009"
+      ]
+    },
+    {
+      "key": "nbc",
+      "name": "NBC Tower",
+      "aliases": [
+        "455 North Cityfront Plaza",
+        "NBC Chicago"
+      ],
+      "match": {
+        "osmId": "w153567403"
+      },
+      "look": {
+        "material": "Indiana limestone piers, recessed tinted glass, reddish granite spandrels; the crown floodlit",
+        "finish": "limestone",
+        "base": "#d9cfbd",
+        "glass": "#3a4650",
+        "mullion": "#cec4b2",
+        "spandrel": "#6b4f48",
+        "note": "colours read from photographs",
+        "crownLight": {
+          "kind": "flood",
+          "color": "#fff0d8",
+          "fromM": 110,
+          "toM": 152,
+          "intensity": 0.9,
+          "source": [
+            "https://en.wikipedia.org/wiki/NBC_Tower"
+          ]
+        },
+        "source": [
+          "https://en.wikipedia.org/wiki/NBC_Tower"
+        ]
+      },
+      "facade": "art-deco",
+      "crowns": [],
+      "sculpt": "nbc",
+      "sculptParams": {
+        "roofM": 151.5,
+        "spireTopM": 191,
+        "setbacks": [
+          [
+            80,
+            0.86
+          ],
+          [
+            114,
+            0.74
+          ],
+          [
+            130,
+            0.62
+          ]
+        ],
+        "pierEvery": 3,
+        "note": "627 ft (191 m) to the spire, roof 497 ft (151.5 m), 37 floors; setbacks near the 20th, 29th and 33rd floors with buttress fins; the 130 ft broadcast spire. Setback depths read from photographs (approximate).",
+        "source": [
+          "https://en.wikipedia.org/wiki/NBC_Tower"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/NBC_Tower"
+      ]
+    },
+    {
+      "key": "saltshed",
+      "name": "The Salt Shed",
+      "aliases": [
+        "Morton Salt Shed",
+        "Morton Salt warehouse"
+      ],
+      "match": {
+        "osmId": "w210307434"
+      },
+      "look": {
+        "material": "buttressed concrete walls, a dark steep gable roof painted with the giant white MORTON SALT letters",
+        "finish": "concrete",
+        "base": "#9c9890",
+        "glass": "#2b2d2f",
+        "mullion": "#8f8b83",
+        "spandrel": "#9c9890",
+        "note": "colours read from photographs",
+        "source": [
+          "https://www.architecture.org/online-resources/buildings-of-chicago/the-salt-shed",
+          "https://www.wbez.org/architecture/2024/06/24/whats-that-building-the-salt-shed"
+        ]
+      },
+      "facade": "industrial",
+      "crowns": [],
+      "sculpt": "saltshed",
+      "sculptParams": {
+        "eaveM": 4.5,
+        "ridgeM": 21,
+        "letterM": 7,
+        "signFace": 250,
+        "buttressEvery": 6.1,
+        "text": "MORTON SALT",
+        "note": "1929–30 clear-span shed with a 50 ft (15.2 m) clear height under a steep gable (ridge about 21 m) on buttressed concrete walls; the MORTON SALT letters (about 7 m tall) on the slope facing the Kennedy Expressway, lit at night. Ridge height and letter size read from photographs (approximate); the Umbrella Girl is not modelled.",
+        "source": [
+          "https://www.wbez.org/architecture/2024/06/24/whats-that-building-the-salt-shed",
+          "https://blockclubchicago.org/2022/02/09/the-morton-salt-warehouse-salt-shed-venue-sign-is-peeling-but-its-supposed-to-developers-say/"
+        ]
+      },
+      "sources": [
+        "https://www.architecture.org/online-resources/buildings-of-chicago/the-salt-shed",
+        "https://www.wbez.org/architecture/2024/06/24/whats-that-building-the-salt-shed"
+      ]
+    },
+    {
+      "key": "wardcatalog",
+      "name": "Montgomery Ward Catalog House",
+      "aliases": [
+        "600 West Chicago",
+        "Montgomery Ward Company Complex"
+      ],
+      "match": {
+        "osmId": "w210307773"
+      },
+      "look": {
+        "material": "exposed buff reinforced-concrete frame with red-brown spandrels and geometric terra cotta",
+        "finish": "concrete",
+        "base": "#b9ae9c",
+        "glass": "#2f3539",
+        "mullion": "#b0a593",
+        "spandrel": "#8c5a44",
+        "note": "colours read from photographs",
+        "source": [
+          "https://en.wikipedia.org/wiki/Montgomery_Ward_Company_Complex",
+          "https://webapps1.chicago.gov/landmarksweb/web/landmarkdetails.htm?lanId=1374"
+        ]
+      },
+      "facade": "industrial",
+      "crowns": [],
+      "sculpt": "wardcatalog",
+      "sculptParams": {
+        "levelTops": {
+          "8": 38.5,
+          "12": 52
+        },
+        "bayM": 6.1,
+        "floorM": 4.6,
+        "note": "1908, 8 storeys (about 38.5 m with 12–17 ft ceilings) on a bent trapezoid with a 600 ft river edge; one of Chicago's first large reinforced-concrete skeletons. Heights per storey read from photographs (approximate).",
+        "source": [
+          "https://en.wikipedia.org/wiki/Montgomery_Ward_Company_Complex"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Montgomery_Ward_Company_Complex",
+        "https://webapps1.chicago.gov/landmarksweb/web/landmarkdetails.htm?lanId=1374"
+      ]
+    },
+    {
+      "key": "leoburnett",
+      "name": "Leo Burnett Building",
+      "aliases": [
+        "35 West Wacker"
+      ],
+      "match": {
+        "osmId": "w64390087"
+      },
+      "look": {
+        "material": "green granite grid in three finishes framing reflective glass divided by stainless bars",
+        "finish": "granite",
+        "base": "#3e4a42",
+        "glass": "#5c6e78",
+        "mullion": "#c8cccf",
+        "spandrel": "#3a463e",
+        "note": "colours read from photographs",
+        "source": [
+          "https://en.wikipedia.org/wiki/Leo_Burnett_Building",
+          "https://buildingsdb.com/IL/chicago/leo-burnett-building/"
+        ]
+      },
+      "facade": "curtain-glass",
+      "tint": "dark",
+      "crowns": [],
+      "sculpt": "towerdetail",
+      "sculptParams": {
+        "topM": 193.6,
+        "fins": {
+          "every": 3,
+          "w": 0.9,
+          "d": 0.45,
+          "from": 6
+        },
+        "floors": {
+          "from": 8,
+          "every": 3.9,
+          "h": 0.7,
+          "d": 0.3
+        },
+        "bodyFacade": "stone",
+        "bodyStyle": "burnett-granite",
+        "crown": {
+          "kind": "colonnade",
+          "h": 12,
+          "every": 3,
+          "w": 1.2,
+          "d": 0.6,
+          "style": "burnett-granite"
+        },
+        "note": "635 ft (194 m), 50 floors, a straight shaft; the granite grid ends in a flattened colonnade of square piers under the cornice (crown height read from photographs, approximate).",
+        "source": [
+          "https://en.wikipedia.org/wiki/Leo_Burnett_Building"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Leo_Burnett_Building",
+        "https://buildingsdb.com/IL/chicago/leo-burnett-building/"
+      ]
+    },
+    {
+      "key": "sheraton",
+      "name": "Sheraton Grand Chicago Riverwalk",
+      "aliases": [
+        "Sheraton Grand Chicago",
+        "301 East North Water"
+      ],
+      "match": {
+        "osmId": "w188171430"
+      },
+      "look": {
+        "material": "tan and rose precast concrete with green-tinted glass",
+        "finish": "concrete",
+        "base": "#c9b49a",
+        "glass": "#4f6e66",
+        "mullion": "#bba78d",
+        "spandrel": "#c3ae94",
+        "note": "colours read from photographs",
+        "source": [
+          "https://www.skyscrapercenter.com/building/sheraton-chicago-hotel-towers/10020",
+          "https://aviewoncities.com/chicago/buildings/sheraton-grand-chicago"
+        ]
+      },
+      "facade": "precast-concrete",
+      "crowns": [],
+      "sculpt": "towerdetail",
+      "sculptParams": {
+        "topM": 112.3,
+        "floors": {
+          "from": 20,
+          "every": 3.4,
+          "h": 0.5,
+          "d": 0.2
+        },
+        "bodyStyle": "sheraton-precast",
+        "note": "369 ft (112.3 m), 33 floors (CTBUH); a slab on the north bank with stepped upper massing (OSM parts); precast banding at each floor.",
+        "source": [
+          "https://www.skyscrapercenter.com/building/sheraton-chicago-hotel-towers/10020"
+        ]
+      },
+      "sources": [
+        "https://www.skyscrapercenter.com/building/sheraton-chicago-hotel-towers/10020",
+        "https://aviewoncities.com/chicago/buildings/sheraton-grand-chicago"
+      ]
+    },
+    {
+      "key": "hyattregency",
+      "name": "Hyatt Regency Chicago",
+      "aliases": [
+        "151 East Wacker",
+        "Hyatt Regency"
+      ],
+      "match": {
+        "osmId": "w235920251"
+      },
+      "look": {
+        "material": "dark bronze glass in a dark brown mullion and spandrel grid",
+        "finish": "glass",
+        "base": "#3a3530",
+        "glass": "#3a3530",
+        "mullion": "#2b2622",
+        "spandrel": "#2f2a26",
+        "note": "colours read from photographs",
+        "source": [
+          "https://en.wikipedia.org/wiki/Hyatt_Regency_Chicago",
+          "https://www.skyscrapercenter.com/building/hyatt-regency-chicago-west-tower/13132"
+        ]
+      },
+      "facade": "curtain-glass",
+      "tint": "dark",
+      "crowns": [],
+      "sculpt": "towerdetail",
+      "sculptParams": {
+        "fins": {
+          "every": 1.6,
+          "w": 0.22,
+          "d": 0.25,
+          "from": 10
+        },
+        "bodyStyle": "hyatt-bronze",
+        "skybridge": {
+          "y": [
+            7,
+            11.5
+          ],
+          "w": 7,
+          "style": "hyatt-glass"
+        },
+        "note": "West Tower 365 ft (111 m), East Tower 347 ft (106 m) (OSM parts); the glass walkways over Stetson Avenue join them (their height read from photographs, approximate).",
+        "source": [
+          "https://en.wikipedia.org/wiki/Hyatt_Regency_Chicago"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Hyatt_Regency_Chicago",
+        "https://www.epsteinglobal.com/news/epsteins-top-100-projects-13-hyatt-regency-chicago"
+      ]
+    },
+    {
+      "key": "swissotel",
+      "name": "Swissôtel Chicago",
+      "aliases": [
+        "Swissotel Chicago",
+        "323 East Wacker"
+      ],
+      "match": {
+        "osmId": "w95486966"
+      },
+      "look": {
+        "material": "flush silvered reflective glass on a triangular prism",
+        "finish": "glass",
+        "base": "#a9b4bc",
+        "glass": "#a9b4bc",
+        "mullion": "#8f9aa2",
+        "spandrel": "#6f7c86",
+        "note": "colours read from photographs",
+        "source": [
+          "https://enclos.com/project/swissotel-chicago/",
+          "https://www.skyscrapercenter.com/chicago/swissotel-chicago/4362"
+        ]
+      },
+      "facade": "curtain-glass",
+      "tint": "silver",
+      "crowns": [],
+      "sources": [
+        "https://enclos.com/project/swissotel-chicago/",
+        "https://www.skyscrapercenter.com/chicago/swissotel-chicago/4362"
+      ]
+    },
+    {
+      "key": "equitable",
+      "name": "Equitable Building",
+      "aliases": [
+        "401 North Michigan"
+      ],
+      "match": {
+        "osmId": "w127107027"
+      },
+      "look": {
+        "material": "bronze-tinted glass with aluminium spandrels, column covers and mullions",
+        "finish": "glass",
+        "base": "#8c8478",
+        "glass": "#4a4038",
+        "mullion": "#8c8478",
+        "spandrel": "#7f776b",
+        "note": "colours read from photographs",
+        "source": [
+          "https://en.wikipedia.org/wiki/Equitable_Building_(Chicago)",
+          "https://www.skyscrapercenter.com/chicago/equitable-building/9357"
+        ]
+      },
+      "facade": "curtain-glass",
+      "tint": "dark",
+      "crowns": [],
+      "sculpt": "towerdetail",
+      "sculptParams": {
+        "fins": {
+          "every": 1.5,
+          "w": 0.2,
+          "d": 0.3,
+          "from": 6
+        },
+        "bodyStyle": "equitable-aluminium",
+        "note": "457 ft (139 m), 35 floors (OSM height), a plain box on Pioneer Court; aluminium mullions on a 5 ft module (module read from photographs).",
+        "source": [
+          "https://en.wikipedia.org/wiki/Equitable_Building_(Chicago)"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Equitable_Building_(Chicago)",
+        "https://www.skyscrapercenter.com/chicago/equitable-building/9357"
+      ]
+    },
+    {
+      "key": "church17",
+      "name": "Seventeenth Church of Christ, Scientist",
+      "aliases": [
+        "55 East Wacker",
+        "Seventeenth Church"
+      ],
+      "match": {
+        "osmId": "w144846554"
+      },
+      "look": {
+        "material": "white travertine half-drum under a shallow lead roof and skylit lantern",
+        "finish": "limestone",
+        "base": "#e6ddcb",
+        "glass": "#2f3438",
+        "mullion": "#ddd4c2",
+        "spandrel": "#e1d8c6",
+        "note": "colours read from photographs",
+        "source": [
+          "https://en.wikipedia.org/wiki/Seventeenth_Church_of_Christ,_Scientist",
+          "https://www.docomomo-chicago.org/seventeenth-church-of-christ-scientist"
+        ]
+      },
+      "facade": "precast-concrete",
+      "crowns": [],
+      "sculpt": "church17",
+      "sculptParams": {
+        "eaveM": 16,
+        "roofRiseM": 5,
+        "flatFace": 89,
+        "lanternInsetM": 9,
+        "lanternR": 2.4,
+        "lanternH": 4.5,
+        "note": "1968; the semicircular auditorium (no seat more than 54 ft from the platform) in a travertine half-drum of four storeys above ground, with the church's name carved on its upper tier; drum height and lantern size read from photographs (approximate).",
+        "source": [
+          "https://en.wikipedia.org/wiki/Seventeenth_Church_of_Christ,_Scientist",
+          "https://sah-archipedia.org/buildings/IL-01-031-0001"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Seventeenth_Church_of_Christ,_Scientist",
+        "https://sah-archipedia.org/buildings/IL-01-031-0001"
+      ]
+    },
+    {
+      "key": "wacker77",
+      "name": "77 West Wacker",
+      "aliases": [
+        "77 West Wacker Drive",
+        "RR Donnelley Building"
+      ],
+      "match": {
+        "osmId": "w64391028"
+      },
+      "look": {
+        "material": "silver-blue glass framed by Portuguese white granite; the glazed temple pediment floodlit at night",
+        "finish": "granite",
+        "base": "#d9d6cf",
+        "glass": "#7f9aa8",
+        "mullion": "#d2cfc8",
+        "spandrel": "#d4d1ca",
+        "note": "colours read from photographs",
+        "crownLight": {
+          "kind": "flood",
+          "color": "#ffe9c4",
+          "fromM": 190,
+          "toM": 216,
+          "intensity": 1.1,
+          "source": [
+            "https://en.wikipedia.org/wiki/77_West_Wacker_Drive"
+          ]
+        },
+        "source": [
+          "https://en.wikipedia.org/wiki/77_West_Wacker_Drive"
+        ]
+      },
+      "facade": "curtain-glass",
+      "tint": "silver",
+      "crowns": [],
+      "sculpt": "towerdetail",
+      "sculptParams": {
+        "topM": 203.6,
+        "fins": {
+          "every": 3,
+          "w": 1,
+          "d": 0.5,
+          "from": 18
+        },
+        "bodyFacade": "stone",
+        "bodyStyle": "wacker77-granite",
+        "base": {
+          "h": 18,
+          "d": 0.35,
+          "style": "wacker77-granite"
+        },
+        "crown": {
+          "kind": "pediment",
+          "front": 0,
+          "h": 8,
+          "rise": 11,
+          "every": 4.5,
+          "style": "wacker77-granite",
+          "glassStyle": "wacker77-pediment"
+        },
+        "note": "668 ft (204 m), 51 floors; white granite piers, a two-storey colonnade and the glazed Greek temple pediment on top, facing Wacker Drive and the river; floodlit (540 lamps). Pediment rise and colonnade height read from photographs (approximate).",
+        "source": [
+          "https://en.wikipedia.org/wiki/77_West_Wacker_Drive"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/77_West_Wacker_Drive"
+      ]
+    },
+    {
+      "key": "wacker225",
+      "name": "225 West Wacker",
+      "aliases": [
+        "225 W Wacker"
+      ],
+      "match": {
+        "osmId": "w64391366"
+      },
+      "look": {
+        "material": "grey granite and concrete with green-tinted glass; four painted aluminium lantern spires",
+        "finish": "granite",
+        "base": "#a7a39a",
+        "glass": "#5e7a70",
+        "mullion": "#9c988f",
+        "spandrel": "#a19d94",
+        "note": "colours read from photographs",
+        "source": [
+          "https://www.skyscrapercenter.com/building/225-west-wacker/9842",
+          "https://aviewoncities.com/chicago/buildings/225-west-wacker"
+        ]
+      },
+      "facade": "curtain-glass",
+      "tint": "green",
+      "crowns": [],
+      "sculpt": "towerdetail",
+      "sculptParams": {
+        "fins": {
+          "every": 3.2,
+          "w": 0.8,
+          "d": 0.4,
+          "from": 6
+        },
+        "bodyFacade": "stone",
+        "bodyStyle": "wacker225-granite",
+        "crown": {
+          "kind": "lanterns",
+          "h": 11,
+          "w": 3.2,
+          "inset": 3.5,
+          "collarAt": 9,
+          "collarH": 3,
+          "style": "wacker225-aluminium",
+          "facade": "paint"
+        },
+        "note": "433 ft (132 m) to the lantern tips (OSM), a two-storey collar near the top and four corner lanterns of painted aluminium (their height, about 11 m, read from photographs). Not floodlit (no source).",
+        "source": [
+          "https://www.skyscrapercenter.com/building/225-west-wacker/9842",
+          "https://www.kpf.com/project/225-west-wacker"
+        ]
+      },
+      "sources": [
+        "https://www.skyscrapercenter.com/building/225-west-wacker/9842",
+        "https://aviewoncities.com/chicago/buildings/225-west-wacker"
+      ]
+    },
+    {
+      "key": "builders",
+      "name": "Builders Building",
+      "aliases": [
+        "222 North LaSalle"
+      ],
+      "match": {
+        "osmId": "w124865436"
+      },
+      "look": {
+        "material": "limestone base, buff terra-cotta shaft; a 1986 slanted glass mansard addition",
+        "finish": "terracotta",
+        "base": "#cdbf9f",
+        "glass": "#33393e",
+        "mullion": "#c2b494",
+        "spandrel": "#c6b898",
+        "note": "colours read from photographs",
+        "source": [
+          "https://en.wikipedia.org/wiki/Builders_Building",
+          "https://www.skyscrapercenter.com/building/222-north-lasalle/14501"
+        ]
+      },
+      "facade": "loop-limestone",
+      "crowns": [],
+      "sculpt": "towerdetail",
+      "sculptParams": {
+        "fins": {
+          "every": 3.6,
+          "w": 0.7,
+          "d": 0.3,
+          "from": 9
+        },
+        "bodyFacade": "stone",
+        "bodyStyle": "builders-terracotta",
+        "crown": {
+          "kind": "mansard",
+          "h": 14,
+          "inset": 4.5,
+          "style": "builders-glass"
+        },
+        "note": "342 ft (104.2 m); 22 storeys of 1927 plus the four set back behind SOM's 1986 slanted glass mansard (about 14 m, read from photographs).",
+        "source": [
+          "https://en.wikipedia.org/wiki/Builders_Building"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Builders_Building",
+        "https://www.skyscrapercenter.com/building/222-north-lasalle/14501"
+      ]
+    },
+    {
+      "key": "lasallewacker",
+      "name": "LaSalle–Wacker Building",
+      "aliases": [
+        "LaSalle-Wacker Building",
+        "221 North LaSalle"
+      ],
+      "match": {
+        "osmId": "w124873924"
+      },
+      "look": {
+        "material": "limestone over a granite base, Art Deco; the peak lit cobalt blue",
+        "finish": "limestone",
+        "base": "#d3cbb8",
+        "glass": "#353b40",
+        "mullion": "#c8c0ad",
+        "spandrel": "#ccc4b1",
+        "note": "colours read from photographs",
+        "source": [
+          "https://en.wikipedia.org/wiki/LaSalle%E2%80%93Wacker_Building",
+          "https://www.chicagoarchitecture.info/Building/1061/LaSalle-WackerBuilding.php"
+        ]
+      },
+      "facade": "art-deco",
+      "crowns": [],
+      "sculpt": "towerdetail",
+      "sculptParams": {
+        "topM": 148,
+        "fins": {
+          "every": 2.6,
+          "w": 0.6,
+          "d": 0.35,
+          "from": 8
+        },
+        "bodyFacade": "stone",
+        "bodyStyle": "lasallewacker-limestone",
+        "base": {
+          "h": 8,
+          "d": 0.3,
+          "style": "lasallewacker-granite"
+        },
+        "crown": {
+          "kind": "beacon",
+          "h": 8,
+          "style": "lasallewacker-beacon"
+        },
+        "note": "512 ft (156 m), 41 floors; a narrow central tower rises from the H-plan base through setbacks to the peak, lit cobalt blue (its beacon was once seen 200 miles away). Setback heights and peak proportions read from photographs (approximate).",
+        "source": [
+          "https://en.wikipedia.org/wiki/LaSalle%E2%80%93Wacker_Building"
+        ],
+        "setbacks": [
+          [
+            78,
+            0.66
+          ],
+          [
+            124,
+            0.5
+          ]
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/LaSalle%E2%80%93Wacker_Building",
+        "https://www.chicagoarchitecture.info/Building/1061/LaSalle-WackerBuilding.php"
+      ]
+    },
+    {
+      "key": "hotel71",
+      "name": "Royal Sonesta Chicago Downtown",
+      "aliases": [
+        "Hotel 71",
+        "71 East Wacker",
+        "Executive House"
+      ],
+      "match": {
+        "osmId": "w147399561"
+      },
+      "look": {
+        "material": "slender off-white reinforced-concrete slab with projecting balconies",
+        "finish": "concrete",
+        "base": "#dad6cc",
+        "glass": "#5a6670",
+        "mullion": "#cfcbc1",
+        "spandrel": "#d4d0c6",
+        "note": "colours read from photographs",
+        "source": [
+          "https://structurae.net/en/structures/hotel-71",
+          "https://www.skyscrapercenter.com/building/the-wyndham-grand-chicago-riverfront/4816"
+        ]
+      },
+      "heightM": 117.4,
+      "facade": "precast-concrete",
+      "crowns": [],
+      "sculpt": "towerdetail",
+      "sculptParams": {
+        "topM": 117.4,
+        "floors": {
+          "from": 9,
+          "every": 3,
+          "h": 0.35,
+          "d": 0.9
+        },
+        "bodyStyle": "hotel71-concrete",
+        "note": "385 ft (117.4 m), the tallest reinforced-concrete building in the US when finished (1958); projecting balconies at every floor (their depth read from photographs).",
+        "source": [
+          "https://structurae.net/en/structures/hotel-71"
+        ]
+      },
+      "sources": [
+        "https://structurae.net/en/structures/hotel-71",
+        "https://www.skyscrapercenter.com/building/the-wyndham-grand-chicago-riverfront/4816"
+      ]
+    },
+    {
+      "key": "kinzierr",
+      "name": "Kinzie Street Railroad Bridge",
+      "aliases": [
+        "Kinzie Street railroad bridge",
+        "Chicago and North Western Railway Bridge"
+      ],
+      "match": {
+        "synthetic": true,
+        "lat": 41.88853,
+        "lon": -87.639346,
+        "radius": 8
+      },
+      "crowns": [],
+      "sculpt": "railbridge",
+      "sculptParams": {
+        "kind": "raised-bascule",
+        "at": [
+          -969,
+          -722
+        ],
+        "bearing": 90,
+        "angle": 60,
+        "leafM": 51.8,
+        "widthM": 12.7,
+        "trussH": 9,
+        "deckM": 3,
+        "towerM": 24,
+        "towerBackM": 9,
+        "note": "1908 single-leaf Strauss bascule, 170 ft (51.8 m) leaf, 41.7 ft (12.7 m) wide, raised (about 60°) since 2001; its trunnion on the west bank (river edges from OSM water). The overhead counterweight frame's height is read from photographs (approximate). Not liftable: it stands raised.",
+        "source": [
+          "https://en.wikipedia.org/wiki/Kinzie_Street_railroad_bridge",
+          "http://www.connectingthewindycity.com/2011/07/kinzie-street-railroad-bridge.html"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Kinzie_Street_railroad_bridge"
+      ]
+    },
+    {
+      "key": "canalrr",
+      "name": "Canal Street Railroad Bridge",
+      "aliases": [
+        "Canal Street railroad lift bridge",
+        "Pennsylvania Railroad Bridge No. 458"
+      ],
+      "match": {
+        "synthetic": true,
+        "lat": 41.855652,
+        "lon": -87.637008,
+        "radius": 8
+      },
+      "crowns": [],
+      "sculpt": "railbridge",
+      "sculptParams": {
+        "kind": "lift",
+        "at": [
+          -761,
+          2929.8
+        ],
+        "bearing": 0,
+        "spanM": 82,
+        "widthM": 14,
+        "trussH": 10,
+        "towerM": 56.4,
+        "deckM": 5.8,
+        "note": "1914 vertical lift (Waddell & Harrington): a 273 ft span between two 185 ft (56.4 m) towers, normally down for Amtrak; span placed on OSM's movable ways 56242476/56242484 (they are skipped as road bridges in bridges.json). Not liftable here.",
+        "source": [
+          "https://en.wikipedia.org/wiki/Canal_Street_railroad_bridge",
+          "https://michaelminn.net/cities/chicago/canal_street_railroad_bridge/index.html"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Canal_Street_railroad_bridge"
+      ]
+    },
+    {
+      "key": "stcharlesairline",
+      "name": "St. Charles Air Line Bridge",
+      "aliases": [
+        "St. Charles Air Line",
+        "18th Street railroad bridge"
+      ],
+      "match": {
+        "synthetic": true,
+        "lat": 41.860935,
+        "lon": -87.634587,
+        "radius": 8
+      },
+      "crowns": [],
+      "sculpt": "railbridge",
+      "sculptParams": {
+        "kind": "heel-trunnion",
+        "at": [
+          -592,
+          2343
+        ],
+        "bearing": 90,
+        "spanM": 67,
+        "widthM": 10,
+        "trussH": 11,
+        "deckM": 5.8,
+        "frameM": 33,
+        "frameBackM": 10,
+        "weightH": 17.2,
+        "weightW": [
+          3,
+          12
+        ],
+        "note": "1919 Strauss heel-trunnion bascule, moved west and shortened to 220 ft (67 m) in 1930, normally down; two winged concrete counterweights of 885 tons, 56.5 ft (17.2 m) tall, 10–40 ft wide and 6 ft thick, high on the heel frame (about 33 m). On OSM's movable way 56179943. Not liftable here.",
+        "source": [
+          "https://en.wikipedia.org/wiki/St._Charles_Air_Line_Bridge",
+          "https://www.icri.org/wp-content/uploads/2023/12/CRBNovDec15_StCharlesAirLine.pdf"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/St._Charles_Air_Line_Bridge"
+      ]
+    },
+    {
+      "key": "harborlock",
+      "name": "Chicago Harbor Lock",
+      "aliases": [
+        "Chicago Lock",
+        "Harbor Lock",
+        "Chicago Harbor Lock House"
+      ],
+      "match": {
+        "osmId": "w237535869"
+      },
+      "look": {
+        "material": "concrete lock walls, steel sector gates, a zinc-clad ship-shaped control house",
+        "finish": "metal",
+        "base": "#7d8c96",
+        "glass": "#3a4a55",
+        "mullion": "#6f7e88",
+        "spandrel": "#7d8c96",
+        "note": "colours read from photographs",
+        "source": [
+          "https://en.wikipedia.org/wiki/Chicago_Harbor_Lock",
+          "https://www.bdcnetwork.com/product/zinc-clad-control-house-sets-sail-chicago-harbor-lock"
+        ]
+      },
+      "crowns": [],
+      "sculpt": "harborlock",
+      "sculptParams": {
+        "chamber": [
+          1780,
+          -712
+        ],
+        "bearing": 90,
+        "lengthM": 182.9,
+        "widthM": 24.4,
+        "wallM": 1.8,
+        "gateM": 3.2,
+        "houseL": 24,
+        "houseW": 9,
+        "note": "1938: a 600 × 80 ft (182.9 × 24.4 m) chamber (OSM water way 762092241 confirms the width), two pairs of 30 ft steel sector gates (replaced 2011); the zinc-clad control house of about 2010 with its tilted glass bridge. Wall height above the water and the house's size are read from photographs (approximate); the lake/river level step waits for D5.",
+        "source": [
+          "https://en.wikipedia.org/wiki/Chicago_Harbor_Lock",
+          "https://www.bdcnetwork.com/product/zinc-clad-control-house-sets-sail-chicago-harbor-lock"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Chicago_Harbor_Lock",
+        "https://news.wttw.com/2026/04/15/wttw-news-explains-how-does-chicago-harbor-lock-work"
+      ]
+    },
+    {
+      "key": "centennialfountain",
+      "name": "Centennial Fountain",
+      "aliases": [
+        "Nicholas J. Melas Centennial Fountain",
+        "Centennial Fountain arc"
+      ],
+      "match": {
+        "synthetic": true,
+        "lat": 41.888963,
+        "lon": -87.617612,
+        "radius": 12
+      },
+      "crowns": [],
+      "sculpt": "centennial",
+      "sculptParams": {
+        "at": [
+          849,
+          -762
+        ],
+        "riverFace": 180,
+        "widthM": 28,
+        "depthM": 22,
+        "heightM": 7,
+        "steps": 6,
+        "basinR": 9,
+        "arcM": 24.4,
+        "arcRiseM": 9,
+        "note": "1989 (Dirk Lohan): granite steps from a semicircular basin (the continental divide) to the river; the 80 ft (24.4 m) arc shoots toward the far bank for 5 minutes at the top of each hour, 10 am–11 pm, May 1–September 30 (MWRD). Step and basin dimensions read from aerials (approximate); the fountain's own pools are OSM water ways.",
+        "source": [
+          "https://www.mwrd.org/what-we-do/reducing-flooding/chicago-area-waterway-system-caws/centennial-fountain",
+          "https://en.wikipedia.org/wiki/Centennial_Fountain"
+        ]
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Centennial_Fountain",
+        "https://www.mwrd.org/what-we-do/reducing-flooding/chicago-area-waterway-system-caws/centennial-fountain"
+      ]
+    },
+    {
+      "key": "pingtomboathouse",
+      "name": "Ping Tom Boathouse",
+      "aliases": [
+        "Ping Tom Memorial Park Boathouse",
+        "Ping Tom Boat House"
+      ],
+      "match": {
+        "osmId": "w225042817"
+      },
+      "look": {
+        "material": "Mandarin-red steel frames and screens, black masonry, a white steel canopy with a yellow inner canopy",
+        "finish": "metal",
+        "base": "#b5262a",
+        "glass": "#2a2a2a",
+        "mullion": "#b5262a",
+        "spandrel": "#b5262a",
+        "note": "colours read from photographs",
+        "source": [
+          "https://www.architectmagazine.com/project-gallery/ping-tom-park-boathouse/",
+          "https://en.wikipedia.org/wiki/Ping_Tom_Memorial_Park"
+        ]
+      },
+      "crowns": [],
+      "sculpt": "boathouse",
+      "sculptParams": {
+        "note": "Johnson & Lee Architects, 2013 (about 2,400 sf, one storey): the kayak shed's red steel frames under a zig-zag roof of M- and V-shaped trusses, the black service building and the tall white canopy between, on OSM's footprint. Heights read from photographs (approximate).",
+        "source": [
+          "https://www.architectmagazine.com/project-gallery/ping-tom-park-boathouse/",
+          "http://hansjager.blogspot.com/2013/07/the-first-of-chicago-four-new.html"
+        ]
+      },
+      "sources": [
+        "https://www.architectmagazine.com/project-gallery/ping-tom-park-boathouse/",
+        "https://en.wikipedia.org/wiki/Ping_Tom_Memorial_Park"
       ]
     },
     {
