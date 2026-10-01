@@ -8632,7 +8632,7 @@
    "lod0": "tiles/-5_-15.glb",
    "lod1": "tiles/-5_-15.lod1.glb",
    "meta": "tiles/-5_-15.json",
-   "buildings": 335,
+   "buildings": 337,
    "maxHeight": 53.2
   },
   {
@@ -11475,7 +11475,7 @@
  "neighborhoods": "neighborhoods.json",
  "pois": {
   "index": "pois-index.json",
-  "count": 7980,
+  "count": 7996,
   "categories": [
    {
     "id": "food",

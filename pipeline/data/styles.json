@@ -458,6 +458,24 @@
       "base": "#1c1c1e",
       "finish": "metal",
       "source": "photo-matched, clock hands"
+    },
+    {
+      "key": "rooftop-steel",
+      "base": "#6f767d",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Wrigley_Rooftops (galvanised steel bleacher structures on the three-flat roofs)"
+    },
+    {
+      "key": "rooftop-seat",
+      "base": "#a7adb2",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Wrigley_Rooftops (galvanised steel bleacher structures on the three-flat roofs); aluminium bleacher planks"
+    },
+    {
+      "key": "rooftop-rail",
+      "base": "#2b2f33",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/Wrigley_Rooftops (galvanised steel bleacher structures on the three-flat roofs)"
     }
   ]
 }

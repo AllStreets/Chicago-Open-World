@@ -36,3 +36,7 @@ export function celebration(venueKey, st) {
 }
 
 export const plazaCount = (venue, st) => shownCount(venue.plazaCount ?? 0, plazaDensity(st?.state ?? 'idle'))
+// The rooftop clubs across Waveland and Sheffield: full for the game, a few early arrivals, a thin after-party.
+export const ROOFTOP_DENSITY = { idle: 0, pregame: 0.4, live: 0.9, postgame: 0.2 }
+export const rooftopDensity = (state) => ROOFTOP_DENSITY[state] ?? 0
+export const rooftopCount = (venue, st) => shownCount(venue.rooftopCount ?? 0, rooftopDensity(st?.state ?? 'idle'))

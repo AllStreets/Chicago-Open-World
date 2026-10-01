@@ -33,6 +33,7 @@ import { loadBlenderMesh } from '../lib/blenderMesh.js'
 import { setSeahorseMesh } from '../lib/landmarks.js'
 import { createStyleRegistry, assignHeroStyles, meshStyle, writeStylePalettePng, addMaterialStyles, styleIndex, partStyle } from '../lib/styles.js'
 import { applyOsmLooks, applyTagOverrides } from '../lib/osmLook.js'
+import { applyRooftops, rooftopLots } from '../lib/rooftops.js'
 import { lakePolygons, landMinusWater, joinLines, lakeSide } from '../lib/lake.js'
 import { bakeShore, SHORE } from '../lib/shore.js'
 import { bakeHeightfield, meshPoints, boundsUnion, HEIGHTFIELD } from '../lib/heightfield.js'
@@ -90,6 +91,8 @@ async function main() {
     buildings.push({ id: `s${s.tags.name ?? Math.round(c[0])}`, osmId: null, source: 'osm-stadium', tags: { building: 'stadium', ...s.tags }, name: s.tags.name ?? null, address: null, stories: null, year: null,
       polygons: [{ outer: s.outer, holes: s.holes }], area, centroid: c, bbox: s.bbox, height: 24, heightSource: 'default', parts: null })
   }
+  // the Wrigley rooftop lots OSM leaves empty (3627 and 3633 N Sheffield) — dressed with the other clubs below
+  buildings.push(...rooftopLots(loadJson(join(ROOT, "data", "rooftops.json")).clubs))
   log(`osm buildings: ${buildings.length}`)
   const cityRows = sortCacheFiles(readdirSync(CACHE), 'footprints-').flatMap((f) => loadJson(join(CACHE, f)).data)
   const city = cityRows.map(normalizeFootprint).filter(Boolean).map((c) => ({ id: c.id, centroid: c.centroid, stories: c.stories, year: c.year, address: c.address }))
@@ -150,6 +153,11 @@ async function main() {
     if (h && (h.sculpt || h.bodyTopM)) { const tw = b.pieces.reduce((a, p) => (p.top > a.top ? p : a), { top: 0 }), bb = tw.outer ? ringBBox(tw.outer) : null; log(`hero ${h.key}: ${b.pieces.length} pieces, tower top ${tw.top.toFixed(1)} m, ${bb ? `${(bb.maxX - bb.minX).toFixed(1)} × ${(bb.maxZ - bb.minZ).toFixed(1)} m` : 'no ring'}, crown top ${b.crownTop.toFixed(1)} m; pieces ${b.pieces.map((q) => { const bb = ringBBox(q.outer); return `${q.base ?? 0}–${q.top.toFixed(0)}:${(bb.maxX - bb.minX).toFixed(0)}×${(bb.maxZ - bb.minZ).toFixed(0)}` }).join(' ')}`) }
   }
   log(`heroes applied: ${heroFor.size}`)
+  // ── Wrigley rooftop clubs (user item 13): bleachers on the Waveland and Sheffield roofs, facing home plate ──
+  const roofData = loadJson(join(ROOT, 'data', 'rooftops.json'))
+  const roofVenue = buildings.find((b) => b.hero === roofData.homePlateFrom)?.venueMeshes?.find((v) => v.venue)?.venue
+  const rooftops = roofVenue?.frame ? applyRooftops(buildings, roofData.clubs, roofVenue.frame.origin) : { places: [], seats: [], matched: 0 }
+  log(`rooftop clubs: ${rooftops.matched} grandstands, ${rooftops.places.length} places, ${rooftops.seats.length} seats`)
   const landmarkRuntime = collectRuntime(buildings.filter((b) => b.hero && (b.runtime || b.detached)).map((b) => ({ key: b.hero, runtime: b.runtime, detached: b.detached })))
   rmSync(join(OUT, 'landmarks'), { recursive: true, force: true })
   for (const b of buildings) for (const d of b.detached ?? []) await writeMeshGlb(join(OUT, 'landmarks', `${d.key}.glb`), d.mesh)
@@ -249,6 +257,10 @@ async function main() {
       const plaza = plazaAnchors(hull, { seed: h.sports.slot + 11 }, (p) => !inBuilding(p))
       rec.plaza = `venues/${h.key}.plaza.bin`; rec.plazaCount = plaza.length
       writeFileSync(join(OUT, rec.plaza), encodeAnchors(plaza, rec.center))
+    }
+    if (h.key === roofData.homePlateFrom && rooftops.seats.length) {
+      rec.rooftops = `venues/${h.key}.rooftops.bin`; rec.rooftopCount = rooftops.seats.length
+      writeFileSync(join(OUT, rec.rooftops), encodeAnchors(rooftops.seats, rec.center))
     }
     venueList.push(rec)
   }
@@ -351,7 +363,7 @@ async function main() {
   const buildingRecs = capByTile(buildings.map(buildingPoi).filter(Boolean).map((r) => ({ ...r, tile: tileKeyFor([r.x, r.z]) })), { apartments: 12, offices: 12 })
   // websites: OSM tags, then the cached Wikidata official sites (fetch/fetch-wikidata-sites.js)
   const wdFile = join(ROOT, 'cache', 'wikidata-sites.json'), wd = existsSync(wdFile) ? loadJson(wdFile) : {}
-  const poiRecs = mergeSites(dedupePois([...amenityRecs, ...buildingRecs]), wd)
+  const poiRecs = mergeSites(dedupePois([...amenityRecs, ...buildingRecs, ...rooftops.places]), wd)
   const withSite = (list) => list.filter((r) => r.tags?.website).length
   log(`places with a website: ${withSite(dedupePois([...amenityRecs, ...buildingRecs]))} from OSM tags → ${withSite(poiRecs)} with Wikidata`)
   const poisByTile = new Map()
