@@ -4,7 +4,7 @@
 import { RiTrainLine, RiTrophyLine, RiVolumeUpLine, RiVolumeMuteLine, RiShip2Line, RiDropLine, RiMapPin2Line, RiSparkling2Line } from 'react-icons/ri'
 import { useStore } from '../state/store.js'
 import { useSoundStore } from '../audio/soundStore.js'
-import { FOUNTAIN_SCHEDULE, fountainShow } from '../landmarks/fountainSchedule.js'
+import { fountainShow } from '../landmarks/fountainSchedule.js'
 import { fireworksShow } from '../landmarks/fireworksSchedule.js'
 
 const storeFlag = (field, setter) => ({
@@ -13,9 +13,6 @@ const storeFlag = (field, setter) => ({
   toggle: () => { const s = useStore.getState(); s[setter](!s[field]) },
 })
 const always = { available: () => true, useAvailable: () => true }
-
-// the fountain preview runs one show; it is "on" while that show is playing
-const previewOn = (start) => start != null && Date.now() - start < FOUNTAIN_SCHEDULE.showMinutes * 60000
 
 export const FEATURE_CONTROLS = [
   { id: 'transit', label: 'Transit', key: 'KeyT', keyLabel: 'T', icon: RiTrainLine, hint: 'transit',
@@ -40,7 +37,8 @@ export const FEATURE_CONTROLS = [
     }, ...always },
   { id: 'fountain', label: 'Fountain', key: 'KeyJ', keyLabel: 'J', icon: RiDropLine, hint: 'fountain', commandName: 'Buckingham Fountain water show',
     help: 'play the Buckingham Fountain water show now — the jets dance to music, lit in colour after dusk',
-    use: () => useStore((s) => s.fountainLive || previewOn(s.fountainPreview)),
+    // the same answer as isOn (the real schedule too), re-read whenever the fountain's state changes
+    use: () => useStore((s) => s.fountainLive || fountainShow(new Date(), { previewStart: s.fountainPreview, stoppedAt: s.fountainStoppedAt }).state === 'show'),
     isOn: () => { const s = useStore.getState(); return fountainShow(new Date(), { previewStart: s.fountainPreview, stoppedAt: s.fountainStoppedAt }).state === 'show' },
     // one click stops any show (scheduled or started) and the jets go back to normal; the next click starts one
     toggle: () => { const s = useStore.getState(); if (featureById('fountain').isOn()) s.stopFountain(); else s.startFountainPreview() }, ...always },
