@@ -128,7 +128,7 @@ Size key: **S** ≈ ≤ 2 h (look row, crown primitive, colour), **M** ≈ half 
 
 ---
 
-## 3. Workstream B — all of Lincoln Park (in bounds: North Avenue → Irving Park Rd)
+## 3. Workstream B — all of Lincoln Park (wave 1 DONE 2026-10-01; B-8 harbours + B-10 README remain) (in bounds: North Avenue → Irving Park Rd)
 
 ### 3.1 Inventory (south → north)
 
@@ -169,16 +169,7 @@ Size key: **S** ≈ ≤ 2 h (look row, crown primitive, colour), **M** ≈ half 
 
 ### 3.2 To-dos
 
-- [ ] **B-0 Gallery poses.** Add 6 Lincoln Park poses (North Ave Beach, the zoo's main mall, South Pond/Café Brauer, the Conservatory with the Bates Fountain, Theater on the Lake/Fullerton, Belmont Harbor/Waveland). **Done when** "before" frames are in `docs/screenshots/evolution/`.
-- [ ] **B-1 Zoo module.** Split zoo and park builders into `pipeline/lib/zoo.js` (new). Lincoln Park landscape stays in `lincolnpark.js`. **Done when** `zoo.test.js` exists and the build routes `lionHouse` through it with the same output hash as today (a refactor-only commit).
-- [ ] **B-2 Conservatory** (B14): four glass houses in a line, a 50 ft (15.2 m) dome, Grandmother's Garden beds, the Bates Fountain. **Done when** a test proves the dome height ±0.5 m and four distinct houses, and the night shot shows the glass lit (it is lit for events; mark "approximate" unless sourced).
-- [ ] **B-3 Café Brauer + South Pond + Nature Boardwalk** (B12, B13). **Done when** the loggia, towers and green-tile roof, and the honeycomb arch, match photos at the B-0 pose, with a unit test for the arch lattice count and the roof colour sourced.
-- [ ] **B-4 Zoo buildings** (B6–B11): Lion House brick and roof correction, Primate House, Bird House, the Regenstein bundle look rows, the red barns, the sea lion pool, the carousel and gates. **Done when** each has a card word, ⌘K aliases (e.g., "Lion House", "Farm-in-the-Zoo", "penguins") and tests for no-part-outside-footprint.
-- [ ] **B-5 Museums and pavilions:** Chicago History Museum (B3), Nature Museum + Butterfly Haven (B16), North Pond restaurant (B17), Theater on the Lake (B18), Elks Memorial (B27). **Done when** each passes H1–H11.
-- [ ] **B-6 Monuments** (B5, B20): exedra plus 7 statues via `statues.js` (Blender only if figurative detail is needed per `chooseMethod`). **Done when** each statue's pedestal is at its sourced coordinates (±3 m), the Hamilton statue reads gilded, and the ⌘K aliases resolve.
-- [ ] **B-7 Recreation:** driving range (B22), golf course (B25), Cultural Center and comfort stations (B28), Passerelle (B2), North Ave Beach House polish (B1). **Done when** each has its card and ⌘K entry.
 - [ ] **B-8 Harbours and lakefront** (B21, B23, B26): harbour walls, docks, moored boats (static, instanced), revetment steps. **Depends on D5** (approved, Decision 4): build them as real walls at `LAKE_Y` after D5 merges, not as low curbs first. **Done when** draw calls are unchanged (boats as one InstancedMesh, total ≤ 900) and the Belmont pose shows docks.
-- [ ] **B-9 Tours.** A "Lincoln Park" VISIT tour (8 stops, south → north) in `tours.json`, with poses that pass `poseClearance`. **Done when** `tour.spec.js` runs it (or a unit test for the tour data, if the e2e gets too long).
 - [ ] **B-10 README.** A "Lincoln Park" gallery section (8 frames) and Evolution rows: Conservatory (generic dome → four glass houses) and Lion House. **Done when** links resolve.
 
 ---
@@ -256,15 +247,6 @@ Size key: **S** ≈ ≤ 2 h (look row, crown primitive, colour), **M** ≈ half 
 **D0 — Research and spec (no world change)**
 
 **D1 — The river at its real depth + the Riverwalk at river level (world rebuild)**
-- [ ] **D1-1** River polygons at `RIVER_Y`. Generate **dockwalls** (vertical concrete, sheet-pile tone downtown, darker riprap tone upriver) along every river polygon edge that meets land, from 0 to RIVER_Y − 0.5, merged into the ground layer. **Done when** `water.test.js` asserts the wall quads close every land–river edge and the draw-call census is unchanged.
-- [ ] **D1-2** Rebuild the Riverwalk (`civic.js#riverwalk`) at RIVERWALK_Y with the eight rooms as real geometry: Marina Plaza tiers, the Cove docks, River Theater steps up to Upper Wacker (5 m rise), Water Plaza fountain, Jetty piers and floating gardens, Boardwalk, Vietnam memorial, under-bridge passages, the inner retaining wall with the arcade vault openings into the Lower Wacker zone, and stairs and ramps up to the street at each bridge. **Done when** a unit test checks continuity (the walk polyline never leaves the paving), the River Theater steps total ≈ 5 m, and the rooms' extents match the street table above.
-- [ ] **D1-3** River-front building skirts (see Risks). **Done when** the test passes for every river-adjacent footprint.
-- [ ] **D1-4** Bascule piers and abutments down to the water, plus pits sized from the leaf tail sweep. **Done when** the bridge-lift animation clears the pit in `bridgeParts.test.js` and the e2e bridges pose passes.
-- [ ] **D1-5** Subway tube dips (D0-3) in `transit` and `tunnels.js`. **Done when** the tube-ceiling invariant test passes and `tunnel.spec.js` is green.
-- [ ] **D1-6** Mirror plane follows the view, with a river-corridor mask in the manifest. **Done when** a unit test covers `planeYFor(target)` and a hero-view river pose shows correct reflections.
-- [ ] **D1-7** Riverwalk walk ride at river level (`build-rides`, `rides.json` with y per point). **Done when** `ride.spec.js` completes the Riverwalk walk at ≥ 58 fps and the eye stays between RIVERWALK_Y + 1.5 and + 1.9.
-- [ ] **D1-8** Feature flag `levels.river` in the manifest. The app reads `RIVER_Y` from the manifest, never a constant. **Done when** a manifest without `levels` renders exactly as today (unit test on the reader).
-- [ ] **D1-9** Re-baseline the affected hero-view snapshots in one commit with a before/after table (**Decision 8: approved, once per stage**; the old frames move to `docs/screenshots/evolution/`). **Done when** the gate is 3× green at 1 worker and no river/lakefront snapshot is re-baselined more than once in the stage.
 
 **D2 — Lower streets you can see (app-built, no tile bytes)**
 - [ ] **D2-1** `pipeline/lib/lowerLevels.js` turns the 322 `layer<0` ways into compact centrelines with width, level and ramp ends → `public/world/lower-levels.json` (≤ 150 KB). **Done when** a unit test counts Lower Wacker, Lower Michigan, Lower Columbus and Lower Lower Randolph, and the file size is asserted.
@@ -530,3 +512,5 @@ Done 2026-10-01 and removed: F-1 weather menu, F-3 keycaps, F-4 ride names, F-5 
 | (found in the same screenshot) duplicate Blue Line rows, dark swatches, panel covering pills | F-4, F-5, F-6 |
 | Sound gone while riding trains | F-7 |
 
+
+- [ ] **F-8 Beach polish.** The new lakefront sand (North Avenue, Fullerton) reads too pale/white and the grey Lakefront Trail spurs crossing it read like roads; warm the sand toward real Chicago beach colour and render paths on sand as packed-sand/concrete walks; add volleyball nets. **Done when** a day frame of North Avenue Beach compares well with real photos.
