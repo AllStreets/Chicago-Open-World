@@ -4,7 +4,7 @@
 // noise — so the live path (snap, track, interpolate) is exercised end to end. MOCK_WEATHER=10d|13d|50d|01d.
 import http from 'node:http'
 import { readFileSync } from 'node:fs'
-import { createSim } from '../src/transit/sim.js'
+import { createSim, hash01 } from '../src/transit/sim.js'
 import { unproject } from '../../shared/project.js'
 
 const port = Number(process.argv[2] ?? 3901)
@@ -20,7 +20,7 @@ function trains() {
     const [x, , z] = t.head.p, [dx, , dz] = t.head.dir
     const [lon, lat] = unproject(x + noise(), z + noise())
     const heading = Math.round(((Math.atan2(dx, -dz) * 180) / Math.PI + 360) % 360) || 360
-    return { rn: t.id, lat, lon, heading, line: CODE[t.line], nextStation: t.nextStop?.name, predTime: local(now), arrTime: t.nextStop ? local(t.nextStop.eta) : null, destination: t.destination }
+    return { rn: String(1000 + Math.floor(hash01(t.id) * 9000)), lat, lon, heading, line: CODE[t.line], nextStation: t.nextStop?.name, predTime: local(now), arrTime: t.nextStop ? local(t.nextStop.eta) : null, destination: t.destination }
   })
 }
 

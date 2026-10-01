@@ -88,7 +88,7 @@
 .live-chip { position: relative; }
 .live-chip > .hud-chip { cursor: pointer; background: transparent; font: inherit; font-family: var(--font-mono); font-size: 10.5px; }
 .live-chip > .hud-chip:hover { color: var(--text); }
-.sources-pop { position: absolute; top: calc(100% + 8px); left: -18px; z-index: 30; width: 340px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+.sources-pop { background: rgba(7, 12, 22, 0.97) !important; position: absolute; top: calc(100% + 8px); left: -18px; z-index: 30; width: 340px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
 .sources-pop ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font: 500 12px/1.4 var(--font-ui); color: var(--text-muted); }
 .sources-pop b { color: var(--text); font-weight: 600; }
 .sources-actions { display: flex; gap: 6px; }
@@ -108,3 +108,4 @@
 /* a line with a CTA service alert (P4): an amber ring on its swatch, an alert icon in the full list */
 .tl-chip.alert { box-shadow: 0 0 0 2px #ffb547; }
 .tl-alert { margin-left: auto; color: #ffb547; font-size: 13px; }
+.hud-wordmark:has(.sources-pop) { z-index: 40; } /* the sources popover over the left stack */

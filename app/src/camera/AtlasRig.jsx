@@ -19,6 +19,9 @@ import { ensureClear } from '../lib/poseClearance.js'
 import { FEATURE_CONTROLS } from '../hud/featureControls.js'
 import { tourById, tourPoses, tourClock } from '../lib/tourPoses.js'
 import { tourAt } from '../lib/tour.js'
+import { CHI_LINE } from '../lib/nearestTransit.js'
+
+const CTA_LINES = new Set(Object.values(CHI_LINE))
 import { sessionActive, beginSession, endSession, frame as rideFrame, rideDefById, addLook } from '../ride/rideSession.js'
 import { stopRide, handleRideKey } from '../ride/rideActions.js'
 
@@ -224,7 +227,8 @@ export default function AtlasRig() {
     const fw = useStore.getState().follow
     if (fw) {
       const st = useStore.getState()
-      const lookup = (id) => (String(id).startsWith('rn:') ? null : getSim()?.trainById(id, Date.now()))
+      // a simulated train not drawn this frame can be recomputed — but not a CTA one while live trains are shown (P5)
+      const lookup = (id) => { if (String(id).startsWith('rn:')) return null; const t = getSim()?.trainById(id, Date.now()); return t && (st.feeds.cta !== 'LIVE' || !CTA_LINES.has(t.line)) ? t : null }
       const r = st.transitOn ? followStep({ ...fw, last: followLast.current }, getTrains(), undefined, lookup) : { ended: null }
       if (r.ended !== undefined) { followLast.current = null; st.stopFollow(r.ended) } // transit switched off: stop quietly
       else { // smoothed by camera-controls; in a subway tube the roof clearance doesn't apply

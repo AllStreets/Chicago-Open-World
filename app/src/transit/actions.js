@@ -1,6 +1,7 @@
 // app/src/transit/actions.js — what the transit buttons and ⌘K entries do.
 import { useStore } from '../state/store.js'
 import { getSim } from './simStore.js'
+import { trainsNow } from './liveStore.js'
 import { poseForPlace } from '../lib/flight.js'
 
 // Nearest train you can see: any elevated or surface train beats one in the subway.
@@ -15,7 +16,7 @@ export function followNearest(spec, ms = Date.now()) {
   const ops = new Map((s.transit?.lines ?? []).map((l) => [l.id, l.operator]))
   const want = (t) => spec === 'any' || (spec === 'metra' ? ops.get(t.line) === 'metra' : t.line === spec)
   const here = [s.readout.x ?? 0, s.readout.z ?? 0]
-  const best = pickTrain(sim.trainsAt(ms).filter((t) => want(t) && t.cars[0]), here)
+  const best = pickTrain(trainsNow(ms).filter((t) => want(t) && t.cars?.[0]), here) // P5: the trains on screen — live CTA when the feed is LIVE
   if (!best) { s.stopFollow('none'); return false }
   s.setTransitOn(true)
   s.setHiddenLines(s.hiddenLines.filter((x) => x !== best.line))

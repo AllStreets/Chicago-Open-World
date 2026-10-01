@@ -841,3 +841,15 @@ describe('bus snapping', () => {
 - Ruling: the Chicago Sky stay on V5's build-time schedule, because CHI's `/api/sports` does not include them. Cost if wrong: Sky scores are not live at Wintrust until CHI adds the team (a CHI change, out of scope).
 - Ruling: weather has no single-letter key (the button menu plus ⌘K), and manual weather choices override live until "Live" is chosen again. Cost if wrong: none.
 - Ruling: CTA buses (C19) are deferred, with an interface sketch and a gate test recorded here. Cost if wrong: no buses in the city until scheduled.
+
+## Rulings made while executing (2026-09-30)
+
+- Ruling: wet streets (`uWet`) are deferred — rain is the grey sky, the thinner light, the haze and the streaks; the 495-line façade shader is left alone apart from Scan. Cost if wrong: rainy streets don't shine yet.
+- Ruling: no lightning (the plan's reduced-motion rule allowed it; we skipped it for everyone). Cost if wrong: thunderstorms look like heavy rain.
+- Ruling: lake fog is a global haze (fog pulled in near and far) rather than a shore-distance density on the lake only. Cost if wrong: fog lies over the land as well as the lake.
+- Ruling: Scan reshades the façades and the ground; trees, the landmark meshes and the far horizon keep their look (warm points in the dark glass). Cost if wrong: a few objects aren't holographic.
+- Ruling: Scan's off-sweep draws the scanned disc back in to the camera (the same front reversed), so a re-toggle mid-sweep reverses from wherever the front is. Cost if wrong: none.
+- Ruling: a final first seen long after it ended (an afternoon game at night) is dated to its likely end, so the park doesn't light up again; a feed silent for 20 minutes hands the venues back to the schedule. Cost if wrong: none.
+- Ruling: the home crowd stands for each home score whether or not Sound is on (it is heard only with Sound on). Cost if wrong: none.
+- Ruling: verified against `app/e2e/chi-mock.mjs` (a stand-in CHI serving V4's own trains as Train Tracker reports with GPS noise, a rain report, a live White Sox game and a Red Line alert), not the real backend (it needs secrets). With the mock: probe live, all four feeds LIVE, 21 of 21 live trains snapped and drawn, Metra simulated alongside.
+- Ruling: this fork's dev server ran on 5177 (5176 was in use by the ground fork's server). Cost if wrong: none.

@@ -170,3 +170,13 @@ The ride modes were shaped so a WebXR headset can use them later without new con
 - Ruling: walks follow curated waypoints validated against OSM footprints at build time; the ground fork's walk graph re-routes their off-street legs at runtime once merged. Street sidewalks are not in that graph, so the Mag Mile and Fulton Market stay curated. Cost if wrong: a walk corner cuts across a plaza.
 - Ruling: VR is a written section only (above) — not implemented. Cost if wrong: none.
 - Ruling: Ride does not take a slot in the 3 × 2 feature grid (no dead space); it is a full-width dock row under Search. Cost if wrong: one row of the dock.
+
+## Rulings made while executing (2026-09-30)
+
+- Ruling: ride data ships app-side (`app/src/data/rides.json`, 28 KB), not in `public/world` (199.7 MB of its 200 MB on main). Cost if wrong: none.
+- Ruling: walks are routed at build time, not at runtime: a 3 m grid of open ground (no footprint within 1.5 m, no water), cheapest along the walk graph's paths (graph walks) or 15 m off the street centreline (street walks), then every 2 m sample re-checked against the footprints. The walk graph alone could not route them — OSM's Riverwalk, trail and park paths arrive as hundreds of disconnected pieces. Cost if wrong: where the graph has gaps a walk steps onto the open street beside it.
+- Ruling: the Riverwalk walk runs at street level along the river (the lower Riverwalk level isn't modelled in the world), so in places it is the Wacker sidewalk and the bridge approaches. Cost if wrong: it is a riverside walk, not the Riverwalk's own deck.
+- Ruling: walks name the landmarks within 90 m as their stops; on the way the bar names the nearest landmarks and venues, museums and parks (never a chain — a name on three or more places). Cost if wrong: none.
+- Ruling: the view key is **K** — C became Traffic on main while this phase ran. Cost if wrong: one key.
+- Ruling: a bus boards at its stop nearest where you are looking (within 3 km), an L train likewise; a walk always starts at its start. Cost if wrong: none.
+- Ruling: when the CTA feed is LIVE, the follow cam and "Follow a … train" use the live trains on screen (a simulated CTA train is never followed invisibly). Cost if wrong: none.
