@@ -248,9 +248,6 @@ Size key: **S** ≈ ≤ 2 h (look row, crown primitive, colour), **M** ≈ half 
 **D2 — Lower streets you can see (app-built, no tile bytes)**
 
 **D3 — Traffic on the lower levels**
-- [ ] **D3-1** `traffic.js` keeps `layer<0` ways (not service/private) with a level, and ramps interpolate y. `traffic.bin` v2 header. **Done when** `traffic.test.js` covers a ramp edge and the v1 reader still parses the old file.
-- [ ] **D3-2** `Traffic.jsx` places vehicles at the edge y, and lower-level vehicles render only when D2 is visible. Headlights stay on below deck at all hours. **Done when** a unit test covers `yAt(edge, t)` and perf stays within ±1 fps at the perf poses.
-- [ ] **D3-3** Lower Wacker "drive" ride (bus-style vehicle, cab view) in `rideCatalog`: Columbus → Lower Wacker → Lake St exit. **Done when** `ride.spec.js` completes it and ⌘K "Drive Lower Wacker" finds it.
 
 **D4 — Polish**
 - [ ] **D4-1** Lower-level entrance and exit portals and signage at real locations (the Columbus, Stetson, Michigan, Franklin and Lake St ramps). **Done when** each portal is at an OSM ramp end ±5 m.
