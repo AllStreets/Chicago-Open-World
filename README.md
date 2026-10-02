@@ -555,7 +555,7 @@ Forty-four buildings and structures along the main stem and both branches, each 
 
 #### At the water — *how the river icons meet the river, from a tour boat and the street*
 
-With the river at its real depth, each icon's riverfront is built where it meets the dockwall: Trump's and Wrigley's river walks on piles with stairs down the wall, Marina City's raised plaza over its marina with the restaurants and slips beneath, Apple Michigan Avenue's steps from Pioneer Court to the water, the Opera's arcade at the river, the walks at 300 N LaSalle, Wolf Point, River Point, 150 N Riverside and River City, and the balustrades of the Mart and Riverside Plaza. Sixty bridge-tender houses stand on their mapped footprints in their bridge's style, down to the water. DuSable's carry Fraser's and Hering's 1928 reliefs. Upper Wacker's parapet is Bennett's balustrade again, and Taft's Heald Square group stands at Wabash.
+With the river at its real depth, each icon's riverfront is built where it meets the dockwall: Trump's and Wrigley's river walks on piles with stairs down the wall, Marina City's raised plaza over its marina with the restaurants and slips beneath, Apple Michigan Avenue's steps from Pioneer Court to the water, the Opera's arcade at the river, the walks at 300 N LaSalle, Wolf Point, River Point, 150 N Riverside and River City, and the balustrades of the Mart and Riverside Plaza. Sixty bridge-tender houses stand on their mapped footprints in their bridge's style, down to the water. DuSable's carry Fraser's and Hering's 1928 reliefs. Upper Wacker's parapet is Bennett's balustrade again, and Taft's Heald Square group stands at Wabash. The river has its boats: cruisers, runabouts and flybridge yachts in the Marina City and River City slips, architecture-tour boats at their docks by Michigan Avenue and under way past Marina City, toward the lake and up the South Branch, and water taxis at their stops. Each is a scripted Blender model with a real hull and its cabins, windscreens, rails and canopies. One model wears any livery. All are generic, with no operator's name or colours, and the working boats' cabins light up after dusk.
 
 <table>
 <tr>
@@ -563,7 +563,27 @@ With the river at its real depth, each icon's riverfront is built where it meets
 <td width="50%"><img src="docs/screenshots/v9-river-level-marina-dusk.png" alt="Marina City at the water at dusk" width="100%"/></td>
 </tr>
 <tr>
-<td colspan="2"><em>Marina City from a tour boat: the plaza deck on its columns over the marina, the restaurants' glass beneath it, a terrace at the water and the boat slips.</em></td>
+<td colspan="2"><em>Marina City from a tour boat: the plaza deck on its columns over the marina, the restaurants' glass beneath it, a terrace at the water, and its slips full of cruisers and flybridge yachts.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/f9-tourboat-marina-day.png" alt="A tour boat under way past Marina City" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/f9-tourboat-marina-dusk.png" alt="A tour boat past Marina City at dusk" width="100%"/></td>
+</tr>
+<tr>
+<td colspan="2"><em>An architecture-tour boat under way west past Marina City, with a glazed lower saloon and an open upper deck of benches under a canopy. At dusk its cabin is lit.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/f9-tourboat-michigan-day.png" alt="A tour boat at its dock below the Wrigley Building" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/f9-river-east-day.png" alt="Tour boats on the main stem east of Michigan Avenue" width="100%"/></td>
+</tr>
+<tr>
+<td colspan="2"><em>Tour boats at their docks by Michigan Avenue, and under way to the lake.</em></td>
+</tr>
+<tr>
+<td colspan="2"><img src="docs/screenshots/f9-boat-models.png" alt="The five boat models rendered in Blender" width="100%"/></td>
+</tr>
+<tr>
+<td colspan="2"><em>The five boats as built: runabout, express cruiser, flybridge yacht, water taxi and architecture-tour boat (Blender previews, baked occlusion). Each has a lofted hull, about 1.8–4.3 k triangles up close and under 600 far off.</em></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/screenshots/v9-river-level-apple-day.png" alt="Apple Michigan Avenue at the water" width="100%"/></td>
@@ -1072,7 +1092,19 @@ It wasn't made right in one attempt. Here are the same places through each pass,
 </tr>
 <tr>
 <td><sub>From a tour boat · Oct 1, before<br/>a bare dockwall, a stray box in the marina</sub></td>
-<td><sub>From a tour boat · Oct 1, after (A-8)<br/>the raised plaza on columns, restaurants, terrace and slips</sub></td>
+<td><sub>From a tour boat · Oct 1, after (A-8, F-9)<br/>the raised plaza on columns, restaurants, terrace and slips with their boats</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/v9-river-level-marina-before-f9-day.png" alt="Marina City's slips with box boats" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-level-marina-day.png" alt="Marina City's slips with the Blender boats" width="100%"/></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/v9-river-level-marina-before-f9-dusk.png" alt="Marina City's slips with box boats at dusk" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/v9-river-level-marina-dusk.png" alt="Marina City's slips with the Blender boats at dusk" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>The slips · Oct 1, before F-9<br/>a box hull under a box cabin</sub></td>
+<td><sub>The slips · Oct 1, after F-9<br/>scripted Blender boats: hulls, windscreens, rails, flybridges</sub></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/screenshots/evolution/v9-river-dusable-before-a8-day.png" alt="DuSable before the bridgehouses" width="100%"/></td>

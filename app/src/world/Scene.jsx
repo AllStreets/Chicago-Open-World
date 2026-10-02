@@ -28,6 +28,7 @@ import { makeIsWater } from '../lib/landMask.js'
 import Lake from './Lake.jsx'
 import Boats from './Boats.jsx'
 import BeachNets from './BeachNets.jsx'
+import RiverBoats from './RiverBoats.jsx'
 import WaterRig from './WaterRig.jsx'
 import SkyRig from './SkyRig.jsx'
 import AtlasRig from '../camera/AtlasRig.jsx'
@@ -132,6 +133,7 @@ export default function Scene() {
       <Tunnels />
       <LowerLevels />
       {manifest?.traffic && <Traffic file={manifest.traffic} version={manifest.version} />}
+      {manifest?.riverBoats && <RiverBoats file={manifest.riverBoats} version={manifest.version} />}
       <StationHits />
       <Picker />
       <SeasonRig />

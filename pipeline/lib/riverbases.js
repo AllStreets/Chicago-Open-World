@@ -19,6 +19,7 @@ import { ensureCCW, ringCentroid, ringBBox, distToRing, pointInRing } from './ge
 import { wallRuns, polyIndex } from './riverLevel.js'
 import { bands, capRing, openingsAlong, edgesOf, offsetRing } from './rivericons.js'
 import { drum } from './crowns.js'
+import { mooredInSlip } from './boats.js'
 
 export const RB = {
   riser: 0.17, tread: 0.3, stairW: 2.6, walkT: 0.45,   // stairs: ≈ 31 risers of 6¾ in from Upper Wacker to the Riverwalk
@@ -153,25 +154,11 @@ export function plinth(b, { waterIdx, reach = 4, bottom, top = 0, style, arches 
   return { edges, meshes: [P(face, F.stone, style, 'river-plinth'), P(dark, F.stone, arches?.style ?? 'arcade-shadow', 'river-arcade')].filter((m) => m.positions.length) }
 }
 
-// A boat moored at c, bow along u: a lofted hull (pointed bow, square stern), a deck and a cabin.
-export function boat(c, u, { L = 9, B = 3, y, cabin = 0.4 }) {
-  const v = left(u), hull = mesh(), top = mesh()
-  const ring = (s, f) => [[-0.5, -0.5], [0.15, -0.5], [0.42, -0.3], [0.5, 0], [0.42, 0.3], [0.15, 0.5], [-0.5, 0.5]].map(([a, b]) => add2(add2(c, mul2(u, a * L * s)), mul2(v, b * B * f)))
-  const lo = ring(0.92, 0.7), hi = ring(1, 1), y0 = y - 0.45, y1 = y + 0.75
-  for (let i = 0; i < hi.length; i++) {
-    const j = (i + 1) % hi.length, n = norm2(left(sub2(hi[j], hi[i])))
-    quad(hull, at3(lo[i], y0), at3(lo[j], y0), at3(hi[j], y1), at3(hi[i], y1), [-n[0], 0, -n[1]])
-  }
-  capRing(hull, ensureCCW(hi), y1)
-  const cc = add2(c, mul2(u, -0.08 * L))
-  slab(top, cc, u, L * cabin, B * 0.62, y1, y1 + 1.35)
-  return [P(hull, F.paint, 'boat-hull-white', 'boat'), P(top, F.wall, 'boat-cabin-glass', 'boat-cabin', { seed: 0.3 })]
-}
-
-// Floating docks off the wall, finger slips into the river every 7 m, and `boats` boats moored in them.
-export function docksAlong(segs, { riverY, offset = RB.dock.offset, boats = 0, boatL = 9, seed = 1 }) {
-  const d = mesh(), out = [], top = riverY + RB.dock.freeboard
-  let placed = 0, h = seed
+// Floating docks off the wall, finger slips into the river every 7 m, and `boats` boats moored in them (F-9: placements
+// of the scripted Blender boats, lib/boats.js — drawn by the app as instances, not baked into the tiles).
+export function docksAlong(segs, { riverY, offset = RB.dock.offset, boats = 0, seed = 1 }) {
+  const d = mesh(), moored = [], top = riverY + RB.dock.freeboard
+  let h = seed
   const rnd = () => { h = (h * 9301 + 49297) % 233280; return h / 233280 }
   for (const s of segs) {
     if (s.len < 8) continue
@@ -179,14 +166,13 @@ export function docksAlong(segs, { riverY, offset = RB.dock.offset, boats = 0, b
     for (let x = 4; x < s.len - 3; x += RB.dock.fingerEvery) {
       const base = add2(add2(s.a, mul2(s.u, x)), mul2(s.n, -(offset + RB.dock.width)))
       slab(d, add2(base, mul2(s.n, -RB.dock.fingerLen / 2)), s.n, RB.dock.fingerLen, RB.dock.fingerW, top - 0.4, top)
-      if (placed < boats && x + RB.dock.fingerEvery < s.len - 3 && rnd() < 0.8) {
-        const bc = add2(add2(base, mul2(s.u, RB.dock.fingerEvery / 2)), mul2(s.n, -boatL / 2 - 0.3))
-        out.push(...boat(bc, mul2(s.n, -1), { L: boatL * (0.8 + 0.3 * rnd()), B: 2.8, y: riverY + 0.05 }))
-        placed++
+      if (moored.length < boats && x + RB.dock.fingerEvery < s.len - 3 && rnd() < 0.8) {
+        const mouth = add2(base, mul2(s.u, RB.dock.fingerEvery / 2))
+        moored.push(mooredInSlip(mouth, mul2(s.n, -1), { y: riverY, rnd, maxL: 14 }))
       }
     }
   }
-  return [P(d, F.stone, 'boardwalk-wood', 'boat-slips'), ...out]
+  return { meshes: [P(d, F.stone, 'boardwalk-wood', 'boat-slips')], boats: moored }
 }
 
 // The street edge above the dockwall: a pierced stone balustrade (dark openings for the balusters), lamp standards.
@@ -279,7 +265,7 @@ export function stepsDown({ from, to, width, y0 = 0, y1, riser = RB.riser }) {
 // levels: { river, riverwalk }; findBuilding(ref) → building or null (heroes.js findByOsm).
 export function buildRiverBases({ spec, buildings, water, levels, findBuilding }) {
   const riverY = levels.river, rwY = levels.riverwalk, waterIdx = polyIndex(water)
-  const zones = [], attach = [], report = []
+  const zones = [], attach = [], report = [], boats = []
   const add = (b, ms) => { if (ms.length) attach.push({ building: b, meshes: ms.filter((m) => m.positions.length) }) }
   for (const site of spec.sites) {
     const b = findBuilding(site.osm)
@@ -308,7 +294,10 @@ export function buildRiverBases({ spec, buildings, water, levels, findBuilding }
       ms.push(...stairDown(seg, { at, dir, y1: y(st.y ?? site.walk?.y ?? 'riverwalk'), width: st.width ?? RB.stairW }).meshes); r.parts.push('stairs')
     }
     if (site.plinth) { const p = plinth(b, { waterIdx, bottom: riverY - 0.5, style: site.plinth.style, reach: site.plinth.reach ?? 4, arches: site.plinth.arches ? { ...site.plinth.arches, y0: y(site.plinth.arches.y0 ?? 'riverwalk') } : null, wall: site.plinth.onWall ? segs : null }); ms.push(...p.meshes); r.parts.push(`plinth×${p.edges.length}`) }
-    if (site.docks && segs.length) { ms.push(...docksAlong(segs, { riverY, offset: (site.walk?.width ?? 0) + (site.docks.offset ?? RB.dock.offset), boats: site.docks.boats ?? 0, boatL: site.docks.boatL ?? 9, seed: site.docks.seed ?? 7 })); r.parts.push('docks') }
+    if (site.docks && segs.length) {
+      const dk = docksAlong(segs, { riverY, offset: (site.walk?.width ?? 0) + (site.docks.offset ?? RB.dock.offset), boats: site.docks.boats ?? 0, seed: site.docks.seed ?? 7 })
+      ms.push(...dk.meshes); boats.push(...dk.boats); r.parts.push('docks'); r.boats = dk.boats.length
+    }
     if (site.balustrade && segs.length) { ms.push(...balustrade(segs, { style: site.balustrade.style ?? 'bedford-limestone', lampEvery: site.balustrade.lampEvery ?? 24 })); r.parts.push('balustrade') }
     for (const d of site.decks ?? []) { ms.push(...deckOver(d.xz, { y: y(d.y ?? 0), t: d.t ?? 0.9, riverY, waterIdx, style: d.style ?? 'marina-concrete' })); r.parts.push('deck') }
     for (const d of site.drums ?? []) { ms.push(P(drum({ at: d.at, base: riverY - 0.5, top: y(d.top ?? 0), r: d.r, sides: 24 }), F.stone, d.style ?? 'marina-concrete', 'core-drum')); r.parts.push('drum') }
@@ -337,7 +326,7 @@ export function buildRiverBases({ spec, buildings, water, levels, findBuilding }
     r.tris = Math.round(ms.reduce((t, m) => t + m.positions.length / 9, 0))
     report.push(r)
   }
-  return { zones, attach, report }
+  return { zones, attach, report, boats }
 }
 
 // A-8 "done when": every listed building's footprint edges within `reach` of the river reach down to the water.

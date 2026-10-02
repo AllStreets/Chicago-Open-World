@@ -54,7 +54,7 @@
         { "osm": "w1177925119", "xz": [[-82.6, -641.7], [-83.0, -665.8], [-122.6, -665.5], [-122.6, -655.4], [-122.2, -645.4], [-122.0, -640.3]], "y0": "riverwalk", "y1": -1.0, "about": "Legal Sea Foods (OSM layer −2)" },
         { "osm": "w1177925118", "xz": [[-56.0, -666.1], [-39.9, -666.4], [-39.3, -642.8], [-82.6, -641.7], [-83.0, -665.8]], "y0": "riverwalk", "y1": -1.0, "about": "Smith & Wollensky (OSM layer −1)" }
       ],
-      "docks": { "boats": 6, "boatL": 10, "seed": 11 },
+      "docks": { "boats": 10, "seed": 11 },
       "source": ["https://en.wikipedia.org/wiki/Marina_City", "https://www.architecture.org/online-resources/buildings-of-chicago/marina-city"],
       "note": "'built on a raised platform next to the Chicago River; beneath the platform, at river level, is a small marina' (Wikipedia). Core 35 ft across (approximate); restaurant and slip layout read from OSM (layer −1/−2 restaurants) and photographs (approximate)"
     },
@@ -132,7 +132,7 @@
       "key": "rivercity", "osm": "w148788175",
       "about": "River City's river level: a walk along the water and the River City Marina's slips",
       "walk": { "width": 4.0 },
-      "docks": { "boats": 8, "boatL": 11, "seed": 23 },
+      "docks": { "boats": 8, "seed": 23 },
       "stairs": [{ "near": "start" }],
       "reach": 25,
       "source": ["https://en.wikipedia.org/wiki/River_City_(Chicago)"],

@@ -5,6 +5,7 @@ import { describe, it, expect } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { buildRiverBases, frontage, walkAlong, stairDown, plinth, docksAlong, stepsDown, applePavilion, checkReachesWater, RB } from '../lib/riverbases.js'
 import { sunkWater, wallRuns, polyIndex, applySkirts } from '../lib/riverLevel.js'
+import { boatCorners } from '../lib/boats.js'
 import { ringBBox, ringCentroid } from '../lib/geom.js'
 
 const L = JSON.parse(readFileSync(new URL('../data/levels.json', import.meta.url), 'utf8')).levels
@@ -73,12 +74,18 @@ describe('the plinth', () => {
 })
 
 describe('marina, steps and pavilion', () => {
-  it('docks float at the water with finger slips and moored boats', () => {
+  it('docks float at the water with finger slips and moored boats (F-9: Blender boat placements, on the water)', () => {
     const d = docksAlong(frontage(B, runs, { reach: 10 }), { riverY: levels.river, boats: 4 })
-    const slips = d.find((m) => m.part === 'boat-slips')
+    const slips = d.meshes.find((m) => m.part === 'boat-slips')
     expect(Math.max(...ys([slips]))).toBeCloseTo(levels.river + RB.dock.freeboard, 5)
-    expect(d.filter((m) => m.part === 'boat').length).toBe(4)
-    expect(Math.min(...ys(d.filter((m) => m.part === 'boat')))).toBeGreaterThan(levels.river - 0.6)
+    expect(d.meshes.some((m) => m.part === 'boat')).toBe(false) // no box boats baked into the tiles
+    expect(d.boats.length).toBe(4)
+    for (const b of d.boats) {
+      expect(b.y).toBe(levels.river)
+      expect(['runabout', 'cruiser', 'yacht']).toContain(b.k)
+      for (const c of boatCorners(b)) expect(waterIdx.find(c), JSON.stringify(b)).toBeTruthy()
+    }
+    expect(docksAlong(frontage(B, runs, { reach: 10 }), { riverY: levels.river, boats: 4 }).boats).toEqual(d.boats) // deterministic
   })
   it('steps cut into the land: each a riser down, ending at the landing, with their own sunken zone', () => {
     const s = stepsDown({ from: [0, -30], to: [0, -6], width: 12, y1: levels.riverwalk })
@@ -113,6 +120,7 @@ describe('A-8 done when: the listed river-front buildings reach the water', () =
     const r = buildRiverBases({ spec: { sites: [site] }, buildings: [b], water, levels, findBuilding: () => b })
     expect(r.attach[0].building).toBe(b)
     expect(r.report[0].parts).toEqual(expect.arrayContaining(['walk', 'stairs', 'docks']))
+    expect(r.boats.length).toBe(2)
     const r2 = buildRiverBases({ spec: { sites: [site] }, buildings: [b], water, levels, findBuilding: () => b })
     expect(r2.attach[0].meshes.map((m) => m.positions.length)).toEqual(r.attach[0].meshes.map((m) => m.positions.length)) // deterministic
   })

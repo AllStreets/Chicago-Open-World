@@ -63,6 +63,7 @@ import { BUDGET, worldLedger, ledgerReport, checkBudget, sweepStale } from '../l
 import { riverLevels, sunkWater, wallRuns, wallMesh, runsByTile, cutMeshOutside, soffitOver, corridorMask, polyIndex, applySkirts, tubeDipTarget, wallTone } from '../lib/riverLevel.js'
 import { buildRiverwalk, meshByTile } from '../lib/riverwalk.js'
 import { buildRiverBases, checkReachesWater } from '../lib/riverbases.js'
+import { riverBoats, writeBoats } from '../lib/boats.js'
 import { merge } from '../lib/meshkit.js'
 import { dressBridgehouses, loadReliefs } from '../lib/bridgehouses.js'
 import { pierRing } from '../lib/bridges.js'
@@ -340,6 +341,14 @@ async function main() {
   const rb = lv ? buildRiverBases({ spec: rbSpec, buildings, water: sunk, levels: { river: lv.river, riverwalk: lv.riverwalk }, findBuilding: (ref) => findByOsm(buildings, ref) }) : null
   for (const { building, meshes } of rb?.attach ?? []) building.extraMeshes = [...(building.extraMeshes ?? []), ...meshes]
   if (rb) log(`river bases (A-8): ${rb.report.map((r) => `${r.key} ${r.frontageM} m [${r.parts.join(' ')}] ${(r.tris / 1000).toFixed(1)} k`).join(' · ')}`)
+  // ── F-9: the boats — the slips' pleasure boats (riverbases) and the river's tour boats and water taxis (riverboats.json),
+  // instances of the Blender models (heroes/out/boats) the app draws; harbour builders add theirs to the same list ──
+  const boatList = [...(rb?.boats ?? [])]
+  if (lv) {
+    const wIdxBoats = polyIndex(sunk), rv = riverBoats(loadJson(join(ROOT, 'data', 'riverboats.json')), { isWater: (p) => Boolean(wIdxBoats.find(p)), y: lv.river })
+    boatList.push(...rv.boats)
+    log(`river boats (F-9): ${rv.boats.length} under way or at their docks, ${rb?.boats?.length ?? 0} in the slips · ${rv.report.filter((r) => r.includes('dropped')).join(' · ') || 'all on the water'}`)
+  }
   const floors = rw ? [...rw.zones, ...(rb?.zones ?? [])] : []
   const pitOpenings = builtBridges.flatMap((bb) => bb.piers.map((p) => ({ outer: pierRing(p, 'inner'), holes: [] })))
   const groundCuts = [...floors, ...pitOpenings].map((z) => ({ ...z, bbox: ringBBox(z.outer) }))
@@ -940,6 +949,8 @@ async function main() {
   if (roadEnc.some((v) => v < -32768 || v > 32767)) throw new Error('traffic graph: a value outside int16')
   writeFileSync(join(OUT, 'traffic.bin'), Buffer.from(new Int16Array(roadEnc).buffer))
   log(`traffic graph: ${roadGraph.nodes.length} nodes, ${roadGraph.edges.length} edges, ${((roadEnc.length * 2) / 1e3).toFixed(0)} kB`)
+  const boatsEntry = await writeBoats(OUT, boatList)
+  if (boatsEntry) log(`boats: ${boatsEntry.count} placements → ${boatsEntry.file}`)
   writeFileSync(join(OUT, 'manifest.json'), JSON.stringify({
     version: MANIFEST_VERSION, ...manifestStamp(), origin: ORIGIN, tileSize: TILE_SIZE, bbox: WORLD_BBOX,
     core: { minX: r0x, maxX: r1x, minZ: r0z, maxZ: r1z },
@@ -965,7 +976,7 @@ async function main() {
     pois: poiIndex.length ? { index: 'pois-index.json', count: poiIndex.length, categories: POI_CATEGORIES } : null,
     ...(harbourEntry ? { harbours: harbourEntry } : {}),
     ...(netsEntry ? { beachNets: netsEntry } : {}),
-    venues: 'venues.json', bridges: 'bridges.json', landmarkRuntime: 'landmarks.json', schedules: existsSync(join(ROOT, 'data', 'schedules.json')) ? 'schedules.json' : null,
+    venues: 'venues.json', bridges: 'bridges.json', riverBoats: boatsEntry?.file ?? null, landmarkRuntime: 'landmarks.json', schedules: existsSync(join(ROOT, 'data', 'schedules.json')) ? 'schedules.json' : null,
     ...(lv || lowerEntry || ll ? { levels: { ...(lv ? { river: { y: lv.river, riverwalk: lv.riverwalk, file: RIVER_LEVELS_FILE } } : {}), ...(lowerEntry ? { lower: lowerEntry } : {}),
       ...(ll ? { lake: { y: ll.lake, ponds: perched.filter((p) => p.tags.name).map((p) => ({ name: p.tags.name, y: +p.tags._pond.toFixed(2) })), shore: lakeShoreReport?.metres ?? null } } : {}) } } : {}), // D1-8 / D2 / D5: absent = the flat world
   })) // minified (X-0d)
