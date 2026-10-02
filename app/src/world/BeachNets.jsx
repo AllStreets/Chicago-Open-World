@@ -26,7 +26,7 @@ export default function BeachNets({ entry }) {
     if (!nets.length) return null
     const L = medianLength(nets), g = netGeometry(L)
     const solidMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.6, metalness: 0.2, side: THREE.DoubleSide })
-    const meshMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, metalness: 0, side: THREE.DoubleSide, transparent: true, opacity: 0.45, depthWrite: false })
+    const meshMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, metalness: 0, side: THREE.DoubleSide, transparent: true, opacity: 0.2, depthWrite: false })
     return { nets, L, meshes: [instanced(g.solid, solidMat, nets.length, true), instanced(g.solid, solidMat, nets.length, false), instanced(g.mesh, meshMat, nets.length, false)] }
   }, [entry])
   useEffect(() => () => {

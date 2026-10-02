@@ -17,6 +17,24 @@ export const F8_SHOTS = [
   { name: 'ohio-beach', eye: [1330, 7, -1440, 1120, -2, -1270] },
   { name: 'fullerton-beach', eye: [40, 30, -5050, -250, -1, -5200] },
 ]
+// LP=1: re-take the Lincoln Park README frames that show the sand (LINCOLN_PARK_GALLERY poses, ?pose=) into docs/screenshots
+if (process.env.LP) {
+  const { LINCOLN_PARK_GALLERY } = await import('../src/lib/galleryShots.js')
+  const b = await chromium.launch({ args: ['--use-angle=metal', '--enable-gpu', '--ignore-gpu-blocklist'] })
+  for (const k of ['lp-north-avenue-beach', 'lp-theater-on-the-lake']) for (const t of ['day', 'night']) {
+    const { pose } = LINCOLN_PARK_GALLERY[k]
+    const page = await b.newPage({ viewport: { width: 1600, height: 1000 } })
+    await page.clock.setFixedTime(new Date('2026-09-28T12:05:00-05:00'))
+    await page.addInitScript(() => { try { localStorage.setItem('chi-ow-help-seen', '1') } catch {} })
+    await page.goto(`${base}/?pose=${[...pose.position, ...pose.target].join(',')}&time=${t}&sports=idle&traffic=idle`)
+    await page.waitForFunction(() => window.__worldReady === true, null, { timeout: 120_000 })
+    await page.waitForFunction(() => window.__camRest === true && window.__skyRest === true && window.__tilesIdle === true && window.__hudReady === true, null, { timeout: 90_000 }).catch(() => console.error('not idle'))
+    await page.waitForTimeout(1500)
+    const file = `../docs/screenshots/v10-${k}-${t}.png`
+    await page.screenshot({ path: file }); console.log(file); await page.close()
+  }
+  await b.close(); process.exit(0)
+}
 const browser = await chromium.launch({ args: ['--use-angle=metal', '--enable-gpu', '--ignore-gpu-blocklist'] })
 const time = process.env.TIME ?? 'DAY'
 const at = { DAY: '2026-09-28T12:00:00-05:00', DUSK: '2026-09-28T19:05:00-05:00', NIGHT: '2026-09-28T22:00:00-05:00', SNOW: '2026-09-28T12:00:00-05:00' }
