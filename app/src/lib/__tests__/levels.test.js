@@ -1,6 +1,6 @@
 // D1-6 / D1-7 / D1-8: the app reads the river's level from the manifest; without `levels` it is today's flat world.
 import { describe, it, expect } from 'vitest'
-import { readLevels, inCorridor, planeYFor, viewTarget, FLAT } from '../levels.js'
+import { readLevels, inCorridor, planeYFor, viewTarget, lakePlaneY, FLAT } from '../levels.js'
 import { WATER_PLANE_Y } from '../../world/materials/waterSurface.js'
 import { undergroundBelow } from '../../transit/Tunnels.jsx'
 import { toPath, walkRides } from '../../ride/rideCatalog.js'
@@ -39,6 +39,22 @@ describe('the mirror plane follows the view (D1-6)', () => {
   it('viewTarget: where the view meets the ground, or under the camera when it looks up or level', () => {
     expect(viewTarget([0, 100, 0], [0, -0.7071, 0.7071])).toEqual([0, 0, expect.closeTo(100, 4)])
     expect(viewTarget([5, -3.6, 7], [1, 0, 0])).toEqual([5, 0, 7]) // a walker on the Riverwalk
+  })
+})
+
+describe('D5: the lake at its real level', () => {
+  const both = readLevels({ levels: { ...manifest.levels, lake: { y: -4.65, ponds: [] } } })
+  it('reads the lake from the manifest (with or without the river); absent = the flat world\'s plane', () => {
+    expect(both.lake).toEqual({ y: -4.65 })
+    expect(readLevels({ levels: { lake: { y: -4.65 } } })).toEqual({ river: null, lake: { y: -4.65 } })
+    expect(readLevels(manifest).lake).toBeNull()
+    expect(lakePlaneY(FLAT)).toBe(WATER_PLANE_Y)
+  })
+  it('the mirror sits on the lake away from the river, on the river over it', () => {
+    expect(planeYFor([500, 0, 800], both, corridor)).toBeCloseTo(-4.64, 6)
+    expect(planeYFor([500, 0, 30], both, corridor)).toBeCloseTo(-6.29, 6)
+    expect(planeYFor([500, 0, 800], both, null)).toBeCloseTo(-4.64, 6) // before the corridor loads
+    expect(planeYFor([500, 0, 800], readLevels({ levels: { lake: { y: -4.65 } } }), corridor)).toBeCloseTo(-4.64, 6)
   })
 })
 

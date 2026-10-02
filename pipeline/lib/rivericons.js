@@ -18,6 +18,7 @@ import { wallPolygon } from './icons.js'
 import { add2, sub2, mul2, dot2, norm2, norm3, cross3, left, bearing, mesh, tri, quad, merge, slab, tube, barrel } from './meshkit.js'
 import { LANDMARK_FACADES as F } from './facadeIds.js'
 import { project } from '../../shared/project.js'
+import { waterLevels } from './waterLevels.js'
 
 export const part = (m, facade, style, name, { lod1 = false, seed = 0.5 } = {}) => ({ mesh: m, facade, seed, style, part: name, lod1 })
 const Y = (p, y) => [p[0], y, p[1]]
@@ -1105,13 +1106,15 @@ function railbridge({ sp }) {
 function harborlock({ pieces, sp }) {
   const c = at2(sp.chamber), u = bearing(sp.bearing ?? 90), v = left(u), L = sp.lengthM ?? 182.9, W = sp.widthM ?? 24.4
   const walls = mesh(), gates = mesh(), house = mesh(), glass = mesh()
+  // the gates reach down into the chamber's water (D1/D5: the river at RIVER_Y inside, the lake outside)
+  const wl = waterLevels(), gateFoot = wl.river != null ? Math.min(wl.river, wl.lake ?? 0) - 0.5 : -1
   for (const s of [-1, 1]) pushAll(walls, slab(mesh(), add2(c, mul2(v, s * (W / 2 + 2))), u, L + 8, 4, 0, sp.wallM ?? 1.8))
   // sector gates: two curved leaves at each end, drawn closed as a shallow V pointing upstream
   for (const e of [-1, 1]) for (const s of [-1, 1]) {
     const hinge = add2(add2(c, mul2(u, (e * L) / 2)), mul2(v, s * (W / 2))), tip = add2(add2(c, mul2(u, (e * L) / 2 + e * 3)), mul2(v, 0))
     for (let k = 0; k < 6; k++) {
       const a = add2(hinge, mul2(sub2(tip, hinge), k / 6)), b = add2(hinge, mul2(sub2(tip, hinge), (k + 1) / 6))
-      pushAll(gates, slab(mesh(), mul2(add2(a, b), 0.5), norm2(sub2(b, a)), Math.hypot(...sub2(b, a)) + 0.1, 0.8, -1, sp.gateM ?? 3.2))
+      pushAll(gates, slab(mesh(), mul2(add2(a, b), 0.5), norm2(sub2(b, a)), Math.hypot(...sub2(b, a)) + 0.1, 0.8, gateFoot, sp.gateM ?? 3.2))
     }
   }
   // the control house: a ship-shaped hull of zinc with a tilted glass bridge on top

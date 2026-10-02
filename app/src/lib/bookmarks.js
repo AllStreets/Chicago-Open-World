@@ -42,6 +42,12 @@ export const BOOKMARKS = {
   lowerlevels: { position: [450, 300, -1050], target: [200, -5, -560] }, // D2-3: the U cut-away — Lower Wacker, Lower Michigan and the river streets from over the river
   riverwalk: { position: [-120, 32, -560], target: [80, 1, -606] },
   zoo: { position: [-380, 110, -4150], target: [-560, 5, -4500] },         // Lion House (−456, −4365), Conservatory (−598, −4706)
+  // D5 / B-8: the lake at its real level — the Harbor Lock's lake gate (the only place the river's level meets the
+  // lake's), the Lincoln Park harbours' docks and moorings, North Avenue Beach sloping into the water
+  harborlock: { position: [2010, 42, -560], target: [1772, 0, -708] },
+  belmontharbor: { position: [-470, 95, -6440], target: [-790, 0, -6690] },
+  diverseyharbor: { position: [-180, 80, -5130], target: [-430, 0, -5330] },
+  northavebeach: { position: [640, 60, -3330], target: [330, 0, -3560] },
   // Transit (V3): Tower 18 at Lake & Wells from street level, the Loop from 150 m and 1 km, Fullerton's 4-track corridor
   wellslake: { position: [-380, 32, -412], target: [-495, 7, -412] }, // over Lake St, looking west along the L into Tower 18
   transit150: { position: [215, 150, 660], target: [152, 8, 581] }, // the Loop's SE corner: Tower 12 at Van Buren & Wabash

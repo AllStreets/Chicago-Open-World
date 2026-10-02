@@ -26,6 +26,7 @@ import { loadFacadeTextures, loadStylePalette } from './materials/facadeMaterial
 import { loadGroundTextures } from './materials/groundShader.js'
 import { makeIsWater } from '../lib/landMask.js'
 import Lake from './Lake.jsx'
+import Boats from './Boats.jsx'
 import WaterRig from './WaterRig.jsx'
 import SkyRig from './SkyRig.jsx'
 import AtlasRig from '../camera/AtlasRig.jsx'
@@ -120,6 +121,7 @@ export default function Scene() {
       <SkyRig target={sun} sunRef={sunRef} instant={reducedMotion} shadowMap={QUALITY[quality].shadowMap} fog={QUALITY[quality].fog} />
       {manifest?.lake && <Lake file={manifest.lake} version={manifest.version} />}
       <WaterRig sunRef={sunRef} shore={manifest?.shore ?? null} version={manifest?.version} levels={levels} />
+      {manifest?.harbours && <Boats entry={manifest.harbours} version={manifest.version} />}
   
       {manifest && <Land file={manifest.land} version={manifest.version} />}
       {manifest && <TileStreamer manifest={manifest} />}
