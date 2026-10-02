@@ -89,6 +89,7 @@ export const FEATURE_CONTROLS = [
   // D2-3 (Decision 7): the streets under the streets — U, ⌘K and the help card; not in the dock (it stays at six).
   // Turning it on from far away flies you over the Loop's lower levels — never while following, touring or riding (C-fix)
   { id: 'lowerLevels', label: 'Lower', key: 'KeyU', keyLabel: 'U', icon: RiStackLine, hint: 'lower levels', hintP: 3, commandName: 'Lower levels: see Lower Wacker under the street',
+    aliases: ['Lower Wacker', 'Lower Lower Wacker', 'Lower Michigan', 'Lower Columbus', 'Lower Randolph', 'double-decker streets', 'under the street', 'cut-away'],
     help: 'lower levels — the street over Lower Wacker, Lower Michigan, Lower Columbus and the other double-decker streets opens like a cut-away drawing, showing the roadway, columns and lights underneath and the cars, buses and trucks driving them, headlights on at any hour; press again to close',
     use: () => useStore((s) => s.lowerLevelsOn),
     isOn: () => Boolean(useStore.getState().lowerLevelsOn),

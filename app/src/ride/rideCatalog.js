@@ -101,7 +101,7 @@ export function walkRides(json) {
     const path = toPath(w.path, WALK_Y)
     const sights = (w.sights ?? []).map((st) => ({ name: st.name, ...projectS(path, st.x, st.z) })).filter((st) => st.d < 120).map(({ name, s }) => ({ name, s })).sort((a, b) => a.s - b.s)
     const stops = [{ name: w.from ?? 'Start', s: 0 }, ...sights.filter((x) => x.s > 5 && x.s < path.length - 5), { name: w.to ?? 'End', s: path.length }]
-    return { id: `walk:${w.id}`, kind: 'walk', name: w.name, blurb: w.blurb, path, stops, paceMps: 1.4, sources: w.sources }
+    return { id: `walk:${w.id}`, kind: 'walk', name: w.name, blurb: w.blurb, path, stops, paceMps: 1.4, sources: w.sources, ...(w.level ? { level: w.level } : {}) }
   })
 }
 

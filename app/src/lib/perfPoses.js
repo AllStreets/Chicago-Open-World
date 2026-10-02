@@ -11,11 +11,13 @@ export const PERF_POSES = {
   // down the main-stem canyon from the east (= BOOKMARKS.river), and at the Riverwalk's level looking east to the lake
   riverCanyon: { position: [950, 140, -760], target: [-700, 40, -560] },
   riverLevel: { position: [-300, -3.5, -575], target: [300, -3, -600] },
+  // X-1: Lincoln Park Zoo from 150 m — the Lion House, the zoo houses and the Conservatory's glass with the park's trees
+  lincolnParkZoo: { position: [-300, 150, -4100], target: [-500, 5, -4420] },
   // E3 / X-1: the United Center board — the crown and its parapet ribbon in frame
   unitedCenter: { position: [-3655, 88, 375], target: [-3846, 44, 150] },
-  // E4 / X-1: Wrigley mid-showcase — a full bowl, the players, the board and the marquee ticking
   // D2 / X-1: the densest view with U on — the cut-away open over Lower Wacker, Lower Michigan and Illinois Center's
   // lower streets (lower, closer poses over the river already spike past 4 M on reflection/shadow frames with U off)
   lowerWackerCutaway: { position: [-1100, 520, 900], target: [150, 40, -500], lowerLevels: true },
+  // E4 / X-1: Wrigley mid-showcase — a full bowl, the players, the board and the marquee ticking
   wrigleyShowcase: { position: [-2400, 62, -7255], target: [-2240, 6, -7410], showcase: ['wrigleyfield', 'cubs', 40000] },
 }
