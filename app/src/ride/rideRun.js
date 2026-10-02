@@ -9,7 +9,7 @@ import { followPose } from '../transit/followCam.js'
 export const RIDE_SPEEDS = [1, 2, 4]
 export const MAX_STEP_S = 0.25 // a tab switch or a GC pause never jumps a ride
 export const WALK_MPS = 1.4
-export const EYE_M = { L: 2.7, bus: 2.4, walk: 1.7 } // rail + car floor + a standing eye; a raised bus seat; a person
+export const EYE_M = { L: 2.7, bus: 2.4, walk: 1.7, drive: 2.4 } // rail + car floor + a standing eye; a raised bus seat; a person
 export const UNDERGROUND_Y = -2
 export const STREET_EYE_M = 3
 
@@ -74,7 +74,7 @@ function look(dir, yaw, pitch) {
   return [(x / h) * Math.cos(p), Math.sin(p), (z / h) * Math.cos(p)]
 }
 
-const LOOK_AHEAD = { L: 30, bus: 20, walk: 10 }
+const LOOK_AHEAD = { L: 30, bus: 20, walk: 10, drive: 20 }
 // where the vehicle (or walker) is heading here: toward a point a little further on, so corners turn smoothly
 function heading(def, st) {
   const ahead = Math.min(def.path.length, st.s + (LOOK_AHEAD[def.kind] ?? 20))

@@ -1,6 +1,10 @@
 // app/src/traffic/Traffic.jsx — draws the traffic sim (sim.js): one instanced mesh each for cars, buses and trucks,
 // one for every head- and tail-lamp pair (lit after dusk, tail lamps brighter under braking), and the traffic signals
 // within range — poles in one mesh, the lit lamps in another. Six draw calls; the sim runs within ~1.5 km.
+// D3-2: vehicles ride at their roadway's height — up and down the ramps, on Lower Wacker and the other lower decks
+// (the same six meshes: no extra draw call). Those under the street are drawn only while the lower decks are
+// (LowerLevels.jsx: the U cut-away, a ride, or a low camera close by), with their headlights on at any hour. Every
+// vehicle waits short of a raised bascule (or one about to lift) and none is left on a rising leaf.
 import { useEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
@@ -9,17 +13,28 @@ import { worldUrl } from '../lib/manifest.js'
 import { QUALITY } from '../lib/quality.js'
 import { chicagoClock } from '../lib/chicagoTime.js'
 import { presetDate } from '../lib/sun.js'
-import { isCutOpen } from '../world/materials/cutaway.js'
+import { isCutOpen, cutUniforms } from '../world/materials/cutaway.js'
 import { facadeUniforms } from '../world/materials/facadeMaterial.js'
-import { decodeRoadGraph, buildNetwork, pointOnLink } from './graph.js'
+import { lowerShared } from '../world/LowerLevels.jsx'
+import { hideThroughDecks } from '../world/lowerLevels.js'
+import { liveLift } from '../bridges/BridgeLeaves.jsx'
+import { vehiclePose } from '../ride/rideSession.js'
+import { decodeRoadGraph, buildNetwork, pointOnLink, bridgeCrossings, closedBridges, deckHides, hiddenAt, DEEP_M } from './graph.js'
 import { createTraffic, TYPES, CAP, RANGE_M } from './sim.js'
+import { skipInCube } from '../landmarks/cubeFaces.js'
 import { carGeometry, busGeometry, truckGeometry, lampGeometry, signalPoleGeometry, SIGNAL_LAMP_Y, SIGNAL_RGB, PAINTS } from './models.js'
 
 const IDLE = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('traffic') === 'idle'
 
-const ROAD_Y = 0.13 // on the road ribbons (pipeline GROUND_Y.roads 0.12)
+const ROAD_Y = 0.13 // on the road ribbons (pipeline GROUND_Y.roads 0.12); a vehicle's own y is measured from here
+const RIBBON_Y = 0.12 // pipeline GROUND_Y.roads: the street the link heights are measured from
+const UNDER_DECK_M = -1.5 // under the street's slab: headlights on at any hour
+const RAISED_RAD = 0.02 // a leaf this far off its deck has nobody on it
+const RIDE_CLEAR_M = 9 // half the ride bus plus a car
+const UNDER_CAM_M = -0.5 // the camera itself is under the street (a drive, the Riverwalk at river level)
+const LOWER_NEAR_M = 450 // from down there the roadway falls into the dark within a few hundred metres
 const REFRESH_S = 1, SIGNAL_MAX = 2400
-const VEHICLE_CAP = { car: 3000, bus: 260, truck: 700 }
+const VEHICLE_CAP = { car: 3500, bus: 300, truck: 800 } // ULTRA's 3200 plus the lower decks' share
 const LAMP_CAP = (VEHICLE_CAP.car + VEHICLE_CAP.bus + VEHICLE_CAP.truck) * 2
 
 // the hour the scene shows: the live Chicago clock, or the time a preset stands for
@@ -108,6 +123,10 @@ export default function Traffic({ file, version }) {
       if (dead || !buf) return
       const net = buildNetwork(decodeRoadGraph(buf))
       state.current.net = net
+      state.current.decks = null
+      // the raised-bridge holds (bridges.json, the same file the leaves come from)
+      const bf = useStore.getState().manifest?.bridges
+      if (bf) fetch(worldUrl(bf, version)).then((r) => (r.ok ? r.json() : null)).then((j) => { if (!dead && j && state.current.net === net) bridgeCrossings(net, j.bridges) }).catch(() => {})
       state.current.sim = createTraffic(net, { cap: CAP[useStore.getState().quality] ?? CAP.HIGH })
       state.current.last = -1e9
       if (new URLSearchParams(window.location.search).has('stats')) window.__traffic = state.current
@@ -116,6 +135,7 @@ export default function Traffic({ file, version }) {
   }, [file, version])
   useEffect(() => { state.current.sim?.setCap(CAP[quality] ?? CAP.HIGH) }, [quality])
   useEffect(() => () => { for (const m of Object.values(meshes)) { m.geometry.dispose(); m.material.dispose() } }, [meshes])
+  useEffect(() => skipInCube([meshes.car, meshes.bus, meshes.truck, meshes.poles]), [meshes]) // the Bean's 128 px faces: lamps only
 
   useFrame(({ camera, clock }, dt) => {
     const st = state.current, sim = st.sim, vis = on && !!sim
@@ -125,11 +145,23 @@ export default function Traffic({ file, version }) {
     // the range follows the point the camera looks down on
     // ?traffic=idle (tests only): the seeded vehicles placed once and held still, so reference shots are deterministic
     const idle = IDLE && st.frozen
+    // D3-2: the lower decks carry traffic only while they are drawn, and then all in range in the U cut-away, only
+    // near the camera when it is under the street itself (a drive, the Riverwalk), none otherwise — from above, the
+    // street hides them (the ramps keep theirs either way). And which ramp stretches the deck mesh leaves out.
+    const lowerOn = lowerShared.visible
+    const lowerMode = !lowerOn ? 'off' : cutUniforms.uCut.value > 0.5 ? 'all' : camera.position.y < UNDER_CAM_M ? 'near' : 'off'
+    if (lowerShared.json && st.decks !== lowerShared.json) { st.decks = lowerShared.json; deckHides(st.net, hideThroughDecks(lowerShared.json).ways, RIBBON_Y) }
+    if (lowerMode !== st.lowerMode) { st.lowerMode = lowerMode; if (!idle) st.last = -1e9 }
+    // raised bridges: closed a little before the leaves move, and while they're up
+    const closed = closedBridges(liveLift), raised = new Set()
+    for (const [k, a] of Object.entries(liveLift.angles ?? {})) if (a > RAISED_RAD) raised.add(k)
+    sim.setBridges(closed, raised)
     if (!idle && now - st.last > REFRESH_S) {
       st.last = now
       const dir = camera.getWorldDirection(P), alt = Math.max(camera.position.y, 1)
       const reach = dir.y < -0.05 ? Math.min(alt / -dir.y, 1200) * 0.6 : 400
-      sim.refresh(camera.position.x + dir.x * reach, camera.position.z + dir.z * reach, sceneHour(useStore.getState().timePreset))
+      sim.refresh(camera.position.x + dir.x * reach, camera.position.z + dir.z * reach, sceneHour(useStore.getState().timePreset),
+        lowerMode === 'all' ? true : lowerMode === 'near' ? { x: camera.position.x, z: camera.position.z, r: LOWER_NEAR_M } : false)
       st.signals = signalsInRange(st.net, camera.position.x, camera.position.z)
       placePoles(meshes.poles, st.signals)
     }
@@ -137,25 +169,35 @@ export default function Traffic({ file, version }) {
     if (!idle) sim.step(dt)
     // vehicles
     const night = facadeUniforms.uNight.value, buckets = { car: 0, bus: 0, truck: 0 }
+    const rideBus = vehiclePose() // the bus you ride (a bus or a drive): no traffic vehicle drawn inside it
+    const clearOfRide = (v) => !rideBus || rideBus.kind !== 'bus' || Math.abs(v.y + ROAD_Y - rideBus.pos[1]) > 2.5 || Math.hypot(v.x - rideBus.pos[0], v.z - rideBus.pos[2]) > RIDE_CLEAR_M
     let li = 0
     const lk = meshes.lamps.geometry.attributes.aKind, lg = meshes.lamps.geometry.attributes.aGain
     for (const v of sim.vehicles) {
       const mesh = meshes[v.type], i = buckets[v.type]
-      if (i >= VEHICLE_CAP[v.type] || isCutOpen(v.x, v.z)) continue // D2-3: none on the street the U cut-away has opened
+      if (i >= VEHICLE_CAP[v.type]) continue
+      const l = v.link, T = TYPES[v.type], under = v.y < -DEEP_M
+      if (!l.ys && isCutOpen(v.x, v.z)) continue // D2-3: none on the street the U cut-away has opened
+      if (under && !lowerOn) continue // under the street, and the lower decks aren't drawn
+      if (l.hide && (hiddenAt(l, v.s) || hiddenAt(l, v.s - T.length))) continue // where the deck mesh leaves a ramp out
+      if (!clearOfRide(v)) continue
       buckets[v.type]++
-      mesh.setMatrixAt(i, m4.compose(P.set(v.x, ROAD_Y, v.z), q.setFromEuler(e.set(0, v.yaw, 0)), S.set(1, 1, 1)))
+      const y0 = ROAD_Y + v.y
+      mesh.setMatrixAt(i, m4.compose(P.set(v.x, y0, v.z), q.setFromEuler(e.set(0, v.yaw, v.pitch, 'YZX')), S.set(1, 1, 1)))
       if (v.type === 'bus') col.setRGB(0.92, 0.92, 0.9); else if (v.type === 'truck') col.copy(paints[(v.colour >> 3) % paints.length]); else col.copy(paints[v.colour % paints.length])
       mesh.setColorAt(i, col)
       // lamps: headlights and tail lights after dusk; brake lights any time
-      const T = TYPES[v.type], brake = v.acc < -0.6 || (v.v < 0.3)
-      const fx = Math.cos(v.yaw), fz = -Math.sin(v.yaw), h = T.length / 2 + 0.03, y = ROAD_Y + (v.type === 'car' ? 0.62 : 0.85)
-      if (night > 0.05) {
-        meshes.lamps.setMatrixAt(li, m4.compose(P.set(v.x + fx * h, y, v.z + fz * h), q.setFromEuler(e.set(0, v.yaw, 0)), S.set(1, 1.1, T.width)))
-        lk.setX(li, 0); lg.setX(li, night); li++
+      const brake = v.acc < -0.6 || (v.v < 0.3)
+      // under the deck the lamps are on at any hour (the decks are dark)
+      const lit = v.y < UNDER_DECK_M ? Math.max(night, 0.85) : night
+      const cp = Math.cos(v.pitch), fx = Math.cos(v.yaw) * cp, fz = -Math.sin(v.yaw) * cp, fy = Math.sin(v.pitch), h = T.length / 2 + 0.03, y = y0 + (v.type === 'car' ? 0.62 : 0.85)
+      if (lit > 0.05) {
+        meshes.lamps.setMatrixAt(li, m4.compose(P.set(v.x + fx * h, y + fy * h, v.z + fz * h), q.setFromEuler(e.set(0, v.yaw, 0)), S.set(1, 1.1, T.width)))
+        lk.setX(li, 0); lg.setX(li, lit); li++
       }
-      const tail = night * 0.55 + (brake ? 0.75 : 0)
+      const tail = lit * 0.55 + (brake ? 0.75 : 0)
       if (tail > 0.05) {
-        meshes.lamps.setMatrixAt(li, m4.compose(P.set(v.x - fx * h, y, v.z - fz * h), q.setFromEuler(e.set(0, v.yaw + Math.PI, 0)), S.set(1, 0.8, T.width)))
+        meshes.lamps.setMatrixAt(li, m4.compose(P.set(v.x - fx * h, y - fy * h, v.z - fz * h), q.setFromEuler(e.set(0, v.yaw + Math.PI, 0)), S.set(1, 0.8, T.width)))
         lk.setX(li, 1); lg.setX(li, tail); li++
       }
     }
@@ -190,19 +232,19 @@ function signalsInRange(net, cx, cz) {
     if (l.signal < 0) continue
     const p = pointOnLink(l, l.stopAt, l.half + 0.9)
     if (Math.hypot(p.x - cx, p.z - cz) > RANGE_M) continue
-    out.push({ link: l, x: p.x, z: p.z, yaw: Math.atan2(-p.dz, p.dx) })
+    out.push({ link: l, x: p.x, z: p.z, y: ROAD_Y + p.y, yaw: Math.atan2(-p.dz, p.dx) })
     if (out.length >= SIGNAL_MAX) break
   }
   return out
 }
 function placePoles(mesh, list) {
-  list.forEach((s, i) => mesh.setMatrixAt(i, m4.compose(P.set(s.x, ROAD_Y, s.z), q.setFromEuler(e.set(0, s.yaw, 0)), S.set(1, 1, 1))))
+  list.forEach((s, i) => mesh.setMatrixAt(i, m4.compose(P.set(s.x, s.y, s.z), q.setFromEuler(e.set(0, s.yaw, 0)), S.set(1, 1, 1))))
   mesh.count = list.length; mesh.instanceMatrix.needsUpdate = true
 }
 function lightSignals(mesh, list, sim) {
   list.forEach((s, i) => {
     const state = sim.signalAt(s.link) ?? 'red', fx = Math.cos(s.yaw), fz = -Math.sin(s.yaw), d = -0.21 // just in front of the head
-    mesh.setMatrixAt(i, m4.compose(P.set(s.x + fx * d, ROAD_Y + SIGNAL_LAMP_Y[state], s.z + fz * d), q.setFromEuler(e.set(0, s.yaw, 0)), S.set(1, 1, 1)))
+    mesh.setMatrixAt(i, m4.compose(P.set(s.x + fx * d, s.y + SIGNAL_LAMP_Y[state], s.z + fz * d), q.setFromEuler(e.set(0, s.yaw, 0)), S.set(1, 1, 1)))
     mesh.setColorAt(i, col.setRGB(...SIGNAL_RGB[state]))
   })
   mesh.count = list.length; mesh.instanceMatrix.needsUpdate = true

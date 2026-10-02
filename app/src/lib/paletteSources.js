@@ -85,12 +85,12 @@ export function liveCommands() {
 }
 
 // Ride the city (P7): every ride by name — "Ride: Brown Line …", "Bus: #146 …", "Walk: The Riverwalk", "Glide over the city"
-const RIDE_PREFIX = { L: 'Ride', bus: 'Bus', walk: 'Walk' }
+const RIDE_PREFIX = { L: 'Ride', bus: 'Bus', walk: 'Walk', drive: 'Drive' }
 export function rideCommands() {
   const rides = allRides(getSim(), useStore.getState().transit, ridesJsonNow())
   return rides.map((r) => ({
     id: `ride:${r.id}`, kind: 'guide', name: r.kind === 'glide' ? r.name : `${RIDE_PREFIX[r.kind]}: ${r.name}`,
-    sub: r.kind === 'L' ? 'Ride the L · front window, alongside or behind' : r.kind === 'bus' ? 'Ride a CTA bus' : r.kind === 'walk' ? 'Street-level walk' : 'Hang-glide · ↑ dive ↓ climb',
-    aliases: ['ride', r.kind === 'walk' ? 'walk' : r.kind === 'bus' ? 'bus' : r.kind === 'glide' ? 'glide' : 'train', ...(r.ref ? [`bus ${r.ref}`, `#${r.ref}`, `${r.ref} bus`] : [])], run: () => startRide(r.id),
+    sub: r.kind === 'L' ? 'Ride the L · front window, alongside or behind' : r.kind === 'bus' ? 'Ride a CTA bus' : r.kind === 'walk' ? 'Street-level walk' : r.kind === 'drive' ? 'Under the street · from the front of a bus' : 'Hang-glide · ↑ dive ↓ climb',
+    aliases: ['ride', r.kind === 'walk' ? 'walk' : r.kind === 'bus' ? 'bus' : r.kind === 'glide' ? 'glide' : r.kind === 'drive' ? 'drive' : 'train', ...(r.ref ? [`bus ${r.ref}`, `#${r.ref}`, `${r.ref} bus`] : []), ...(r.kind === 'drive' ? ['Drive Lower Wacker', 'lower levels', 'under the street'] : [])], run: () => startRide(r.id),
   }))
 }
