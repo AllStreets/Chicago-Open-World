@@ -1,10 +1,10 @@
 // pipeline/lib/boats.js — F-9: the boats on Chicago's water, as instances of the scripted Blender models
 // (heroes/scripts/boats.py → heroes/out/boats/<kind>.glb: meshes `lod0` and `lod1`, one primitive per role material,
 // baked occlusion in COLOR_0). The pipeline never draws a boat into a tile: it lists placements and copies the models
-// (meshopt-compressed) into the world; the app draws each kind as instanced meshes (app/src/world/boats/*).
+// (meshopt-compressed) into the world; the app draws each kind as instanced meshes (app/src/world/RiverBoats.jsx, riverboats/*).
 //
 // Reuse (river, lake, harbours): every placement goes through placeBoat; build-world collects them and writeBoats
-// writes world/boats.json + world/boats/<kind>.glb once. A harbour builder returns placements the same way:
+// writes world/river-boats.json + world/river-boats/<kind>.glb once. A harbour builder returns placements the same way:
 //   placeBoat('cruiser', [x, z], bowDir2, { y: lakeY, livery: 3 })        → { k, x, y, z, h, l }
 //   pickKind(rnd, BOAT_MIX.marina) / mooredInSlip(...)                    → deterministic choices for a marina
 // Placement record: k kind, x/y/z the waterline point under mid-length, h heading (radians about +Y: the model's +X,
@@ -20,8 +20,8 @@ import { MeshoptEncoder, MeshoptDecoder } from 'meshoptimizer'
 import { add2, mul2, norm2, left, dot2, bearing } from './meshkit.js'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
-export const BOATS_FILE = 'boats.json'
-export const BOATS_DIR = 'boats'
+export const BOATS_FILE = 'river-boats.json'
+export const BOATS_DIR = 'river-boats'
 export const BOATS_VERSION = 1
 
 // L × B (metres) as built in boats.py; lit: the cabins glow after dusk (working boats); liveries are sRGB hex for the three recolourable roles (hull, trim, canopy).
@@ -125,7 +125,7 @@ export function riverBoats(spec, { isWater, y }) {
   return { boats: out.filter((r) => r.ok).map((r) => r.boat), report: out.map((r) => `${r.key}${r.ok ? '' : ` (dropped: not on the water at ${r.tried.x}, ${r.tried.z}; river ${r.width} m wide)`}`) }
 }
 
-// ── world/boats.json ────────────────────────────────────────────────────────────────────────────────────────────────
+// ── world/river-boats.json ──────────────────────────────────────────────────────────────────────────────────────────────
 // { version, kinds: { kind: { file, L, B, liveries } }, lod1At (m), farAt (m), boats: [...] }, kinds only those used.
 export const BOAT_LOD = { lod1At: 220, farAt: 2600 }
 export function boatsJson(boats) {
@@ -137,7 +137,7 @@ export function boatsJson(boats) {
 
 export const boatSource = (kind) => join(HERE, '..', 'heroes', 'out', 'boats', BOAT_KINDS[kind].file)
 
-// Copy each used model into the world, meshopt-compressed like the tiles, and write boats.json. Returns the manifest
+// Copy each used model into the world, meshopt-compressed like the tiles, and write river-boats.json. Returns the manifest
 // entry, or null when no model exists (the app then simply draws no boats).
 export async function writeBoats(outDir, boats) {
   const used = [...new Set(boats.map((b) => b.k))].filter((k) => existsSync(boatSource(k)))

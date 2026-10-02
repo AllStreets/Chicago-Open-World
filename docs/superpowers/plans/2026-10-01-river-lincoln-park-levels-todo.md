@@ -166,7 +166,6 @@ Size key: **S** ≈ ≤ 2 h (look row, crown primitive, colour), **M** ≈ half 
 
 ### 3.2 To-dos
 
-- [ ] **B-8 Harbours and lakefront** (B21, B23, B26): harbour walls, docks, moored boats (static, instanced), revetment steps. **Depends on D5** (approved, Decision 4): build them as real walls at `LAKE_Y` after D5 merges, not as low curbs first. **Done when** draw calls are unchanged (boats as one InstancedMesh, total ≤ 900) and the Belmont pose shows docks.
 - [ ] **B-10 README.** A "Lincoln Park" gallery section (8 frames) and Evolution rows: Conservatory (generic dome → four glass houses) and Lion House. **Done when** links resolve.
 
 ---
@@ -252,8 +251,6 @@ Size key: **S** ≈ ≤ 2 h (look row, crown primitive, colour), **M** ≈ half 
 **D4 — Polish**
 
 **D5 — The lake at its real level (Decision 4: approved — `LAKE_Y` −4.6 m, the step hidden at the Harbor Lock)**
-- [ ] **D5-1** Lake and harbours to `LAKE_Y`, with shore aprons: stepped revetments (≈ 1.2 m steps), beaches sloped across their width, harbour walls, Navy Pier and breakwater faces, the lighthouse base, and the Chicago Harbor Lock (A37) as the seam: the 1.4 m step between `RIVER_Y` and `LAKE_Y` happens only inside the lock chamber, between its gates, so no open-water edge shows a step. **Done when** `shore.test.js` / `lake.test.js` assert no gap along the shoreline, a unit test asserts every river–lake water contact lies inside the lock polygon, a hero-view pose at the lock mouth shows no visible step outside the gates, and the lakefront hero-view poses are re-baselined once (Decision 8).
-- [ ] **D5-2** Inland ponds (South Pond, North Pond, the Lagoon, the Lily Pool) stay perched about 0.6 m below their banks with sloped edges. **Done when** a unit test lists them with their y.
 
 **Fallback (if any stage threatens the build):** revert that stage's single world commit (each stage is one commit for `public/world`). Set `levels.*` to absent so the app renders today's flat world. Go to Option C (main stem only) or ship D2 as a cutaway-only view. The user is told in plain words before any fallback ships.
 

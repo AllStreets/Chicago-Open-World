@@ -9,6 +9,7 @@ import { spire, drum, pyramid, doricColumn } from './crowns.js'
 import { add2, sub2, mul2, norm2, left, bearing, mesh, tri, quad, merge, tube, slab } from './meshkit.js'
 import { LANDMARK_FACADES as F } from './facadeIds.js'
 import { plinth, placeStatue, steppedBase, exedra, totemPole } from './statues.js'
+import { waterLevels } from './waterLevels.js'
 
 const P = (m, facade, style, part, seed = 0.5) => ({ mesh: m, facade, seed, style, part })
 const local = (p) => (p && p.lat != null ? project(p.lon, p.lat) : p)
@@ -207,9 +208,11 @@ export function muralQuads(walls) {
 const atOf = (b, s) => (s.at ? local(s.at) : b.centroid)
 export const P2_BUILDERS = {
   lighthouse: (b, s) => {
-    const at = atOf(b, s), r = lighthouse({ at, base: s.base ?? 0 }, s.params ?? {})
+    // D5: with the lake at its real level the light's breakwater stands `base` metres over the water, footed under it
+    const lake = waterLevels().lake, base = lake != null ? lake + (s.base ?? 2) : (s.base ?? 0), foot = lake != null ? lake - 0.6 : -1
+    const at = atOf(b, s), r = lighthouse({ at, base }, s.params ?? {})
     // the concrete breakwater it stands on, running off along its bearing (the harbour's outer wall)
-    if (s.breakwater) { const f = bearing(s.breakwater.bearingDeg ?? 0), c = add2(at, mul2(f, (s.breakwater.aheadM - s.breakwater.behindM) / 2)); r.meshes.push(P(slab(mesh(), c, f, s.breakwater.aheadM + s.breakwater.behindM, s.breakwater.widthM ?? 9, -1, s.base ?? 2), F.stone, 'sidewalk-concrete', 'breakwater')) }
+    if (s.breakwater) { const f = bearing(s.breakwater.bearingDeg ?? 0), c = add2(at, mul2(f, (s.breakwater.aheadM - s.breakwater.behindM) / 2)); r.meshes.push(P(slab(mesh(), c, f, s.breakwater.aheadM + s.breakwater.behindM, s.breakwater.widthM ?? 9, foot, lake != null ? base : (s.base ?? 2)), F.stone, 'sidewalk-concrete', 'breakwater')) }
     return { replace: true, pieces: [], ...r }
   },
   beachHouse: (b, s) => ({ replace: true, pieces: [], ...beachHouse(b, s) }),

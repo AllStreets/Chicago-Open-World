@@ -104,11 +104,11 @@ describe('the Blender models (heroes/out/boats)', async () => {
     const dir = mkdtempSync(join(tmpdir(), 'boats-'))
     try {
       const e = await writeBoats(dir, [placeBoat('runabout', [0, 0], [1, 0], { y: -6.3 })])
-      expect(e).toEqual({ file: 'boats.json', count: 1 })
-      const j = JSON.parse(readFileSync(join(dir, 'boats.json'), 'utf8'))
-      expect(j.kinds.runabout.file).toBe('boats/runabout.glb')
-      expect(existsSync(join(dir, 'boats', 'runabout.glb'))).toBe(true)
-      expect(existsSync(join(dir, 'boats', 'tourboat.glb'))).toBe(false)
+      expect(e).toEqual({ file: 'river-boats.json', count: 1 })
+      const j = JSON.parse(readFileSync(join(dir, 'river-boats.json'), 'utf8'))
+      expect(j.kinds.runabout.file).toBe('river-boats/runabout.glb')
+      expect(existsSync(join(dir, 'river-boats', 'runabout.glb'))).toBe(true)
+      expect(existsSync(join(dir, 'river-boats', 'tourboat.glb'))).toBe(false)
     } finally { rmSync(dir, { recursive: true, force: true }) }
   })
 })

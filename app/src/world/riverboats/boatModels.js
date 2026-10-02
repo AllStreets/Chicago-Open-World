@@ -1,4 +1,4 @@
-// app/src/world/boats/boatModels.js — F-9: a boat model (pipeline/heroes/scripts/boats.py → world/boats/<kind>.glb)
+// app/src/world/riverboats/boatModels.js — F-9: a boat model (pipeline/heroes/scripts/boats.py → world/river-boats/<kind>.glb)
 // as the few geometries the fleet instances. The .glb holds `lod0` and `lod1`, one primitive per role material and the
 // baked occlusion in COLOR_0. Per LOD the roles become four parts:
 //   hull · trim · canopy   the livery: drawn white × occlusion, tinted per boat by instanceColor

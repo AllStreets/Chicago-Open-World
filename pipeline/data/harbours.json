@@ -1,0 +1,18 @@
+{
+  "note": "B-8 / D5: Chicago's lakefront harbours as they are laid out (pipeline/lib/harbours.js): floating docks with finger slips, or a mooring field where the boats swing to their buoys and all point into the wind. Each harbour is its OSM water polygon; the dock rows run across its long axis unless `rowBearingDeg` says otherwise. Boat counts are a late-September occupancy (the season runs to mid-October) kept lean for the triangle budget; layouts read from Chicago Park District harbour maps and aerial photographs (approximate).",
+  "dock": { "width": 2.4, "freeboard": 0.5, "thick": 0.55, "fingerEvery": 4.6, "fingerLen": 9.5, "fingerW": 0.9, "rowPitch": 46, "wallGap": 3.6, "pileEvery": 24, "occupancy": 0.72 },
+  "mooring": { "dx": 26, "dz": 34, "inset": 28, "windBearingDeg": 205, "jitterDeg": 9, "occupancy": 0.8 },
+  "harbours": [
+    { "key": "belmont", "name": "Belmont Harbor", "osm": 17766386, "layout": "mixed", "dockShare": 0.45, "sail": 0.6, "maxBoats": 230, "source": "https://www.chicagoharbors.info/harbors/belmont-harbor/" },
+    { "key": "diversey", "name": "Diversey Harbor", "osm": 17766292, "layout": "docks", "sail": 0.4, "maxBoats": 170, "source": "https://www.chicagoharbors.info/harbors/diversey-harbor/" },
+    { "key": "dusable", "name": "DuSable Harbor", "osm": 2271425, "layout": "docks", "sail": 0.45, "maxBoats": 140, "source": "https://www.chicagoharbors.info/harbors/dusable-harbor/" },
+    { "key": "monroe", "name": "Monroe Harbor", "osm": 17766901, "layout": "moorings", "sail": 0.75, "maxBoats": 260, "source": "https://www.chicagoharbors.info/harbors/monroe-harbor/" },
+    { "key": "burnhamN", "name": "Burnham Harbor", "osm": 17772107, "layout": "docks", "sail": 0.4, "maxBoats": 150, "source": "https://www.chicagoharbors.info/harbors/burnham-harbor/" },
+    { "key": "burnhamS", "name": "Burnham Harbor", "osm": 17767649, "layout": "docks", "sail": 0.4, "maxBoats": 110, "source": "https://www.chicagoharbors.info/harbors/burnham-harbor/" },
+    { "key": "thirtyfirst", "name": "31st Street Harbor", "osm": 17779015, "layout": "docks", "sail": 0.35, "maxBoats": 160, "source": "https://www.chicagoharbors.info/harbors/31st-street-harbor/" }
+  ],
+  "palette": {
+    "hull": ["#f2f1ec", "#f2f1ec", "#f2f1ec", "#f2f1ec", "#f2f1ec", "#efe9da", "#1d2b45", "#24412f", "#7a1f23", "#2a2c30"],
+    "trim": ["#1d2f6b", "#1b4f8a", "#6b1d24", "#2d5a3a", "#b58d55", "#1c1f24", "#2f6fa8"]
+  }
+}

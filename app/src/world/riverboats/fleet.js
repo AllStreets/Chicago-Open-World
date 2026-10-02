@@ -1,4 +1,4 @@
-// app/src/world/boats/fleet.js — F-9: every boat in world/boats.json as instances: per kind, per LOD, one instanced
+// app/src/world/riverboats/fleet.js — F-9: every boat in world/river-boats.json as instances: per kind, per LOD, one instanced
 // mesh per part (hull, trim, canopy, glass, fixed) — at most 5 draw calls a kind and LOD, whatever the count.
 // Each boat draws its LOD0 within `lod1At` of the camera, its LOD1 out to `farAt`, nothing beyond.
 // Placement record (pipeline/lib/boats.js): { k, x, y, z, h, l } — h turns the model's bow (+X) to (cos h, −sin h).
@@ -32,7 +32,7 @@ export function buildFleet(kinds, boats, materials, { lod1At, farAt, onMesh } = 
         const mat = part === 'glass' && !model.lit && materials.glassDark ? materials.glassDark : materials[part]
         const mesh = new THREE.InstancedMesh(geometry, mat, list.length)
         mesh.name = `boats:${k}:lod${lod}:${part}`
-        mesh.userData.kind = 'boats'
+        mesh.userData.kind = 'riverBoats'
         mesh.count = 0
         if (LIVERY_ROLES.includes(part)) mesh.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(list.length * 3), 3)
         mesh.raycast = () => {}                     // boats never take a hover or a click from the buildings behind

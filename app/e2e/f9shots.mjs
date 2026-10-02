@@ -26,11 +26,11 @@ for (const s of F9_SHOTS.filter((x) => !only.length || only.includes(x.name))) {
   await page.goto(`${base}/?eye=${s.eye.join(',')}&time=${time}&sports=idle&traffic=idle&stats`)
   await page.waitForFunction(() => window.__worldReady === true, null, { timeout: 120_000 })
   await page.waitForFunction(() => window.__tilesIdle === true && window.__hudReady === true, null, { timeout: 90_000 }).catch(() => console.error('not idle'))
-  await page.waitForFunction(() => Boolean(window.__boats), null, { timeout: 30_000 }).catch(() => console.error('no boats'))
+  await page.waitForFunction(() => Boolean(window.__riverBoats), null, { timeout: 30_000 }).catch(() => console.error('no boats'))
   await page.waitForTimeout(2500)
   const file = `${outDir}/${s.name}-${time.toLowerCase()}.png`
   await page.screenshot({ path: file })
-  console.log(file, JSON.stringify(await page.evaluate(() => window.__boats?.())))
+  console.log(file, JSON.stringify(await page.evaluate(() => window.__riverBoats?.())))
   await page.close()
 }
 await browser.close()

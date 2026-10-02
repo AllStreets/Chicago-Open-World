@@ -618,7 +618,7 @@ Every building, monument and landmark in Lincoln Park from North Avenue to Irvin
 <td width="50%"><img src="docs/screenshots/v10-lp-north-avenue-beach-night.png" alt="North Avenue Beach at night" width="100%"/></td>
 </tr>
 <tr>
-<td><em>The North Avenue Beach House as the ocean liner it was built to be, aground on the sand: portholes, the blue-railed decks, the Castaways canopy and two red-banded funnels. The beach runs from North Avenue to Fullerton between the lake and the Lakefront Trail.</em></td>
+<td><em>The North Avenue Beach House as the ocean liner it was built to be, aground on the sand: portholes, the blue-railed decks, the Castaways canopy and two red-banded funnels. The beach runs from North Avenue to Fullerton between the lake and the Lakefront Trail, sloping down into the water.</em></td>
 <td><em>At night the portholes glow along the hull.</em></td>
 </tr>
 <tr>
@@ -658,7 +658,7 @@ Every building, monument and landmark in Lincoln Park from North Avenue to Irvin
 <td width="50%"><img src="docs/screenshots/v10-lp-belmont-waveland-night.png" alt="Diversey to Waveland at night" width="100%"/></td>
 </tr>
 <tr>
-<td><em>From Diversey to Waveland: the harbours show as water now, the driving range's nets, the Elks rotunda, Kwanusila and the Waveland clock tower at the park's north edge.</em></td>
+<td><em>From Diversey to Waveland: Belmont Harbor down at the lake's level with its docks and moored boats, the driving range's nets, the Elks rotunda, Kwanusila and the Waveland clock tower at the park's north edge.</em></td>
 <td><em>The north end of the park at night.</em></td>
 </tr>
 </table>
@@ -822,6 +822,58 @@ With **U** on, the lower streets are named where they run — Lower Wacker Dr, L
 <tr>
 <td><em>U: Lower Michigan, Lower Wacker and the service drives named where they run, and the Riverwalk's rooms from Michigan–Wabash to the Cove.</em></td>
 <td><em>Down by the river the rooms name themselves: Riverwalk East, Michigan–Wabash and the Vietnam Veterans Memorial Plaza.</em></td>
+### Workstream D5 · The lake at its real level — *4.65 m under the lakefront, and the harbours full of boats*
+
+Lake Michigan now lies where it really does: 4.65 m below the lakefront park and Lake Shore Drive (its long-term mean level, checked against the 2017 Cook County LiDAR), with Monroe, DuSable, Burnham, 31st Street, Diversey and Belmont harbours at the same level. Every edge meets the water the way the real one does: the stepped limestone revetments of Lincoln Park and the Shoreline Protection Project, with a promenade ledge 2.6 m above the water (the height the LiDAR measured) and big steps down into the lake; harbour walls with a rubble slope and a concrete coping; Navy Pier's tall dock face; plain faces on the narrow breakwater strips; the beaches sloping from the Lakefront Trail down into the water. The breakwaters and the harbour lighthouse stand 1.8–2.4 m above the lake. The river is 1.65 m lower again, and the two only meet at the Chicago Harbor Lock, behind its lake gate. Lincoln Park's ponds and the South Lagoon stay perched 0.6 m below their grassy banks. The harbours have floating docks with finger slips and a mooring field where every boat swings into the wind — about 1,200 sailboats and cruisers, each built in Blender (a lofted hull with its sheer stripe, a cabin with its windows, lifelines and pulpits, a mast and boom or a hardtop with its radar arch) and painted in its own colours; at dusk their masthead lights come on. ⌘K "Belmont Harbor", "Diversey Harbor", "Chicago Harbor Lock" and "North Avenue Beach" fly you there.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/d5-navypier-lake-day.png" alt="D5 — Navy Pier and Streeterville from the lake by day" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/d5-navypier-lake-dusk.png" alt="D5 — Navy Pier and Streeterville from the lake at dusk" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Navy Pier from the lake: the pier's dock face down to the water, the shore along Streeterville behind.</em></td>
+<td><em>The same view at dusk, the Centennial Wheel lit.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/d5-ohio-beach-day.png" alt="D5 — Ohio Street Beach and the stepped revetment" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/d5-northave-beach-dusk.png" alt="D5 — North Avenue Beach at dusk" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Ohio Street Beach: the sand runs into the water, and the stepped limestone revetment carries on along Lake Shore Drive.</em></td>
+<td><em>North Avenue Beach at dusk: the beach house on the sand, the beach sloping down to the lake.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/d5-belmont-harbor-dusk.png" alt="D5 — Belmont Harbor at dusk" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/d5-belmont-docks-day.png" alt="D5 — among the moored boats in Belmont Harbor" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Belmont Harbor at dusk: the docks and their slips in the south basin, the mooring field beyond, masthead lights coming on.</em></td>
+<td><em>Down among the moorings: every boat swung to the same wind, the harbour wall's limestone behind.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/d5-diversey-harbor-day.png" alt="D5 — Diversey Harbor" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/d5-monroe-harbor-day.png" alt="D5 — Monroe Harbor's mooring field" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Diversey Harbor between its walls, its docks at the north end.</em></td>
+<td><em>Monroe Harbor's mooring field in front of the Loop, sailboats and cruisers pointing into the wind.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/d5-lock-mouth-day.png" alt="D5 — the shore by the Chicago Harbor Lock" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/d5-lock-high-day.png" alt="D5 — the Chicago Harbor Lock from above" width="100%"/></td>
+</tr>
+<tr>
+<td><em>The lakefront by the river mouth: the stepped revetment and its stairs down to the water.</em></td>
+<td><em>The Chicago Harbor Lock: the lake on the outside, the river 1.65 m lower inside the chamber; nowhere else do the two waters meet.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/d5-lock-mouth-dusk.png" alt="D5 — the river mouth at dusk" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/d5-northerly-island-dusk.png" alt="D5 — Northerly Island at dusk" width="100%"/></td>
+</tr>
+<tr>
+<td><em>The river mouth at dusk.</em></td>
+<td><em>Northerly Island at dusk, its shore down at the lake.</em></td>
 </tr>
 </table>
 
@@ -1167,6 +1219,7 @@ It wasn't made right in one attempt. Here are the same places through each pass,
 <td width="20%"><img src="docs/screenshots/v1-lake-horizon-day.png" alt="V1 — the lake to the horizon" width="100%"/></td>
 <td width="20%"><img src="docs/screenshots/p4-snow-christmas-dusk.png" alt="Phase 4 — the frozen shore" width="100%"/></td>
 <td width="20%"><img src="docs/screenshots/p4-fireworks-finale-night.png" alt="Phase 4 — fireworks on the water" width="100%"/></td>
+<td width="20%"><img src="docs/screenshots/d5-monroe-harbor-day.png" alt="D5 — the lake at its real level, Monroe Harbor full of boats" width="100%"/></td>
 </tr>
 <tr>
 <td><sub>Phase 1 · Sep 28<br/>a flat plane</sub></td>
@@ -1174,6 +1227,7 @@ It wasn't made right in one attempt. Here are the same places through each pass,
 <td><sub>V1 · Sep 29<br/>no edge to the lake</sub></td>
 <td><sub>Phase 4 · Sep 30<br/>ice along the shore</sub></td>
 <td><sub>Phase 4 · Sep 30<br/>fireworks reflected</sub></td>
+<td><sub>D5 · Oct 1<br/>4.65 m down, the harbours full</sub></td>
 </tr>
 </table>
 
@@ -1249,24 +1303,28 @@ It wasn't made right in one attempt. Here are the same places through each pass,
 </tr>
 </table>
 
-**Lincoln Park** — the six gallery poses, before and after the pass (the Conservatory's generic dome became four glass houses; the Lion House's pyramid became its tile roof and ridge monitor)
+**Lincoln Park** — the six gallery poses, before and after the pass, and (where the lake shows) after D5 brought the lake down to its real level (the Conservatory's generic dome became four glass houses; the Lion House's pyramid became its tile roof and ridge monitor)
 
 <table>
 <tr>
-<td width="50%"><img src="docs/screenshots/evolution/before-lp-north-avenue-beach-day.png" alt="North Avenue Beach before the Lincoln Park pass" width="100%"/></td>
-<td width="50%"><img src="docs/screenshots/v10-lp-north-avenue-beach-day.png" alt="North Avenue Beach after the Lincoln Park pass" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/evolution/before-lp-north-avenue-beach-day.png" alt="North Avenue Beach before the Lincoln Park pass" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/evolution/v10-lp-north-avenue-beach-day-lp-pass.png" alt="North Avenue Beach after the Lincoln Park pass" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/v10-lp-north-avenue-beach-day.png" alt="North Avenue Beach with the lake at its real level" width="100%"/></td>
 </tr>
 <tr>
 <td><sub>North Avenue Beach · Oct 1, before (day)<br/>OSM boxes; the water under the grass</sub></td>
 <td><sub>North Avenue Beach · Oct 1, after (day)<br/>every building sculpted, the water shown</sub></td>
+<td><sub>North Avenue Beach · Oct 1, D5 (day)<br/>the sand slopes into the lake at its real level</sub></td>
 </tr>
 <tr>
-<td width="50%"><img src="docs/screenshots/evolution/before-lp-north-avenue-beach-night.png" alt="North Avenue Beach before the Lincoln Park pass" width="100%"/></td>
-<td width="50%"><img src="docs/screenshots/v10-lp-north-avenue-beach-night.png" alt="North Avenue Beach after the Lincoln Park pass" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/evolution/before-lp-north-avenue-beach-night.png" alt="North Avenue Beach before the Lincoln Park pass" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/evolution/v10-lp-north-avenue-beach-night-lp-pass.png" alt="North Avenue Beach after the Lincoln Park pass" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/v10-lp-north-avenue-beach-night.png" alt="North Avenue Beach with the lake at its real level" width="100%"/></td>
 </tr>
 <tr>
 <td><sub>North Avenue Beach · Oct 1, before (night)<br/>OSM boxes; the water under the grass</sub></td>
 <td><sub>North Avenue Beach · Oct 1, after (night)<br/>every building sculpted, the water shown</sub></td>
+<td><sub>North Avenue Beach · Oct 1, D5 (night)<br/>the sand slopes into the lake at its real level</sub></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/screenshots/evolution/before-lp-zoo-mall-day.png" alt="The zoo before the Lincoln Park pass" width="100%"/></td>
@@ -1285,20 +1343,24 @@ It wasn't made right in one attempt. Here are the same places through each pass,
 <td><sub>The zoo · Oct 1, after (night)<br/>every building sculpted, the water shown</sub></td>
 </tr>
 <tr>
-<td width="50%"><img src="docs/screenshots/evolution/before-lp-south-pond-day.png" alt="South Pond before the Lincoln Park pass" width="100%"/></td>
-<td width="50%"><img src="docs/screenshots/v10-lp-south-pond-day.png" alt="South Pond after the Lincoln Park pass" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/evolution/before-lp-south-pond-day.png" alt="South Pond before the Lincoln Park pass" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/evolution/v10-lp-south-pond-day-lp-pass.png" alt="South Pond after the Lincoln Park pass" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/v10-lp-south-pond-day.png" alt="South Pond with the lake at its real level" width="100%"/></td>
 </tr>
 <tr>
 <td><sub>South Pond · Oct 1, before (day)<br/>OSM boxes; the water under the grass</sub></td>
 <td><sub>South Pond · Oct 1, after (day)<br/>every building sculpted, the water shown</sub></td>
+<td><sub>South Pond · Oct 1, D5 (day)<br/>the pond perched 0.6 m under its banks</sub></td>
 </tr>
 <tr>
-<td width="50%"><img src="docs/screenshots/evolution/before-lp-south-pond-night.png" alt="South Pond before the Lincoln Park pass" width="100%"/></td>
-<td width="50%"><img src="docs/screenshots/v10-lp-south-pond-night.png" alt="South Pond after the Lincoln Park pass" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/evolution/before-lp-south-pond-night.png" alt="South Pond before the Lincoln Park pass" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/evolution/v10-lp-south-pond-night-lp-pass.png" alt="South Pond after the Lincoln Park pass" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/v10-lp-south-pond-night.png" alt="South Pond with the lake at its real level" width="100%"/></td>
 </tr>
 <tr>
 <td><sub>South Pond · Oct 1, before (night)<br/>OSM boxes; the water under the grass</sub></td>
 <td><sub>South Pond · Oct 1, after (night)<br/>every building sculpted, the water shown</sub></td>
+<td><sub>South Pond · Oct 1, D5 (night)<br/>the pond perched 0.6 m under its banks</sub></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/screenshots/evolution/before-lp-conservatory-day.png" alt="The Conservatory before the Lincoln Park pass" width="100%"/></td>
@@ -1317,36 +1379,44 @@ It wasn't made right in one attempt. Here are the same places through each pass,
 <td><sub>The Conservatory · Oct 1, after (night)<br/>every building sculpted, the water shown</sub></td>
 </tr>
 <tr>
-<td width="50%"><img src="docs/screenshots/evolution/before-lp-theater-on-the-lake-day.png" alt="Fullerton before the Lincoln Park pass" width="100%"/></td>
-<td width="50%"><img src="docs/screenshots/v10-lp-theater-on-the-lake-day.png" alt="Fullerton after the Lincoln Park pass" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/evolution/before-lp-theater-on-the-lake-day.png" alt="Fullerton before the Lincoln Park pass" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/evolution/v10-lp-theater-on-the-lake-day-lp-pass.png" alt="Fullerton after the Lincoln Park pass" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/v10-lp-theater-on-the-lake-day.png" alt="Fullerton with the lake at its real level" width="100%"/></td>
 </tr>
 <tr>
 <td><sub>Fullerton · Oct 1, before (day)<br/>OSM boxes; the water under the grass</sub></td>
 <td><sub>Fullerton · Oct 1, after (day)<br/>every building sculpted, the water shown</sub></td>
+<td><sub>Fullerton · Oct 1, D5 (day)<br/>the stepped limestone revetment down to the lake</sub></td>
 </tr>
 <tr>
-<td width="50%"><img src="docs/screenshots/evolution/before-lp-theater-on-the-lake-night.png" alt="Fullerton before the Lincoln Park pass" width="100%"/></td>
-<td width="50%"><img src="docs/screenshots/v10-lp-theater-on-the-lake-night.png" alt="Fullerton after the Lincoln Park pass" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/evolution/before-lp-theater-on-the-lake-night.png" alt="Fullerton before the Lincoln Park pass" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/evolution/v10-lp-theater-on-the-lake-night-lp-pass.png" alt="Fullerton after the Lincoln Park pass" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/v10-lp-theater-on-the-lake-night.png" alt="Fullerton with the lake at its real level" width="100%"/></td>
 </tr>
 <tr>
 <td><sub>Fullerton · Oct 1, before (night)<br/>OSM boxes; the water under the grass</sub></td>
 <td><sub>Fullerton · Oct 1, after (night)<br/>every building sculpted, the water shown</sub></td>
+<td><sub>Fullerton · Oct 1, D5 (night)<br/>the stepped limestone revetment down to the lake</sub></td>
 </tr>
 <tr>
-<td width="50%"><img src="docs/screenshots/evolution/before-lp-belmont-waveland-day.png" alt="Diversey to Waveland before the Lincoln Park pass" width="100%"/></td>
-<td width="50%"><img src="docs/screenshots/v10-lp-belmont-waveland-day.png" alt="Diversey to Waveland after the Lincoln Park pass" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/evolution/before-lp-belmont-waveland-day.png" alt="Diversey to Waveland before the Lincoln Park pass" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/evolution/v10-lp-belmont-waveland-day-lp-pass.png" alt="Diversey to Waveland after the Lincoln Park pass" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/v10-lp-belmont-waveland-day.png" alt="Diversey to Waveland with the lake at its real level" width="100%"/></td>
 </tr>
 <tr>
 <td><sub>Diversey to Waveland · Oct 1, before (day)<br/>OSM boxes; the water under the grass</sub></td>
 <td><sub>Diversey to Waveland · Oct 1, after (day)<br/>every building sculpted, the water shown</sub></td>
+<td><sub>Diversey to Waveland · Oct 1, D5 (day)<br/>the harbours at lake level, docks and boats</sub></td>
 </tr>
 <tr>
-<td width="50%"><img src="docs/screenshots/evolution/before-lp-belmont-waveland-night.png" alt="Diversey to Waveland before the Lincoln Park pass" width="100%"/></td>
-<td width="50%"><img src="docs/screenshots/v10-lp-belmont-waveland-night.png" alt="Diversey to Waveland after the Lincoln Park pass" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/evolution/before-lp-belmont-waveland-night.png" alt="Diversey to Waveland before the Lincoln Park pass" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/evolution/v10-lp-belmont-waveland-night-lp-pass.png" alt="Diversey to Waveland after the Lincoln Park pass" width="100%"/></td>
+<td width="33%"><img src="docs/screenshots/v10-lp-belmont-waveland-night.png" alt="Diversey to Waveland with the lake at its real level" width="100%"/></td>
 </tr>
 <tr>
 <td><sub>Diversey to Waveland · Oct 1, before (night)<br/>OSM boxes; the water under the grass</sub></td>
 <td><sub>Diversey to Waveland · Oct 1, after (night)<br/>every building sculpted, the water shown</sub></td>
+<td><sub>Diversey to Waveland · Oct 1, D5 (night)<br/>the harbours at lake level, docks and boats</sub></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/screenshots/evolution/p4-lily-pool.png" alt="The Lily Pool in Phase 4" width="100%"/></td>
