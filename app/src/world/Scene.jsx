@@ -26,6 +26,7 @@ import { loadFacadeTextures, loadStylePalette } from './materials/facadeMaterial
 import { loadGroundTextures } from './materials/groundShader.js'
 import { makeIsWater } from '../lib/landMask.js'
 import Lake from './Lake.jsx'
+import Boats from './Boats.jsx'
 import WaterRig from './WaterRig.jsx'
 import SkyRig from './SkyRig.jsx'
 import AtlasRig from '../camera/AtlasRig.jsx'
@@ -128,6 +129,7 @@ export default function Scene() {
       <Tunnels />
       <LowerLevels />
       {manifest?.traffic && <Traffic file={manifest.traffic} version={manifest.version} />}
+      {manifest?.boats && <Boats file={manifest.boats} version={manifest.version} />}
       <StationHits />
       <Picker />
       <SeasonRig />

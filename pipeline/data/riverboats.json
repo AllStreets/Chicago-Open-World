@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "note": "F-9: the river's working boats — architecture-tour boats and water taxis at their docks and under way, and a few pleasure boats heading out to the lake. Read by pipeline/lib/boats.js riverBoats. `at` is an approximate point in model metres (shared/project.js: origin State & Madison, +x east, +z south) read from maps and photographs; the build lays each boat against the river as built (moored: against the bank toward `side`, a compass bearing; underway: on the river's axis, `across` −1…1 from bank to bank, bow toward the bearing `bow`) and drops any boat that would not lie wholly on the water. Boats are generic: the class's look, no operator's livery or name. The scene is a still: a boat under way holds its place.",
+  "sources": [
+    "https://en.wikipedia.org/wiki/Chicago_River",
+    "https://www.architecture.org/tours/detail/chicago-architecture-center-river-cruise-aboard-chicagos-first-lady/ (tour boats leave from the Riverwalk at Michigan Avenue)",
+    "https://www.chicagowatertaxi.com/ (water-taxi stops along the main stem and the South Branch)",
+    "https://www.wendellaboats.com/ (tour boats from the Michigan Avenue Bridge, north-west)"
+  ],
+  "boats": [
+    { "key": "tour-michigan-nw", "kind": "tourboat", "mode": "moored", "at": [222, -772], "side": 0, "bow": 90, "livery": 1, "about": "a tour boat at its dock below the Wrigley Building, north bank west of the DuSable Bridge" },
+    { "key": "tour-michigan-se", "kind": "tourboat", "mode": "moored", "at": [380, -748], "side": 180, "bow": 270, "livery": 0, "about": "a tour boat at the Riverwalk east of Michigan Avenue, south bank" },
+    { "key": "tour-marina", "kind": "tourboat", "mode": "underway", "at": [-78, -616], "across": 0.4, "bow": 270, "livery": 2, "about": "a tour boat under way west past Marina City, between Dearborn and State" },
+    { "key": "tour-east", "kind": "tourboat", "mode": "underway", "at": [450, -738], "across": 0.1, "bow": 90, "livery": 3, "about": "a tour boat under way east toward the lake, between the DuSable and Columbus bridges" },
+    { "key": "tour-south-branch", "kind": "tourboat", "mode": "underway", "at": [-850, -200], "across": 0.0, "bow": 0, "livery": 0, "about": "a tour boat under way north on the South Branch past the Civic Opera, between Randolph and Washington" },
+    { "key": "taxi-clark", "kind": "watertaxi", "mode": "moored", "at": [-205, -600], "side": 180, "bow": 90, "livery": 0, "about": "a water taxi at the Riverwalk between Clark and Dearborn, south bank" },
+    { "key": "taxi-wells", "kind": "watertaxi", "mode": "underway", "at": [-590, -603], "across": 0.25, "bow": 90, "livery": 0, "about": "a water taxi under way east between Franklin and Wells" },
+    { "key": "taxi-madison", "kind": "watertaxi", "mode": "moored", "at": [-875, 85], "side": 270, "bow": 0, "livery": 1, "about": "a water taxi at the Riverbank stop on the South Branch's west bank, between Madison and Monroe" },
+    { "key": "runabout-lasalle", "kind": "runabout", "mode": "underway", "at": [-325, -604], "across": 0.35, "bow": 270, "livery": 1, "about": "a runabout heading upriver between LaSalle and Clark" },
+    { "key": "cruiser-wabash", "kind": "cruiser", "mode": "underway", "at": [175, -700], "across": -0.3, "bow": 60, "livery": 1, "about": "an express cruiser heading out to the lake between Wabash and the DuSable Bridge" },
+    { "key": "yacht-columbus", "kind": "yacht", "mode": "underway", "at": [700, -722], "across": -0.25, "bow": 90, "livery": 0, "about": "a flybridge yacht heading for the lock, east of Columbus Drive" }
+  ]
+}
