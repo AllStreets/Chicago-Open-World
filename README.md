@@ -598,7 +598,7 @@ Every building, monument and landmark in Lincoln Park from North Avenue to Irvin
 <td width="50%"><img src="docs/screenshots/v10-lp-north-avenue-beach-night.png" alt="North Avenue Beach at night" width="100%"/></td>
 </tr>
 <tr>
-<td><em>The North Avenue Beach House as the ocean liner it was built to be, aground on the sand: portholes, the blue-railed decks, the Castaways canopy and two red-banded funnels. The beach runs from North Avenue to Fullerton between the lake and the Lakefront Trail, sloping down into the water.</em></td>
+<td><em>The North Avenue Beach House as the ocean liner it was built to be, aground on the sand: portholes, the blue-railed decks, the Castaways canopy and two red-banded funnels. The beach runs from North Avenue to Fullerton between the lake and the Lakefront Trail, sloping down into the water: warm tan sand, the walks across it narrow concrete, the lawns by the beach house kept green, and a net on every volleyball court.</em></td>
 <td><em>At night the portholes glow along the hull.</em></td>
 </tr>
 <tr>
@@ -820,8 +820,8 @@ Lake Michigan now lies where it really does: 4.65 m below the lakefront park and
 <td width="50%"><img src="docs/screenshots/d5-northave-beach-dusk.png" alt="D5 — North Avenue Beach at dusk" width="100%"/></td>
 </tr>
 <tr>
-<td><em>Ohio Street Beach: the sand runs into the water, and the stepped limestone revetment carries on along Lake Shore Drive.</em></td>
-<td><em>North Avenue Beach at dusk: the beach house on the sand, the beach sloping down to the lake.</em></td>
+<td><em>Ohio Street Beach: the tan sand runs into the water, and the stepped limestone revetment carries on along Lake Shore Drive.</em></td>
+<td><em>North Avenue Beach at dusk: the beach house on the sand, the volleyball nets, the beach sloping down to the lake.</em></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/screenshots/d5-belmont-harbor-dusk.png" alt="D5 — Belmont Harbor at dusk" width="100%"/></td>
@@ -854,6 +854,29 @@ Lake Michigan now lies where it really does: 4.65 m below the lakefront park and
 <tr>
 <td><em>The river mouth at dusk.</em></td>
 <td><em>Northerly Island at dusk, its shore down at the lake.</em></td>
+</tr>
+</table>
+
+### F-8 · Beach polish — *Chicago's tan sand, the walks across it, and the volleyball nets*
+
+The beaches now look like the real ones in photographs: the sand is the light tan of Chicago's lakefront beaches rather than a pale cream, and it holds that colour through day, dusk and night (and goes white under the SNOW view). The walks that cross the sand are drawn as narrow light-concrete paths instead of grey blacktop that read as streets, and the Lakefront Trail is drawn as what it is — a park trail of weathered blacktop with a dashed yellow centre line, no street-light glow, ploughed in snow — wherever it runs. North Avenue Beach's lawns, gardens and parking lot by the beach house are no longer buried under sand, and no tree stands on a beach. Every sand volleyball court OSM maps has its net at regulation height (2.43 m): two thin dark posts, a dark see-through mesh band about a metre deep under a white top tape, sagging slightly — matte, so nothing glows — 112 nets, 32 triangles each, drawn as instances only inside the view and within 650 m, casting shadows only within 140 m.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/f8-northave-beach-day.png" alt="F-8 — North Avenue Beach by day" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/f8-northave-beach-dusk.png" alt="F-8 — North Avenue Beach at dusk" width="100%"/></td>
+</tr>
+<tr>
+<td><em>North Avenue Beach by day: tan sand down to the water, the courts' nets in rows, the beach house beyond.</em></td>
+<td><em>The same beach at dusk, the sand warm in the low sun.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/f8-oak-beach-day.png" alt="F-8 — Oak Street Beach by day" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/f8-northave-courts-day.png" alt="F-8 — the volleyball courts at North Avenue Beach" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Oak Street Beach from the lake: the curve of sand under the Gold Coast towers.</em></td>
+<td><em>Down at the courts: thin dark posts, the dark mesh and its white top tape.</em></td>
 </tr>
 </table>
 
@@ -1275,24 +1298,28 @@ It wasn't made right in one attempt. Here are the same places through each pass,
 
 <table>
 <tr>
-<td width="33%"><img src="docs/screenshots/evolution/before-lp-north-avenue-beach-day.png" alt="North Avenue Beach before the Lincoln Park pass" width="100%"/></td>
-<td width="33%"><img src="docs/screenshots/evolution/v10-lp-north-avenue-beach-day-lp-pass.png" alt="North Avenue Beach after the Lincoln Park pass" width="100%"/></td>
-<td width="33%"><img src="docs/screenshots/v10-lp-north-avenue-beach-day.png" alt="North Avenue Beach with the lake at its real level" width="100%"/></td>
+<td width="25%"><img src="docs/screenshots/evolution/before-lp-north-avenue-beach-day.png" alt="North Avenue Beach before the Lincoln Park pass" width="100%"/></td>
+<td width="25%"><img src="docs/screenshots/evolution/v10-lp-north-avenue-beach-day-lp-pass.png" alt="North Avenue Beach after the Lincoln Park pass" width="100%"/></td>
+<td width="25%"><img src="docs/screenshots/evolution/v10-lp-north-avenue-beach-day-d5.png" alt="North Avenue Beach with the lake at its real level" width="100%"/></td>
+<td width="25%"><img src="docs/screenshots/v10-lp-north-avenue-beach-day.png" alt="North Avenue Beach after the beach polish" width="100%"/></td>
 </tr>
 <tr>
 <td><sub>North Avenue Beach · Oct 1, before (day)<br/>OSM boxes; the water under the grass</sub></td>
 <td><sub>North Avenue Beach · Oct 1, after (day)<br/>every building sculpted, the water shown</sub></td>
 <td><sub>North Avenue Beach · Oct 1, D5 (day)<br/>the sand slopes into the lake at its real level</sub></td>
+<td><sub>North Avenue Beach · Oct 2, F-8 (day)<br/>warm tan sand, concrete walks, volleyball nets</sub></td>
 </tr>
 <tr>
-<td width="33%"><img src="docs/screenshots/evolution/before-lp-north-avenue-beach-night.png" alt="North Avenue Beach before the Lincoln Park pass" width="100%"/></td>
-<td width="33%"><img src="docs/screenshots/evolution/v10-lp-north-avenue-beach-night-lp-pass.png" alt="North Avenue Beach after the Lincoln Park pass" width="100%"/></td>
-<td width="33%"><img src="docs/screenshots/v10-lp-north-avenue-beach-night.png" alt="North Avenue Beach with the lake at its real level" width="100%"/></td>
+<td width="25%"><img src="docs/screenshots/evolution/before-lp-north-avenue-beach-night.png" alt="North Avenue Beach before the Lincoln Park pass" width="100%"/></td>
+<td width="25%"><img src="docs/screenshots/evolution/v10-lp-north-avenue-beach-night-lp-pass.png" alt="North Avenue Beach after the Lincoln Park pass" width="100%"/></td>
+<td width="25%"><img src="docs/screenshots/evolution/v10-lp-north-avenue-beach-night-d5.png" alt="North Avenue Beach with the lake at its real level" width="100%"/></td>
+<td width="25%"><img src="docs/screenshots/v10-lp-north-avenue-beach-night.png" alt="North Avenue Beach after the beach polish" width="100%"/></td>
 </tr>
 <tr>
 <td><sub>North Avenue Beach · Oct 1, before (night)<br/>OSM boxes; the water under the grass</sub></td>
 <td><sub>North Avenue Beach · Oct 1, after (night)<br/>every building sculpted, the water shown</sub></td>
 <td><sub>North Avenue Beach · Oct 1, D5 (night)<br/>the sand slopes into the lake at its real level</sub></td>
+<td><sub>North Avenue Beach · Oct 2, F-8 (night)<br/>warm tan sand, concrete walks, volleyball nets</sub></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/screenshots/evolution/before-lp-zoo-mall-day.png" alt="The zoo before the Lincoln Park pass" width="100%"/></td>
@@ -1347,24 +1374,28 @@ It wasn't made right in one attempt. Here are the same places through each pass,
 <td><sub>The Conservatory · Oct 1, after (night)<br/>every building sculpted, the water shown</sub></td>
 </tr>
 <tr>
-<td width="33%"><img src="docs/screenshots/evolution/before-lp-theater-on-the-lake-day.png" alt="Fullerton before the Lincoln Park pass" width="100%"/></td>
-<td width="33%"><img src="docs/screenshots/evolution/v10-lp-theater-on-the-lake-day-lp-pass.png" alt="Fullerton after the Lincoln Park pass" width="100%"/></td>
-<td width="33%"><img src="docs/screenshots/v10-lp-theater-on-the-lake-day.png" alt="Fullerton with the lake at its real level" width="100%"/></td>
+<td width="25%"><img src="docs/screenshots/evolution/before-lp-theater-on-the-lake-day.png" alt="Fullerton before the Lincoln Park pass" width="100%"/></td>
+<td width="25%"><img src="docs/screenshots/evolution/v10-lp-theater-on-the-lake-day-lp-pass.png" alt="Fullerton after the Lincoln Park pass" width="100%"/></td>
+<td width="25%"><img src="docs/screenshots/evolution/v10-lp-theater-on-the-lake-day-d5.png" alt="Fullerton with the lake at its real level" width="100%"/></td>
+<td width="25%"><img src="docs/screenshots/v10-lp-theater-on-the-lake-day.png" alt="Fullerton after the beach polish" width="100%"/></td>
 </tr>
 <tr>
 <td><sub>Fullerton · Oct 1, before (day)<br/>OSM boxes; the water under the grass</sub></td>
 <td><sub>Fullerton · Oct 1, after (day)<br/>every building sculpted, the water shown</sub></td>
 <td><sub>Fullerton · Oct 1, D5 (day)<br/>the stepped limestone revetment down to the lake</sub></td>
+<td><sub>Fullerton · Oct 2, F-8 (day)<br/>Fullerton Beach in warm tan sand</sub></td>
 </tr>
 <tr>
-<td width="33%"><img src="docs/screenshots/evolution/before-lp-theater-on-the-lake-night.png" alt="Fullerton before the Lincoln Park pass" width="100%"/></td>
-<td width="33%"><img src="docs/screenshots/evolution/v10-lp-theater-on-the-lake-night-lp-pass.png" alt="Fullerton after the Lincoln Park pass" width="100%"/></td>
-<td width="33%"><img src="docs/screenshots/v10-lp-theater-on-the-lake-night.png" alt="Fullerton with the lake at its real level" width="100%"/></td>
+<td width="25%"><img src="docs/screenshots/evolution/before-lp-theater-on-the-lake-night.png" alt="Fullerton before the Lincoln Park pass" width="100%"/></td>
+<td width="25%"><img src="docs/screenshots/evolution/v10-lp-theater-on-the-lake-night-lp-pass.png" alt="Fullerton after the Lincoln Park pass" width="100%"/></td>
+<td width="25%"><img src="docs/screenshots/evolution/v10-lp-theater-on-the-lake-night-d5.png" alt="Fullerton with the lake at its real level" width="100%"/></td>
+<td width="25%"><img src="docs/screenshots/v10-lp-theater-on-the-lake-night.png" alt="Fullerton after the beach polish" width="100%"/></td>
 </tr>
 <tr>
 <td><sub>Fullerton · Oct 1, before (night)<br/>OSM boxes; the water under the grass</sub></td>
 <td><sub>Fullerton · Oct 1, after (night)<br/>every building sculpted, the water shown</sub></td>
 <td><sub>Fullerton · Oct 1, D5 (night)<br/>the stepped limestone revetment down to the lake</sub></td>
+<td><sub>Fullerton · Oct 2, F-8 (night)<br/>Fullerton Beach in warm tan sand</sub></td>
 </tr>
 <tr>
 <td width="33%"><img src="docs/screenshots/evolution/before-lp-belmont-waveland-day.png" alt="Diversey to Waveland before the Lincoln Park pass" width="100%"/></td>
@@ -1393,6 +1424,27 @@ It wasn't made right in one attempt. Here are the same places through each pass,
 <tr>
 <td><sub>The Lily Pool · Sep 30<br/>the Nature Museum a plain box</sub></td>
 <td><sub>The Lily Pool · Oct 1, the same view<br/>the Nature Museum and its Butterfly Haven, North Pond as water</sub></td>
+</tr>
+</table>
+
+**The lakefront beaches** — the D5 frames, before and after the beach polish (F-8)
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/d5-ohio-beach-day-d5.png" alt="Ohio Street Beach at D5" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/d5-ohio-beach-day.png" alt="Ohio Street Beach after the beach polish" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>Ohio Street Beach · Oct 1, D5 (day)<br/>pale, almost white sand</sub></td>
+<td><sub>Ohio Street Beach · Oct 2, F-8 (day)<br/>warm tan sand</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/evolution/d5-northave-beach-dusk-d5.png" alt="North Avenue Beach at dusk at D5" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/d5-northave-beach-dusk.png" alt="North Avenue Beach at dusk after the beach polish" width="100%"/></td>
+</tr>
+<tr>
+<td><sub>North Avenue Beach · Oct 1, D5 (dusk)<br/>grey trail spurs across the sand like roads</sub></td>
+<td><sub>North Avenue Beach · Oct 2, F-8 (dusk)<br/>tan sand, the volleyball nets</sub></td>
 </tr>
 </table>
 

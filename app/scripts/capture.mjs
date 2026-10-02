@@ -17,6 +17,9 @@ export const POSES = {
   'lake-south': { position: [1800, 1200, -6200], target: [1800, 0, -400] },
   'soldierfield-bowl': { position: [930, 95, 2335], target: [930, 0, 2197] },
   'willis-base': { position: [-674, 120, 560], target: [-674, 80, 366] },
+  // F-8 beach polish: Oak Street Beach from the north end, North Avenue Beach's volleyball courts up close
+  oakstreetbeach: { position: [520, 45, -2560], target: [300, 0, -2260] },
+  'nab-courts': { position: [380, 22, -3800], target: [250, 0, -3650] },
   'lincoln-lagoon': { position: [-200, 160, -4000], target: [-470, 0, -4273] },
   // V2 building-colour evaluation poses
   wrigley: { position: [430, 170, -640], target: [300, 70, -900] },
@@ -54,7 +57,7 @@ for (const spec of specs) {
   const [name, time = 'day'] = spec.split('@')
   const pose = POSES[name]
   if (!pose) throw new Error(`unknown pose ${name}`)
-  await page.goto(`http://localhost:5173/?stats&view=streeterville&time=${time}${process.env.CAPTURE_QUERY ?? ''}`)
+  await page.goto(`http://localhost:${process.env.CAPTURE_PORT ?? 5173}/?stats&view=streeterville&time=${time}${process.env.CAPTURE_QUERY ?? ''}`)
   await page.waitForFunction(() => window.__worldReady === true, null, { timeout: 90_000 })
   await page.evaluate((p) => window.__store.getState().startFlight(p, 'capture'), pose)
   await rest()
@@ -62,7 +65,7 @@ for (const spec of specs) {
   if (flags.has('--perf')) console.log(`${name}@${time}`, JSON.stringify(await measure()))
 }
 if (flags.has('--bookmarks')) {
-  await page.goto('http://localhost:5173/?stats&view=streeterville&time=day')
+  await page.goto(`http://localhost:${process.env.CAPTURE_PORT ?? 5173}/?stats&view=streeterville&time=day`)
   await page.waitForFunction(() => window.__worldReady === true && typeof window.__clearanceAt === 'function', null, { timeout: 90_000 })
   await page.waitForTimeout(1500) // heightfield decode
   const rows = await page.evaluate((B) => Object.entries(B).map(([k, b]) => [k, b.position[1], Math.round(window.__clearanceAt(b.position[0], b.position[2]))]), BOOKMARKS)
