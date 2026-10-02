@@ -250,8 +250,6 @@ Size key: **S** ≈ ≤ 2 h (look row, crown primitive, colour), **M** ≈ half 
 **D3 — Traffic on the lower levels**
 
 **D4 — Polish**
-- [ ] **D4-1** Lower-level entrance and exit portals and signage at real locations (the Columbus, Stetson, Michigan, Franklin and Lake St ramps). **Done when** each portal is at an OSM ramp end ±5 m.
-- [ ] **D4-2** Lower-level labels in `WorldLabels` ("Lower Wacker Dr") that show only with U on. **Done when** the label test passes.
 
 **D5 — The lake at its real level (Decision 4: approved — `LAKE_Y` −4.6 m, the step hidden at the Harbor Lock)**
 - [ ] **D5-1** Lake and harbours to `LAKE_Y`, with shore aprons: stepped revetments (≈ 1.2 m steps), beaches sloped across their width, harbour walls, Navy Pier and breakwater faces, the lighthouse base, and the Chicago Harbor Lock (A37) as the seam: the 1.4 m step between `RIVER_Y` and `LAKE_Y` happens only inside the lock chamber, between its gates, so no open-water edge shows a step. **Done when** `shore.test.js` / `lake.test.js` assert no gap along the shoreline, a unit test asserts every river–lake water contact lies inside the lock polygon, a hero-view pose at the lock mouth shows no visible step outside the gates, and the lakefront hero-view poses are re-baselined once (Decision 8).

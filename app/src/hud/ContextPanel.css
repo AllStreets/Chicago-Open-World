@@ -22,6 +22,19 @@
 .world-label { position: absolute; left: 0; top: 0; pointer-events: auto; border: 1px solid var(--border); background: rgba(9, 14, 26, 0.72); color: var(--text); font: 500 11px var(--font-ui); letter-spacing: 0.02em; padding: 3px 8px 3px 18px; border-radius: 999px; white-space: nowrap; cursor: pointer; }
 .world-label::before { content: ''; position: absolute; left: 7px; top: 50%; width: 6px; height: 6px; margin-top: -3px; border-radius: 50%; background: var(--dot); box-shadow: 0 0 6px var(--dot); }
 .world-label:hover { border-color: var(--border-strong); }
+/* D4-2: what lies under the street — a lower street reads like a sign (squarer, a sodium bar, its level in small caps);
+   a Riverwalk room is a softer two-line pill in the river's teal, with the bridges it lies between */
+.world-label--lower, .world-label--room { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; line-height: 1.15; background: rgba(6, 10, 19, 0.86); } /* no backdrop blur: it re-composites the canvas every frame */
+.world-label--lower { border-radius: 6px; padding: 4px 10px 4px 16px; border-color: rgba(255, 181, 71, 0.32); }
+.world-label--lower::before { top: 5px; bottom: 5px; width: 3px; height: auto; margin-top: 0; border-radius: 2px; }
+.world-label--lower .world-label__name { font-weight: 600; letter-spacing: 0.03em; }
+.world-label--lower .world-label__sub { font: 500 8.5px var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 196, 110, 0.8); }
+.world-label--room { border-radius: var(--r-md); padding: 4px 11px 5px 20px; border-color: rgba(63, 208, 201, 0.3); }
+.world-label--room::before { top: 10px; margin-top: 0; }
+.world-label--room .world-label__name { font-weight: 600; font-size: 11.5px; }
+.world-label--room .world-label__sub { font-size: 9.5px; color: var(--text-muted); letter-spacing: 0.01em; }
+.world-label--lower:hover { border-color: rgba(255, 181, 71, 0.65); }
+.world-label--room:hover { border-color: rgba(63, 208, 201, 0.65); }
 .tour-bar { position: absolute; left: 50%; bottom: 72px; transform: translateX(-50%); width: min(560px, 70vw); padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
 .tb-title { font: 500 15px var(--font-ui); color: var(--text); display: block; margin-top: 2px; }
 .tb-text { margin: 4px 0 0; color: var(--text-muted); font: 400 12px var(--font-ui); line-height: 1.45; }

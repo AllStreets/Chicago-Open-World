@@ -9,12 +9,14 @@ import * as THREE from 'three'
 import { useStore } from '../state/store.js'
 import { readLowerLevels } from '../lib/levels.js'
 import { worldUrl } from '../lib/manifest.js'
-import { buildLowerDecks, cutMask, LOWER } from './lowerLevels.js'
+import { buildLowerDecks, buildPortals, cutMask, LOWER } from './lowerLevels.js'
+import { NAMED_RAMPS, drawSignAtlas } from './lowerPortals.js'
+import LowerLabels from './LowerLabels.jsx'
 import { cutUniforms, setCutMask } from './materials/cutaway.js'
 import { BOOKMARKS } from '../lib/bookmarks.js'
 import { facadeUniforms } from './materials/facadeMaterial.js'
 
-export const SHOW = { belowM: 120, withinM: 600, fadeS: 0.6, cutBelowM: 2000 }
+export const SHOW = { belowM: 120, withinM: 600, fadeS: 0.6, cutBelowM: 2000, portalsBelowM: 1800 }
 // D3: what the traffic needs to know — are the decks drawn this frame, and the pieces they're built from
 export const lowerShared = { visible: false, json: null }
 
@@ -79,6 +81,32 @@ export function lowerMesh(json) {
   return { mesh, stats: d.stats }
 }
 
+// D4-1: the ramp portals — the open trenches, their parapets and headers (one sunlit mesh) and the signs and tunnel
+// throats (one textured mesh). Drawn always (below portalsBelowM), not pickable, never casting shadows.
+export function portalMeshes(json, named = NAMED_RAMPS, doc) {
+  const b = buildPortals(json, named)
+  const g = new THREE.BufferGeometry()
+  g.setAttribute('position', new THREE.BufferAttribute(b.mesh.position, 3))
+  g.setAttribute('color', new THREE.BufferAttribute(b.mesh.color, 3))
+  g.setIndex(new THREE.BufferAttribute(b.mesh.index, 1))
+  g.computeVertexNormals(); g.computeBoundingSphere()
+  const trench = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.92, metalness: 0, side: THREE.DoubleSide })) // double-sided: through the street's opening the near wall is seen from behind
+  trench.name = 'lower-portals'
+  const dg = new THREE.BufferGeometry()
+  dg.setAttribute('position', new THREE.BufferAttribute(b.dark.position, 3))
+  dg.setAttribute('uv', new THREE.BufferAttribute(b.dark.uv, 2))
+  dg.setIndex(new THREE.BufferAttribute(b.dark.index, 1))
+  dg.computeBoundingSphere()
+  const canvas = drawSignAtlas(b.signs, doc)
+  const map = canvas ? new THREE.CanvasTexture(canvas) : null
+  if (map) { map.colorSpace = THREE.SRGBColorSpace; map.anisotropy = 4 }
+  const dark = new THREE.Mesh(dg, new THREE.MeshBasicMaterial({ map, color: map ? 0xffffff : 0x050506, side: THREE.DoubleSide, fog: true }))
+  dark.name = 'lower-portal-signs'
+  for (const m of [trench, dark]) { m.raycast = () => {}; m.castShadow = false }
+  trench.receiveShadow = true
+  return { trench, dark, throatStart: b.dark.throatStart, total: b.dark.index.length, signs: b.signs, stats: b.stats }
+}
+
 // is the camera where the lower levels can be seen without the cut-away? (low, and near them)
 export function nearLower(pos, box, { belowM = SHOW.belowM, withinM = SHOW.withinM } = {}) {
   if (!box || pos[1] > belowM) return false
@@ -100,7 +128,7 @@ export default function LowerLevels() {
   const lower = useMemo(() => readLowerLevels(manifest), [manifest])
   const [json, setJson] = useState(null)
   const camera = useThree((s) => s.camera)
-  const group = useRef()
+  const group = useRef(), portalGroup = useRef()
   useEffect(() => {
     if (!lower) { setJson(null); return undefined }
     let alive = true
@@ -112,14 +140,17 @@ export default function LowerLevels() {
     const { mesh, stats } = lowerMesh(json)
     const mask = cutMask(json)
     const box = { minX: mask.x0, minZ: mask.z0, maxX: mask.x0 + mask.width * mask.cell, maxZ: mask.z0 + mask.height * mask.cell }
-    return { mesh, mask, box, stats }
+    return { mesh, mask, box, stats, portals: portalMeshes(json) }
   }, [json])
   useEffect(() => {
     if (!built) return undefined
     setCutMask(built.mask)
     lowerShared.json = json
-    if (new URLSearchParams(window.location.search).has('stats')) window.__lowerLevels = built.stats
-    return () => { setCutMask(null); cutUniforms.uCut.value = 0; lowerShared.json = null; lowerShared.visible = false; built.mesh.geometry.dispose(); built.mesh.material.dispose() }
+    if (new URLSearchParams(window.location.search).has('stats')) { window.__lowerLevels = built.stats; window.__portals = { ...built.portals.stats, signs: built.portals.signs } }
+    return () => {
+      setCutMask(null); cutUniforms.uCut.value = 0; lowerShared.json = null; lowerShared.visible = false; built.mesh.geometry.dispose(); built.mesh.material.dispose()
+      for (const m of [built.portals.trench, built.portals.dark]) { m.geometry.dispose(); m.material.map?.dispose(); m.material.dispose() }
+    }
   }, [built, json])
   // U on: the ⌘K / key path asks for a view over the lower levels when the camera isn't over them
   useEffect(() => {
@@ -144,11 +175,25 @@ export default function LowerLevels() {
     const mu = built.mesh.material.uniforms
     mu.uBoost.value = 0.32 * u.value * (1 - 0.8 * facadeUniforms.uNight.value) // daylight falls in by day; at night only the lamps
     mu.uFar.value = u.value > 0 ? 0 : 1 / 120
+    // the portals: always there from street height to a high aerial; the tunnel's dark only while the decks aren't
+    if (portalGroup.current) portalGroup.current.visible = cam.position.y < SHOW.portalsBelowM
+    const P = built.portals
+    P.dark.geometry.setDrawRange(0, lowerShared.visible ? P.throatStart : P.total)
+    const night = facadeUniforms.uNight.value
+    P.dark.material.color.setScalar(P.dark.material.map ? 1 - 0.4 * night : 1)
+    P.trench.material.emissive.setRGB(0.05 * night, 0.04 * night, 0.026 * night) // the ramp's own lamps after dark
   })
   if (!built) return null
   return (
-    <group ref={group} visible={false}>
-      <primitive object={built.mesh} />
-    </group>
+    <>
+      <group ref={group} visible={false}>
+        <primitive object={built.mesh} />
+      </group>
+      <group ref={portalGroup}>
+        <primitive object={built.portals.trench} />
+        <primitive object={built.portals.dark} />
+      </group>
+      <LowerLabels json={json} />
+    </>
   )
 }
