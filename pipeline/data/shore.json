@@ -1,0 +1,38 @@
+{
+  "note": "Workstream D5 (plan 2026-10-01 §4, D0 findings): how the lakefront meets Lake Michigan at LAKE_Y (levels.json). Each profile runs from the street-level edge (y 0, the OSM shoreline) out over the water to below the surface; heights are metres above the lake (the D0 LiDAR puts revetment, harbour-wall and pier-deck tops ≈ 2.6 m above the lake, the park ≈ 4.3 m). Layers are ground layers (pipeline tilepack GROUND_LAYERS). Read by pipeline/lib/lakeLevel.js.",
+  "edgeAboveLakeM": 2.6,
+  "profiles": {
+    "revetment": {
+      "what": "Chicago's stepped limestone and concrete revetments (the 1930s step-stone of Lincoln Park and the Shoreline Protection Project's concrete steps): a short upper wall from the park, a promenade ledge at the measured lake-edge height, then ≈ 0.9–1.0 m steps into the water",
+      "points": [[0, 3.65, "limestone"], [1.3, 3.65, "limestone"], [1.3, 2.6, "limestone"], [3.8, 2.6, "limestone"], [3.8, 1.7, "limestone"], [5.0, 1.7, "limestone"], [5.0, 0.8, "limestone"], [6.2, 0.8, "limestone"], [6.2, -0.65, "limestone"]],
+      "source": ["https://www.chicago.gov/city/en/depts/cdot/provdrs/lakefront.html", "https://en.wikipedia.org/wiki/Promontory_Point_(Chicago)"]
+    },
+    "harbour": {
+      "what": "harbour walls (Belmont, Diversey, Monroe, DuSable, Burnham): a limestone curb, a rubble slope to a concrete coping ≈ 2 m above the water, a vertical concrete face below",
+      "points": [[0, 4.0, "limestone"], [2.6, 2.0, "riprap"], [3.2, 2.0, "dockwall"], [3.2, -0.65, "dockwall"]],
+      "source": ["https://www.chicagoharbors.info/harbors/belmont-harbor/", "https://www.chicagoharbors.info/harbors/diversey-harbor/"]
+    },
+    "pier": {
+      "what": "Navy Pier's concrete dock face (the deck ≈ 2.6 m above the lake in reality; the model's pier stands at the street datum, so the face is taller)",
+      "points": [[0, -0.65, "dockwall"]],
+      "source": ["https://en.wikipedia.org/wiki/Navy_Pier"]
+    },
+    "mole": {
+      "what": "narrow land between two waters (the breakwater strips round DuSable Harbor and the lock, a pond's weir onto a harbour): a plain vertical concrete face",
+      "points": [[0, -0.65, "dockwall"]],
+      "source": ["https://en.wikipedia.org/wiki/Chicago_Harbor_Lock"]
+    }
+  },
+  "moleWidthM": 18,
+  "zones": [
+    { "key": "navypier", "profile": "pier", "s": 41.8895, "n": 41.8935, "w": -87.6135, "e": -87.5960, "note": "Navy Pier and its east end" }
+  ],
+  "beach": { "waterlineBelowM": 0.35, "exponent": 0.8, "reachM": 400, "note": "beaches slope from the trail edge (y = the beach layer) to 0.35 m under the lake at their shoreline; steeper near the water (t^0.8)" },
+  "ponds": {
+    "dropM": 0.6, "bankM": 1.5, "bankBelowM": 0.4, "minAreaM2": 300, "types": ["pond", "lagoon"],
+    "note": "D5-2: inland ponds stay perched about 0.6 m below their banks, with a sloped grass bank to 0.4 m under the water",
+    "named": ["South Pond", "North Pond", "South Lagoon", "Alfred Caldwell Lily Pool"]
+  },
+  "breakwater": { "aboveLakeM": 1.8, "belowLakeM": 0.6, "source": "https://www.lrc.usace.army.mil/Missions/Civil-Works-Projects/Chicago-Harbor/" },
+  "lighthouse": { "aboveLakeM": 2.4, "source": "https://en.wikipedia.org/wiki/Chicago_Harbor_Light" }
+}
