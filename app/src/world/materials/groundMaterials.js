@@ -1,6 +1,7 @@
 // app/src/world/materials/groundMaterials.js — textured, world-scaled ground surfaces.
 import * as THREE from 'three'
 import { patchCutaway } from './cutaway.js'
+import { SAND_TINT } from './groundShader.js'
 
 const loader = new THREE.TextureLoader()
 function tex(g, name) {
@@ -24,7 +25,7 @@ export function groundMaterials(g) {
     land,
     parks: mat({ map: tex(g, 'grass'), color: '#d6e8c4', polygonOffset: true, polygonOffsetFactor: -3 }),
     pitches: mat({ map: tex(g, 'pitch'), color: '#ffffff', polygonOffset: true, polygonOffsetFactor: -3.5 }),
-    beaches: mat({ map: tex(g, 'sand'), color: '#fff7e6', polygonOffset: true, polygonOffsetFactor: -3 }),
+    beaches: mat({ map: tex(g, 'sand'), color: SAND_TINT, polygonOffset: true, polygonOffsetFactor: -3 }),
     sidewalks: mat({ map: tex(g, 'sidewalk'), color: '#bebbb4', polygonOffset: true, polygonOffsetFactor: -4 }),
     // roads carry a faint sodium-lamp wash at night (emissiveIntensity driven by Ground)
     roads: mat({ map: tex(g, 'asphalt'), color: '#8a8a8a', roughness: 0.9, emissive: '#ffae5c', emissiveIntensity: 0, polygonOffset: true, polygonOffsetFactor: -6 }),

@@ -13,7 +13,7 @@ describe('ground shader', () => {
     expect(s.uniforms.uNight).toBe(groundUniforms.uNight)
   })
   it('one texture, size and tint per ground layer, in pipeline order (paving: brick plazas, user 2026-09-30)', () => {
-    expect(GROUND_TEXTURES).toEqual(['asphalt', 'sidewalk', 'grass', 'pitch', 'sand', 'gravel', 'sidewalk', 'sidewalk', 'gravel', 'sidewalk'])
+    expect(GROUND_TEXTURES).toEqual(['asphalt', 'sidewalk', 'grass', 'pitch', 'sand', 'gravel', 'sidewalk', 'sidewalk', 'gravel', 'sidewalk', 'asphalt'])
     expect(GROUND_LAYER_COUNT).toBe(GROUND_LAYERS.length) // the pipeline's layer list, index for index
     expect(groundUniforms.uSize.value).toHaveLength(GROUND_LAYER_COUNT)
     expect(groundUniforms.uTint.value).toHaveLength(GROUND_LAYER_COUNT)
@@ -26,7 +26,7 @@ describe('ground shader', () => {
     const [roads, sidewalks, , , , , paving] = LAYER_RANK
     expect(paving).toBeGreaterThan(sidewalks); expect(paving).toBeLessThan(roads)
     expect(patchGroundShader(std()).fragmentShader).toMatch(/li == 6/)
-    expect(createGroundMaterial().customProgramCacheKey()).toBe('ground-v8')
+    expect(createGroundMaterial().customProgramCacheKey()).toBe('ground-v9')
   })
   it('D2-3: the ground also takes the U cut-away (a no-op while uCut is 0)', () => {
     const shader = std()
@@ -45,13 +45,29 @@ describe('ground shader', () => {
   it('D1: the river walls (dockwall 7, riprap 8) darken toward the water and never hold snow', () => {
     expect(GROUND_LAYERS.indexOf('dockwall')).toBe(7); expect(GROUND_LAYERS.indexOf('riprap')).toBe(8)
     const f = patchGroundShader(std()).fragmentShader
-    expect(f).toMatch(/li >= 7\) gcol \*=/)
+    expect(f).toMatch(/li >= 7 && li <= 9\) gcol \*=/)
     expect(f).toMatch(/li >= 7 \? 0\.0/)
   })
   it('D5: the lakefront\'s limestone (layer 9) lays coursed blocks and, like the river walls, darkens toward the water', () => {
     expect(GROUND_LAYERS.indexOf('limestone')).toBe(9)
     const f = patchGroundShader(std()).fragmentShader
     expect(f).toMatch(/li == 9/)
+  })
+  it('F-8: the Lakefront Trail (layer 10) is park blacktop — a dashed centre line, no street glow, ploughed in snow — and draws over the walks, under the roads', () => {
+    expect(GROUND_LAYERS.indexOf('trail')).toBe(10)
+    const [roads, sidewalks, , , , , paving] = LAYER_RANK, trail = LAYER_RANK[10]
+    expect(trail).toBeGreaterThan(paving); expect(trail).toBeGreaterThan(sidewalks); expect(trail).toBeLessThan(roads)
+    const f = patchGroundShader(std()).fragmentShader
+    expect(f).toMatch(/li == 10\) \{/)
+    expect(f).toMatch(/if \(li == 0\) totalEmissiveRadiance/) // only the streets glow sodium
+    expect(f).toMatch(/li == 10 \? 0\.55/)
+  })
+  it('F-8: the sand is warm tan, not pale cream (more red than blue, clearly saturated)', () => {
+    const c = groundUniforms.uTint.value[GROUND_LAYERS.indexOf('beaches')], hsl = {}
+    c.getHSL(hsl)
+    expect(hsl.h * 360).toBeGreaterThan(25); expect(hsl.h * 360).toBeLessThan(50)
+    expect(c.r - c.b).toBeGreaterThan(0.3)
+    expect(groundMaterials(null).beaches.color.getHex()).toBe(c.getHex())
   })
   it('water is never pulled in front of the streets that bridge it', () => {
     expect(waterMaterial.polygonOffsetFactor).toBeGreaterThan(createGroundMaterial().polygonOffsetFactor)

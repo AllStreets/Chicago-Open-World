@@ -9,18 +9,22 @@ import { patchCutaway } from './cutaway.js'
 // Order matches pipeline GROUND_LAYERS: roads, sidewalks, parks, pitches, beaches, rail, paving (brick plazas and
 // paths, user 2026-09-30 — the sidewalk texture gives its grain, the shader lays the brick), dockwall and riprap (D1:
 // the sunken river's walls — weathered concrete and sheet pile downtown, dark rubble-faced banks upriver) and limestone
-// (D5: the lakefront's stepped revetments and harbour curbs — buff Indiana/Joliet limestone blocks)
-export const GROUND_TEXTURES = ['asphalt', 'sidewalk', 'grass', 'pitch', 'sand', 'gravel', 'sidewalk', 'sidewalk', 'gravel', 'sidewalk']
+// (D5: the lakefront's stepped revetments and harbour curbs — buff Indiana/Joliet limestone blocks) and trail (F-8: the
+// Lakefront Trail — park blacktop with its dashed yellow centre line, no street glow)
+export const GROUND_TEXTURES = ['asphalt', 'sidewalk', 'grass', 'pitch', 'sand', 'gravel', 'sidewalk', 'sidewalk', 'gravel', 'sidewalk', 'asphalt']
 export const GROUND_LAYER_COUNT = GROUND_TEXTURES.length
-const TINTS = ['#8a8a8a', '#bebbb4', '#d6e8c4', '#ffffff', '#fff7e6', '#6b6258', '#ffffff', '#8c8a83', '#5e5a52', '#d8ceb6']
+// F-8: the sand is Chicago's light tan beach sand, not the pale cream it read as (the sky's blue fill and the tone
+// mapping wash a pale tint out to off-white)
+export const SAND_TINT = '#ffe2b4'
+const TINTS = ['#8a8a8a', '#bebbb4', '#d6e8c4', '#ffffff', SAND_TINT, '#6b6258', '#ffffff', '#8c8a83', '#5e5a52', '#d8ceb6', '#a19c94']
 // Depth priority where layers overlap (roads over sidewalks over rail over pitches over parks/beaches).
 // Far blocks quantize heights to ~0.1 m, so the order is applied as a tiny clip-space bias instead.
-export const LAYER_RANK = [5, 4, 1, 2, 1, 3, 4.5, 0, 0, 0]
+export const LAYER_RANK = [5, 4, 1, 2, 1, 3, 4.5, 0, 0, 0, 4.8]
 const greyArray = () => { const t = new THREE.DataArrayTexture(new Uint8Array(4 * GROUND_LAYER_COUNT).fill(140), 1, 1, GROUND_LAYER_COUNT); t.needsUpdate = true; return t }
 
 export const groundUniforms = {
   uGround: { value: greyArray() },
-  uSize: { value: [12, 6, 16, 40, 10, 12, 6, 6, 8, 6] },
+  uSize: { value: [12, 6, 16, 40, 10, 12, 6, 6, 8, 6, 12] },
   uTint: { value: TINTS.map((c) => new THREE.Color(c)) },
   uNight: facadeUniforms.uNight, // shared with the façades so street light follows the sky
   uLayerRank: { value: LAYER_RANK },
@@ -70,11 +74,16 @@ if (li == 9) { // limestone: coursed blocks (1.6 × 0.6 m on the faces and tread
   float hv = fract(sin(dot(floor(bk), vec2(12.9898, 78.233))) * 43758.5453);
   gcol *= (0.86 + 0.22 * hv) * mix(1.0, 0.62, joint);
 }
+if (li == 10) { // the Lakefront Trail: a dashed yellow centre line (uv: metres along, metres across), gone with distance
+  float fw = fwidth(vGUv.y);
+  float cl = (1.0 - smoothstep(0.06, 0.06 + 1.5 * fw, abs(vGUv.y))) * step(0.45, fract(vGUv.x / 7.0));
+  gcol = mix(gcol, vec3(0.86, 0.7, 0.24), cl * 0.85 * (1.0 - smoothstep(0.05, 0.25, fw)));
+}
 diffuseColor.rgb *= gcol;
-if (li >= 7) gcol *= 0.82 + 0.18 * smoothstep(-7.0, 0.0, vGWPos.y); // the river's walls: damp and darker toward the water
-// asphalt 0 · sidewalk 1 · grass 2 · pitch 3 · sand 4 · gravel 5 · paving 6 · dockwall 7 · riprap 8 · limestone 9: streets are
-// ploughed to a slushy grey; vertical walls hold no snow
-float snowK = uSnow * (li == 0 ? 0.3 : li >= 7 ? 0.0 : 0.9);
+if (li >= 7 && li <= 9) gcol *= 0.82 + 0.18 * smoothstep(-7.0, 0.0, vGWPos.y); // the river's walls: damp and darker toward the water
+// asphalt 0 · sidewalk 1 · grass 2 · pitch 3 · sand 4 · gravel 5 · paving 6 · dockwall 7 · riprap 8 · limestone 9 · trail 10:
+// streets are ploughed to a slushy grey, the Lakefront Trail ploughed too (packed snow); vertical walls hold no snow
+float snowK = uSnow * (li == 0 ? 0.3 : li == 10 ? 0.55 : li >= 7 ? 0.0 : 0.9);
 diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.88, 0.9, 0.95) * (0.93 + 0.07 * gcol.g), snowK);`)
   f = f.replace(need(f, '#include <emissivemap_fragment>'), `#include <emissivemap_fragment>
 if (li == 0) totalEmissiveRadiance += vec3(1.0, 0.68, 0.36) * uNight * 0.07; // sodium street light`)
@@ -88,7 +97,7 @@ if (li == 0) totalEmissiveRadiance += vec3(1.0, 0.68, 0.36) * uNight * 0.07; // 
 export function createGroundMaterial() {
   const m = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.92, metalness: 0, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 })
   m.onBeforeCompile = (shader) => patchCutaway(patchGroundShader(shader)) // D2-3: U opens the street over the lower levels
-  m.customProgramCacheKey = () => 'ground-v8' // paving layer (user 2026-09-30); P5: Scan; D1: dockwall + riprap; D2: cutaway; D5: limestone
+  m.customProgramCacheKey = () => 'ground-v9' // paving layer (user 2026-09-30); P5: Scan; D1: dockwall + riprap; D2: cutaway; D5: limestone; F-8: trail
   return m
 }
 

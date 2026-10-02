@@ -2,7 +2,7 @@
 // the North Avenue Beach House stood on lawn among trees), and beach-volleyball courts are sand, not turf.
 import { describe, it, expect } from 'vitest'
 import { readFileSync } from 'node:fs'
-import { lakefrontBeaches, isSandPitch } from '../lib/beaches.js'
+import { lakefrontBeaches, isSandPitch, isBeachKeepOut, parkingLot, sandShare, pathOnBeach, volleyballNets } from '../lib/beaches.js'
 import { pointInRing } from '../lib/geom.js'
 import { project } from '../../shared/project.js'
 
@@ -30,4 +30,45 @@ describe('lakefront beaches', () => {
     expect(n.south).toBeLessThan(41.912); expect(n.north).toBeGreaterThan(41.925)
     for (const x of d) expect(x.source).toMatch(/^https:\/\//)
   })
+  it('F-8: lawns, gardens and parking lots mapped inside a band stay out of the sand', () => {
+    const zm = (zS + zN) / 2
+    const lawn = { outer: [[20, zm - 20], [60, zm - 20], [60, zm + 20], [20, zm + 20]] }
+    const [s1] = lakefrontBeaches([{ key: 'n', name: 'N', south: 41.9118, north: 41.9252, setbackM: 6, source: 'x' }], { trail, lake, keepOut: [lawn] })
+    expect(s1.holes).toHaveLength(1)
+    expect(isBeachKeepOut({ landuse: 'grass' })).toBe(true); expect(isBeachKeepOut({ leisure: 'garden' })).toBe(true)
+    expect(isBeachKeepOut({ leisure: 'park' })).toBe(false) // the park the whole lakefront sits in
+    const lot = parkingLot([[0, 0], [0, 40], [10, 40], [10, 0]], 9)
+    expect(pointInRing([5, 20], lot.outer)).toBe(true); expect(pointInRing([-8, 20], lot.outer)).toBe(true); expect(pointInRing([-12, 20], lot.outer)).toBe(false)
+  })
 })
+
+describe('F-8: paths on the sand and the Lakefront Trail', () => {
+  const onSand = ([x]) => x > 0
+  it('measures how much of a path runs over the sand', () => {
+    expect(sandShare([[-12, 0], [12, 0]], onSand)).toBeCloseTo(0.5, 5)
+    expect(sandShare([[1, 0], [1, 50]], onSand)).toBe(1)
+  })
+  it('the Lakefront Trail is the trail layer wherever it runs; other walks over sand are narrow concrete', () => {
+    expect(pathOnBeach({ name: 'Lakefront Trail', highway: 'cycleway' }, { surface: 'asphalt', hw: 2.2 }, 0)).toEqual({ surface: 'trail', hw: 2.2 })
+    expect(pathOnBeach({ name: 'Lakefront Trail' }, { surface: 'asphalt', hw: 1.5 }, 0.9).surface).toBe('trail')
+    expect(pathOnBeach({ name: 'Lakefront Trail' }, { surface: 'concrete', hw: 2 }, 0.9).surface).toBe('concrete')
+    expect(pathOnBeach({ highway: 'footway', surface: 'paved' }, { surface: 'asphalt', hw: 1.5 }, 0.8)).toEqual({ surface: 'concrete', hw: 1 })
+    expect(pathOnBeach({ highway: 'footway' }, { surface: 'asphalt', hw: 1.5 }, 0.2)).toEqual({ surface: 'asphalt', hw: 1.5 })
+  })
+})
+
+describe('F-8: volleyball nets', () => {
+  // an 8 × 16 m court, its long axis along z, centred at (100, −50)
+  const court = { outer: [[96, -58], [104, -58], [104, -42], [96, -42]] }
+  it('one net across the middle of each court, a little wider than it, on the sand', () => {
+    const [n] = volleyballNets([court], () => -0.8)
+    expect(n.x).toBeCloseTo(100); expect(n.z).toBeCloseTo(-50); expect(n.y).toBe(-0.8)
+    expect(n.len).toBeGreaterThan(8); expect(n.len).toBeLessThan(10.5)
+    // the net (the model's +x turned by yaw about +y) runs across the long axis: along x here
+    expect(Math.abs(Math.cos(n.yaw))).toBeCloseTo(1, 5)
+  })
+  it('skips shapes that are not courts', () => {
+    expect(volleyballNets([{ outer: [[0, 0], [100, 0], [100, 100], [0, 100]] }])).toHaveLength(0)
+  })
+})
+
