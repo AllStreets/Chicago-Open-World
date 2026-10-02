@@ -1,5 +1,5 @@
 // app/src/world/Boats.jsx — B-8: the boats in Chicago's harbours (boats.js). One InstancedMesh for the full model near
-// the camera and one for the 220-triangle model out to LOD1_M, re-sorted when the camera moves; nothing beyond. They
+// the camera and one for the 220-triangle model out to LOD1_M, inside the view, re-sorted when the camera moves or turns. They
 // receive shadows but cast none, and stay out of the reflection pass (default layer only). Two draw calls at most.
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
@@ -9,7 +9,7 @@ import { worldUrl } from '../lib/manifest.js'
 import { facadeUniforms } from './materials/facadeMaterial.js'
 import { decodeBoats, assignLods, mergeRoles, createBoatMaterial, roleUniform } from './boats.js'
 
-const RESORT_M = 12, RESORT_S = 1.5
+const RESORT_M = 12, RESORT_S = 1.5, TURN_RAD = 0.035
 
 function instanced(geometry, material, cap) {
   const m = new THREE.InstancedMesh(geometry, material, Math.max(1, cap))
@@ -43,16 +43,20 @@ export default function Boats({ entry, version }) {
   }, [entry, version, uniforms])
   useEffect(() => () => { for (const m of data?.meshes ?? []) { m.geometry.dispose(); m.dispose() } if (data) data.meshes[0].material.dispose() }, [data])
 
-  const last = useRef({ p: new THREE.Vector3(Infinity, 0, 0), t: -Infinity })
+  const last = useRef({ p: new THREE.Vector3(Infinity, 0, 0), q: new THREE.Quaternion(), t: -Infinity })
+  const frustum = useMemo(() => new THREE.Frustum(), []), proj = useMemo(() => new THREE.Matrix4(), []), sph = useMemo(() => new THREE.Sphere(new THREE.Vector3(), 60), [])
   const m4 = useMemo(() => new THREE.Matrix4(), []), q = useMemo(() => new THREE.Quaternion(), []), up = useMemo(() => new THREE.Vector3(0, 1, 0), [])
   const P = useMemo(() => new THREE.Vector3(), []), S = useMemo(() => new THREE.Vector3(), [])
   useFrame(({ clock }, dt) => {
     uniforms.uBoatTime.value += dt
     if (!data) return
     const L = last.current
-    if (camera.position.distanceTo(L.p) < RESORT_M && clock.elapsedTime - L.t < RESORT_S) return
-    L.p.copy(camera.position); L.t = clock.elapsedTime
-    const sets = assignLods(data.boats, [camera.position.x, camera.position.y - data.y, camera.position.z])
+    if (camera.position.distanceTo(L.p) < RESORT_M && camera.quaternion.angleTo(L.q) < TURN_RAD && clock.elapsedTime - L.t < RESORT_S) return
+    L.p.copy(camera.position); L.q.copy(camera.quaternion); L.t = clock.elapsedTime
+    // the view frustum, widened (a boat's 25 m sphere, and the half-turn before the next re-sort)
+    camera.updateMatrixWorld(); proj.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse); frustum.setFromProjectionMatrix(proj)
+    const inView = (x, z) => { sph.center.set(x, data.y, z); return frustum.intersectsSphere(sph) }
+    const sets = assignLods(data.boats, [camera.position.x, camera.position.y - data.y, camera.position.z], { inView })
     ;[sets.lod0, sets.lod1].forEach((idx, k) => {
       const mesh = data.meshes[k], a = mesh.userData.attrs
       idx.forEach((bi, n) => {

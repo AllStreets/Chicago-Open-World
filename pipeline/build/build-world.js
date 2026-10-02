@@ -362,7 +362,17 @@ async function main() {
     const near = lakeNearTile(tileKeyFor(c))
     return near.polys.length ? cutAtWater(m, near.idx, near.polys) : m
   }
-  const cutGround = (m) => cutLake(cutRiver(m))
+  // D5: a walk, trail or court on a beach follows the sand down toward the water (it would float over the slope)
+  const sandIdx = ll ? polyIndex(beaches) : null
+  const onSand = (m) => {
+    if (!bs || !m.positions.length) return m
+    for (let i = 0; i < m.positions.length; i += 3) {
+      const p = [m.positions[i], m.positions[i + 2]]
+      if (sandIdx.find(p)) m.positions[i + 1] = bs.y(p) + Math.max(0, m.positions[i + 1] - GROUND_Y.beaches)
+    }
+    return m
+  }
+  const cutGround = (m) => onSand(cutLake(cutRiver(m)))
   const isRaisedWay = (t) => (t.bridge && t.bridge !== 'no') || parseInt(t.layer ?? '0', 10) > 0
   const SOFFIT_Y = -0.9
   const treeNodes = uniq(chunks('trees')).map((n) => project(n.lon, n.lat))

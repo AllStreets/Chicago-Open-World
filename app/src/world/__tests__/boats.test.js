@@ -16,6 +16,7 @@ describe('boats (B-8)', () => {
     const boats = [{ x: 10, z: 0 }, { x: LOD0_M + 50, z: 0 }, { x: LOD1_M + 50, z: 0 }]
     expect(assignLods(boats, [0, 5, 0])).toEqual({ lod0: [0], lod1: [1] })
     expect(assignLods(boats, [0, LOD1_M, 0])).toEqual({ lod0: [], lod1: [] }) // height counts too
+    expect(assignLods(boats, [0, 5, 0], { inView: (x) => x > 100 })).toEqual({ lod0: [], lod1: [1] }) // out of view: not drawn
   })
   it('merges the role-named materials into one geometry with a role per vertex and the baked AO', () => {
     const g = new THREE.Group()

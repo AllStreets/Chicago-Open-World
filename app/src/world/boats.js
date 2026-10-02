@@ -9,7 +9,7 @@ import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js
 // the Blender script's ROLES, in order (harbour_boat.py)
 export const ROLES = ['hull', 'stripe', 'deck', 'cabin', 'glass', 'rail', 'mast', 'canvas', 'light', 'top', 'topglass']
 export const SAIL_ONLY = ['mast', 'canvas', 'light'], POWER_ONLY = ['top', 'topglass']
-export const LOD0_M = 320, LOD1_M = 3200 // full model within LOD0_M, the 220-triangle model to LOD1_M, nothing beyond
+export const LOD0_M = 300, LOD1_M = 1600 // full model within LOD0_M, the 220-triangle model to LOD1_M, nothing beyond (a boat is ~3 px there)
 export const STRIDE = 7 // x, z, yaw, scale, kind (0 sail · 1 power), hull colour, trim colour
 
 export function decodeBoats(j) {
@@ -21,10 +21,12 @@ export function decodeBoats(j) {
 }
 
 // which boats draw at which level from the camera at (cx, cy, cz): indices into `boats`
-export function assignLods(boats, [cx, cy, cz], { near = LOD0_M, far = LOD1_M } = {}) {
+// inView(x, z): optional frustum test (Boats.jsx passes the camera's, with a margin) — boats behind the camera cost nothing
+export function assignLods(boats, [cx, cy, cz], { near = LOD0_M, far = LOD1_M, inView = null } = {}) {
   const lod0 = [], lod1 = []
   for (let i = 0; i < boats.length; i++) {
     const b = boats[i], d = Math.hypot(b.x - cx, b.z - cz, cy)
+    if (d > far || (inView && !inView(b.x, b.z))) continue
     if (d <= near) lod0.push(i)
     else if (d <= far) lod1.push(i)
   }
