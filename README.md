@@ -476,7 +476,7 @@ Forty-four buildings and structures along the main stem and both branches, each 
 <td width="50%"><img src="docs/screenshots/v9-river-mouth-night.png" alt="The river mouth at night" width="100%"/></td>
 </tr>
 <tr>
-<td colspan="2"><em>The mouth: the Harbor Lock's 600 × 80 ft chamber, its sector gates and the zinc control house, with Lake Point and the Streeterville wall behind.</em></td>
+<td colspan="2"><em>The mouth: the Harbor Lock's 600 × 80 ft chamber, its sector gates and the zinc control house, with Lake Point and the Streeterville wall behind — and, left, the St. Regis with its two-storey blow-through closed in slabs behind a fine steel grille.</em></td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/screenshots/v9-river-dusable-day.png" alt="DuSable Bridge by day" width="100%"/></td>

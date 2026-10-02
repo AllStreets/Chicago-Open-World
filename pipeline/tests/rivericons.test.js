@@ -75,6 +75,16 @@ describe('Tier 1 (A-3): crowns and massing', () => {
     const gap = r.extraMeshes.find((m) => m.part === 'blow-through')
     expect(min(ys([gap]))).toBeCloseTo(300, 1); expect(max(ys([gap]))).toBeCloseTo(307.2, 1)
     expect(r.pieces.filter((p) => p.hidden).length).toBe(3) // the stacks draw themselves
+    // the blow-through is never see-through: a floor slab facing up at 300 m, a soffit facing down at 307.2 m, a solid
+    // inner wall and columns (kept in LOD1), and a fine steel grille of vertical fins across the open faces
+    const slabs = r.extraMeshes.find((m) => m.part === 'gap-slabs'), grille = r.extraMeshes.find((m) => m.part === 'grille')
+    const ny = (m, y) => { const o = []; for (let i = 0; i < m.positions.length; i += 9) if (Math.abs(m.positions[i + 1] - y) < 0.01 && Math.abs(m.positions[i + 4] - y) < 0.01 && Math.abs(m.positions[i + 7] - y) < 0.01) o.push(m.normals[i + 1]); return o }
+    expect(ny(slabs, 300).length).toBeGreaterThan(0); expect(ny(slabs, 300).every((n) => n > 0.99)).toBe(true)
+    expect(ny(slabs, 307.2).length).toBeGreaterThan(0); expect(ny(slabs, 307.2).every((n) => n < -0.99)).toBe(true)
+    expect(slabs.lod0Only || gap.lod0Only).toBe(false)
+    expect(grille.style).toBe('stregis-grille')
+    expect(tris([grille]) / 6).toBeGreaterThan(150) // ~0.5 m fin spacing round a ~100 m plate
+    expect(min(ys([grille]))).toBeCloseTo(300, 1); expect(max(ys([grille]))).toBeCloseTo(307.2, 1)
     // a frustum's widest belt is the OSM plate, its waist 89 % of it
     expect(inside(r.extraMeshes, rect(0, 0, 106, 47), 0.5)).toBe(true)
     expect(tris(r.extraMeshes)).toBeLessThan(15000)
