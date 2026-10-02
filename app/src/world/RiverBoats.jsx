@@ -1,13 +1,12 @@
 // app/src/world/RiverBoats.jsx — F-9: the river's boats (world/river-boats.json, pipeline/lib/boats.js): the slips' pleasure
 // boats, the tour boats and the water taxis, each kind a scripted Blender model drawn as instances (boats/fleet.js).
-// LOD0 near, LOD1 far; LOD0 casts shadows and shows in the water's mirror. Glass glows after dusk (cabins lit).
+// LOD0 near, LOD1 far; LOD0 casts shadows. Neither is in the water's mirror (that pass cost the Riverwalk walk ~3 fps). Glass glows after dusk (cabins lit).
 // Loaded imperatively: never holds the loading screen; a missing file draws no boats.
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
 import { worldUrl } from '../lib/manifest.js'
-import { REFLECT_LAYER } from './materials/waterSurface.js'
 import { facadeUniforms } from './materials/facadeMaterial.js'
 import { splitBoatModel, boatMaterials } from './riverboats/boatModels.js'
 import { buildFleet } from './riverboats/fleet.js'
@@ -30,7 +29,7 @@ export default function RiverBoats({ file, version }) {
       if (!alive) return
       built = buildFleet(kinds, j.boats, materials, {
         lod1At: j.lod1At, farAt: j.farAt,
-        onMesh: (m, lod) => { m.castShadow = lod === 0; m.receiveShadow = true; if (lod === 0) m.layers.enable(REFLECT_LAYER) },
+        onMesh: (m, lod) => { m.castShadow = lod === 0; m.receiveShadow = true },
       })
       setFleet(built)
     }).catch((e) => console.warn('boats failed', e))
