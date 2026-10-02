@@ -5,6 +5,7 @@ import * as THREE from 'three'
 import { treePaletteFor, chicagoMonth } from '../lib/seasons.js'
 import { useStore } from '../state/store.js'
 import { TRUNK_M, sphereDistance } from '../lib/farDetail.js'
+import { treeBlocked, cutMaskVersion, cutUniforms } from './materials/cutaway.js'
 
 const canopyGeo = new THREE.IcosahedronGeometry(1, 0) // 20 tris: ~29k trees stay within budget
 canopyGeo.scale(3.5, 3.9, 3.5).translate(0, 7.5, 0)
@@ -12,17 +13,23 @@ const trunkGeo = new THREE.CylinderGeometry(0.22, 0.32, 5.5, 5, 1, true).transla
 const canopyMat = new THREE.MeshStandardMaterial({ roughness: 0.9, flatShading: true })
 const trunkMat = new THREE.MeshStandardMaterial({ color: '#4a3b2f', roughness: 1 })
 const UP = new THREE.Vector3(0, 1, 0)
+const CANOPY_R = 3.5 // the canopy's radius at scale 1 (canopyGeo; pipeline trees.js CANOPY_M)
 
 export default function Trees({ trees }) {
   const canopy = useRef(), trunk = useRef()
   const preset = useStore((s) => s.timePreset)
   const pal = useMemo(() => treePaletteFor(preset, chicagoMonth()), [preset])
-  useEffect(() => {
+  const placed = useRef('')
+  // D4: a tree in a ramp portal's trench (always) or in the U cut-away (while open) is left out
+  const place = (key) => {
     if (!trees?.length || !canopy.current) return
+    placed.current = key
+    const open = cutUniforms.uCut.value > 0.5
     const m = new THREE.Matrix4(), q = new THREE.Quaternion(), s = new THREE.Vector3(), p = new THREE.Vector3(), c = new THREE.Color()
     const zero = new THREE.Matrix4().makeScale(0, 0, 0)
     trees.forEach(([x, z, sc, v], i) => {
       q.setFromAxisAngle(UP, v * 1.7 + i)
+      if (treeBlocked(x, z, open, undefined, CANOPY_R * sc)) { const gone = m.makeScale(0, 0, 0).setPosition(x, 0, z); trunk.current.setMatrixAt(i, gone); canopy.current.setMatrixAt(i, gone); return } // (in place: the bounds stay the tile's)
       m.compose(p.set(x, 0, z), q, s.set(sc, sc * (0.9 + v * 0.08), sc))
       trunk.current.setMatrixAt(i, m)
       canopy.current.setMatrixAt(i, pal.bare ? zero : m)
@@ -30,9 +37,13 @@ export default function Trees({ trees }) {
     })
     for (const r of [canopy, trunk]) { r.current.instanceMatrix.needsUpdate = true; r.current.computeBoundingSphere() }
     if (canopy.current.instanceColor) canopy.current.instanceColor.needsUpdate = true
-  }, [trees, pal])
+  }
+  const keyNow = () => `${cutMaskVersion()}:${cutUniforms.uCut.value > 0.5}`
+  useEffect(() => { place(keyNow()) }, [trees, pal]) // eslint-disable-line react-hooks/exhaustive-deps
   // a trunk is ≈ 0.5 m wide and mostly under its canopy: beyond TRUNK_M it is under half a pixel (lib/farDetail.js)
   useFrame(({ camera }) => {
+    const k = keyNow()
+    if (k !== placed.current) place(k) // the portals' mask arrived, or U opened / closed
     const t = trunk.current
     if (!t?.boundingSphere) return
     const p = camera.position

@@ -4,9 +4,9 @@
 // Only street-level surfaces (y > −1) inside the mask open; with uCut = 0 (U off) every shader takes the old path, so
 // the street level renders exactly as before. The mask is cutMask() from lowerLevels.js, uploaded once.
 import * as THREE from 'three'
-import { cutDepth } from '../lowerLevels.js'
+import { cutDepth, portalDepth } from '../lowerLevels.js'
 
-const empty = () => { const t = new THREE.DataTexture(new Uint8Array([0]), 1, 1, THREE.RedFormat, THREE.UnsignedByteType); t.needsUpdate = true; return t }
+const empty = () => { const t = new THREE.DataTexture(new Uint8Array([0, 0]), 1, 1, THREE.RGFormat, THREE.UnsignedByteType); t.needsUpdate = true; return t }
 
 export const cutUniforms = {
   uCut: { value: 0 },                                  // 0 = the street as it is, 1 = fully opened (animated by LowerLevels.jsx)
@@ -16,13 +16,17 @@ export const cutUniforms = {
   uCutColor: { value: new THREE.Color('#45d8ff') },    // --accent
 }
 
-let active = null
-// install a cutMask() raster as the shaders' mask (null removes it)
+let active = null, version = 0
+// install a cutMask() raster as the shaders' mask (null removes it): R = the U cut-away, G = the ramp portals (D4-1)
 export function setCutMask(mask) {
   active = mask
+  version++
   const old = cutUniforms.uCutMask.value
   if (!mask) { cutUniforms.uCutMask.value = empty(); cutUniforms.uCutBox.value.set(0, 0, 0, 0) } else {
-    const t = new THREE.DataTexture(mask.data, mask.width, mask.height, THREE.RedFormat, THREE.UnsignedByteType)
+    const rg = new Uint8Array(mask.width * mask.height * 2)
+    for (let i = 0; i < mask.width * mask.height; i++) { rg[i * 2] = mask.data[i]; rg[i * 2 + 1] = mask.portal?.[i] ?? 0 }
+    const t = new THREE.DataTexture(rg, mask.width, mask.height, THREE.RGFormat, THREE.UnsignedByteType)
+    t.unpackAlignment = 2
     t.magFilter = t.minFilter = THREE.LinearFilter
     t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping
     t.needsUpdate = true
@@ -34,6 +38,19 @@ export function setCutMask(mask) {
 }
 // is the street at (x, z) opened right now? (Traffic leaves the upper deck's cars out of the opening)
 export const isCutOpen = (x, z) => cutUniforms.uCut.value > 0.5 && cutDepth(active, x, z) > 0
+// D4-1: is (x, z) over a ramp portal's opening (the street there is always open)? metres inside it (> 0)
+// the mask's version (Trees re-checks its trees when it changes)
+export const cutMaskVersion = () => version
+// D4: no tree stands in an opening — never in a ramp portal's trench (or on its parapet), nor in the U cut-away while
+// it is open. x, z: the trunk; r: the canopy's radius (the canopy test, like the pipeline's trees.js: no canopy over
+// an opening either)
+export const TREE_CLEAR_M = 1.5
+export function treeBlocked(x, z, cutOpen = cutUniforms.uCut.value > 0.5, mask = active, r = TREE_CLEAR_M) {
+  if (!mask) return false
+  if (mask.portal && portalDepth(mask, x, z) > -r) return true
+  return Boolean(cutOpen) && cutDepth(mask, x, z) > -r
+}
+export const portalOpenDepth = (x, z) => (active?.portal ? portalDepth(active, x, z) : -Infinity)
 
 const HEAD = /* glsl */ `
 uniform float uCut;
@@ -42,17 +59,19 @@ uniform vec4 uCutBox;
 uniform float uCutRange;
 uniform vec3 uCutColor;
 varying vec3 vCutW;
-float cutDepthAt(vec2 p) {
+vec2 cutDepthAt(vec2 p) {
   vec2 cuv = (p - uCutBox.xy) * uCutBox.zw;
-  if (uCutBox.z == 0.0 || cuv.x <= 0.0 || cuv.y <= 0.0 || cuv.x >= 1.0 || cuv.y >= 1.0) return -uCutRange;
-  return texture2D(uCutMask, cuv).r * 2.0 * uCutRange - uCutRange;
+  if (uCutBox.z == 0.0 || cuv.x <= 0.0 || cuv.y <= 0.0 || cuv.x >= 1.0 || cuv.y >= 1.0) return vec2(-uCutRange);
+  return texture2D(uCutMask, cuv).rg * 2.0 * uCutRange - uCutRange;
 }`
-// at the top of main(): how far inside the opening this fragment is (the mask is read in uniform control flow)
+// at the top of main(): how far inside the U opening (x) and a ramp portal's opening (y) this fragment is
 const OPEN = /* glsl */ `
-float cutD = uCut > 0.0 && vCutW.y > -1.0 ? cutDepthAt(vCutW.xz) : -uCutRange;`
+vec2 cutM = vCutW.y > -1.0 ? cutDepthAt(vCutW.xz) : vec2(-uCutRange);
+float cutD = uCut > 0.0 ? cutM.x : -uCutRange;`
 // at the end (after every derivative and texture read): open the street — a per-pixel dissolve while U fades in —
 // and draw the section line just outside the opening
 const LINE = /* glsl */ `
+if (cutM.y > 0.0) discard; // D4-1: the street is always open over a ramp's trench
 if (uCut > 0.0) {
   float cutH = fract(sin(dot(floor(gl_FragCoord.xy), vec2(12.9898, 78.233))) * 43758.5453);
   if (cutD > 0.0 && cutH < uCut) discard;

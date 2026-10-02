@@ -14,7 +14,9 @@ export function beaconLayout(items, { toScreen, width, height, maxLabels = 16, f
   const labelled = new Set()
   for (const r of order) {
     if (placed.length >= maxLabels) break
-    const b = { x0: r.s.sx - box.w / 2, x1: r.s.sx + box.w / 2, y0: r.s.sy - box.h, y1: r.s.sy }
+    const bx = r.it.box ?? (r.it.sub ? { w: box.w + 20, h: box.h + 14 } : box) // a two-line label needs more room
+    const b = { x0: r.s.sx - bx.w / 2, x1: r.s.sx + bx.w / 2, y0: r.s.sy - bx.h, y1: r.s.sy }
+    if (r.it.keepInside && (b.x0 < 8 || b.x1 > width - 8 || b.y0 < 8)) continue // (opt-in) never cut by the screen's edge
     if (placed.some((p) => b.x0 < p.x1 && p.x0 < b.x1 && b.y0 < p.y1 && p.y0 < b.y1)) continue
     placed.push(b); labelled.add(r.it.id)
   }

@@ -1,5 +1,6 @@
 // app/src/world/WorldLabels.jsx — one DOM layer for every world label (P4): positioned from 3D each frame (≤ 20 Hz),
 // faded with distance and collision-culled by beaconLayout, so a crowded view stays readable. Labels are buttons.
+// An item may carry a `kind` (a style: 'lower', 'room') and a `sub` line (D4-2).
 import { useEffect, useMemo, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
@@ -33,7 +34,15 @@ export default function WorldLabels() {
         el = document.createElement('button'); el.type = 'button'; el.className = 'world-label'
         layer.appendChild(el); nodes.current.set(o.id, el)
       }
-      if (el.textContent !== it.text) el.textContent = it.text
+      const cls = `world-label${it.kind ? ` world-label--${it.kind}` : ''}`
+      if (el.className !== cls) el.className = cls
+      const key = `${it.text}\u0000${it.sub ?? ''}`
+      if (el.dataset.key !== key) { // a name, and on a second line what it is (D4-2: "lower level", "Riverwalk · State St → Dearborn St")
+        el.dataset.key = key
+        el.textContent = ''
+        const name = document.createElement('span'); name.className = 'world-label__name'; name.textContent = it.text; el.appendChild(name)
+        if (it.sub) { const sub = document.createElement('span'); sub.className = 'world-label__sub'; sub.textContent = it.sub; el.appendChild(sub) }
+      }
       el.style.transform = `translate(${o.sx}px, ${o.sy}px) translate(-50%, -100%)`
       el.style.opacity = String(o.alpha)
       el.style.setProperty('--dot', it.color ?? 'var(--accent)')

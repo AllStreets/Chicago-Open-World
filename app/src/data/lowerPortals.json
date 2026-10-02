@@ -1,0 +1,15 @@
+{
+  "note": "D4-1: the famous ramps between the street and Chicago's lower levels, signed on their tunnel headers. `at` is the OSM ramp way's end at the street (lat, lon of its end node); the app finds the portal (world/lowerLevels.js splitPortals) whose end lies within 5 m of it. `to` is where the ramp leads, for the sign.",
+  "source": "OpenStreetMap (ODbL) — the ramp ways named per entry; Wikipedia 'Multilevel streets in Chicago'; Wikipedia 'Wacker Drive'",
+  "ramps": [
+    { "key": "columbus", "name": "Columbus Drive ramp", "street": "Columbus Dr at Randolph St", "text": "LOWER COLUMBUS DR", "osm": 23889144, "at": [41.8842034, -87.6205479] },
+    { "key": "stetson", "name": "Stetson ramp", "street": "Stetson Ave at Wacker Dr", "text": "LOWER LOWER WACKER", "osm": 24955786, "at": [41.8881543, -87.622311] },
+    { "key": "michigan", "name": "Lower Michigan ramp", "street": "Michigan Ave at Lake St", "text": "LOWER MICHIGAN AVE", "osm": 373849344, "at": [41.8858869, -87.6244633] },
+    { "key": "franklin", "name": "Franklin ramp", "street": "Congress Pkwy at Franklin St", "text": "LOWER WACKER DR", "osm": 24952895, "at": [41.8750648, -87.634146] },
+    { "key": "lake", "name": "Lake Street ramp", "street": "Wacker Dr at Lake St", "text": "LOWER WACKER DR", "osm": 24954034, "at": [41.885481, -87.6369071] },
+    { "key": "wacker-michigan", "name": "Upper Wacker ramp", "street": "Wacker Dr east of Michigan Ave", "text": "LOWER WACKER DR", "osm": 1178693768, "at": [41.888354, -87.6228378] },
+    { "key": "randolph", "name": "Lower Randolph ramp", "street": "Randolph St at Stetson Ave", "text": "LOWER RANDOLPH DR", "osm": 1284737907, "at": [41.8843709, -87.621689] },
+    { "key": "lsd", "name": "Lake Shore Drive ramp", "street": "Wacker Dr at Lake Shore Dr", "text": "LOWER WACKER DR", "osm": 187346246, "at": [41.8876518, -87.615105] },
+    { "key": "grand", "name": "Lower Grand ramp", "street": "Grand Ave east of Michigan Ave", "text": "LOWER GRAND AVE", "osm": 48842496, "at": [41.891733, -87.6239193] }
+  ]
+}
