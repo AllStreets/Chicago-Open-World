@@ -24,7 +24,7 @@
 .world-label:hover { border-color: var(--border-strong); }
 /* D4-2: what lies under the street — a lower street reads like a sign (squarer, a sodium bar, its level in small caps);
    a Riverwalk room is a softer two-line pill in the river's teal, with the bridges it lies between */
-.world-label--lower, .world-label--room { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; line-height: 1.15; background: rgba(6, 10, 19, 0.8); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+.world-label--lower, .world-label--room { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; line-height: 1.15; background: rgba(6, 10, 19, 0.86); } /* no backdrop blur: it re-composites the canvas every frame */
 .world-label--lower { border-radius: 6px; padding: 4px 10px 4px 16px; border-color: rgba(255, 181, 71, 0.32); }
 .world-label--lower::before { top: 5px; bottom: 5px; width: 3px; height: auto; margin-top: 0; border-radius: 2px; }
 .world-label--lower .world-label__name { font-weight: 600; letter-spacing: 0.03em; }
