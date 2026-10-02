@@ -1,4 +1,4 @@
-# River icons, all of Lincoln Park, the M sound toast, and the river at its real depth — to-do
+# [COMPLETE 2026-10-02] River icons, all of Lincoln Park, the M sound toast, and the river at its real depth — to-do
 
 > **Status: PLAN ONLY. Nothing here gets built until the user says "go ahead".** Written 2026-09-30 against `main` @ `b9f7935`
 > (Chess Pavilion sculpt merged). Nothing in `app/`, `pipeline/` or `public/world` was changed while writing it.
@@ -166,7 +166,6 @@ Size key: **S** ≈ ≤ 2 h (look row, crown primitive, colour), **M** ≈ half 
 
 ### 3.2 To-dos
 
-- [ ] **B-10 README.** A "Lincoln Park" gallery section (8 frames) and Evolution rows: Conservatory (generic dome → four glass houses) and Lion House. **Done when** links resolve.
 
 ---
 
@@ -343,7 +342,6 @@ Shipped (C-1…C-6 sound toast; C-fix-1…5 follow/tour/ride-safe toggles incl. 
 - Triangles: A + B add ≤ ≈ 0.6 M at LOD0 if everything is in view at once (it never is). Lower decks ≤ 60 k.
 
 ### 6.3 ⌘K, help, hints, README
-- [ ] **X-4 README:** new gallery sections ("River icons", "Lincoln Park", "The river at its real depth"), sports frames (United Center board E3-4, "Play a game" E4-6), a "Live data" paragraph (E1-5), Controls (M toast, U, Y, K), a Roadmap line for this pass, a Parked list, and Evolution rows: river same-pose (flat → sunk with the Riverwalk), Marina/Trump at the water, the Conservatory, the Lion House. Old frames move to `docs/screenshots/evolution/`. **Done when** every image link resolves, there are no empty table cells, and no orphan screenshots remain.
 
 ### 6.4 Test and gate plan
 - Every branch: `pipeline` vitest + `app` vitest green.
@@ -494,6 +492,4 @@ Done 2026-10-01 and removed: F-1 weather menu, F-3 keycaps, F-4 ride names, F-5 
 | Sound gone while riding trains | F-7 |
 
 
-- [ ] **F-8 Beach polish.** The new lakefront sand (North Avenue, Fullerton) reads too pale/white and the grey Lakefront Trail spurs crossing it read like roads; warm the sand toward real Chicago beach colour and render paths on sand as packed-sand/concrete walks; add volleyball nets. **Done when** a day frame of North Avenue Beach compares well with real photos.
 
-- [ ] **F-9 Boats to the F1 bar.** The Marina City slip boats (and any other river/lake boats: tour boats, water taxis, harbour boats) are simple boxes. Rebuild them as scripted Blender models to the user's F1 Pixel Cup standard (`~/Desktop/My Projects (Programming)/F1_Pixel_Cup/tools/blender/build_f1_car.py`): real hull shapes, cabins, windscreens, rails, role-named recolourable materials, baked AO, LOD1. **Done when** a river-level frame at Marina City and a harbour frame compare well with real photos, within the triangle budget.
