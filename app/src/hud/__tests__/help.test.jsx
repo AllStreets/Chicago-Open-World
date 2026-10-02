@@ -41,8 +41,40 @@ describe('help: City life from the registry', () => {
     useStore.getState().setHelpOpen(true)
     render(<HelpOverlay />)
     expect(screen.getByText(/City life/i)).toBeInTheDocument()
-    for (const c of FEATURE_CONTROLS) expect(screen.getByText(new RegExp(`${c.label} button`))).toBeInTheDocument()
+    for (const c of FEATURE_CONTROLS.filter((x) => BUTTONED.has(x.id))) expect(screen.getByText(new RegExp(`${c.label} button`))).toBeInTheDocument()
     expect(screen.getByText(/Follow a train/i)).toBeInTheDocument()
+  })
+})
+
+// X-3: the help card for this pass — U, the M toast, K, Y and the Games paragraph, the Riverwalk and Lower Wacker
+// ride lines; and no dead entry: nothing names a button that isn't on screen, and every key it names is a real control
+import { BUTTONED, controlLine } from '../HelpOverlay.jsx'
+import { ALL_HINTS } from '../../lib/hints.js'
+describe('help: X-3', () => {
+  const card = () => { useStore.setState({ helpOpen: true }); render(<HelpOverlay />); return screen.getByRole('dialog', { name: 'Controls' }) }
+  it('U, M (with the speaker toast), K, Y and the ride lines are on the card', () => {
+    const d = card()
+    const row = (k) => [...d.querySelectorAll('p')].filter((p) => p.querySelector('kbd, .keycap, [class*=key]')?.textContent.trim() === k).map((p) => p.textContent).join(' | ')
+    expect(row('U')).toMatch(/lower levels — .*Lower Wacker.*cut-away/)
+    expect(row('U')).toMatch(/⌘K.*Lower levels/)
+    expect(row('M')).toMatch(/speaker in the middle of the screen/)
+    expect(row('K')).toMatch(/change the view — in a ride, or while following a train/)
+    expect(row('Y')).toMatch(/Play a game/)
+    expect(d).toHaveTextContent(/Drive Lower Wacker/)
+    expect(d).toHaveTextContent(/Riverwalk \(river level\)/)
+  })
+  it('no dead entries: only on-screen controls are called buttons; Sound, Traffic, Play and Lower point to ⌘K', () => {
+    for (const id of ['sound', 'traffic', 'showcase', 'lowerLevels']) {
+      const c = FEATURE_CONTROLS.find((x) => x.id === id)
+      expect(BUTTONED.has(id), id).toBe(false)
+      expect(controlLine(c)).not.toMatch(/ button —/)
+      expect(controlLine(c)).toMatch(/\{⌘K\} “[^”]+”$/)
+    }
+    // every hint in the bottom bar is a key the card explains
+    const d = card()
+    const keys = new Set([...d.querySelectorAll('p')].map((p) => p.firstElementChild?.textContent.replace(/\s+/g, ' ').trim()))
+    const missing = ALL_HINTS.filter((h) => !keys.has(h.k) && !['↑↓←→', 'Shift+arrows', '?'].includes(h.k)).map((h) => h.k)
+    expect(missing).toEqual([])
   })
 })
 
