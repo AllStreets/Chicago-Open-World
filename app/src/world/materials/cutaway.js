@@ -16,10 +16,11 @@ export const cutUniforms = {
   uCutColor: { value: new THREE.Color('#45d8ff') },    // --accent
 }
 
-let active = null
+let active = null, version = 0
 // install a cutMask() raster as the shaders' mask (null removes it): R = the U cut-away, G = the ramp portals (D4-1)
 export function setCutMask(mask) {
   active = mask
+  version++
   const old = cutUniforms.uCutMask.value
   if (!mask) { cutUniforms.uCutMask.value = empty(); cutUniforms.uCutBox.value.set(0, 0, 0, 0) } else {
     const rg = new Uint8Array(mask.width * mask.height * 2)
@@ -38,6 +39,17 @@ export function setCutMask(mask) {
 // is the street at (x, z) opened right now? (Traffic leaves the upper deck's cars out of the opening)
 export const isCutOpen = (x, z) => cutUniforms.uCut.value > 0.5 && cutDepth(active, x, z) > 0
 // D4-1: is (x, z) over a ramp portal's opening (the street there is always open)? metres inside it (> 0)
+// the mask's version (Trees re-checks its trees when it changes)
+export const cutMaskVersion = () => version
+// D4: no tree stands in an opening — never in a ramp portal's trench (or on its parapet), nor in the U cut-away while
+// it is open. x, z: the trunk; r: the canopy's radius (the canopy test, like the pipeline's trees.js: no canopy over
+// an opening either)
+export const TREE_CLEAR_M = 1.5
+export function treeBlocked(x, z, cutOpen = cutUniforms.uCut.value > 0.5, mask = active, r = TREE_CLEAR_M) {
+  if (!mask) return false
+  if (mask.portal && portalDepth(mask, x, z) > -r) return true
+  return Boolean(cutOpen) && cutDepth(mask, x, z) > -r
+}
 export const portalOpenDepth = (x, z) => (active?.portal ? portalDepth(active, x, z) : -Infinity)
 
 const HEAD = /* glsl */ `

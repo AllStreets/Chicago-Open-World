@@ -3,7 +3,7 @@
 import { describe, it, expect, afterEach } from 'vitest'
 import { readFileSync, existsSync } from 'node:fs'
 import { splitPortals, buildPortals, buildLowerDecks, cutMask, cutDepth, portalDepth, placeSigns, shownPieces, openBelowY, PORTAL } from '../lowerLevels.js'
-import { setCutMask, portalOpenDepth, patchCutaway, cutUniforms } from '../materials/cutaway.js'
+import { setCutMask, portalOpenDepth, patchCutaway, cutUniforms, treeBlocked, cutMaskVersion } from '../materials/cutaway.js'
 import { NAMED_RAMPS, drawSignAtlas } from '../lowerPortals.js'
 import { portalMeshes } from '../LowerLevels.jsx'
 
@@ -136,5 +136,28 @@ describe.skipIf(!existsSync(shipped))('the shipped portals (D4-1 done-when)', ()
   it('stay lean: ≤ 12 k triangles for every portal in the city; the decks still within their 60 k', () => {
     expect(buildPortals(lj, NAMED_RAMPS).stats.triangles).toBeLessThanOrEqual(12_000)
     expect(buildLowerDecks(lj).stats.triangles).toBeLessThanOrEqual(60_000)
+  })
+})
+
+describe('no tree stands in an opening (D4, the trees rule)', () => {
+  afterEach(() => { setCutMask(null); cutUniforms.uCut.value = 0 })
+  const mask = cutMask(j)
+  it('never in a ramp portal’s trench or on its parapet — U or not', () => {
+    expect(treeBlocked(340, 0, false, mask)).toBe(true)
+    expect(treeBlocked(340, 6.6 + 0.3 + 1, false, mask)).toBe(true) // at the parapet
+    expect(treeBlocked(340, 20, false, mask)).toBe(false) // a street tree beside it
+    expect(treeBlocked(340, 6.6 + 0.3 + 3, false, mask, 4)).toBe(true) // its canopy would hang over the trench
+  })
+  it('over a lower deck only while the U cut-away is open', () => {
+    expect(treeBlocked(150, 0, false, mask)).toBe(false)
+    expect(treeBlocked(150, 0, true, mask)).toBe(true)
+    expect(treeBlocked(60, 60, true, mask)).toBe(false) // off every deck
+  })
+  it('reads the installed mask; none installed, nothing blocked', () => {
+    expect(treeBlocked(340, 0)).toBe(false)
+    const v = cutMaskVersion()
+    setCutMask(mask)
+    expect(cutMaskVersion()).toBeGreaterThan(v)
+    expect(treeBlocked(340, 0)).toBe(true)
   })
 })
