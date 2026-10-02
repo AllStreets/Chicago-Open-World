@@ -1,6 +1,6 @@
 // F-8: the beach-volleyball nets — decoded from the manifest, picked near/far/none by distance and view, and cheap.
 import { describe, it, expect } from 'vitest'
-import { decodeNets, pickNets, netGeometry, netTriangles, medianLength, NEAR_M, FAR_M, NET_TOP } from '../beachNets.js'
+import { decodeNets, pickNets, netGeometry, netTriangles, medianLength, NEAR_M, FAR_M, NET_TOP, POST_COL, MESH_COL, TAPE_COL } from '../beachNets.js'
 
 describe('beach nets', () => {
   const entry = { stride: 5, nets: [0, 0, -0.5, 0, 9.6, 100, 0, -0.6, 1.57, 9.2, 2000, 0, -0.5, 0, 10] }
@@ -21,7 +21,17 @@ describe('beach nets', () => {
     expect(far.lod0).toEqual([]); expect(far.lod1).toEqual([0, 1]) // the one 2.3 km off is not drawn
     expect(pickNets(n, [0, 10, 0], { inView: (x) => x > 50 }).lod0).toEqual([1])
   })
-  it('is a ~30-triangle model at regulation height', () => {
+  it('is matte and dark: dark posts and mesh, an off-white tape well under the bloom threshold', () => {
+    expect(Math.max(...POST_COL)).toBeLessThan(0.15); expect(Math.max(...MESH_COL)).toBeLessThan(0.1)
+    expect(Math.max(...TAPE_COL)).toBeLessThan(0.75)
+  })
+  it('sags toward the middle', () => {
+    const p = netGeometry(9.6).solid.attributes.position
+    let topMid = Infinity, topEnd = -Infinity
+    for (let i = 0; i < p.count; i++) { const x = p.getX(i), y = p.getY(i); if (y < 2.2 || y > NET_TOP + 0.001) continue; if (Math.abs(x) < 0.1) topMid = Math.min(topMid, y); if (Math.abs(x) > 4.7 && Math.abs(x) < 4.8) topEnd = Math.max(topEnd, y) }
+    expect(topEnd).toBeCloseTo(NET_TOP, 2); expect(topMid).toBeLessThan(NET_TOP - 0.1)
+  })
+  it('is a 32-triangle model at regulation height', () => {
     const g = netGeometry(9.6)
     expect(netTriangles(g.solid) + netTriangles(g.mesh)).toBeLessThanOrEqual(32)
     g.solid.computeBoundingBox(); g.mesh.computeBoundingBox()

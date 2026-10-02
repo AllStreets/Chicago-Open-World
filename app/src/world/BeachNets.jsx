@@ -1,5 +1,5 @@
 // app/src/world/BeachNets.jsx — F-8: a net on every sand volleyball court (beachNets.js), North Avenue Beach's dozens
-// of courts above all. Three InstancedMeshes of a ~30-triangle model: the posts and tapes near the camera (they cast
+// of courts above all. Three InstancedMeshes of a 32-triangle model: the posts and top tape near the camera (they cast
 // shadows), the same beyond (they don't), and the see-through mesh (never). Drawn only inside the view and within FAR_M,
 // re-picked when the camera moves or turns. Out of the reflection pass (default layer only), never picked.
 import { useEffect, useMemo, useRef } from 'react'
@@ -25,8 +25,9 @@ export default function BeachNets({ entry }) {
     const nets = decodeNets(entry)
     if (!nets.length) return null
     const L = medianLength(nets), g = netGeometry(L)
-    const solidMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.6, metalness: 0.2, side: THREE.DoubleSide })
-    const meshMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, metalness: 0, side: THREE.DoubleSide, transparent: true, opacity: 0.2, depthWrite: false })
+    // matte, non-emissive and tone-mapped like the ground (no bloom); the mesh a see-through dark band
+    const solidMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.95, metalness: 0, side: THREE.DoubleSide })
+    const meshMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, metalness: 0, side: THREE.DoubleSide, transparent: true, opacity: 0.72, depthWrite: false })
     return { nets, L, meshes: [instanced(g.solid, solidMat, nets.length, true), instanced(g.solid, solidMat, nets.length, false), instanced(g.mesh, meshMat, nets.length, false)] }
   }, [entry])
   useEffect(() => () => {

@@ -859,7 +859,7 @@ Lake Michigan now lies where it really does: 4.65 m below the lakefront park and
 
 ### F-8 · Beach polish — *Chicago's tan sand, the walks across it, and the volleyball nets*
 
-The beaches now look like the real ones in photographs: the sand is the light tan of Chicago's lakefront beaches rather than a pale cream, and it holds that colour through day, dusk and night (and goes white under the SNOW view). The walks that cross the sand are drawn as narrow light-concrete paths instead of grey blacktop that read as streets, and the Lakefront Trail is drawn as what it is — a park trail of weathered blacktop with a dashed yellow centre line, no street-light glow, ploughed in snow — wherever it runs. North Avenue Beach's lawns, gardens and parking lot by the beach house are no longer buried under sand, and no tree stands on a beach. Every sand volleyball court has its net: two posts, the white top and bottom tapes and a see-through mesh — 112 nets, about 30 triangles each, drawn as instances only inside the view and within 650 m, casting shadows only within 140 m.
+The beaches now look like the real ones in photographs: the sand is the light tan of Chicago's lakefront beaches rather than a pale cream, and it holds that colour through day, dusk and night (and goes white under the SNOW view). The walks that cross the sand are drawn as narrow light-concrete paths instead of grey blacktop that read as streets, and the Lakefront Trail is drawn as what it is — a park trail of weathered blacktop with a dashed yellow centre line, no street-light glow, ploughed in snow — wherever it runs. North Avenue Beach's lawns, gardens and parking lot by the beach house are no longer buried under sand, and no tree stands on a beach. Every sand volleyball court OSM maps has its net at regulation height (2.43 m): two thin dark posts, a dark see-through mesh band about a metre deep under a white top tape, sagging slightly — matte, so nothing glows — 112 nets, 32 triangles each, drawn as instances only inside the view and within 650 m, casting shadows only within 140 m.
 
 <table>
 <tr>
@@ -876,7 +876,7 @@ The beaches now look like the real ones in photographs: the sand is the light ta
 </tr>
 <tr>
 <td><em>Oak Street Beach from the lake: the curve of sand under the Gold Coast towers.</em></td>
-<td><em>Down at the courts: posts, tapes and see-through nets on the sand.</em></td>
+<td><em>Down at the courts: thin dark posts, the dark mesh and its white top tape.</em></td>
 </tr>
 </table>
 
