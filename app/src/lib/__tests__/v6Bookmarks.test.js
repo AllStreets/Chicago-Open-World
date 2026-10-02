@@ -15,6 +15,12 @@ describe('V6 poses', () => {
       expect(d, k).toBeLessThan(700)
     }
   })
+  it('D5 / B-8 poses: the lock\'s lake gate, Belmont and Diversey harbours, North Avenue Beach — named for ⌘K, low over the water', () => {
+    for (const k of ['harborlock', 'belmontharbor', 'diverseyharbor', 'northavebeach']) {
+      expect(BOOKMARKS[k], k).toBeTruthy(); expect(VIEW_NAMES[k], k).toBeTruthy()
+      expect(BOOKMARKS[k].position[1]).toBeGreaterThanOrEqual(30); expect(BOOKMARKS[k].position[1]).toBeLessThan(120)
+    }
+  })
   it('the DuSable pose looks at the bridge where OSM puts it (287, −757)', () => {
     expect(BOOKMARKS.dusable.target[0]).toBe(287)
     expect(BOOKMARKS.dusable.target[2]).toBe(-757)

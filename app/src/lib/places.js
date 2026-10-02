@@ -28,6 +28,7 @@ export const VIEW_NAMES = {
   bpbridge: 'BP Bridge', artinstitute: 'Art Institute lions', daleyplaza: 'The Picasso, Daley Plaza', federalplaza: 'The Flamingo, Federal Plaza',
   culturalcenter: 'Cultural Center domes', unionstation: 'Union Station', martriver: 'Merchandise Mart from the river',
   navypierhead: 'Navy Pier entrance', ballroom: 'Navy Pier Grand Ballroom', riverwalk: 'Chicago Riverwalk', zoo: 'Lincoln Park Zoo & Conservatory',
+  harborlock: 'Chicago Harbor Lock', belmontharbor: 'Belmont Harbor', diverseyharbor: 'Diversey Harbor', northavebeach: 'North Avenue Beach',
 }
 
 export function buildPlaces(manifest, bookmarks) {

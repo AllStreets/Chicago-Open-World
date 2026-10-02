@@ -68,6 +68,9 @@ import { dressBridgehouses, loadReliefs } from '../lib/bridgehouses.js'
 import { pierRing } from '../lib/bridges.js'
 import { setRiverwalkAtRiverLevel } from '../lib/civic.js'
 import { buildLowerLevels, lowerLevelsOn, lowerManifestEntry, LOWER_LEVELS_FILE, MAX_BYTES as LOWER_MAX_BYTES } from '../lib/lowerLevels.js'
+import { lakeLevels, lakeWaterOf, isPerchedPond, shoreChains, zoneBoxes, profileAt, sweepChains, gateWalls, beachSlope, drape, beachRisers, pondBank, cutAtWater, waterNear, lowerBreakwaters, lakeSkirts, edgeIndex } from '../lib/lakeLevel.js'
+import { setWaterLevels } from '../lib/waterLevels.js'
+import { layoutHarbours, boatsJson } from '../lib/harbours.js'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const CACHE = join(ROOT, 'cache', 'world')
@@ -153,6 +156,10 @@ async function main() {
   const levelsData = loadJson(join(ROOT, 'data', 'levels.json'))
   const lv = riverLevels(levelsData, process.env)
   setRiverwalkAtRiverLevel(Boolean(lv))
+  // D5: the lake at its real level (LAKE_Y); LEVELS_LAKE=0 keeps it at the street
+  const ll = lakeLevels(levelsData, process.env), shoreSpec = loadJson(join(ROOT, 'data', 'shore.json'))
+  setWaterLevels({ river: lv?.river ?? null, lake: ll?.lake ?? null })
+  log(`lake: ${ll ? `at ${ll.lake} m under the lakefront (D5)` : 'at the street (LEVELS_LAKE=0)'}`)
   log(`levels: ${lv ? `the river at ${lv.river} m and the Riverwalk at ${lv.riverwalk} m under the street (D1)` : 'flat world (LEVELS_RIVER=0)'}`)
   // ── Heroes + pieces ────────────────────────────────────────────────────────
   const heroes = existsSync(join(ROOT, 'data', 'heroes.json')) ? expandHeroGroups(loadJson(join(ROOT, 'data', 'heroes.json')).heroes) : []
@@ -259,6 +266,44 @@ async function main() {
   const sunk = lv ? sunkWater(water) : []
   for (const p of sunk) p.tags = { ...p.tags, _sunk: true }
   if (lv) log(`river system at ${lv.river} m: ${sunk.length} water polygons (${sunk.map((p) => p.tags.name ?? p.tags.water).join(', ')})`)
+  // D5: the harbours that open onto the lake sink with it; Lincoln Park's ponds and lagoon stay perched (D5-2)
+  const perched = ll ? water.filter((p) => isPerchedPond(p, shoreSpec.ponds)) : []
+  const pondBanks = perched.map((p) => { const r = pondBank(p, { bankY: GROUND_Y.parks, spec: shoreSpec.ponds }); p.tags = { ...p.tags, _pond: r.waterY }; return r })
+  const lakeMapped = ll ? lakeWaterOf(water, lakeSideP, { ponds: shoreSpec.ponds }) : []
+  for (const p of lakeMapped) p.tags = { ...p.tags, _lake: true }
+  if (ll) log(`lake level: ${lakeMapped.length} harbours (${lakeMapped.map((p) => p.tags.name ?? p.tags.water).join(', ')}); perched ponds: ${perched.map((p) => `${p.tags.name ?? p.tags.water} ${p.tags._pond.toFixed(2)}`).join(', ')}`)
+  // ── Land and Lake Michigan (D5: needed before the tiles — the lake's edges are walled tile by tile) ──
+  const cityB = loadJson(join(CACHE, 'city-boundary.json')).data
+  const landPolys = cityB.features.flatMap((f) => (f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates))
+    .map(([outer, ...holes]) => ({ outer: simplifyRing(openRing(outer.map(([lon, lat]) => project(lon, lat))), 2), holes: holes.map((h) => simplifyRing(openRing(h.map(([lon, lat]) => project(lon, lat))), 2)) }))
+  // The suburbs are land too: without them the lake plane shows west of Harlem Ave like an ocean.
+  const cityPts = landPolys.flatMap((p) => p.outer)
+  const cMinX = Math.min(...cityPts.map((p) => p[0])), cMinZ = Math.min(...cityPts.map((p) => p[1])), cMaxZ = Math.max(...cityPts.map((p) => p[1]))
+  const shoreX = (near) => Math.max(...cityPts.filter((p) => Math.abs(p[1] - near) < 800).map((p) => p[0]))
+  const FAR = 60000, box = (a, b, c, d) => ({ outer: [[a, b], [c, b], [c, d], [a, d]], holes: [] })
+  const region = [box(-FAR, -FAR, cMinX + 300, FAR), box(-FAR, -FAR, shoreX(cMinZ), cMinZ + 300), box(-FAR, cMaxZ - 300, shoreX(cMaxZ), FAR)]
+  // Land is solid: enclave holes in the city boundary (other municipalities) are still land, never lake.
+  const landLimits = [...landPolys, ...region].map((p) => ({ outer: p.outer, holes: [] }))
+  // The city limits run out into the lake; the real shore is Lake Michigan's own outline (its outer member ways).
+  const landSolid = lakeSideP.length ? landMinusWater({ land: landLimits, water: lakeSideP }) : landLimits
+  log(`shoreline: ${shoreLines.length} ways, lake side ${lakeSideP.length ? 'cut' : 'MISSING — using city limits'}`)
+  const lakePolys = lakePolygons({ center: [shoreX(0), 0], land: landSolid, water })
+  // all water at lake level: the lake itself and the harbours that open onto it
+  const lakeAll = ll ? [...lakePolys.map((p) => ({ ...p, tags: { natural: 'water', water: 'lake' } })), ...lakeMapped] : []
+  const lakeIdx = ll ? polyIndex(lakeAll) : null
+  const bs = ll ? beachSlope({ beaches, lakeWater: lakeAll, lakeY: ll.lake, top: GROUND_Y.beaches, spec: shoreSpec.beach }) : null
+  const coastIdx = ll ? edgeIndex(bs.waterSegs) : null
+  // the lake-level water near each tile (clipped small, so point tests stay cheap): street-level ground stops at it
+  const lakeNear = new Map()
+  const lakeNearTile = (k) => {
+    if (!lakeNear.has(k)) {
+      // only a tile the shore runs through needs the clipped water; one wholly on land has none, one out in the lake is all water
+      const b = tileBounds(k), c = [(b.minX + b.maxX) / 2, (b.minZ + b.maxZ) / 2]
+      const polys = Number.isFinite(coastIdx.nearest(c, TILE_SIZE)) ? waterNear(lakeAll, b) : lakeIdx.find(c) ? [{ outer: [[b.minX - 30, b.minZ - 30], [b.maxX + 30, b.minZ - 30], [b.maxX + 30, b.maxZ + 30], [b.minX - 30, b.maxZ + 30]], holes: [], bbox: { minX: b.minX - 30, minZ: b.minZ - 30, maxX: b.maxX + 30, maxZ: b.maxZ + 30 } }] : []
+      lakeNear.set(k, { polys, idx: polys.length ? polyIndex(polys) : null })
+    }
+    return lakeNear.get(k)
+  }
   const roads = uniq(chunks('roads')).filter((e) => e.geometry && roadHalfWidth(e.tags || {}))
   const rail = uniq(chunks('rail')).filter((e) => e.geometry)
   // ── Bridges: OSM movable ways → named Chicago bascules; their ribbons give way to one leaf deck ──
@@ -305,7 +350,19 @@ async function main() {
     return b.maxX >= cutsBox.minX && b.minX <= cutsBox.maxX && b.maxZ >= cutsBox.minZ && b.minZ <= cutsBox.maxZ && cutBoxes.some((c) => b.maxX >= c.minX && b.minX <= c.maxX && b.maxZ >= c.minZ && b.minZ <= c.maxZ)
   }
   // street-level ground never covers a sunken floor or an open pit (a bridge's own ribbon keeps its deck, with a soffit under it)
-  const cutGround = (m) => (touchesCuts(m) ? cutMeshOutside(m, groundCuts) : m)
+  const cutRiver = (m) => (touchesCuts(m) ? cutMeshOutside(m, groundCuts) : m)
+  // D5: …and never runs out over the sunken lake (OSM draws parks and trails past the shoreline)
+  const cutLake = (m) => {
+    if (!ll || !m.positions.length) return m
+    const b = meshBox(m), c = [(b.minX + b.maxX) / 2, (b.minZ + b.maxZ) / 2]
+    if (!Number.isFinite(coastIdx.nearest(c, Math.hypot(b.maxX - b.minX, b.maxZ - b.minZ) / 2 + 40))) {
+      const near = lakeNearTile(tileKeyFor(c))
+      return near.idx?.find(c) ? { positions: [], normals: [], uvs: [] } : m // wholly out in the water, or wholly on land
+    }
+    const near = lakeNearTile(tileKeyFor(c))
+    return near.polys.length ? cutAtWater(m, near.idx, near.polys) : m
+  }
+  const cutGround = (m) => cutLake(cutRiver(m))
   const isRaisedWay = (t) => (t.bridge && t.bridge !== 'no') || parseInt(t.layer ?? '0', 10) > 0
   const SOFFIT_Y = -0.9
   const treeNodes = uniq(chunks('trees')).map((n) => project(n.lon, n.lat))
@@ -372,7 +429,10 @@ async function main() {
   const { kept: keptTrees, removed } = filterTrees(treeNodes, { zones: zones.map((z) => z.ring), clearings, nearBuildings: (p) => footIdx.query(p, 400), plazas: landmarkRuntime.plazas, rails: (p) => railIdx.query(p, 100).map((s) => s.line), paved: pavedNear, wet: wetNear })
   log(`trees removed (canopy test) — venues ${removed.venue}, clearings ${removed.clearing}, plazas ${removed.plaza}, railways ${removed.rail}, footprints ${removed.building}, paving ${removed.paved}, water ${removed.water}; kept ${keptTrees.length}; venue zones: ${zones.map((z) => z.key).join(', ')}`)
   treeNodes.length = 0
-  for (const p of keptTrees) treeNodes.push(p)
+  // D5: no tree stands out over the sunken lake (OSM tree nodes and scattered park trees past the shoreline)
+  const dryTrees = ll ? keptTrees.filter((p) => !(Number.isFinite(coastIdx.nearest(p, 1500)) && lakeIdx.find(p))) : keptTrees
+  if (ll) log(`trees over the lake dropped: ${keptTrees.length - dryTrees.length}`)
+  for (const p of dryTrees) treeNodes.push(p)
   log(`parks ${parks.length}, water ${water.length}, roads ${roads.length}, rail ${rail.length}, trees ${treeNodes.length}`)
   // a point inside any building footprint (arena plaza fans stand on open ground only)
   const inBuilding = (p) => footIdx.query(p, 400).some((b) => b.polygons.some((poly) => pointInRing(p, poly.outer)))
@@ -435,6 +495,7 @@ async function main() {
   // ── Breakwaters: low concrete lines that shape the harbours (B7) ──────────
   const breakwaters = breakwaterBuildings(uniq(chunks('shore')).filter((e) => e.geometry).map((e) => ({ id: e.id, points: e.geometry.map((p) => project(p.lon, p.lat)), tags: e.tags || {} })))
   for (const b of breakwaters) buildings.push(b)
+  if (ll) log(`breakwaters in the lake (${shoreSpec.breakwater.aboveLakeM} m over the water): ${lowerBreakwaters(breakwaters, { lakeY: ll.lake, spec: shoreSpec.breakwater })}`)
   log(`breakwaters: ${breakwaters.length}`)
 
   // ── Sourced looks (V2): hero rows first; OSM-tagged looks are added in Task 9 ──
@@ -460,6 +521,10 @@ async function main() {
   // D1-3: river-front buildings run down to the water (or to the Riverwalk's floor beside them)
   const floorIdx = floors.length ? polyIndex(floors) : null
   if (lv) log(`river-front skirts: ${applySkirts(buildings, { waterIdx: polyIndex(sunk), zoneIdx: floorIdx, riverY: lv.river })} buildings reach the water`)
+  if (ll) { // D5: buildings at the lake's edge run down to the water; those on a sloping beach down to the sand
+    const near = buildings.filter((b) => b.polygons?.length && Number.isFinite(coastIdx.nearest(b.centroid, shoreSpec.beach.reachM)))
+    log(`lakefront skirts: ${lakeSkirts(near, { waterIdx: lakeIdx, lakeY: ll.lake, beachY: bs.y, beachIdx: polyIndex(beaches) })} buildings reach the lake or the sand (${near.length} near the shore)`)
+  }
   if (rb) { // A-8 done-when: every river-base building near the river reaches down to the water
     const wIdx = polyIndex(sunk), short = []
     for (const site of rbSpec.sites) { const b = findByOsm(buildings, site.osm), c = checkReachesWater(b, { waterIdx: wIdx, riverY: lv.river }); if (c.near && !c.ok) short.push(`${site.key} (${c.low})`) }
@@ -482,7 +547,39 @@ async function main() {
   const wallsByTile = lv ? runsByTile(wallRuns({ water: sunk, zones: floors, riverY: lv.river }).map((r) => ({ ...r, tone: wallTone(r) })), tileKeyFor) : new Map()
   const rwByTile = new Map()
   for (const m of rw?.meshes ?? []) for (const [k, part] of meshByTile(m.mesh, tileKeyFor)) { if (!rwByTile.has(k)) rwByTile.set(k, []); rwByTile.get(k).push({ ...m, mesh: part }) }
-  for (const k of [...wallsByTile.keys(), ...rwByTile.keys()]) tile(k)
+  // D5: the lakefront's edges (stepped limestone revetments, harbour walls, Navy Pier, moles, the lock's lake gate), the
+  // beaches' end faces and the ponds' banks, tile by tile, as ground layers
+  const shoreByTile = new Map()
+  const addShore = (layer, m) => { for (const [k, part] of meshByTile(m, tileKeyFor)) { if (!shoreByTile.has(k)) shoreByTile.set(k, {}); const o = shoreByTile.get(k); o[layer] ??= acc(); append(o[layer], part) } }
+  let lakeShoreReport = null
+  if (ll) {
+    const [bx0, bz0] = project(WORLD_BBOX.w, WORLD_BBOX.n), [bx1, bz1] = project(WORLD_BBOX.e, WORLD_BBOX.s)
+    const { chains, contacts } = shoreChains({ lakeWater: lakeAll, sunk, ponds: perched, beaches, zones: zoneBoxes(shoreSpec.zones), moleWidthM: shoreSpec.moleWidthM, within: { minX: bx0, maxX: bx1, minZ: bz0, maxZ: bz1 } })
+    const stray = contacts.filter((c) => c.water.tags?.water !== 'lock')
+    if (stray.length) throw new Error(`D5: the river meets the lake outside the Harbor Lock at ${stray.slice(0, 3).map((c) => c.pt.map(Math.round).join(',')).join(' ')}`)
+    const profiles = Object.fromEntries(Object.entries(shoreSpec.profiles).map(([k, v]) => [k, profileAt(v, ll.lake)]))
+    const swept = sweepChains(chains.filter((c) => c.kind !== 'gate'), profiles, ll.lake), gates = gateWalls(chains, { bottom: ll.lake - 0.5 })
+    for (const [layer, m] of Object.entries(swept)) addShore(layer, m)
+    if (gates.dockwall) addShore('dockwall', gates.dockwall)
+    addShore('limestone', beachRisers(bs.landSegs, bs.y, { top: GROUND_Y.beaches }))
+    for (const b of pondBanks) addShore('parks', b.mesh)
+    const lenBy = {}
+    for (const c of chains) lenBy[c.kind] = (lenBy[c.kind] ?? 0) + c.pts.reduce((t, q, i) => (i ? t + Math.hypot(q.p[0] - c.pts[i - 1].p[0], q.p[1] - c.pts[i - 1].p[1]) : 0), 0)
+    lakeShoreReport = { metres: Object.fromEntries(Object.entries(lenBy).map(([k, v]) => [k, Math.round(v)])), tris: Object.fromEntries(Object.entries(swept).map(([k, m]) => [k, m.positions.length / 9])), contacts: contacts.length }
+    log(`lakefront edges (m): ${JSON.stringify(lakeShoreReport.metres)}; triangles ${JSON.stringify(lakeShoreReport.tris)}; lock-gate contacts ${contacts.length}; in ${shoreByTile.size} tiles`)
+  }
+  // B-8: the harbours' floating docks (tile geometry, one hover entry per harbour per tile) and their boats (instances)
+  const harbourCfg = loadJson(join(ROOT, 'data', 'harbours.json'))
+  const harbours = ll ? layoutHarbours(harbourCfg, (id) => lakeMapped.filter((p) => p.id === id), { lakeY: ll.lake }) : []
+  const harbourByTile = new Map()
+  for (const h of harbours) for (const m of h.meshes) for (const [k, part] of meshByTile(m, tileKeyFor)) {
+    if (!harbourByTile.has(k)) harbourByTile.set(k, new Map())
+    const byH = harbourByTile.get(k)
+    if (!byH.has(h.key)) byH.set(h.key, { name: h.name, parts: [] })
+    byH.get(h.key).parts.push({ ...m, mesh: part })
+  }
+  if (ll) log(`harbours (B-8): ${harbours.map((h) => `${h.name} ${h.boats.length} boats/${h.slots} slots, docks ${(h.meshes.reduce((t, m) => t + m.positions.length / 9, 0) / 1000).toFixed(1)} k tris`).join(' · ')}`)
+  for (const k of [...wallsByTile.keys(), ...rwByTile.keys(), ...shoreByTile.keys(), ...harbourByTile.keys()]) tile(k)
   if (lv) log(`river walls: ${[...wallsByTile.values()].reduce((t, rs) => t + rs.length, 0)} runs in ${wallsByTile.size} tiles; Riverwalk parts in ${rwByTile.size} tiles`)
   for (const b of buildings) tile(tileKeyFor(b.centroid)).b.push(b)
   bridges.forEach((br, i) => tile(tileKeyFor(br.centre)).bridges.push({ br, built: builtBridges[i], leafIds: bridgeSide.bridges[i].leaves }))
@@ -576,6 +673,24 @@ async function main() {
   const r1 = (v) => Math.round(v * 10) / 10
   const addrOf = (t) => [t['addr:housenumber'], t['addr:street']].filter(Boolean).join(' ') || null
 
+  const nonFinite = {}
+  const triOk = (m, t) => {
+    const P9 = m.positions.slice(t * 9, t * 9 + 9), U6 = m.uvs.slice(t * 6, t * 6 + 6), N9 = m.normals.slice(t * 9, t * 9 + 9)
+    return P9.every(Number.isFinite) && U6.length === 6 && U6.every(Number.isFinite) && [0, 3, 6].every((k) => Math.hypot(N9[k], N9[k + 1], N9[k + 2]) > 0.5)
+  }
+  const dropNonFinite = (m) => {
+    let bad = 0
+    for (let t = 0; t < m.positions.length / 9; t++) if (!triOk(m, t)) bad++
+    if (!bad) return 0
+    const o = { positions: [], normals: [], uvs: [] }
+    for (let t = 0; t < m.positions.length / 9; t++) {
+      const P9 = m.positions.slice(t * 9, t * 9 + 9), U6 = m.uvs.slice(t * 6, t * 6 + 6)
+      if (!triOk(m, t)) continue
+      o.positions.push(...P9); o.normals.push(...m.normals.slice(t * 9, t * 9 + 9)); o.uvs.push(...U6)
+    }
+    m.positions = o.positions; m.normals = o.normals; m.uvs = o.uvs
+    return bad
+  }
   const tiles = []
   const blocks = new Map()
   const blockGlow = new Map()
@@ -622,24 +737,36 @@ async function main() {
       meta.push({ id: 'p-riverwalk', name: 'Chicago Riverwalk', address: null, stories: null, year: 2016, height: 0, hero: 'riverwalk' })
       for (const m of rwParts) { appendBuilding(L0, m.mesh, m.facade, m.seed, idx, sIdx(m.style)); if (!m.lod0Only) appendBuilding(L1, m.mesh, m.facade, m.seed, idx, sIdx(m.style)) }
     }
+    for (const [hk, h] of harbourByTile.get(key) ?? []) { // B-8: a harbour's docks, hovered as the harbour
+      const idx = meta.length
+      meta.push({ id: `harbour-${hk}`, name: h.name, address: null, stories: null, year: null, height: 0, hero: null })
+      for (const m of h.parts) { appendBuilding(L0, m.mesh, m.facade, m.seed, idx, sIdx(m.style)); if (!m.lod0Only) appendBuilding(L1, m.mesh, m.facade, m.seed, idx, sIdx(m.style)) }
+    }
     const parksM = cutGround(flatMesh(clipPolysToTile(polysFor('parks', bounds), bounds), GROUND_Y.parks))
-    const beachesM = cutGround(flatMesh(clipPolysToTile(polysFor('beaches', bounds), bounds), GROUND_Y.beaches))
+    const beachesFlat = cutGround(flatMesh(clipPolysToTile(polysFor('beaches', bounds), bounds), GROUND_Y.beaches))
+    const beachesM = bs ? drape(beachesFlat, bs.y) : beachesFlat // D5: the sand slopes into the lake
     const pitchesM = cutGround(flatMesh(clipPolysToTile(polysFor('pitches', bounds), bounds), GROUND_Y.pitches))
-    const waterM = waterLayer(clipPolysToTile(polysFor('water', bounds), bounds), (p) => (p.tags?._sunk ? lv.river : GROUND_Y.water))
+    const waterM = waterLayer(clipPolysToTile(polysFor('water', bounds), bounds), (p) => (p.tags?._sunk ? lv.river : p.tags?._lake ? ll.lake : p.tags?._pond ?? GROUND_Y.water))
     // D1: the river's walls (concrete downtown, rubble-faced upriver), deck soffits, and the Riverwalk's floor
     const runsHere = wallsByTile.get(key) ?? []
     const dockM = wallMesh(runsHere.filter((r) => r.tone !== 'riprap')), riprapM = wallMesh(runsHere.filter((r) => r.tone === 'riprap'))
     append(dockM, t.soffit)
+    const sh = shoreByTile.get(key) ?? {}, limeM = sh.limestone ?? acc()
+    if (sh.dockwall) append(dockM, sh.dockwall)
+    if (sh.riprap) append(riprapM, sh.riprap)
+    if (sh.parks) append(parksM, sh.parks)
     const floorM = floors.length ? merge(...[...new Set(floors.map((z) => z.y ?? lv.riverwalk))].map((fy) => flatMesh(clipPolysToTile(floors.filter((z) => (z.y ?? lv.riverwalk) === fy), bounds), fy))) : acc() // the Riverwalk, Apple's landing and steps, each at its own level
-    const hasContent = L0.positions.length || LV.positions.length || t.roads.positions.length || parksM.positions.length || waterM.positions.length || transit.tiles.has(key) || dockM.positions.length || riprapM.positions.length
+    const hasContent = L0.positions.length || LV.positions.length || t.roads.positions.length || parksM.positions.length || waterM.positions.length || transit.tiles.has(key) || dockM.positions.length || riprapM.positions.length || limeM.positions.length
     if (!hasContent) continue
     // plazas: brick ones on the paving layer, concrete ones join the walks; LOD1 keeps the plazas (not the thin paths)
     const brickM = cutGround(flatMesh(clipPolysToTile(polysFor('brickPlazas', bounds), bounds), GROUND_Y.paving))
     const walksAll = acc(), pavingAll = acc()
     append(walksAll, t.walks); append(walksAll, cutGround(flatMesh(clipPolysToTile(polysFor('concretePlazas', bounds), bounds), GROUND_Y.sidewalks))); append(walksAll, floorM)
     append(pavingAll, t.paving); append(pavingAll, brickM)
-    const ground0 = mergeGroundLayers({ roads: t.roads, sidewalks: walksAll, parks: parksM, pitches: pitchesM, beaches: beachesM, rail: t.rail, paving: pavingAll, dockwall: dockM, riprap: riprapM })
-    const ground1 = mergeGroundLayers({ roads: t.roadsLod1, sidewalks: floorM, parks: parksM, pitches: pitchesM, beaches: beachesM, paving: brickM, dockwall: dockM, riprap: riprapM })
+    // a degenerate sliver (non-finite uv or position, or a zero normal) never reaches a tile: it turns the post-processing black
+    for (const [name, m] of Object.entries({ roads: t.roads, walks: walksAll, parks: parksM, pitches: pitchesM, beaches: beachesM, rail: t.rail, paving: pavingAll, dockwall: dockM, riprap: riprapM, limestone: limeM, lod1roads: t.roadsLod1 })) { const d = dropNonFinite(m); if (d) { nonFinite[name] = (nonFinite[name] ?? 0) + d } }
+    const ground0 = mergeGroundLayers({ roads: t.roads, sidewalks: walksAll, parks: parksM, pitches: pitchesM, beaches: beachesM, rail: t.rail, paving: pavingAll, dockwall: dockM, riprap: riprapM, limestone: limeM })
+    const ground1 = mergeGroundLayers({ roads: t.roadsLod1, sidewalks: floorM, parks: parksM, pitches: pitchesM, beaches: beachesM, paving: brickM, dockwall: dockM, riprap: riprapM, limestone: limeM })
     const tr = transit.tiles.get(key) ?? {}
     const asLeafLayer = (a) => { const l = asLayer(a); l.extra.LEAF = new Float32Array(a.leaf); return l }
     await writeWorldGlb(join(OUT, 'tiles', `${key}.glb`), { buildings: asLayer(L0), leaves: LV.positions.length ? asLeafLayer(LV) : null, ground: ground0, water: waterM, transit: tr.transit, ties: tr.ties, stations: tr.stations, glow: tr.glow }, { lod: 'lod0' })
@@ -665,6 +792,7 @@ async function main() {
     if (++n % 50 === 0) log(`tiles written: ${n}`)
   }
   log(`tiles: ${tiles.length}`)
+  if (Object.keys(nonFinite).length) log(`ground slivers dropped (non-finite uv/position, zero normal): ${JSON.stringify(nonFinite)}`)
   writeFileSync(join(OUT, 'bridges.json'), JSON.stringify(bridgeSide))
   assertNoVenueTrees([...T].map(([k, t]) => [k, t.trees]), zones)
   log('venue tree check: 0 trees inside any venue')
@@ -680,23 +808,9 @@ async function main() {
   log(`blocks: ${blockList.length}`)
 
   // ── Land, land mask, minimap ───────────────────────────────────────────────
-  const cityB = loadJson(join(CACHE, 'city-boundary.json')).data
-  const landPolys = cityB.features.flatMap((f) => (f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates))
-    .map(([outer, ...holes]) => ({ outer: simplifyRing(openRing(outer.map(([lon, lat]) => project(lon, lat))), 2), holes: holes.map((h) => simplifyRing(openRing(h.map(([lon, lat]) => project(lon, lat))), 2)) }))
-  // The suburbs are land too: without them the lake plane shows west of Harlem Ave like an ocean.
-  const cityPts = landPolys.flatMap((p) => p.outer)
-  const cMinX = Math.min(...cityPts.map((p) => p[0])), cMinZ = Math.min(...cityPts.map((p) => p[1])), cMaxZ = Math.max(...cityPts.map((p) => p[1]))
-  const shoreX = (near) => Math.max(...cityPts.filter((p) => Math.abs(p[1] - near) < 800).map((p) => p[0]))
-  const FAR = 60000, box = (a, b, c, d) => ({ outer: [[a, b], [c, b], [c, d], [a, d]], holes: [] })
-  const region = [box(-FAR, -FAR, cMinX + 300, FAR), box(-FAR, -FAR, shoreX(cMinZ), cMinZ + 300), box(-FAR, cMaxZ - 300, shoreX(cMaxZ), FAR)]
-  // Land is solid: enclave holes in the city boundary (other municipalities) are still land, never lake.
-  const landLimits = [...landPolys, ...region].map((p) => ({ outer: p.outer, holes: [] }))
-  // The city limits run out into the lake; the real shore is Lake Michigan's own outline (its outer member ways).
-  const landSolid = lakeSideP.length ? landMinusWater({ land: landLimits, water: lakeSideP }) : landLimits
-  log(`shoreline: ${shoreLines.length} ways, lake side ${lakeSideP.length ? 'cut' : 'MISSING — using city limits'}`)
   rmSync(join(OUT, 'ground'), { recursive: true, force: true }) // X-0b: drops the unused Phase-2 ground layers (roads, parks, …: 8 MB nothing loads)
   mkdirSync(join(OUT, 'ground'), { recursive: true })
-  await writeMeshGlb(join(OUT, 'ground', 'land.glb'), flatMesh(landMinusWater({ land: landSolid, water: [...water, ...groundCuts] }), 0)) // D1: open over the Riverwalk and the bridge pits
+  await writeMeshGlb(join(OUT, 'ground', 'land.glb'), flatMesh(landMinusWater({ land: landSolid, water: [...water, ...groundCuts, ...(ll ? beaches : [])] }), 0)) // D1: open over the Riverwalk and the bridge pits; D5: and over the beaches, which slope down into the lake
   writeFileSync(join(OUT, 'land.json'), JSON.stringify({ rings: [...landPolys, ...region].map((p) => simplifyRing(p.outer, 20).map(([x, z]) => [Math.round(x), Math.round(z)])) }))
   const [x0, z0] = project(WORLD_BBOX.w, WORLD_BBOX.n), [x1, z1] = project(WORLD_BBOX.e, WORLD_BBOX.s)
   // ── Horizon: simple blocks on Chicago's grid beyond the detailed world, streamed like far blocks ──
@@ -718,8 +832,7 @@ async function main() {
   log(`horizon: ${hBoxes.length} buildings in ${hChunks.size} chunks`)
 
   // ── Lake Michigan, the shoreline texture, the camera heightfield ────────────
-  const lakePolys = lakePolygons({ center: [shoreX(0), 0], land: landSolid, water })
-  const lakeM = flatMesh(lakePolys, GROUND_Y.lake)
+  const lakeM = flatMesh(lakePolys, ll ? ll.lake : GROUND_Y.lake)
   await writeMeshGlb(join(OUT, 'ground', 'lake.glb'), { ...lakeM, extra: { CALM: new Float32Array(lakeM.positions.length / 3).fill(CALM.lake) } })
   log(`lake: ${lakePolys.length} polygons, ${lakeM.positions.length / 9} triangles`)
   const shoreXs = []
@@ -761,6 +874,17 @@ async function main() {
     }))
     log(`${RIVER_LEVELS_FILE}: ${(statSync(join(OUT, RIVER_LEVELS_FILE)).size / 1e3).toFixed(0)} kB`)
   }
+  // ── B-8: the boats — their instances and the one Blender model the app draws them with ──
+  const HARBOURS_FILE = 'harbours.json', BOATS_MODEL = 'boats.glb', boatSrc = join(ROOT, 'heroes', 'out', 'harbour_boat.glb')
+  rmSync(join(OUT, HARBOURS_FILE), { force: true }); rmSync(join(OUT, BOATS_MODEL), { force: true })
+  let harbourEntry = null
+  if (ll && harbours.length && existsSync(boatSrc)) {
+    const bj = boatsJson(harbours, harbourCfg, { lakeY: ll.lake, model: BOATS_MODEL })
+    writeFileSync(join(OUT, HARBOURS_FILE), JSON.stringify(bj))
+    copyFileSync(boatSrc, join(OUT, BOATS_MODEL))
+    harbourEntry = { file: HARBOURS_FILE, model: BOATS_MODEL, count: bj.boats.length / 7 }
+    log(`${HARBOURS_FILE}: ${harbourEntry.count} boats, ${(statSync(join(OUT, HARBOURS_FILE)).size / 1e3).toFixed(1)} kB; ${BOATS_MODEL} ${(statSync(join(OUT, BOATS_MODEL)).size / 1e3).toFixed(0)} kB`)
+  } else if (ll) log('boats: none (no heroes/out/harbour_boat.glb — run heroes/scripts/harbour_boat.py)')
   // ── The multi-level streets (D2-1): Lower Wacker, Lower Michigan, Lower Columbus … as centrelines the app builds ──
   rmSync(join(OUT, LOWER_LEVELS_FILE), { force: true })
   let lowerEntry = null
@@ -815,8 +939,10 @@ async function main() {
     heightfield: { file: 'heightfield.png', ...hf.grid, scale: HEIGHTFIELD.scale }, minimap: { file: MINIMAP_FILE, bounds: mmBounds, size: 2048 },
     neighborhoods: hoods ? 'neighborhoods.json' : null,
     pois: poiIndex.length ? { index: 'pois-index.json', count: poiIndex.length, categories: POI_CATEGORIES } : null,
+    ...(harbourEntry ? { harbours: harbourEntry } : {}),
     venues: 'venues.json', bridges: 'bridges.json', landmarkRuntime: 'landmarks.json', schedules: existsSync(join(ROOT, 'data', 'schedules.json')) ? 'schedules.json' : null,
-    ...(lv || lowerEntry ? { levels: { ...(lv ? { river: { y: lv.river, riverwalk: lv.riverwalk, file: RIVER_LEVELS_FILE } } : {}), ...(lowerEntry ? { lower: lowerEntry } : {}) } } : {}), // D1-8 / D2: absent = the flat world
+    ...(lv || lowerEntry || ll ? { levels: { ...(lv ? { river: { y: lv.river, riverwalk: lv.riverwalk, file: RIVER_LEVELS_FILE } } : {}), ...(lowerEntry ? { lower: lowerEntry } : {}),
+      ...(ll ? { lake: { y: ll.lake, ponds: perched.filter((p) => p.tags.name).map((p) => ({ name: p.tags.name, y: +p.tags._pond.toFixed(2) })), shore: lakeShoreReport?.metres ?? null } } : {}) } } : {}), // D1-8 / D2 / D5: absent = the flat world
   })) // minified (X-0d)
   if (poiIndex.length) { writeFileSync(join(OUT, 'pois-index.json'), JSON.stringify(poiIndex)); log(`pois-index.json: ${(statSync(join(OUT, 'pois-index.json')).size / 1e6).toFixed(2)} MB`) }
   log('manifest written')

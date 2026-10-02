@@ -6,9 +6,9 @@ import * as THREE from 'three'
 import { useStore } from '../state/store.js'
 import { QUALITY } from '../lib/quality.js'
 import { waterPalette, isGreenRiverDay } from '../lib/waterPalette.js'
-import { waterUniforms, REFLECT_LAYER, WATER_PLANE_Y, loadWaterTextures } from './materials/waterSurface.js'
+import { waterUniforms, REFLECT_LAYER, loadWaterTextures } from './materials/waterSurface.js'
 import { mirrorCamera, textureMatrixFor } from './water/mirror.js'
-import { planeYFor, viewTarget, FLAT } from '../lib/levels.js'
+import { planeYFor, viewTarget, lakePlaneY, FLAT } from '../lib/levels.js'
 import { worldUrl } from '../lib/manifest.js'
 
 const elevOf = (s) => (Math.asin(Math.max(-1, Math.min(1, s[1]))) * 180) / Math.PI
@@ -21,7 +21,7 @@ export default function WaterRig({ sunRef, shore, version, levels = FLAT }) {
   const rt = useMemo(() => new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType }), [])
   const mirror = useMemo(() => { const c = new THREE.PerspectiveCamera(); c.layers.set(REFLECT_LAYER); return c }, [])
   const green = useRef({ at: -Infinity })
-  const plane = useRef({ y: WATER_PLANE_Y, corridor: null })
+  const plane = useRef({ y: lakePlaneY(levels), corridor: null })
   const _p = useMemo(() => new THREE.Vector3(), []), _d = useMemo(() => new THREE.Vector3(), [])
   useEffect(() => {
     const file = levels?.river?.file

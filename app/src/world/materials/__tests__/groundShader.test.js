@@ -13,7 +13,7 @@ describe('ground shader', () => {
     expect(s.uniforms.uNight).toBe(groundUniforms.uNight)
   })
   it('one texture, size and tint per ground layer, in pipeline order (paving: brick plazas, user 2026-09-30)', () => {
-    expect(GROUND_TEXTURES).toEqual(['asphalt', 'sidewalk', 'grass', 'pitch', 'sand', 'gravel', 'sidewalk', 'sidewalk', 'gravel'])
+    expect(GROUND_TEXTURES).toEqual(['asphalt', 'sidewalk', 'grass', 'pitch', 'sand', 'gravel', 'sidewalk', 'sidewalk', 'gravel', 'sidewalk'])
     expect(GROUND_LAYER_COUNT).toBe(GROUND_LAYERS.length) // the pipeline's layer list, index for index
     expect(groundUniforms.uSize.value).toHaveLength(GROUND_LAYER_COUNT)
     expect(groundUniforms.uTint.value).toHaveLength(GROUND_LAYER_COUNT)
@@ -26,7 +26,7 @@ describe('ground shader', () => {
     const [roads, sidewalks, , , , , paving] = LAYER_RANK
     expect(paving).toBeGreaterThan(sidewalks); expect(paving).toBeLessThan(roads)
     expect(patchGroundShader(std()).fragmentShader).toMatch(/li == 6/)
-    expect(createGroundMaterial().customProgramCacheKey()).toBe('ground-v7')
+    expect(createGroundMaterial().customProgramCacheKey()).toBe('ground-v8')
   })
   it('D2-3: the ground also takes the U cut-away (a no-op while uCut is 0)', () => {
     const shader = std()
@@ -47,6 +47,11 @@ describe('ground shader', () => {
     const f = patchGroundShader(std()).fragmentShader
     expect(f).toMatch(/li >= 7\) gcol \*=/)
     expect(f).toMatch(/li >= 7 \? 0\.0/)
+  })
+  it('D5: the lakefront\'s limestone (layer 9) lays coursed blocks and, like the river walls, darkens toward the water', () => {
+    expect(GROUND_LAYERS.indexOf('limestone')).toBe(9)
+    const f = patchGroundShader(std()).fragmentShader
+    expect(f).toMatch(/li == 9/)
   })
   it('water is never pulled in front of the streets that bridge it', () => {
     expect(waterMaterial.polygonOffsetFactor).toBeGreaterThan(createGroundMaterial().polygonOffsetFactor)
