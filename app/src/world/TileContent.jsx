@@ -1,7 +1,9 @@
 // app/src/world/TileContent.jsx — one streamed tile or 2 km block: meshes by name → shared materials,
-// plus (LOD0 only) the tile's trees, rooftop props and L columns.
-import { useEffect, useMemo, useState } from 'react'
+// plus (LOD0 only) the tile's trees, rooftop props and L columns. A LOD0 tile far from the camera draws its
+// LOD1 buildings in place of its own (lib/farDetail.js); everything else stays the LOD0 tile's.
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { useGLTF } from '@react-three/drei'
+import { useFrame, useThree } from '@react-three/fiber'
 import { buildingMaterial, leafMaterial } from './City.jsx'
 import { createGroundMaterial } from './materials/groundShader.js'
 import Trees from './Trees.jsx'
@@ -12,6 +14,10 @@ import { waterMaterial, REFLECT_LAYER } from './materials/waterSurface.js'
 import { TRANSIT_LAYERS, addTileLayer, removeTileLayer } from '../transit/pools.js'
 import { registerTilePois, unregisterTilePois } from './poiRegistry.js'
 import { fetchTileSidecar } from '../lib/tileSidecar.js'
+import { isFar, anyLeafLifted } from '../lib/farDetail.js'
+import { liveLift } from '../bridges/BridgeLeaves.jsx'
+import SafeLoad from './SafeLoad.jsx'
+import { mirrorSkippable } from './water/mirrorCull.js'
 
 export const groundMaterial = createGroundMaterial()
 
@@ -29,7 +35,7 @@ function release(url, scene) {
   }, RELEASE_MS))
 }
 
-export default function TileContent({ id, file, meta, lod, mats, version, onReady }) {
+export default function TileContent({ id, file, meta, lod, mats, version, onReady, far: farSpec }) {
   const url = worldUrl(file, version)
   const { scene } = useGLTF(url, false, true)
   const [side, setSide] = useState(null)
@@ -48,6 +54,35 @@ export default function TileContent({ id, file, meta, lod, mats, version, onRead
     })
     return scene
   }, [scene, mats, lod, id, meta, version])
+  // far detail: this LOD0 tile's own LOD1 buildings stand in while the camera is far away (lib/farDetail.js)
+  const camera = useThree((s) => s.camera)
+  const own = useMemo(() => {
+    const out = { buildings: [], leaves: [] }
+    scene.traverse((o) => { const layer = o.name || o.parent?.name; if (o.isMesh && out[layer]) out[layer].push(o) })
+    return out
+  }, [scene])
+  const standInFile = lod === 'lod0' ? farSpec?.lod1 : null
+  const farNow = (was) => {
+    if (!standInFile) return false
+    if (own.leaves.length && anyLeafLifted(liveLift.angles)) return false // its LOD1 copy shows the leaves closed
+    const p = camera.position
+    return isFar([p.x, p.y, p.z], farSpec.bounds, farSpec.top, was)
+  }
+  const [far, setFar] = useState(() => farNow(false))
+  const farRef = useRef(far)
+  useFrame(() => {
+    if (!standInFile) return
+    const f = farNow(farRef.current)
+    if (f !== farRef.current) { farRef.current = f; setFar(f) }
+  })
+  const [standIn, setStandIn] = useState(null) // 'ready' | 'failed'
+  const showStandIn = far && standIn === 'ready'
+  useEffect(() => {
+    for (const o of own.buildings) o.visible = !showStandIn
+    for (const o of own.leaves) o.visible = !showStandIn
+  }, [own, showStandIn])
+  // a far 2 km block may stay out of the water's mirror (water/mirrorCull.js)
+  useEffect(() => (lod === 'block' ? mirrorSkippable(own.buildings) : undefined), [lod, own])
   // hand this tile's track, stations and glow to the shared batched meshes; take them back on unmount
   useEffect(() => {
     const handles = []
@@ -58,7 +93,10 @@ export default function TileContent({ id, file, meta, lod, mats, version, onRead
     })
     return () => handles.forEach(removeTileLayer)
   }, [scene])
-  useEffect(() => { onReady?.(id, lod) }, [onReady, id, lod])
+  // ready once what this frame should show is in: a tile that starts far waits for its stand-in (the perf probe and
+  // the screenshot tests measure only after every planned tile is ready)
+  const waiting = far && !standIn
+  useEffect(() => { if (!waiting) onReady?.(id, lod) }, [onReady, id, lod, waiting])
   useEffect(() => {
     if (lod !== 'lod0' || !meta) return
     let alive = true
@@ -71,8 +109,34 @@ export default function TileContent({ id, file, meta, lod, mats, version, onRead
   return (
     <>
       <primitive object={obj} />
+      {standInFile && (far || standIn) && (
+        <SafeLoad onError={() => setStandIn('failed')}>
+          <Suspense fallback={null}>
+            <FarStandIn id={id} file={standInFile} meta={meta} version={version} show={showStandIn} onLoaded={setStandIn} />
+          </Suspense>
+        </SafeLoad>
+      )}
       {side?.trees?.length > 0 && <Trees trees={side.trees} />}
       {side?.props?.length > 0 && <RoofProps props={side.props} />}
     </>
   )
+}
+
+// The tile's LOD1 buildings, loaded as their own copy (a '#far' cache key: never the scene object a LOD1 TileContent
+// of the same tile mounts and disposes). Only the buildings draw — and, unlike a LOD1 tile, they cast the shadow the
+// full-detail tile would have cast. Ground, water and glow stay the LOD0 tile's.
+function FarStandIn({ id, file, meta, version, show, onLoaded }) {
+  const url = `${worldUrl(file, version)}#far`
+  const { scene } = useGLTF(url, false, true)
+  useMemo(() => {
+    scene.traverse((o) => {
+      if (!o.isMesh) return
+      if ((o.name || o.parent?.name) !== 'buildings') { o.visible = false; return }
+      o.material = buildingMaterial; o.castShadow = true; o.receiveShadow = true; o.layers.enable(REFLECT_LAYER)
+      o.userData = { tileId: id, lod: 'lod1', metaUrl: meta ? worldUrl(meta, version) : null } // P4 picking
+    })
+  }, [scene, id, meta, version])
+  useEffect(() => { onLoaded('ready') }, [onLoaded])
+  useEffect(() => { retain(url); return () => release(url, scene) }, [scene, url])
+  return <primitive object={scene} visible={show} />
 }

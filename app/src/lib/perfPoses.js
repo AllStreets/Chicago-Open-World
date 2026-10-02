@@ -7,6 +7,10 @@ export const PERF_POSES = {
   wideLoop: { position: [-3600, 1100, 2600], target: [0, 60, -300] },
   // the densest view (= BOOKMARKS.loop): above Willis looking NE across the Loop
   densest: { position: [-1100, 520, 900], target: [150, 40, -500] },
+  // low over the river (D1 · the triangle pass): the water's mirror, the shadow map and the Bean's cube all at work —
+  // down the main-stem canyon from the east (= BOOKMARKS.river), and at the Riverwalk's level looking east to the lake
+  riverCanyon: { position: [950, 140, -760], target: [-700, 40, -560] },
+  riverLevel: { position: [-300, -3.5, -575], target: [300, -3, -600] },
   // E3 / X-1: the United Center board — the crown and its parapet ribbon in frame
   unitedCenter: { position: [-3655, 88, 375], target: [-3846, 44, 150] },
   // E4 / X-1: Wrigley mid-showcase — a full bowl, the players, the board and the marquee ticking

@@ -8,6 +8,7 @@ import { QUALITY } from '../lib/quality.js'
 import { waterPalette, isGreenRiverDay } from '../lib/waterPalette.js'
 import { waterUniforms, REFLECT_LAYER, WATER_PLANE_Y, loadWaterTextures } from './materials/waterSurface.js'
 import { mirrorCamera, textureMatrixFor } from './water/mirror.js'
+import { hideFarForMirror } from './water/mirrorCull.js'
 import { planeYFor, viewTarget, FLAT } from '../lib/levels.js'
 import { worldUrl } from '../lib/manifest.js'
 
@@ -64,7 +65,8 @@ export default function WaterRig({ sunRef, shore, version, levels = FLAT }) {
     gl.shadowMap.autoUpdate = false // reuse this frame's shadow map; never render the shadow pass twice
     gl.setRenderTarget(rt)
     gl.clear()
-    gl.render(scene, mirror)
+    const restore = hideFarForMirror(camera)
+    try { gl.render(scene, mirror) } finally { restore() }
     gl.setRenderTarget(prev)
     gl.shadowMap.autoUpdate = autoShadow
     u.uReflection.value = rt.texture

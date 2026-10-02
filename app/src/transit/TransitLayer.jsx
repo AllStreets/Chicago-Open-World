@@ -8,6 +8,7 @@ import { getTransitPools } from './pools.js'
 import { glowUniforms, structureUniforms, setLineMask } from './transitMaterials.js'
 import { setLineIndex } from './lineEmphasis.js'
 import { useLineAlerts } from './lineAlerts.js'
+import { skipInCube } from '../landmarks/cubeFaces.js'
 
 export default function TransitLayer() {
   const pools = getTransitPools()
@@ -19,6 +20,7 @@ export default function TransitLayer() {
   useEffect(() => { setLineIndex(lines ?? []) }, [lines])
   useEffect(() => { glowUniforms.uPulseAnim.value = quality === 'LOW' ? 0 : 1 }, [quality]) // LOW: a steady brightening, no animation
   useLineAlerts()
+  useEffect(() => skipInCube([pools.structure.mesh]), [pools]) // girders and ties: under a pixel in the Bean's 128 px faces
   useEffect(() => { structureUniforms.uAccent.value = on ? 1 : 0; pools.glow.mesh.visible = on }, [on, pools])
   useEffect(() => { if (new URLSearchParams(window.location.search).has('stats')) window.__transitPools = pools }, [pools])
   useFrame(({ camera, size, gl, clock }) => {

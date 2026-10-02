@@ -1,5 +1,5 @@
 {
- "total": 179538043,
+ "total": 179545073,
  "entries": {
   "blocks": 42044511,
   "blocks:glb": 42023740,
@@ -23,7 +23,7 @@
   "tiles:glb": 90625844,
   "tiles:json": 4874852,
   "tiles:lod1.glb": 33209944,
-  "traffic.bin": 337674,
+  "traffic.bin": 344704,
   "trains.glb": 105776,
   "transit.json": 1015647,
   "venues": 1133656,
