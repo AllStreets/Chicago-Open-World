@@ -19,8 +19,6 @@ export const NEIGHBORHOODS = [
   // X-2: river and Lincoln Park places that are open ground or water, not a building (so not in manifest.landmarks)
   N('Pioneer Court', 41.8897, -87.6239, 'Plaza', ['Pioneer Ct']),
   N('McCormick Bridgehouse & Chicago River Museum', 41.8874, -87.6247, 'Museum', ['bridge house', 'bridgehouse', 'Chicago River Museum']),
-  N('Diversey Harbor', 41.9322, -87.6342, 'Harbor', ['Diversey Yacht Club', 'Lincoln Park Boat Club']),
-  N('Belmont Harbor', 41.9418, -87.6372, 'Harbor', ['Chicago Yacht Club Belmont Station', 'Belmont Harbor Market']),
   N('Lincoln Park Lagoon', 41.9255, -87.6328, 'Park', ['Lagoon', 'rowing canal', 'South Lagoon']),
 ]
 
@@ -55,6 +53,12 @@ export const VIEW_NAMES = {
   harborlock: 'Chicago Harbor Lock', belmontharbor: 'Belmont Harbor', diverseyharbor: 'Diversey Harbor', northavebeach: 'North Avenue Beach',
 }
 
+// X-2: what people also call a view's subject (the harbours' clubs and market, the lock's house, the beach)
+export const VIEW_ALIASES = {
+  diverseyharbor: ['Diversey Yacht Club', 'Lincoln Park Boat Club'], belmontharbor: ['Chicago Yacht Club', 'Belmont Station', 'Belmont Harbor Market'],
+  harborlock: ['Lock House', 'the lock'], northavebeach: ['beach', 'North Ave Beach'], riverwalk: ['Riverwalk'],
+}
+
 export function buildPlaces(manifest, bookmarks) {
   const out = []
   for (const l of manifest?.landmarks ?? []) out.push({ id: `lm:${l.key}`, kind: 'landmark', name: l.name, aliases: l.aliases ?? [], sub: `${l.top} m · Landmark`, pose: poseForPlace(l) })
@@ -64,7 +68,7 @@ export function buildPlaces(manifest, bookmarks) {
     out.push({ id: `nb:${n.name}`, kind: 'neighborhood', name: n.name, sub: n.sub, aliases: n.aliases ?? [], pose: poseForPlace({ x, z, top: 170 }) })
   }
   out.push(...riverwalkRooms(manifest))
-  for (const [key, pose] of Object.entries(bookmarks)) if (VIEW_NAMES[key]) out.push({ id: `vw:${key}`, kind: 'view', name: VIEW_NAMES[key], sub: 'View', pose })
+  for (const [key, pose] of Object.entries(bookmarks)) if (VIEW_NAMES[key]) out.push({ id: `vw:${key}`, kind: 'view', name: VIEW_NAMES[key], sub: 'View', aliases: VIEW_ALIASES[key] ?? [], pose })
   return out
 }
 

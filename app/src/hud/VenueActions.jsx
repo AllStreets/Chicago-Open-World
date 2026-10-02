@@ -26,7 +26,7 @@ export default function VenueActions({ venueKey }) {
   return (
     <div className="venue-actions">
       {venue.crown && <p className="va-crown"><span className="va-bulls" aria-hidden="true" />{names(venue.teams)} — the board on the roof shows the next game, live scores and finals <span className="va-note">(a guide display, not a real fixture)</span></p>}
-      <p className="va-explain">{open ? `${EXPLAIN_OPEN} ${EXPLAIN_PLAY}` : `${EXPLAIN_ARENA}${venue.crown ? ' on the roof board' : ''}.`}</p>
+      <p className="va-explain">{open ? (gate === 'live' && !running ? EXPLAIN_OPEN : `${EXPLAIN_OPEN} ${EXPLAIN_PLAY}`) : `${EXPLAIN_ARENA}${venue.crown ? ' on the roof board' : ''}.`}</p>
       {open && (running ? (
         <button type="button" className="hud-pill active va-play" aria-pressed="true" onClick={stopShowcase}><RiStopFill aria-hidden="true" /> Stop the game</button>
       ) : gate === 'live' ? (

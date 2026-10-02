@@ -50,7 +50,9 @@ const SITES = [
   ['Kwanusila', 'Kwanusila totem pole'], ['Diversey Harbor', 'Diversey Harbor'], ['Diversey Yacht Club', 'Diversey Harbor'], ['Lincoln Park Boat Club', 'Diversey Harbor'],
   ['Lagoon', 'Lincoln Park Lagoon'], ['Diversey Driving Range', 'Diversey Driving Range'], ['mini golf', 'Diversey Driving Range'], ['Belmont Harbor', 'Belmont Harbor'],
   ['Chicago Yacht Club', 'Belmont Harbor'], ['Belmont Harbor Market', 'Belmont Harbor'], ['Waveland Clock Tower', 'Waveland Clock Tower'], ['Sydney R. Marovitz Golf Course', 'Waveland Clock Tower'],
-  ['Lakefront Trail', 'Walk: The Lakefront Trail: Grant Park to the Museum Campus'], ['Elks National Memorial', 'Elks National Veterans Memorial'], ['Lincoln Park Cultural Center', 'Lincoln Park Cultural Center'],
+  ['Harbor Lock', 'Chicago Harbor Lock'], ['Chicago Lock', 'Chicago Harbor Lock'], ['North Avenue Beach', 'North Avenue Beach'], ['North Ave Beach', 'North Avenue Beach'],
+  ['Oak Street Beach', 'Oak Street Beach'], ['lighthouse', 'Chicago Harbor Lighthouse'],
+  ['Lakefront Trail','Walk: The Lakefront Trail: Grant Park to the Museum Campus'], ['Elks National Memorial', 'Elks National Veterans Memorial'], ['Lincoln Park Cultural Center', 'Lincoln Park Cultural Center'],
 ]
 describe('search coverage', () => {
   const all = buildPlaces(manifest, BOOKMARKS)
