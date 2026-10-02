@@ -341,11 +341,8 @@ Shipped (C-1…C-6 sound toast; C-fix-1…5 follow/tour/ride-safe toggles incl. 
 - Budgets: ≤ 900 draw calls, ≤ 4 M triangles, about 60 fps.
 - Heroes merge into the tile `buildings` layer (0 new calls). Dockwalls and revetments go in the ground mesh (0). Lower decks are one merged mesh per visible region (≤ 3 calls, drawn only when needed). Lower traffic reuses the instanced vehicles (0). Moored boats are one InstancedMesh (+1). The toast is DOM (0).
 - Triangles: A + B add ≤ ≈ 0.6 M at LOD0 if everything is in view at once (it never is). Lower decks ≤ 60 k.
-- [ ] **X-1** Add perf poses: "river canyon" (Wolf Point looking east, 60 m), "Lincoln Park zoo" (150 m), "Lower Wacker cutaway" (U on), "United Center board" (E3, night), "Wrigley showcase" (E4, mid-game). **Done when** `perf.spec.js` records ≥ 58 fps and ≤ 900 calls at each, at 1 worker, 3 runs.
 
 ### 6.3 ⌘K, help, hints, README
-- [ ] **X-2 ⌘K:** every A/B site name and alias, "Lower levels", "Drive Lower Wacker", "Riverwalk (river level)", "Art on theMART", "Centennial Fountain", "Lincoln Park tour", and E4's "Play a Cubs game at Wrigley Field", "Play a White Sox game at Rate Field", "Play a Bears game at Soldier Field", "Play a Fire match at Soldier Field", "Stop the game". **Done when** `searchCoverage.test.js` enumerates them.
-- [ ] **X-3 Help card:** U line, updated M line, K "change the view (ride or follow)" (C-fix-3), Y "Play a game" and the Games paragraph (E4-4, E5-2), Riverwalk and Lower Wacker ride lines. **Done when** `help.test.jsx` is green and the hint bar has no dead entry.
 - [ ] **X-4 README:** new gallery sections ("River icons", "Lincoln Park", "The river at its real depth"), sports frames (United Center board E3-4, "Play a game" E4-6), a "Live data" paragraph (E1-5), Controls (M toast, U, Y, K), a Roadmap line for this pass, a Parked list, and Evolution rows: river same-pose (flat → sunk with the Riverwalk), Marina/Trump at the water, the Conservatory, the Lion House. Old frames move to `docs/screenshots/evolution/`. **Done when** every image link resolves, there are no empty table cells, and no orphan screenshots remain.
 
 ### 6.4 Test and gate plan
@@ -481,7 +478,6 @@ Nothing is missing.
 Done 2026-10-01 and removed: F-1 weather menu, F-3 keycaps, F-4 ride names, F-5 swatches, F-6 ride panel placement, F-7 ride audio.
 
 
-- [ ] **F-2 Sports go/no-go check.** After Workstream E merges: verify in the browser that all five venues (Wrigley, Rate Field, Soldier Field, United Center, Wintrust) show fresh data from `/api/schedule`, live/pregame/final states, the "Play a game" showcase at the three open-air venues, the W flag, cheers with sound on, and the staleness labels. **Done when** a checked list with screenshots is in the final report.
 - Note on redeploys: production `b9f7935` was verified live 2026-10-01 (assets + world tiles byte-identical). Vercel deployment storage is near its limit — offer to prune old deployments before the big world-changing stages.
 
 ### 10.1 Audit rows (2026-10-01 additions)

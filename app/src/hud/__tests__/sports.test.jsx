@@ -102,6 +102,7 @@ describe('venue cards: live-game copy and Play a game', () => {
     render(<VenueActions venueKey="ratefield" />)
     expect(screen.queryByRole('button', { name: /Play/ })).toBeNull()
     expect(screen.getByText(/Live now — this is the real game/)).toBeInTheDocument()
+    expect(screen.queryByText(/Press ▶ Play a game/)).toBeNull() // F-2: no pointer to a button that's hidden
   })
   it('a real pregame: the button is disabled and says when to watch', () => {
     const start = new Date(Date.now() + 3600e3).toISOString()

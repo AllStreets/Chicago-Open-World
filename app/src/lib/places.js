@@ -1,8 +1,9 @@
 // app/src/lib/places.js — everything a person can search for and fly to.
 import { project } from '../../../shared/project.js'
 import { poseForPlace } from './flight.js'
+import riverwalk from '../../../pipeline/data/riverwalk.json'
 
-const N = (name, lat, lon, sub = 'Neighborhood') => ({ name, sub, lat, lon })
+const N = (name, lat, lon, sub = 'Neighborhood', aliases) => ({ name, sub, lat, lon, ...(aliases ? { aliases } : {}) })
 export const NEIGHBORHOODS = [
   N('The Loop', 41.8818, -87.6298), N('River North', 41.8924, -87.6341), N('Streeterville', 41.8927, -87.6197),
   N('Magnificent Mile', 41.8953, -87.6242), N('Gold Coast', 41.9048, -87.6275), N('Old Town', 41.9107, -87.638),
@@ -15,7 +16,28 @@ export const NEIGHBORHOODS = [
   N('Museum Campus', 41.8661, -87.6167, 'Lakefront'), N('Navy Pier', 41.8917, -87.6086, 'Lakefront'),
   N('Millennium Park', 41.8826, -87.6226, 'Park'), N('Grant Park', 41.8739, -87.6194, 'Park'),
   N('Northerly Island', 41.8603, -87.609, 'Park'), N('Bridgeport', 41.838, -87.6515), N('Bronzeville', 41.831, -87.618),
+  // X-2: river and Lincoln Park places that are open ground or water, not a building (so not in manifest.landmarks)
+  N('Pioneer Court', 41.8897, -87.6239, 'Plaza', ['Pioneer Ct']),
+  N('McCormick Bridgehouse & Chicago River Museum', 41.8874, -87.6247, 'Museum', ['bridge house', 'bridgehouse', 'Chicago River Museum']),
+  N('Lincoln Park Lagoon', 41.9255, -87.6328, 'Park', ['Lagoon', 'rowing canal', 'South Lagoon']),
 ]
+
+// X-2: the Riverwalk's rooms (pipeline/data/riverwalk.json, the same names as the river-level labels) by the bridges
+// that bound them; a flight frames the room from just above the south bank, the way clicking its label does. Kind
+// 'place' (no ranking bonus), so "Riverwalk" still finds the Chicago Riverwalk first and not "Riverwalk East"
+const RIVERWALK_ENDS = { east: 'bridge-columbus', west: 'bridge-lake' } // a room with no bridge on one side runs to these
+export function riverwalkRooms(manifest) {
+  const lm = new Map((manifest?.landmarks ?? []).map((l) => [l.key, l]))
+  const y = manifest?.levels?.river?.riverwalk ?? -5.3
+  const out = []
+  for (const r of riverwalk.rooms ?? []) {
+    const e = lm.get(r.east ? `bridge-${r.east}` : RIVERWALK_ENDS.east), w = lm.get(r.west ? `bridge-${r.west}` : RIVERWALK_ENDS.west)
+    if (!e || !w) continue
+    const x = Math.round((e.x + w.x) / 2), z = Math.round((e.z + w.z) / 2 + 22) // the south bank, a little south of the bridges' middles
+    out.push({ id: `rw:${r.key}`, kind: 'place', name: r.name, aliases: [`${r.name} (Riverwalk)`], sub: 'Riverwalk · river level', x, z, pose: { position: [x, 45, z + 70], target: [x, y, z] } })
+  }
+  return out
+}
 
 export const VIEW_NAMES = {
   streeterville: 'Streeterville from the lake', loop: 'The Loop from above', river: 'Down the Chicago River',
@@ -31,15 +53,22 @@ export const VIEW_NAMES = {
   harborlock: 'Chicago Harbor Lock', belmontharbor: 'Belmont Harbor', diverseyharbor: 'Diversey Harbor', northavebeach: 'North Avenue Beach',
 }
 
+// X-2: what people also call a view's subject (the harbours' clubs and market, the lock's house, the beach)
+export const VIEW_ALIASES = {
+  diverseyharbor: ['Diversey Yacht Club', 'Lincoln Park Boat Club'], belmontharbor: ['Chicago Yacht Club', 'Belmont Station', 'Belmont Harbor Market'],
+  harborlock: ['Lock House', 'the lock'], northavebeach: ['beach', 'North Ave Beach'], riverwalk: ['Riverwalk'],
+}
+
 export function buildPlaces(manifest, bookmarks) {
   const out = []
   for (const l of manifest?.landmarks ?? []) out.push({ id: `lm:${l.key}`, kind: 'landmark', name: l.name, aliases: l.aliases ?? [], sub: `${l.top} m · Landmark`, pose: poseForPlace(l) })
   for (const t of manifest?.tallest ?? []) out.push({ id: `tb:${t.key}`, kind: 'landmark', name: t.name, sub: `${t.top} m · Tower`, pose: poseForPlace(t) })
   for (const n of NEIGHBORHOODS) {
     const [x, z] = project(n.lon, n.lat)
-    out.push({ id: `nb:${n.name}`, kind: 'neighborhood', name: n.name, sub: n.sub, pose: poseForPlace({ x, z, top: 170 }) })
+    out.push({ id: `nb:${n.name}`, kind: 'neighborhood', name: n.name, sub: n.sub, aliases: n.aliases ?? [], pose: poseForPlace({ x, z, top: 170 }) })
   }
-  for (const [key, pose] of Object.entries(bookmarks)) if (VIEW_NAMES[key]) out.push({ id: `vw:${key}`, kind: 'view', name: VIEW_NAMES[key], sub: 'View', pose })
+  out.push(...riverwalkRooms(manifest))
+  for (const [key, pose] of Object.entries(bookmarks)) if (VIEW_NAMES[key]) out.push({ id: `vw:${key}`, kind: 'view', name: VIEW_NAMES[key], sub: 'View', aliases: VIEW_ALIASES[key] ?? [], pose })
   return out
 }
 

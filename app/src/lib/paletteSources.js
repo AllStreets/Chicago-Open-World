@@ -24,7 +24,7 @@ export function featurePlaces(state) {
 }
 
 export function featureCommands() {
-  return FEATURE_CONTROLS.map((c) => ({ id: `f:${c.id}`, kind: 'command', name: c.commandName ?? `${c.label}: on / off`, sub: `${c.keyLabel} · ${c.help}`, aliases: [c.label], run: () => { if (c.available()) c.toggle() } }))
+  return FEATURE_CONTROLS.map((c) => ({ id: `f:${c.id}`, kind: 'command', name: c.commandName ?? `${c.label}: on / off`, sub: `${c.keyLabel} · ${c.help}`, aliases: [c.label, ...(c.aliases ?? [])], run: () => { if (c.available()) c.toggle() } }))
 }
 
 // The guide's lenses (P4): a command always opens its lens (the rail toggles); "Close lens" closes whichever is open.
@@ -49,7 +49,7 @@ export function placeCommands() {
 
 // Tours (P4): each of the three guided tours, from ⌘K
 export function tourCommands() {
-  return TOURS.map((t) => ({ id: `tour:${t.id}`, kind: 'guide', name: `Tour: ${t.name}`, sub: `${t.stops.length} stops · Space pauses, , and . step, Esc exits`, aliases: ['tour', t.name], run: () => startTour(t.id, useStore) }))
+  return TOURS.map((t) => ({ id: `tour:${t.id}`, kind: 'guide', name: `Tour: ${t.name}`, sub: `${t.stops.length} stops · Space pauses, , and . step, Esc exits`, aliases: ['tour', t.name, `${t.name.split(/[,:&]/)[0].trim()} tour`], run: () => startTour(t.id, useStore) }))
 }
 
 // Typed addresses (P4 WORK): "333 N Green" → set it as the office (and open WORK), or fly there
@@ -91,6 +91,6 @@ export function rideCommands() {
   return rides.map((r) => ({
     id: `ride:${r.id}`, kind: 'guide', name: r.kind === 'glide' ? r.name : `${RIDE_PREFIX[r.kind]}: ${r.name}`,
     sub: r.kind === 'L' ? 'Ride the L · front window, alongside or behind' : r.kind === 'bus' ? 'Ride a CTA bus' : r.kind === 'walk' ? 'Street-level walk' : r.kind === 'drive' ? 'Under the street · from the front of a bus' : 'Hang-glide · ↑ dive ↓ climb',
-    aliases: ['ride', r.kind === 'walk' ? 'walk' : r.kind === 'bus' ? 'bus' : r.kind === 'glide' ? 'glide' : r.kind === 'drive' ? 'drive' : 'train', ...(r.ref ? [`bus ${r.ref}`, `#${r.ref}`, `${r.ref} bus`] : []), ...(r.kind === 'drive' ? ['Drive Lower Wacker', 'lower levels', 'under the street'] : [])], run: () => startRide(r.id),
+    aliases: ['ride', r.kind === 'walk' ? 'walk' : r.kind === 'bus' ? 'bus' : r.kind === 'glide' ? 'glide' : r.kind === 'drive' ? 'drive' : 'train', ...(r.ref ? [`bus ${r.ref}`, `#${r.ref}`, `${r.ref} bus`] : []), ...(r.kind === 'drive' ? ['Drive Lower Wacker', 'lower levels', 'under the street'] : []), ...(r.level === 'riverwalk' ? ['Riverwalk (river level)', 'river level', 'walk the Riverwalk'] : [])], run: () => startRide(r.id),
   }))
 }
