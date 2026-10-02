@@ -590,9 +590,15 @@
     },
     {
       "key": "stregis-gap",
-      "base": "#1d2326",
+      "base": "#14181a",
       "finish": "concrete",
-      "source": "https://en.wikipedia.org/wiki/St._Regis_Chicago (the open blow-through floor in shadow; photo-matched)"
+      "source": "https://en.wikipedia.org/wiki/St._Regis_Chicago (the blow-through void's slabs, inner wall and columns in shadow; photo-matched)"
+    },
+    {
+      "key": "stregis-grille",
+      "base": "#63737a",
+      "finish": "metal",
+      "source": "https://en.wikipedia.org/wiki/St._Regis_Chicago (the blow-through's 24 ft vertical grates, painted to match the dark glass; photo-matched)"
     },
     {
       "key": "wacker333-stainless",

@@ -207,7 +207,50 @@ function trump({ pieces, sp, main }) {
 
 // St. Regis Chicago (Studio Gang, 2020): three stacks of alternating frustums, each leaning out 1.6 m over 13 floors
 // and back over the next 13 (a 24.4 m ↔ 27.4 m floor plate); glass dark at a frustum's waist and bright at its belt
-// (six shades, three rows here); the open blow-through floor near the top of the tallest stack.
+// (six shades, three rows here); the blow-through near the top of the tallest stack — one continuous two-storey void
+// (floor 83 in the tower's numbering, 24 ft / 7.3 m tall) closed by a floor slab and a soffit, a dark inner wall and
+// columns behind a fine vertical steel grille painted like the glass, so it reads as a dark band and never see-through.
+// The blow-through between two frustum rings at y0/y1: slabs, inner wall, columns and the grille.
+export function blowThrough(outerA, outerB, y0, y1, { every = 0.5, finW = 0.09, finD = 0.4, inset = 2.4, slabH = 0.6, col = 0.9 } = {}) {
+  const A = ensureCCW(outerA), B = ensureCCW(outerB), n = A.length
+  const lerp = (p, q, f) => [p[0] + (q[0] - p[0]) * f, p[1] + (q[1] - p[1]) * f]
+  // the floor slab (top of the frustum below, facing up) and the soffit (underside of the frustum above, facing down)
+  const slabs = capRing(mesh(), A, y0)
+  capRing(slabs, B, y1, true)
+  // the dark inner wall (a solid core face set back `inset` from the glass line) with its own floor and ceiling ring
+  const IA = offsetRing(A, -inset), IB = offsetRing(B, -inset)
+  const inner = loft([IA, IB], [y0, y1], { cap: false })
+  // the structure behind the grille: square columns at the plate corners and mid-edges, inside the glass line
+  const cols = mesh()
+  for (let i = 0; i < n; i++) {
+    const j = (i + 1) % n
+    for (const f of [0, 0.5]) {
+      const pa = lerp(A[i], A[j], f), pb = lerp(B[i], B[j], f), mid = lerp(pa, pb, 0.5), c = ringCentroid(A)
+      const toC = norm2(sub2(c, mid)), at = add2(mid, mul2(toC, inset * 0.45))
+      slab(cols, at, norm2(sub2(A[j], A[i])), col, col, y0, y1)
+    }
+  }
+  // the grille: thin vertical fins on the glass line, leaning with the frustum, `finD` deep into the void, and a
+  // slab-edge band top and bottom
+  const grille = mesh()
+  for (let i = 0; i < n; i++) {
+    const j = (i + 1) % n, d = sub2(A[j], A[i]), len = Math.hypot(...d)
+    if (len < 0.3) continue
+    const t = mul2(d, 1 / len), nn = [-t[1], t[0]], k = Math.max(1, Math.round(len / every))
+    for (let m = 0; m < k; m++) {
+      const f = (m + 0.5) / k, a = lerp(A[i], A[j], f), b = lerp(B[i], B[j], f)
+      const P = (p, s, dd, y) => [p[0] + t[0] * s - nn[0] * dd, y, p[1] + t[1] * s - nn[1] * dd]
+      quad(grille, P(a, -finW / 2, 0, y0), P(a, finW / 2, 0, y0), P(b, finW / 2, 0, y1), P(b, -finW / 2, 0, y1), [nn[0], 0, nn[1]])
+      for (const sg of [-1, 1]) quad(grille, P(a, (sg * finW) / 2, 0, y0), P(a, (sg * finW) / 2, finD, y0), P(b, (sg * finW) / 2, finD, y1), P(b, (sg * finW) / 2, 0, y1), [t[0] * sg, 0, t[1] * sg])
+    }
+    const ext = 0.02
+    for (const [p0, p1, yb, yt] of [[A[i], A[j], y0, y0 + slabH], [B[i], B[j], y1 - slabH, y1]]) {
+      const o = mul2(nn, ext)
+      quad(grille, Y(add2(p0, o), yb), Y(add2(p1, o), yb), Y(add2(p1, o), yt), Y(add2(p0, o), yt), [nn[0], 0, nn[1]])
+    }
+  }
+  return { slabs, inner, cols, grille }
+}
 function stregis({ pieces, sp }) {
   const stacks = pieces.filter((p) => p.top > (sp.stackMinM ?? 100)).sort((a, b) => b.top - a.top)
   const module = sp.moduleM ?? 47, sMin = sp.waistScale ?? 0.89, meshes = []
@@ -216,7 +259,7 @@ function stregis({ pieces, sp }) {
     const c = ringCentroid(p.outer), phase = idx === 1 ? 1 : 0 // the middle stack's belts meet the outer stacks' waists
     const sAt = (y) => { const k = Math.floor(y / module), f = y / module - k, up = (k + phase) % 2 === 0; return up ? sMin + (1 - sMin) * f : 1 - (1 - sMin) * f }
     const gap = idx === 0 && sp.gapM ? [sp.gapM, sp.gapM + (sp.gapH ?? 7.2)] : null
-    let y = 0
+    let y = 0, gapDone = false
     while (y < p.top - 0.01) {
       const yEnd = Math.min(p.top, (Math.floor(y / module + 1e-9) + 1) * module)
       // thirds of each frustum: the shade follows the plate width (narrow = dark)
@@ -224,11 +267,15 @@ function stregis({ pieces, sp }) {
         let a = y + ((yEnd - y) * t) / 3, b = y + ((yEnd - y) * (t + 1)) / 3
         const mid = (a + b) / 2, s = sAt(mid), shade = s < sMin + (1 - sMin) / 3 ? 0 : s < sMin + (2 * (1 - sMin)) / 3 ? 1 : 2
         if (gap && b > gap[0] && a < gap[1]) {
-          // the blow-through: a recessed open floor (the core only) between gap[0] and gap[1]
+          // the blow-through: an open two-storey void, closed and screened (see blowThrough)
           if (a < gap[0]) pushAll(shades[shade], loft([scaleRing(p.outer, c, sAt(a)), scaleRing(p.outer, c, sAt(gap[0]))], [a, gap[0]], { cap: false }))
-          meshes.push(part(loft([scaleRing(p.outer, c, 0.42), scaleRing(p.outer, c, 0.42)], [gap[0], gap[1]], { cap: false }), F.paint, 'stregis-gap', 'blow-through'))
-          meshes.push(part(capRing(mesh(), scaleRing(p.outer, c, sAt(gap[0])), gap[0], true), F.paint, 'stregis-gap', 'gap-soffit'))
-          meshes.push(part(capRing(mesh(), scaleRing(p.outer, c, sAt(gap[1])), gap[1]), F.paint, 'stregis-gap', 'gap-floor'))
+          if (!gapDone) {
+            gapDone = true
+            const bt = blowThrough(scaleRing(p.outer, c, sAt(gap[0])), scaleRing(p.outer, c, sAt(gap[1])), gap[0], gap[1])
+            meshes.push(part(bt.slabs, F.paint, 'stregis-gap', 'gap-slabs', { lod1: true }))
+            meshes.push(part(merge(bt.inner, bt.cols), F.paint, 'stregis-gap', 'blow-through', { lod1: true }))
+            meshes.push(part(bt.grille, F.steel, 'stregis-grille', 'grille'))
+          }
           if (b > gap[1]) pushAll(shades[shade], loft([scaleRing(p.outer, c, sAt(gap[1])), scaleRing(p.outer, c, sAt(b))], [gap[1], b], { cap: false }))
           continue
         }
