@@ -1,0 +1,33 @@
+{
+  "note": "Open storeys (pipeline/lib/gaps.js): every building whose pieces leave a vertical gap is closed — never see-through, never an invisible interior (user, 2026-10-02). A building listed here gets a verdict that overrides the automatic one ('storey': slabs, dark recessed core, flat steel plates at the corners and every ~4.5 m; 'canopy': soffit and steel posts; 'facade': continuous façade), and `parts` corrects OSM part tags that are data errors before the gap is looked for. The build checks that every building listed here still exists and writes every gap it closes to pipeline/world-gaps.json.",
+  "buildings": {
+    "w136340574": {
+      "name": "McCormick Place Lakeside Center",
+      "verdict": "data-error",
+      "note": "OSM gives the hall roof as a 90–100 m slab (and one part 100 m tall) over a 30 m hall: the numbers are feet. The 1971 Lakeside Center is about 100 ft (30.5 m) tall under its 75-foot cantilevered roof; with heights in metres the roof sits on the hall and there is no gap.",
+      "parts": {
+        "1025043590": { "height": "30.5" },
+        "1025043591": { "height": "30.5", "min_height": "27.4" }
+      },
+      "source": "https://en.wikipedia.org/wiki/McCormick_Place"
+    },
+    "w1177923716": {
+      "name": "Marina City 1",
+      "verdict": "storey",
+      "note": "real: the open ring between the 19th-floor parking ramp and the first apartment floor (OSM: 45–55 m), the concrete core visible behind it. The LOD0 sculpt draws the tower's own slabs and core; the LOD1 tile and the 2 km block close the ring with a soffit, a dark core and steel plates.",
+      "source": "https://en.wikipedia.org/wiki/Marina_City"
+    },
+    "w284822929": {
+      "name": "Marina City 2",
+      "verdict": "storey",
+      "note": "as Marina City 1.",
+      "source": "https://en.wikipedia.org/wiki/Marina_City"
+    },
+    "w151960687": {
+      "name": "Science and Engineering Laboratories (UIC)",
+      "verdict": "canopy",
+      "note": "OSM maps one roof (building:part=roof, 12–13 m) over both laboratory wings and the passage between them: the passage is open air under a roof, so it gets a soffit and steel posts, not a core.",
+      "source": "https://www.openstreetmap.org/way/1546132226"
+    }
+  }
+}

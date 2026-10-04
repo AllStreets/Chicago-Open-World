@@ -76,6 +76,8 @@ export function applyBuildingParts(buildings, osmParts) {
       outer: p.outer,
       holes: p.holes,
       base: parseHeightTag(p.tags.min_height) ?? 0,
+      role: p.tags['building:part'] ?? 'yes', // 'roof' marks a canopy (gaps.js)
+      partId: p.id,
       // untagged parts inherit the building's height instead of a generic default
       top: p.tags.height || p.tags['building:levels'] ? resolveHeight({ osmHeight: p.tags.height, osmLevels: p.tags['building:levels'] }) : b.height,
     })
