@@ -19,6 +19,7 @@ import { add2, sub2, mul2, dot2, norm2, norm3, cross3, left, bearing, mesh, tri,
 import { LANDMARK_FACADES as F } from './facadeIds.js'
 import { project } from '../../shared/project.js'
 import { waterLevels } from './waterLevels.js'
+import { openStorey } from './gaps.js'
 
 export const part = (m, facade, style, name, { lod1 = false, seed = 0.5 } = {}) => ({ mesh: m, facade, seed, style, part: name, lod1 })
 const Y = (p, y) => [p[0], y, p[1]]
@@ -74,11 +75,12 @@ export function exposedEdges(pieces, minLen = 0.8) {
 
 // ── Meshes ────────────────────────────────────────────────────────────────────────────────────────────────────
 // A fin or pier standing `d` proud of a wall: its face, two sides and a top (never seen from inside or below).
-export function finAt(out, at, t, n, w, d, y0, y1, cap = true) {
+export function finAt(out, at, t, n, w, d, y0, y1, cap = true, back = false) {
   const Q = (s, dd, y) => [at[0] + t[0] * s + n[0] * dd, y, at[1] + t[1] * s + n[1] * dd]
   quad(out, Q(-w / 2, d, y0), Q(w / 2, d, y0), Q(w / 2, d, y1), Q(-w / 2, d, y1), [n[0], 0, n[1]], [0, y0, w, y1])
   for (const s of [-1, 1]) quad(out, Q((s * w) / 2, 0, y0), Q((s * w) / 2, d, y0), Q((s * w) / 2, d, y1), Q((s * w) / 2, 0, y1), [t[0] * s, 0, t[1] * s], [0, y0, d, y1])
   if (cap) quad(out, Q(-w / 2, 0, y1), Q(w / 2, 0, y1), Q(w / 2, d, y1), Q(-w / 2, d, y1), [0, 1, 0])
+  if (back) quad(out, Q(-w / 2, 0, y0), Q(w / 2, 0, y0), Q(w / 2, 0, y1), Q(-w / 2, 0, y1), [-n[0], 0, -n[1]], [0, y0, w, y1]) // a free-standing pier (no wall behind it)
   return out
 }
 // Fins along wall runs, `every` metres apart (rounded so they space evenly), one at each run's start corner.
@@ -208,28 +210,18 @@ function trump({ pieces, sp, main }) {
 // St. Regis Chicago (Studio Gang, 2020): three stacks of alternating frustums, each leaning out 1.6 m over 13 floors
 // and back over the next 13 (a 24.4 m ↔ 27.4 m floor plate); glass dark at a frustum's waist and bright at its belt
 // (six shades, three rows here); the blow-through near the top of the tallest stack — one continuous two-storey void
-// (floor 83 in the tower's numbering, 24 ft / 7.3 m tall) closed by a floor slab and a soffit, a dark inner wall and
-// columns behind a fine vertical steel grille painted like the glass, so it reads as a dark band and never see-through.
-// The blow-through between two frustum rings at y0/y1: slabs, inner wall, columns and the grille.
-export function blowThrough(outerA, outerB, y0, y1, { every = 0.5, finW = 0.09, finD = 0.4, inset = 2.4, slabH = 0.6, col = 0.9 } = {}) {
-  const A = ensureCCW(outerA), B = ensureCCW(outerB), n = A.length
+// (floor 83 in the tower's numbering, 24 ft / 7.3 m tall) closed by a floor slab and a soffit, a dark inner wall, and
+// flat steel plates at every corner and every ~4.5 m along the edges (the structure that carries the stack above),
+// behind a fine vertical steel grille painted like the glass: a dark band held up by steel, never see-through.
+// The blow-through between two frustum rings at y0/y1: slabs, inner wall, steel (gaps.js#openStorey) and the grille.
+export function blowThrough(outerA, outerB, y0, y1, { every = 0.5, finW = 0.09, finD = 0.4, inset = 2.4, slabH = 0.6 } = {}) {
+  let A = outerA, B = outerB
+  if (signedArea(A) < 0) { A = [...A].reverse(); B = [...B].reverse() }
+  const n = A.length
   const lerp = (p, q, f) => [p[0] + (q[0] - p[0]) * f, p[1] + (q[1] - p[1]) * f]
-  // the floor slab (top of the frustum below, facing up) and the soffit (underside of the frustum above, facing down)
-  const slabs = capRing(mesh(), A, y0)
-  capRing(slabs, B, y1, true)
-  // the dark inner wall (a solid core face set back `inset` from the glass line) with its own floor and ceiling ring
-  const IA = offsetRing(A, -inset), IB = offsetRing(B, -inset)
-  const inner = loft([IA, IB], [y0, y1], { cap: false })
-  // the structure behind the grille: square columns at the plate corners and mid-edges, inside the glass line
-  const cols = mesh()
-  for (let i = 0; i < n; i++) {
-    const j = (i + 1) % n
-    for (const f of [0, 0.5]) {
-      const pa = lerp(A[i], A[j], f), pb = lerp(B[i], B[j], f), mid = lerp(pa, pb, 0.5), c = ringCentroid(A)
-      const toC = norm2(sub2(c, mid)), at = add2(mid, mul2(toC, inset * 0.45))
-      slab(cols, at, norm2(sub2(A[j], A[i])), col, col, y0, y1)
-    }
-  }
+  // the floor slab and soffit, the dark inner wall `inset` behind the glass line, and the steel: a corner column filling
+  // each corner of the recess and flat plates along the edges, glass line to core (the proof is in openStorey)
+  const { slabs, core: inner, steel } = openStorey(A, B, y0, y1, { inset })
   // the grille: thin vertical fins on the glass line, leaning with the frustum, `finD` deep into the void, and a
   // slab-edge band top and bottom
   const grille = mesh()
@@ -249,7 +241,7 @@ export function blowThrough(outerA, outerB, y0, y1, { every = 0.5, finW = 0.09, 
       quad(grille, Y(add2(p0, o), yb), Y(add2(p1, o), yb), Y(add2(p1, o), yt), Y(add2(p0, o), yt), [nn[0], 0, nn[1]])
     }
   }
-  return { slabs, inner, cols, grille }
+  return { slabs, inner, steel, grille }
 }
 function stregis({ pieces, sp }) {
   const stacks = pieces.filter((p) => p.top > (sp.stackMinM ?? 100)).sort((a, b) => b.top - a.top)
@@ -273,7 +265,8 @@ function stregis({ pieces, sp }) {
             gapDone = true
             const bt = blowThrough(scaleRing(p.outer, c, sAt(gap[0])), scaleRing(p.outer, c, sAt(gap[1])), gap[0], gap[1])
             meshes.push(part(bt.slabs, F.paint, 'stregis-gap', 'gap-slabs', { lod1: true }))
-            meshes.push(part(merge(bt.inner, bt.cols), F.paint, 'stregis-gap', 'blow-through', { lod1: true }))
+            meshes.push(part(bt.inner, F.paint, 'stregis-gap', 'blow-through', { lod1: true }))
+            meshes.push(part(bt.steel, F.steel, 'stregis-steel', 'gap-steel', { lod1: true })) // the steel reads at every distance
             meshes.push(part(bt.grille, F.steel, 'stregis-grille', 'grille'))
           }
           if (b > gap[1]) pushAll(shades[shade], loft([scaleRing(p.outer, c, sAt(gap[1])), scaleRing(p.outer, c, sAt(b))], [gap[1], b], { cap: false }))
@@ -318,7 +311,7 @@ function wabash330({ pieces, sp }) {
   const edges = edgesOf(body.outer, 1)
   const mull = fins(mesh(), edges, { every: sp.moduleM ?? 1.524, w: 0.16, d: 0.22, y0: lobby, y1: top - (sp.louvreM ?? 8) })
   const cols = mesh()
-  for (const e of edges) { const k = Math.max(1, Math.round(e.len / (sp.bayM ?? 9.14))); for (let i = 0; i <= k; i++) finAt(cols, add2(e.a, mul2(e.t, (i * e.len) / k)), e.t, mul2(e.n, -1), 0.7, 0.7, 0, lobby) }
+  for (const e of edges) { const k = Math.max(1, Math.round(e.len / (sp.bayM ?? 9.14))); for (let i = 0; i <= k; i++) finAt(cols, add2(e.a, mul2(e.t, (i * e.len) / k)), e.t, mul2(e.n, -1), 0.7, 0.7, 0, lobby, true, true) } // free-standing in the open lobby arcade: closed all round
   const louvre = bands(mesh(), edges.map((e) => ({ ...e, y0: 0, y1: top })), { ys: [top - (sp.louvreM ?? 8)], h: (sp.louvreM ?? 8), d: 0.1, ext: 0.1 })
   const soffit = capRing(mesh(), body.outer, lobby, true)
   return {
@@ -613,7 +606,8 @@ function riverside150({ pieces, sp, main }) {
   ]
   // the sloped transition from the core's top to the floor plate: walls of glass, a steel soffit underneath
   const trans = loft([core, plateBox], [coreTop, plate], { cap: false })
-  const under = capRing(mesh(), plateBox, plate, true)
+  const under = capRing(mesh(), full.outer, plate, true) // the floor plate's own outline, so no corner of its underside is left open
+  capRing(trans, plateBox, plate) // the transition's top, where its box reaches past the plate's outline (never hollow from above)
   // rippling fins on the long faces: depth 10–25 cm, changing every two floors (~8.4 m)
   const fin = mesh(), band = sp.rippleM ?? 8.4
   // (the wide east and west faces, where the ripple reads: the long sides of the plate's oriented box)

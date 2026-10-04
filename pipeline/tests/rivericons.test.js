@@ -6,6 +6,7 @@ import { riverSculpt, RIVER_SCULPTS, edgesOf, offsetRing, exposedEdges, letters,
 import { applyHero } from '../lib/heroes.js'
 import { ringCentroid, signedArea } from '../lib/geom.js'
 import { mesh } from '../lib/meshkit.js'
+import { auditGap, trisOf } from '../lib/gaps.js'
 
 const H = JSON.parse(readFileSync(new URL('../data/heroes.json', import.meta.url), 'utf8')).heroes
 const hero = (k) => H.find((h) => h.key === k)
@@ -82,6 +83,16 @@ describe('Tier 1 (A-3): crowns and massing', () => {
     expect(ny(slabs, 300).length).toBeGreaterThan(0); expect(ny(slabs, 300).every((n) => n > 0.99)).toBe(true)
     expect(ny(slabs, 307.2).length).toBeGreaterThan(0); expect(ny(slabs, 307.2).every((n) => n < -0.99)).toBe(true)
     expect(slabs.lod0Only || gap.lod0Only).toBe(false)
+    // flat steel at the corners and every ~4.5 m along the edges, kept at LOD1 (user, 2026-10-02), and the whole
+    // storey closed to every sight line at LOD1 (without the grille) as at LOD0
+    const steel = r.extraMeshes.find((m) => m.part === 'gap-steel')
+    expect(steel.lod0Only).toBe(false); expect(steel.style).toBe('stregis-steel')
+    expect(tris([steel]) / 8).toBeGreaterThanOrEqual(Math.floor((0.89 * 2 * (27 + 28)) / 4.5)) // a plate per ~4.5 m of the waist perimeter, a column per corner
+    expect(min(ys([steel]))).toBeCloseTo(300, 1); expect(max(ys([steel]))).toBeCloseTo(307.2, 1)
+    const stack = rect(-40, -4, 27 * 0.85, 28 * 0.85), lod1 = r.extraMeshes.filter((m) => !m.lod0Only)
+    const g = { outer: stack, holes: [], y0: 300, y1: 307.2, kind: 'storey' }
+    expect(auditGap(lod1.flatMap(trisOf), g)).toMatchObject({ through: 0, hollow: 0 })
+    expect(auditGap(r.extraMeshes.flatMap(trisOf), g)).toMatchObject({ through: 0, hollow: 0 })
     expect(grille.style).toBe('stregis-grille')
     expect(tris([grille]) / 6).toBeGreaterThan(150) // ~0.5 m fin spacing round a ~100 m plate
     expect(min(ys([grille]))).toBeCloseTo(300, 1); expect(max(ys([grille]))).toBeCloseTo(307.2, 1)

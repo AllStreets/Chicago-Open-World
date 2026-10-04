@@ -65,6 +65,7 @@ import { buildRiverwalk, meshByTile } from '../lib/riverwalk.js'
 import { buildRiverBases, checkReachesWater } from '../lib/riverbases.js'
 import { riverBoats, writeBoats } from '../lib/boats.js'
 import { merge } from '../lib/meshkit.js'
+import { findGaps, closeGap, auditGap, trisOf } from '../lib/gaps.js'
 import { dressBridgehouses, loadReliefs } from '../lib/bridgehouses.js'
 import { pierRing } from '../lib/bridges.js'
 import { setRiverwalkAtRiverLevel } from '../lib/civic.js'
@@ -136,6 +137,10 @@ async function main() {
   enrichFromCity(buildings, city)
   log(`city rows: ${cityRows.length}, enriched: ${buildings.filter((b) => b.cityId).length}`)
   const parts = osmPolys(uniq(chunks('parts'))).map((p) => ({ ...p, center: ringCentroid(p.outer) }))
+  // open storeys (gaps.js): OSM part tags that are data errors are corrected before the gaps are looked for
+  const gapData = loadJson(join(ROOT, 'data', 'gaps.json')).buildings
+  const partFix = new Map(Object.values(gapData).flatMap((g) => Object.entries(g.parts ?? {})).map(([id, t]) => [Number(id), t]))
+  for (const p of parts) if (partFix.has(p.id)) p.tags = { ...p.tags, ...partFix.get(p.id) }
   const bIdx = buildGridIndex(buildings, 200, (b) => b.centroid)
   const partsByB = new Map()
   for (const p of parts) {
@@ -718,6 +723,8 @@ async function main() {
     return bad
   }
   const tiles = []
+  const gapReport = [], heroGap = new Map(heroes.filter((h) => h.sculptParams?.gapM).map((h) => [h.key, [h.sculptParams.gapM, r1(h.sculptParams.gapM + (h.sculptParams.gapH ?? 7.2))]]))
+  for (const id of Object.keys(gapData)) if (!buildings.some((b) => b.id === id)) throw new Error(`gaps.json: ${id} (${gapData[id].name}) is not in the world`)
   const blocks = new Map()
   const blockGlow = new Map()
   let n = 0
@@ -730,12 +737,35 @@ async function main() {
       const family = b.facadeOverride ? (VENUE_FACADES[b.facadeOverride] ?? FACADE_FAMILIES.indexOf(b.facadeOverride)) : classifyFacade({ height: top, year: b.year ?? 0, area: b.area, type: b.tags?.building })
       const seed = b.seedOverride ?? hashSeed(b.id)
       const shown = b.pieces.filter((p) => !p.hidden) // a hidden piece counts for height, trees and clearance; its sculpt draws it
+      // open storeys (gaps.js): every vertical gap between drawn pieces closed at LOD0, LOD1 and in the blocks; a sculpt
+      // that replaces the body at LOD0 draws its own, so there the closing is LOD1-only
+      const gv = gapData[b.id]?.verdict, sculpted = Boolean(b.hero && b.extraMeshes?.length)
+      const gaps = findGaps(shown).map((g) => ({ ...g, kind: gv && gv !== 'data-error' ? gv : gv === 'data-error' ? 'facade' : sculpted && g.y0 < 0.5 && g.kind === 'storey' ? 'arcade' : g.kind }))
+      for (const g of gaps) {
+        // a sculpted landmark's street-level colonnade or passage: its sculpt draws the columns (and often the soffit);
+        // only a hollow left by the massing gets a soffit
+        // a sculpted landmark may close its own gap (a sloped soffit, a colonnade): audit what it draws at each LOD first
+        let closed0 = false, closed1 = false
+        if (sculpted) {
+          const body = shown.flatMap((pc) => trisOf(extrudeBuilding(pc))), ok = (a) => a.hollow === 0 && a.through === 0
+          closed0 = !b.sculptReplaces && ok(auditGap([...body, ...b.extraMeshes.filter((m) => !m.lod1Only).flatMap(trisOf)], g, { az: 12 }))
+          closed1 = ok(auditGap([...body, ...b.extraMeshes.filter((m) => !m.lod0Only).flatMap(trisOf)], g, { az: 12 }))
+        }
+        const sculptClosed = closed0 && closed1
+        if (!sculptClosed) b.extraMeshes = [...(b.extraMeshes ?? []), ...closeGap(g, { lift: sculpted ? 0.1 : 0 }).map((m) => Object.assign(m, { lod1Only: Boolean(b.sculptReplaces) || closed0, lod0Only: !b.sculptReplaces && closed1 && !closed0 }))]
+        gapReport.push({ id: b.id, name: b.name, tile: key, bldg: i, kind: g.kind, y0: r1(g.y0), y1: r1(g.y1), area: Math.round(g.area), x: r1(ringCentroid(g.outer)[0]), z: r1(ringCentroid(g.outer)[1]), lod0: !b.sculptReplaces, verdict: gv ?? (sculptClosed ? 'sculpt' : null), outer: g.outer.map((p) => p.map(r1)), holes: g.holes.map((h) => h.map((p) => p.map(r1))) })
+      }
+      const sg = heroGap.get(b.hero)
+      if (sg) { // the sculpt's blow-through, on its tallest stack (the audit aims inside 80 % of that plate)
+        const st = b.pieces.filter((p) => p.hidden).reduce((a, p) => (p.top > a.top ? p : a)), c = ringCentroid(st.outer)
+        gapReport.push({ id: b.id, name: b.name, tile: key, bldg: i, kind: 'blow-through', y0: sg[0], y1: sg[1], area: Math.round(Math.abs(signedArea(st.outer))), x: r1(c[0]), z: r1(c[1]), lod0: true, verdict: 'sculpt', outer: st.outer.map(([x, z]) => [r1(c[0] + (x - c[0]) * 0.8), r1(c[1] + (z - c[1]) * 0.8)]), holes: [] })
+      }
       const parapets = b.noParapet || b.sculptReplaces ? [] : shown.map(parapetPiece).filter(Boolean)
       const st = meshStyle(b)
       if (!b.sculptReplaces) for (const pc of shown) appendBuilding(L0, extrudeBuilding(pc), family, seed, i, st) // a sculpted hero draws its own close-range body
       for (const pc of parapets) appendBuilding(L0, extrudeBuilding(pc), PARAPET_FACADE, seed, i, st)
       const crownStyle = (m) => (m.style ? styleIndex(m.style) : m.facade != null ? meshStyle(b, 'crown') : st) // own-surface crowns skip the wall recolour; sculpted detail names its material row
-      for (const m of b.extraMeshes || []) appendBuilding(L0, m, m.facade ?? family, m.seed ?? seed, i, crownStyle(m))
+      for (const m of b.extraMeshes || []) if (!m.lod1Only) appendBuilding(L0, m, m.facade ?? family, m.seed ?? seed, i, crownStyle(m))
       for (const v of b.venueMeshes || []) { const vs = partStyle(b, v); appendBuilding(L0, v.mesh, v.facade, v.seed, i, vs); if (!v.lod0Only) appendBuilding(L1, v.mesh, v.facade, v.seed, i, vs) } // fine landmark detail (merlons, ledges, carving) is close-range only
       // LOD1: heroes and part-buildings keep their shape (they are the skyline); plain footprints simplify
       if (keepsShapeAtDistance(b)) { for (const pc of shown) appendBuilding(L1, extrudeBuilding(pc), family, seed, i, st); for (const m of b.extraMeshes || []) if (!m.lod0Only) appendBuilding(L1, m, m.facade ?? family, m.seed ?? seed, i, crownStyle(m)) }
@@ -818,6 +848,9 @@ async function main() {
     if (++n % 50 === 0) log(`tiles written: ${n}`)
   }
   log(`tiles: ${tiles.length}`)
+  gapReport.sort((a, b) => a.id.localeCompare(b.id) || a.y0 - b.y0 || a.x - b.x)
+  writeFileSync(join(ROOT, 'world-gaps.json'), JSON.stringify({ note: 'every open storey the build closed (pipeline/lib/gaps.js); tests/gaps-world.test.js checks each in the built tiles', gaps: gapReport }, null, 1) + '\n')
+  log(`open storeys closed: ${gapReport.length} in ${new Set(gapReport.map((g) => g.id)).size} buildings — ${[...new Set(gapReport.map((g) => `${g.name ?? g.id} (${g.kind})`))].join(', ')}`)
   if (Object.keys(nonFinite).length) log(`ground slivers dropped (non-finite uv/position, zero normal): ${JSON.stringify(nonFinite)}`)
   writeFileSync(join(OUT, 'bridges.json'), JSON.stringify(bridgeSide))
   assertNoVenueTrees([...T].map(([k, t]) => [k, t.trees]), zones)

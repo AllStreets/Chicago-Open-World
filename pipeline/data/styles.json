@@ -601,6 +601,24 @@
       "source": "https://en.wikipedia.org/wiki/St._Regis_Chicago (the blow-through's 24 ft vertical grates, painted to match the dark glass; photo-matched)"
     },
     {
+      "key": "stregis-steel",
+      "base": "#8a979c",
+      "finish": "metal",
+      "source": "https://www.architecturalrecord.com/articles/15424-st-regis-tower-by-studio-gang (the blow-through's corner columns and edge steel that carry the stack above, lighter than the grates so they read from a distance; approximate)"
+    },
+    {
+      "key": "gap-core",
+      "base": "#16191b",
+      "finish": "concrete",
+      "source": "generic: an open storey's slabs and recessed core in shadow (pipeline/lib/gaps.js; user 2026-10-02: never see-through)"
+    },
+    {
+      "key": "gap-steel",
+      "base": "#7b858a",
+      "finish": "metal",
+      "source": "generic: the flat steel plates and corner columns that carry a building over an open storey (pipeline/lib/gaps.js)"
+    },
+    {
       "key": "wacker333-stainless",
       "base": "#b8bdbf",
       "finish": "metal",
