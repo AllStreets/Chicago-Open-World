@@ -16,7 +16,56 @@ const OPP = {
   wnba: ['IND', 'NY', 'LV', 'CON', 'ATL', 'MIN', 'SEA', 'WSH'],
   'usa.1': ['CLB', 'CIN', 'NE', 'NYC', 'ORL', 'MIA', 'TOR', 'MTL'],
 }
-const RANGE = { mlb: [0, 9], nfl: [3, 38], nba: [88, 124], wnba: [68, 98], nhl: [0, 6], 'usa.1': [0, 4] }
+// hashFrac (plain FNV-1a) barely moves its high bits when only the last character differs, so `${id}:h` and
+// `${id}:a` gave near-identical draws (every Fire match a draw, every other game won by one). Score draws run
+// through a murmur3 finalizer so each salt is an independent uniform in [0, 1).
+function rnd(id, salt) {
+  let h = Math.floor(hashFrac(`${salt}|${id}|${salt}`) * 4294967296)
+  h = Math.imul(h ^ (h >>> 16), 0x85ebca6b)
+  h = Math.imul(h ^ (h >>> 13), 0xc2b2ae35)
+  return ((h ^ (h >>> 16)) >>> 0) / 4294967296
+}
+function poisson(lambda, u, max) {
+  let k = 0, p = Math.exp(-lambda), cdf = p
+  while (u > cdf && k < max) { k++; p *= lambda / k; cdf += p }
+  return k
+}
+function normal(mean, sd, u1, u2) {
+  return mean + sd * Math.sqrt(-2 * Math.log(1 - u1)) * Math.cos(2 * Math.PI * u2)
+}
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, Math.round(v)))
+// Ties resolved the way the sport resolves them (extra innings / OT / shootout); home wins those ~55%.
+function breakTie(h, a, id, by) {
+  if (h !== a) return [h, a]
+  return rnd(id, 'ot') < 0.55 ? [h + by, a] : [h, a + by]
+}
+function football(id, side, home) {
+  const r = (s) => rnd(id, `${side}${s}`)
+  const td = poisson(home ? 2.5 : 2.2, r('td'), 5), fg = poisson(1.6, r('fg'), 4)
+  let pts = td * 7 + fg * 3
+  if (td && r('2pt') < 0.15) pts += r('2pt') < 0.07 ? 1 : -1 // a missed PAT or a two-point try
+  if (r('sf') < 0.04) pts += 2
+  return Math.min(42, pts)
+}
+// (game id, league) → [home score, away score]: deterministic, sport-shaped, home edge ~55%.
+export function simScore(id, league) {
+  const r = (s) => rnd(id, s)
+  switch (league) {
+    case 'mlb': return breakTie(poisson(4.7, r('h'), 12), poisson(4.3, r('a'), 12), id, 1)
+    case 'nhl': return breakTie(poisson(3.2, r('h'), 8), poisson(2.8, r('a'), 8), id, 1)
+    case 'usa.1': return [poisson(1.6, r('h'), 4), poisson(1.15, r('a'), 4)]
+    case 'nfl': {
+      const [h, a] = [football(id, 'h', true), football(id, 'a', false)]
+      return h === a ? breakTie(h, a, id, h >= 39 ? 3 : r('otk') < 0.6 ? 3 : 6) : [h, a]
+    }
+    case 'nba': case 'wnba': {
+      const [mean, sd, lo, hi] = league === 'nba' ? [113, 11, 82, 135] : [82, 9, 62, 108]
+      const h = clamp(normal(mean + 1.5, sd, r('h1'), r('h2')), lo, hi), a = clamp(normal(mean - 1.5, sd, r('a1'), r('a2')), lo, hi)
+      return h === a ? breakTie(h + 8, a + 8, id, 2 + Math.floor(r('otm') * 7)) : [h, a]
+    }
+    default: return [poisson(2, r('h'), 9), poisson(2, r('a'), 9)]
+  }
+}
 const within = (md, a, b) => md >= a && md <= b
 const weekend = (dow) => dow === 0 || dow === 6
 // (month-day, weekday, day-of-year) → [hour, minute] of a home game, or null.
@@ -40,10 +89,7 @@ export function simulatedGames(year) {
       if (!hm) continue
       const id = `sim-${t.key}-${date}`
       const opp = OPP[t.league][Math.floor(hashFrac(id) * OPP[t.league].length)]
-      const [lo, hi] = RANGE[t.league]
-      let us = lo + Math.floor(hashFrac(`${id}:h`) * (hi - lo + 1))
-      const them = lo + Math.floor(hashFrac(`${id}:a`) * (hi - lo + 1))
-      if (us === them && t.sport !== 'soccer') us += 1
+      const [us, them] = simScore(id, t.league)
       games.push({
         id, teams: [t.key], results: { [t.key]: us > them ? 'W' : us < them ? 'L' : 'T' }, sport: t.sport, league: t.league,
         start: new Date(chicagoToUtc(date, hm[0], hm[1])).toISOString(), venue: t.home, venueName: '',
