@@ -43,6 +43,7 @@ import { getSim } from '../transit/simStore.js'
 import TransitLayer from '../transit/TransitLayer.jsx'
 import Trains from '../transit/Trains.jsx'
 import SportsClock from '../sports/SportsClock.jsx'
+import TeamLights from '../sports/TeamLights.jsx'
 import SportsLife from '../sports/SportsLife.jsx'
 import StationHits from '../transit/StationHits.jsx'
 import Landmarks from './Landmarks.jsx'
@@ -156,6 +157,7 @@ export default function Scene() {
       <PerfWatch />
       <PerfProbe />
       <SportsClock />
+      <TeamLights />
       <SportsLife />
     </>
   )

@@ -139,6 +139,7 @@ Everything is reachable with the keyboard, the mouse and the on-screen dock. Pre
 | `L` · Ride button | ride the city — an L line, a CTA bus, a street-level walk (⌘K "Riverwalk (river level)" walks it at the water), a drive under the street (⌘K "Drive Lower Wacker") or the glide; `Space` pauses, `.` `,` next or previous stop, `>` `<` faster or slower, drag to look, `Esc` gets off. `M`, `X` and the other toggles never end a ride, a tour or a train follow |
 | `K` | change the view — in a ride (front window, alongside, behind) or while following a train |
 | `U` · ⌘K "Lower levels" | the streets under the streets — the street over Lower Wacker, Lower Michigan, Lower Columbus and the other double-decker streets opens like a cut-away drawing, the lower streets named, the traffic driving underneath; `U` again closes it (from far away it flies you over the river first) |
+| `I` · ⌘K "Team lights" | Team lights on/off (on unless you turn it off; remembered) — on the night a Chicago team wins, Willis Tower's antennas, 875 North Michigan's crown and masts, Two Prudential's spire, the Wrigley Building and the Merchandise Mart glow in the team's two colours until 2 a.m.; ⌘K "Preview Cubs lights" (or Bears, White Sox, Bulls, Blackhawks, Sky, Fire) shows them for a minute |
 | `V` · SCAN button | holographic Scan; in the Live lens, light columns for transit, nightlife, green space or rent |
 | Weather button | follows Chicago live, or pick clear, overcast, rain, snow or lake fog (also ⌘K "Weather") |
 | LIVE CTA / SIMULATED chip | click for the data sources and "Try live again" |
@@ -154,6 +155,46 @@ Everything is reachable with the keyboard, the mouse and the on-screen dock. Pre
 <tr>
 <td><em><code>M</code> — sound on: a green speaker, held a second, then fading.</em></td>
 <td><em><code>M</code> again — sound off: the same speaker in red, struck through.</em></td>
+</tr>
+</table>
+
+The help card (`?`) is one wide sheet: Move · Look · Search · City life · Rides and tours · Games · Guide · Live city · Time, flowing through as many columns as the screen holds — every key on one page at 1440 × 900, a scrolling full-height sheet on a phone.
+
+<table>
+<tr>
+<td width="72%"><img src="docs/screenshots/help-1440x900.png" alt="The help card at 1440 by 900: four even columns of keycaps and plain-word lines, nothing scrolled" width="100%"/></td>
+<td width="28%"><img src="docs/screenshots/help-390x844.png" alt="The help card on a phone: a full-height sheet" width="100%"/></td>
+</tr>
+</table>
+
+### Team lights — *the skyline in the winner's colours*
+
+The way Chicago really does it, coordinated through BOMA so the skyline speaks for one team at a time: after a Bears, Cubs, White Sox, Bulls, Blackhawks, Sky or Fire win, from the final (or sunset, if that's later) until 2 a.m., **Willis Tower**'s LED antennas, **875 North Michigan**'s crown band and masts, **Two Prudential Plaza**'s pyramid and spire, the floodlit **Wrigley Building** and its clock tower, and the **Merchandise Mart**'s block and tower glow in the team's two colours — two winners on one day take turns every 12 seconds. "Play a game" ending in a home win lights them for its celebration. Black is drawn as dark bands (the White Sox' silver-and-black), navy as deep-blue light. `I` turns it off or on; ⌘K "Preview Bears lights" shows any team for a minute. It is the façade shader's own light — no extra meshes or draw calls.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/tl-skyline-cubs.png" alt="The skyline at night after a Cubs win — blue and red on Willis, Hancock, Two Pru and the Wrigley Building" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/tl-skyline-bears.png" alt="The skyline after a Bears win in navy blue and orange" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Cubs: blue below, red above — antennas, masts, spire, the Wrigley Building's clock tower.</em></td>
+<td><em>Bears: navy-blue light and orange.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/tl-skyline-whitesox.png" alt="The skyline after a White Sox win in silver with dark bands" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/tl-skyline-bulls.png" alt="The skyline after a Bulls win in red and white" width="100%"/></td>
+</tr>
+<tr>
+<td><em>White Sox: silver light, the black as dark tips and bands.</em></td>
+<td><em>Bulls: red, with white for the black.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/tl-willis-bears.png" alt="Willis Tower's antennas in Bears blue and orange" width="100%"/></td>
+<td width="50%"><img src="docs/screenshots/tl-mart-cubs.png" alt="The Merchandise Mart floodlit Cubs blue, its tower red" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Willis Tower's LED antennas for the Bears.</em></td>
+<td><em>The Merchandise Mart floodlit for the Cubs: blue block, red tower.</em></td>
 </tr>
 </table>
 

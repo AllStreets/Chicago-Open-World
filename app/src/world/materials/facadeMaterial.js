@@ -39,7 +39,17 @@ export const facadeUniforms = {
   uFieldTex: { value: turfArray() },
   uFieldFrame: { value: vec4s() },
   uVenueLight: { value: vec4s() },
+  // Team lights (sports/teamLights.js): up to 16 zones [styleRow, y0, y1, mode] + [colour 0|1, strength], the team's two
+  // light colours, and one fade (night × on). Written by TeamLights.jsx; all zero = off (the shader skips the loop).
+  uTeamZone: { value: Array.from({ length: 16 }, () => new THREE.Vector4(0, 0, 0, 0)) },
+  uTeamZoneB: { value: Array.from({ length: 16 }, () => new THREE.Vector4(0, 0, 0, 0)) },
+  uTeamA: { value: new THREE.Vector3(0, 0, 0) },
+  uTeamB: { value: new THREE.Vector3(0, 0, 0) },
+  uTeamFade: { value: 0 },
 }
+
+// styles.json's row for each hero key (loadStylePalette fills it) — Team lights find their buildings by it
+export const styleRows = { byKey: new Map(), version: 0 }
 
 // Painted fields (V5): layer `slot` of uFieldTex covers the frame u0…u1 × v0…v1 (metres).
 export function setFieldFrames(entries) {
@@ -93,6 +103,11 @@ uniform vec4 uShowGlow;
 uniform vec4 uFlash;
 uniform vec3 uFlashAt;
 uniform vec3 uShowAt;
+uniform vec4 uTeamZone[16];
+uniform vec4 uTeamZoneB[16];
+uniform vec3 uTeamA;
+uniform vec3 uTeamB;
+uniform float uTeamFade;
 varying float vStyle;
 vec4 styleTexel(int si, int col) { return texelFetch(uStylePal, ivec2(col, si), 0); }
 vec3 styleBase(float style) { int si = int(style + 0.5); return (si > 0 && float(si) < uStyleRows) ? styleTexel(si, 0).rgb : vec3(0.62, 0.6, 0.56); } // V6: a row's base colour (stone grey until the palette loads)
@@ -343,9 +358,24 @@ if (isVenue && vi == 29) metalnessFactor = 0.85;
 if (isVenue && vi == 26) metalnessFactor = 0.6;
 `
 const FRAG_EMISSIVE = /* glsl */ `
-if (styled && uNight > 0.001) {                          // crown and façade night lighting (F9)
+float teamHit = 0.0;
+if (styled && uTeamFade > 0.001) {                       // Team lights: a win night's colours on the buildings that show them
+  for (int i = 0; i < 16; i++) {
+    vec4 z = uTeamZone[i];
+    if (z.x < 0.5 || int(z.x + 0.5) != si || vWPos.y < z.y || vWPos.y > z.z) continue;
+    vec4 zb = uTeamZoneB[i];
+    vec3 col = zb.x < 0.5 ? uTeamA : uTeamB;
+    vec3 e = z.w < 1.5 ? col                                                        // lantern: antennas, masts, spires
+      : z.w < 2.5 ? (isRoof ? vec3(0.0) : col * mix(0.3, 1.0, win))                 // band: the lit top floors
+      : (0.25 + diffuseColor.rgb) * col * (vWNormal.y > 0.45 ? 0.04 : 0.5 + 0.5 * smoothstep(z.y, z.z, vWPos.y)); // flood: coloured floodlights on the stone
+    totalEmissiveRadiance += e * zb.y * uTeamFade * uLitBoost;
+    teamHit = min(1.0, uTeamFade * 1.5);
+  }
+}
+if (styled && uNight > 0.001) {                          // crown and façade night lighting (F9) — gives way to Team lights
   vec4 C5 = styleTexel(si, 5), C6 = styleTexel(si, 6);
   float band = step(C6.r, vWPos.y) * step(vWPos.y, C6.g);
+  band *= 1.0 - teamHit;
   if (C6.b > 0.5 && C6.b < 1.5) totalEmissiveRadiance += diffuseColor.rgb * C5.rgb * C5.a * (0.35 + 0.65 * smoothstep(C6.r, C6.g, vWPos.y)) * band * uNight;
   else if (C6.b > 1.5) totalEmissiveRadiance += C5.rgb * C5.a * band * uNight * uLitBoost;
 }
@@ -466,7 +496,7 @@ export function createFacadeMaterial({ leaf = false } = {}) {
   const m = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.86, metalness: 0.02 })
   if (leaf) m.defines = { USE_LEAF: '' }
   m.onBeforeCompile = patchFacadeShader
-  const key = 'facade-v14' // P5: Scan // P3: mural layers (V6 Task 3 was v10); only the -leaf suffix is new here
+  const key = 'facade-v15' // Team lights // P5: Scan // P3: mural layers (V6 Task 3 was v10); only the -leaf suffix is new here
   m.customProgramCacheKey = () => (leaf ? `${key}-leaf` : key)
   return m
 }
@@ -502,6 +532,7 @@ export async function loadStylePalette(manifest) {
     const j = await r.json()
     facadeUniforms.uStylePal.value = createStyleTexture(j.styles)
     facadeUniforms.uStyleRows.value = j.styles.length
+    styleRows.byKey = new Map(j.styles.map((s, i) => [s.key, i])); styleRows.version++
     return true
   } catch (e) {
     console.warn('styles.json unavailable — default colours', e)

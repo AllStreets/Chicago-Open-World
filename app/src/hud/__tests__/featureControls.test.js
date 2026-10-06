@@ -9,7 +9,7 @@ import { DOCK_FEATURES } from '../featureControls.js'
 describe('feature controls registry', () => {
   beforeEach(() => { useStore.setState(useStore.getInitialState()); useSoundStore.setState(useSoundStore.getInitialState()); useSports.setState(useSports.getInitialState()) })
   it('lists Transit, Games, Sound, Bridges, Fountain, Fireworks, Places, Traffic, Scan, Ride, Play and Lower levels with unique keys and every path filled in', () => {
-    expect(FEATURE_CONTROLS.map((c) => c.id)).toEqual(['transit', 'games', 'sound', 'bridges', 'fountain', 'fireworks', 'places', 'traffic', 'scan', 'ride', 'showcase', 'lowerLevels'])
+    expect(FEATURE_CONTROLS.map((c) => c.id)).toEqual(['transit', 'games', 'sound', 'bridges', 'fountain', 'fireworks', 'places', 'traffic', 'scan', 'ride', 'showcase', 'lowerLevels', 'teamLights'])
     expect(new Set(FEATURE_CONTROLS.map((c) => c.key)).size).toBe(FEATURE_CONTROLS.length)
     for (const c of FEATURE_CONTROLS) {
       expect(c.label).toMatch(/^[A-Z][a-z]+$/)

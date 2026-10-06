@@ -6,12 +6,15 @@ import { useStore } from '../state/store.js'
 import { useSports } from '../sports/sportsStore.js'
 import { stateLabel, gameLabel, dataChip, sourceNote } from '../sports/tonight.js'
 import { goToVenue } from '../sports/palette.js'
+import { useTeamLights } from '../sports/teamLightsStore.js'
+import { litNote } from '../sports/teamLights.js'
 
 const ORDER = { live: 0, pregame: 1, postgame: 2, idle: 3 }
 export default function GamesPanel() {
   const open = useStore((s) => s.gamesOpen)
   const venues = useSports((s) => s.venues), states = useSports((s) => s.states), source = useSports((s) => s.source)
   const generatedAt = useSports((s) => s.generatedAt)
+  const lit = useTeamLights((s) => s.lit), lightsOn = useTeamLights((s) => s.on)
   useEffect(() => {
     if (!open) return
     const k = (e) => { if (e.key === 'Escape') useStore.getState().setGamesOpen(false) }
@@ -44,6 +47,7 @@ export default function GamesPanel() {
         })}
       </ul>
       <p className="games-explain">Real games come alive by themselves — the crowd, the lights, the players and the score. Press <b>Y</b> or ▶ Play a game on a ballpark’s card for a 90-second preview.</p>
+      <p className="games-explain games-lights">Buildings light up in team colours on win nights (key <b>I</b>{lightsOn ? '' : ' — off now'}).{lit ? <> <span className="games-lit">{litNote(lit)}.</span></> : null}</p>
       <p className="games-foot"><span className={`data-note${note.stale ? ' data-stale' : ''}`}>{note.text}</span></p>
     </div>
   )

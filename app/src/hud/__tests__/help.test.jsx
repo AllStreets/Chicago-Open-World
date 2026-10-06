@@ -110,3 +110,18 @@ describe('help: Games paragraph', () => {
     expect(d).toHaveTextContent(/live CTA trains stay simulated/)
   })
 })
+
+// Team lights: the I row (from the registry, pointing to ⌘K), the Games "Win night" row and the grouped layout
+describe('help: Team lights and the grouped sheet', () => {
+  it('lists I, the win-night lights and the previews; sections in Move · Look · Search · City life · Rides · Games order', async () => {
+    const { GROUPS } = await import('../HelpOverlay.jsx')
+    useStore.setState({ helpOpen: true })
+    render(<HelpOverlay />)
+    const d = screen.getByRole('dialog', { name: 'Controls' })
+    const row = (k) => [...d.querySelectorAll('p')].filter((p) => p.firstElementChild?.textContent.trim() === k).map((p) => p.textContent).join(' | ')
+    expect(row('I')).toMatch(/team lights — .*Willis Tower’s antennas.*2 a\.m\..*⌘K.*“Team lights”/)
+    expect(row('Win night')).toMatch(/two colours until 2 a\.m\..*I.*turns Team lights off or on.*Preview Bears lights/)
+    expect(GROUPS.map(([t]) => t).slice(0, 6)).toEqual(['Move around', 'Look around', 'Search and fly', 'City life', 'Rides and tours', 'Games'])
+    expect(d.querySelectorAll('.help-sec').length).toBe(GROUPS.length)
+  })
+})

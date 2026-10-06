@@ -34,6 +34,14 @@ describe('sports HUD', () => {
     fireEvent.keyDown(window, { key: 'Escape' })
     expect(useSports.getState().cardVenue).toBeNull()
   })
+  it('Team lights: the Games panel and the venue card say buildings light up on win nights (key I), and what is lit now', async () => {
+    const { useTeamLights } = await import('../../sports/teamLightsStore.js')
+    useTeamLights.setState({ on: true, lit: { team: 'cubs', why: 'win', simulated: false } })
+    useStore.setState({ gamesOpen: true }); useSports.setState({ cardVenue: 'wrigleyfield' })
+    render(<><GamesPanel /><VenueCard /></>)
+    expect(screen.getByRole('dialog', { name: 'Games' })).toHaveTextContent(/Buildings light up in team colours on win nights \(key I\)\. Tonight the skyline is lit for the Cubs win/)
+    expect(screen.getByRole('dialog', { name: 'Wrigley Field' })).toHaveTextContent(/Buildings light up in team colours on win nights \(key I\)/)
+  })
   // E1-4: where the schedule came from and how old it is — on the card foot and the Games panel foot.
   describe('data age', () => {
     beforeEach(() => { vi.useFakeTimers({ toFake: ['Date'] }); vi.setSystemTime(new Date('2026-10-01T17:00:00Z')) })

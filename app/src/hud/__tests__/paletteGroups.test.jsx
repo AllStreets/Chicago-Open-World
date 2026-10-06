@@ -12,6 +12,7 @@ vi.mock('../../lib/paletteSources.js', () => ({
   tourCommands: () => [],
   liveCommands: () => [],
   rideCommands: () => [],
+  teamLightCommands: () => [],
   addressRows: () => [],
   officeRows: () => [],
   featurePlaces: () => [

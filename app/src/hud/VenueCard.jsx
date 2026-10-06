@@ -36,6 +36,7 @@ export default function VenueCard() {
       <p className="vc-status">{lines.status}</p>
       {st?.next && <p className="vc-next">Next: {gameLabel(st.next)} · {whenChicago(Date.parse(st.next.start))}</p>}
       <VenueActions venueKey={key} />
+      <p className="vc-lights">Buildings light up in team colours on win nights (key <b>I</b>)</p>
       <p className="vc-foot"><span className={`chip chip-${chip.toLowerCase()}`}>{chip}</span>{' '}
         {chip === 'LIVE' && <span>Live score from ESPN · </span>}
         {chip === 'PREVIEW' && <span>A 90-second preview, not a real game · </span>}
