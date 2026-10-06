@@ -13,6 +13,8 @@ import { WEATHER_MODES, WEATHER_NAMES } from '../weather/weatherState.js'
 import { allRides, ridesJsonNow } from '../ride/rideCatalog.js'
 import { getSim } from '../transit/simStore.js'
 import { startRide } from '../ride/rideActions.js'
+import { TEAMS } from '../../../shared/teams.js'
+import { useTeamLights } from '../sports/teamLightsStore.js'
 
 export function featurePlaces(state) {
   const sp = useSports.getState()
@@ -92,5 +94,18 @@ export function rideCommands() {
     id: `ride:${r.id}`, kind: 'guide', name: r.kind === 'glide' ? r.name : `${RIDE_PREFIX[r.kind]}: ${r.name}`,
     sub: r.kind === 'L' ? 'Ride the L · front window, alongside or behind' : r.kind === 'bus' ? 'Ride a CTA bus' : r.kind === 'walk' ? 'Street-level walk' : r.kind === 'drive' ? 'Under the street · from the front of a bus' : 'Hang-glide · ↑ dive ↓ climb',
     aliases: ['ride', r.kind === 'walk' ? 'walk' : r.kind === 'bus' ? 'bus' : r.kind === 'glide' ? 'glide' : r.kind === 'drive' ? 'drive' : 'train', ...(r.ref ? [`bus ${r.ref}`, `#${r.ref}`, `${r.ref} bus`] : []), ...(r.kind === 'drive' ? ['Drive Lower Wacker', 'lower levels', 'under the street'] : []), ...(r.level === 'riverwalk' ? ['Riverwalk (river level)', 'river level', 'walk the Riverwalk'] : [])], run: () => startRide(r.id),
+  }))
+}
+
+// Team lights: see any team's win-night colours now — a minute, then back to what's real (works with the lights off too)
+const COLOUR_WORDS = { bears: 'navy blue and orange', cubs: 'blue and red', whitesox: 'silver and black', bulls: 'red and white', blackhawks: 'red and white', fire: 'red and light blue', sky: 'sky blue and yellow' }
+export function teamLightCommands() {
+  return TEAMS.map((t) => ({
+    id: `lights:${t.key}`, kind: 'command', name: `Preview ${t.name} lights`, sub: `Team lights · a minute of the skyline in ${COLOUR_WORDS[t.key]} (best after dark — press 5 for night)`,
+    aliases: ['team lights', 'win lights', `${t.name} lights`, `${t.name} colours`, `${t.name} colors`, `${t.name} win`],
+    run: () => {
+      useTeamLights.getState().startPreview(t.key)
+      useStore.getState().showToast(`${t.name} lights for a minute — Willis Tower, 875 North Michigan, Two Prudential, the Wrigley Building and the Mart`)
+    },
   }))
 }

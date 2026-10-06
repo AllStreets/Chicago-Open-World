@@ -33,3 +33,9 @@
 .va-live { color: #ff5d5d; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
 .va-dot { width: 7px; height: 7px; border-radius: 50%; background: #ff5d5d; animation: va-pulse 1.4s ease-in-out infinite; }
 @keyframes va-pulse { 50% { opacity: 0.35; } }
+
+/* Team lights: the line under the Games list and on a venue card */
+.games-lights { margin-top: 4px; }
+.games-lit { color: var(--text); }
+.vc-lights { margin: 6px 0 0; font-size: 11px; color: var(--text-dim, #9aa); }
+.vc-lights b { font-family: var(--font-mono); color: var(--text); }

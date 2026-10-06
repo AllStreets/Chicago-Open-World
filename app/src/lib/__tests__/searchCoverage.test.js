@@ -5,7 +5,7 @@ import { readFileSync, existsSync } from 'node:fs'
 import { buildPlaces, searchPlaces } from '../places.js'
 import { BOOKMARKS } from '../bookmarks.js'
 import { gamePlaces } from '../../sports/palette.js'
-import { featureCommands, tourCommands, rideCommands } from '../paletteSources.js'
+import { featureCommands, tourCommands, rideCommands, teamLightCommands } from '../paletteSources.js'
 
 const APP = existsSync(`${process.cwd()}/public/world`) ? process.cwd() : `${process.cwd()}/app` // run from app/ or the repo root
 const manifest = JSON.parse(readFileSync(`${APP}/public/world/manifest.json`, 'utf8')) // the shipped world (tests run in app/)
@@ -97,6 +97,14 @@ describe('search coverage', () => {
   it('⌘K finds "Lower levels" (and "Lower Wacker") first', () => {
     const rows = [...all, ...featureCommands()]
     for (const q of ['Lower levels', 'lower wacker', 'lower level', 'Lower Michigan', 'Lower Lower Wacker', 'Lower Columbus']) expect(searchPlaces(q, rows)[0]?.id, q).toBe('f:lowerLevels')
+  })
+  // Team lights: the switch and a preview for every team, each first for its own words
+  it('⌘K finds Team lights on / off and Preview <team> lights first', () => {
+    const rows = [...all, ...featureCommands(), ...teamLightCommands()]
+    for (const q of ['Team lights', 'team lights on', 'win lights']) expect(searchPlaces(q, rows)[0]?.id, q).toBe('f:teamLights')
+    for (const n of ['Preview Bears lights', 'Preview Cubs lights', 'Preview White Sox lights', 'Preview Bulls lights', 'Preview Blackhawks lights', 'Preview Sky lights', 'Preview Fire lights'])
+      expect(searchPlaces(n, rows)[0]?.name, n).toBe(n)
+    expect(searchPlaces('cubs lights', rows)[0]?.name).toBe('Preview Cubs lights')
   })
   it('Flexport Chicago is the first result for "flexport" and for "333 north green"', () => {
     expect(searchPlaces('flexport', all)[0].name).toMatch(/Flexport/)

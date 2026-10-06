@@ -6,7 +6,7 @@ import { useSports } from '../sports/sportsStore.js'
 import { useStore } from '../state/store.js'
 import { buildPlaces, searchPlaces } from '../lib/places.js'
 import { BOOKMARKS } from '../lib/bookmarks.js'
-import { featurePlaces, featureCommands, lensCommands, placeCommands, tourCommands, addressRows, officeRows, liveCommands, rideCommands } from '../lib/paletteSources.js'
+import { featurePlaces, featureCommands, lensCommands, placeCommands, tourCommands, addressRows, officeRows, liveCommands, rideCommands, teamLightCommands } from '../lib/paletteSources.js'
 import { buildPlaceRows } from '../lib/poiFilter.js'
 import { zoneForName } from '../lib/neighborhoods.js'
 import { openZone } from '../world/NeighborhoodZones.jsx'
@@ -34,6 +34,7 @@ export function commands() {
     { id: 'c:perf', kind: 'command', name: 'Performance stats: on / off', sub: 'Draw calls, triangles, frame rate', run: () => s.setPerfOn(!useStore.getState().perfOn) },
     { id: 'c:help', kind: 'command', name: 'Show controls & help', sub: '?', run: () => s.setHelpOpen(true) },
     ...featureCommands(),
+    ...teamLightCommands(),
     ...lensCommands(),
     ...placeCommands(),
     ...tourCommands(),

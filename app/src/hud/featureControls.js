@@ -1,7 +1,7 @@
 // app/src/hud/featureControls.js — every city-life feature and every way to reach it (backlog G3).
 // The dock row, the keyboard, ⌘K, the help card and the hint bar all read this list, so a control can never be added
 // in one place and forgotten in another. The adapters (use/isOn/toggle/available) are the only lines naming feature state.
-import { RiTrainLine, RiTrophyLine, RiVolumeUpLine, RiVolumeMuteLine, RiShip2Line, RiDropLine, RiMapPin2Line, RiSparkling2Line, RiCarLine, RiRadarLine, RiRouteLine, RiPlayCircleLine, RiStackLine } from 'react-icons/ri'
+import { RiTrainLine, RiTrophyLine, RiVolumeUpLine, RiVolumeMuteLine, RiShip2Line, RiDropLine, RiMapPin2Line, RiSparkling2Line, RiCarLine, RiRadarLine, RiRouteLine, RiPlayCircleLine, RiStackLine, RiLightbulbFlashLine } from 'react-icons/ri'
 import { useStore } from '../state/store.js'
 import { useSoundStore } from '../audio/soundStore.js'
 import { fountainShow } from '../landmarks/fountainSchedule.js'
@@ -9,6 +9,7 @@ import { fireworksShow } from '../landmarks/fireworksSchedule.js'
 import { useSports } from '../sports/sportsStore.js'
 import { toggleShowcase } from '../sports/showcaseActions.js'
 import { readLowerLevels } from '../lib/levels.js'
+import { useTeamLights } from '../sports/teamLightsStore.js'
 
 const storeFlag = (field, setter) => ({
   use: () => useStore((s) => Boolean(s[field])),
@@ -101,6 +102,18 @@ export const FEATURE_CONTROLS = [
       s.requestLowerLevelsView?.()
     },
     available: () => Boolean(readLowerLevels(useStore.getState().manifest)), useAvailable: () => useStore((s) => Boolean(readLowerLevels(s.manifest))) },
+  // Team lights: I (for "illuminate" — I and Z were the only free letters, and Z sits under the movement keys' left hand),
+  // ⌘K and the help card; not in the dock (it stays at six). On by default; the choice is remembered.
+  { id: 'teamLights', label: 'Lights', key: 'KeyI', keyLabel: 'I', icon: RiLightbulbFlashLine, hint: 'team lights', hintP: 3, commandName: 'Team lights: on or off',
+    aliases: ['Team lights', 'win lights', 'sports lights', 'skyline colours', 'skyline colors', 'building lights', 'team colours', 'team colors'],
+    help: 'team lights — on the night the Bears, Cubs, White Sox, Bulls, Blackhawks, Sky or Fire win, Willis Tower’s antennas, 875 North Michigan’s crown and masts, Two Prudential’s spire, the Wrigley Building and the Merchandise Mart glow in the team’s two colours from the final (or sunset) until 2 a.m.; on unless you turn it off',
+    use: () => useTeamLights((s) => s.on),
+    isOn: () => useTeamLights.getState().on,
+    toggle: () => {
+      const t = useTeamLights.getState(), on = !t.on
+      t.setOn(on)
+      useStore.getState().showToast(on ? 'Team lights on — buildings light up in team colours on win nights · ⌘K “Preview Cubs lights” shows them now' : 'Team lights off — press I to turn them back on')
+    }, ...always },
 ]
 
 export const featureById = (id) => FEATURE_CONTROLS.find((c) => c.id === id)
