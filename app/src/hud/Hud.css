@@ -141,3 +141,22 @@
   .help-grid h3 { margin: 7px 0 4px; }
   .help-grid p { font-size: 11px; line-height: 1.3; margin-bottom: 3px; grid-template-columns: 76px minmax(0, 1fr); gap: 7px; }
 }
+
+/* FirstFlight (2026-10-19): the first-visit card, bottom centre above the key hints */
+/* centred with auto margins, not translateX: the hud-rise animation owns transform */
+.first-flight { position: absolute; bottom: 60px; left: 0; right: 0; margin: 0 auto; width: 340px; max-width: calc(100% - 32px);
+  padding: 14px 16px 12px; display: flex; flex-direction: column; gap: 6px; animation: hud-rise 0.5s ease both;
+  box-shadow: var(--shadow-panel), var(--glow-accent); }
+.ff-head { display: flex; align-items: center; justify-content: space-between; }
+.ff-skip { background: none; border: 0; padding: 2px 4px; color: var(--text-muted); font: 500 11px var(--font-ui); cursor: pointer; border-radius: var(--r-sm); }
+.ff-skip:hover { color: var(--text); }
+.ff-skip:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
+.ff-title { font-family: var(--font-display); font-size: 14px; letter-spacing: 0.08em; color: var(--text); }
+.ff-body { margin: 0; font-size: 13px; line-height: 1.55; color: var(--text-muted); }
+.ff-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+.ff-dots { display: flex; gap: 6px; }
+.ff-dots span { width: 18px; height: 3px; border-radius: 2px; background: var(--border-strong); }
+.ff-dots span.on { background: var(--accent); box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.8); }
+.ff-dots span.done { background: rgba(var(--accent-rgb), 0.45); }
+.ff-more { font-size: 11px; color: var(--text-faint); }
+@media (prefers-reduced-motion: reduce) { .first-flight { animation: none; } }

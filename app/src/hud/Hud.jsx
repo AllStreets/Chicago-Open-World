@@ -7,6 +7,7 @@ import Minimap from './Minimap.jsx'
 import ControlDock from './ControlDock.jsx'
 import CommandPalette from './CommandPalette.jsx'
 import HelpOverlay from './HelpOverlay.jsx'
+import FirstFlight from './FirstFlight.jsx'
 import FlightChip from './FlightChip.jsx'
 import GamesPanel from './GamesPanel.jsx'
 import VenueCard from './VenueCard.jsx'
@@ -56,6 +57,7 @@ export default function Hud() {
       <LensRail />
       <ControlPills />
       <HintBar layoutW={size[0] / scale} />
+      <FirstFlight />
       <Minimap manifest={manifest} />
       <ControlDock />
       <FlightChip />

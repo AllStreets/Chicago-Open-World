@@ -1,9 +1,9 @@
-// app/src/hud/HelpOverlay.jsx — every control in plain words (opens on "?" and on a first visit).
+// app/src/hud/HelpOverlay.jsx — every control in plain words (opens on "?", the dock's help button and ⌘K).
+// 2026-10-19: a first visit no longer opens this sheet; FirstFlight teaches three controls in the world instead.
 // F-3 (2026-10-01): a key named inside a sentence is a keycap too ({Space}, {,}, {⌘K} … drawn by withKeys).
 // Team lights pass (2026-10-05): a wide sheet whose sections flow through as many columns as the screen holds (rows,
 // not sections, are the unit that never splits, so the columns end level — no dead space). It renders on <body>, so the
 // HUD's shrink-to-fit zoom never makes it a postage stamp on a phone; there it is a full-height scrolling sheet.
-import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useStore } from '../state/store.js'
 import { FEATURE_CONTROLS, DOCK_FEATURES } from './featureControls.js'
@@ -44,13 +44,6 @@ export const GROUPS = [
 
 export default function HelpOverlay() {
   const open = useStore((s) => s.helpOpen)
-  const ready = useStore((s) => s.load.ready)
-  useEffect(() => {
-    if (!ready) return
-    let seen = true
-    try { seen = localStorage.getItem('chi-ow-help-seen') === '1' } catch {}
-    if (!seen) useStore.getState().setHelpOpen(true)
-  }, [ready])
   if (!open) return null
   const close = () => { try { localStorage.setItem('chi-ow-help-seen', '1') } catch {} useStore.getState().setHelpOpen(false) }
   return createPortal(
