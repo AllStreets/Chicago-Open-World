@@ -57,7 +57,7 @@ export default function HelpOverlay() {
     <div className="cmdk-backdrop help-backdrop" onMouseDown={close}>
       <div className="cmdk hud-panel help" onMouseDown={(e) => e.stopPropagation()} role="dialog" aria-label="Controls">
         <div className="help-head">
-          <div className="help-titles"><span className="hud-label">Atlas <span className="slash">/</span> Controls</span><span className="hud-title">How to fly Chicago</span></div>
+          <div className="help-titles"><span className="hud-label">Open World <span className="slash">/</span> Controls</span><span className="hud-title">How to fly Chicago</span></div>
           <span className="help-tip">Press <Kbd k="?" className="inline" /> any time to open this again</span>
           <button type="button" className="hud-pill active help-ok" onClick={close}>Got it</button>
         </div>

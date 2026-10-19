@@ -9,7 +9,7 @@ describe('Hud', () => {
   it('shows wordmark and the live camera readout', () => {
     useStore.setState({ readout: { streets: 'MICHIGAN & OHIO', altitude: 240, heading: 312 } })
     const { container } = render(<Hud />)
-    expect(container.querySelector('.wm-logo')).toHaveTextContent('CHI ATLAS')
+    expect(container.querySelector('.wm-logo')).toHaveTextContent('CHICAGO')
     expect(container.querySelector('.wm-sub')).toHaveTextContent('OPEN WORLD')
     expect(screen.getByText(/MICHIGAN & OHIO/)).toBeInTheDocument()
     expect(screen.getByText(/240 M ALT/)).toBeInTheDocument()

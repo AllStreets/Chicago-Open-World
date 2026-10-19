@@ -14,8 +14,8 @@ export default function LoadingScreen() {
   const pct = total ? Math.round((done / total) * 100) : 0
   return (
     <div className={`hud-loading ${ready && !error ? 'fading' : ''}`}>
-      <div className="load-mark">CHI ATLAS</div>
-      <div className="load-sub">THE CITY, AT FULL SCALE</div>
+      <div className="load-mark">CHICAGO</div>
+      <div className="load-sub">OPEN WORLD · THE CITY AT FULL SCALE</div>
       {error ? (
         <button type="button" className="hud-chip load-error" onClick={() => setGone(true)}>WORLD DATA UNAVAILABLE · {error} · CONTINUE</button>
       ) : (

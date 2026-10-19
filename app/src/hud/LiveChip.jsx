@@ -22,7 +22,7 @@ export function sourceLines(state, now = Date.now()) {
     ['Scores', live('sports') ? `live from ESPN, updated ${ago(feedAt.sports, now)}`
       : schedule?.origin === 'proxy' ? `ESPN schedule and scores through our cached schedule service, updated ${ago(Date.parse(schedule.generatedAt), now)}`
         : schedule?.origin === 'simulated' ? 'a simulated calendar of typical home dates' : 'the ESPN season schedule built with the map'],
-    ['Places', live('places') ? 'live from CHI ATLAS, merged with the map' : 'built into the map from OpenStreetMap'],
+    ['Places', live('places') ? 'live, merged with the map' : 'built into the map from OpenStreetMap'],
   ]
 }
 
