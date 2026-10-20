@@ -1,4 +1,30 @@
-# Chicago Open World
+<div align="center">
+
+<a href="https://chicago-open-world.vercel.app"><img src=".github/assets/banner.png" alt="Chicago Open World: the wordmark beside a night skyline over the lake, its windows lit floor by floor, with the four red stars and light blue stripes of the Chicago flag" width="100%"/></a>
+
+&nbsp;
+
+<a href="https://chicago-open-world.vercel.app"><img alt="fly it live" src="https://img.shields.io/badge/fly_it-chicago--open--world.vercel.app-E4002B?style=for-the-badge&labelColor=030509"/></a>
+<img alt="buildings" src="https://img.shields.io/badge/buildings-100,000%2B_at_true_height-41B6E6?style=for-the-badge&labelColor=030509"/>
+<img alt="area" src="https://img.shields.io/badge/city-110_km²_streamed_in_tiles-41B6E6?style=for-the-badge&labelColor=030509"/>
+<img alt="transit" src="https://img.shields.io/badge/transit-the_L_·_Metra_·_8_bus_routes-E4002B?style=for-the-badge&labelColor=030509"/>
+<a href="LICENSE"><img alt="license" src="https://img.shields.io/badge/license-MIT-41B6E6?style=for-the-badge&labelColor=030509"/></a>
+<br/>
+<img alt="stack" src="https://img.shields.io/badge/stack-React_19_·_React_Three_Fiber_·_Three.js-7e8aa3?style=flat-square&labelColor=030509"/>
+<img alt="shaders" src="https://img.shields.io/badge/shaders-GLSL_·_one_for_every_building-7e8aa3?style=flat-square&labelColor=030509"/>
+<img alt="data" src="https://img.shields.io/badge/data-City_of_Chicago_·_OpenStreetMap_·_Cook_County_LiDAR-7e8aa3?style=flat-square&labelColor=030509"/>
+<img alt="build" src="https://img.shields.io/badge/build-Vite_·_Vitest-7e8aa3?style=flat-square&labelColor=030509"/>
+
+&nbsp;
+
+<a href="https://chicago-open-world.vercel.app"><kbd> &nbsp; <strong>Fly it</strong> &nbsp; </kbd></a> &nbsp;
+<a href="#why-i-built-it"><kbd> &nbsp; <strong>Why I built it</strong> &nbsp; </kbd></a> &nbsp;
+<a href="#how-the-buildings-are-drawn"><kbd> &nbsp; <strong>The buildings</strong> &nbsp; </kbd></a> &nbsp;
+<a href="#whats-in-it"><kbd> &nbsp; <strong>What's in it</strong> &nbsp; </kbd></a> &nbsp;
+<a href="#run-it"><kbd> &nbsp; <strong>Run it</strong> &nbsp; </kbd></a> &nbsp;
+<a href="docs/TOUR.md"><kbd> &nbsp; <strong>Full tour</strong> &nbsp; </kbd></a>
+
+</div>
 
 All of Chicago in 3D, in a browser tab. More than 100,000 buildings stand at their true heights,
 built from City of Chicago and OpenStreetMap data, and their windows light up floor by floor as the
