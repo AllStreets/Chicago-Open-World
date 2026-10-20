@@ -16,6 +16,7 @@ import { VIEW_ORDER, VIEW_NAMES } from '../lib/views.js'
 import { followStep } from '../transit/followCam.js'
 import { handleFollowKey } from '../transit/followKeys.js'
 import { KEEP_CAMERA_CODES } from '../lib/cameraKeepKeys.js'
+import { createDoubleTap } from '../lib/doubleTap.js'
 import { getTrains, getSim } from '../transit/simStore.js'
 import { ensureClear } from '../lib/poseClearance.js'
 import { tourById, tourPoses, tourClock } from '../lib/tourPoses.js'
@@ -161,12 +162,17 @@ export default function AtlasRig() {
       const scale = Math.min(1, 700 / Math.hypot(...off)) // move in closer, keep the viewing angle
       useStore.getState().startFlight({ target: [hit.x, 0, hit.z], position: [hit.x + off[0] * scale, Math.max(60, off[1] * scale), hit.z + off[2] * scale] }, crossStreets(hit.x, hit.z, useStore.getState().isWater ?? undefined))
     }
+    // Touch: phones don't send dblclick for a double tap, so two quick taps in one spot fly there too (2026-10-20)
+    const taps = createDoubleTap(dbl)
+    const tapDown = (e) => taps.down(e), tapUp = (e) => taps.up(e)
     el.addEventListener('pointerdown', cancel)
+    el.addEventListener('pointerdown', tapDown, true) // capture: camera-controls handles these on the same element
+    el.addEventListener('pointerup', tapUp, true)
     el.addEventListener('wheel', cancel, { passive: true })
     el.addEventListener('dblclick', dbl)
     window.addEventListener('pointermove', move)
     window.addEventListener('pointerup', up)
-    return () => { el.removeEventListener('pointerdown', cancel); el.removeEventListener('wheel', cancel); el.removeEventListener('dblclick', dbl); window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up) }
+    return () => { el.removeEventListener('pointerdown', cancel); el.removeEventListener('pointerdown', tapDown, true); el.removeEventListener('pointerup', tapUp, true); el.removeEventListener('wheel', cancel); el.removeEventListener('dblclick', dbl); window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up) }
   }, [gl, camera])
 
   // Minimap click → fly there, keeping the current viewing angle.

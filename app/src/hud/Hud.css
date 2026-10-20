@@ -168,3 +168,5 @@
 .ff-dots span.done { background: rgba(var(--accent-rgb), 0.45); }
 .ff-more { font-size: 11px; color: var(--text-faint); }
 @media (prefers-reduced-motion: reduce) { .first-flight { animation: none; } }
+/* portrait phones: the dock and the minimap own the bottom right, so the card sits in the open sky instead */
+@media (max-aspect-ratio: 3/4) { .first-flight { top: 19%; bottom: auto; } }

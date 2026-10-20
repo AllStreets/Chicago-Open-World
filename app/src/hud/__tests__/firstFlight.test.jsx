@@ -79,3 +79,37 @@ describe('FirstFlight', () => {
     expect(localStorage.getItem(SEEN_KEY)).toBe('1')
   })
 })
+
+describe('FirstFlight on a touch screen', () => {
+  let mm
+  beforeEach(() => {
+    vi.useFakeTimers()
+    useStore.setState(useStore.getInitialState())
+    localStorage.clear()
+    mm = window.matchMedia
+    window.matchMedia = (q) => ({ matches: q.includes('coarse'), media: q, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {} })
+  })
+  afterEach(() => { window.matchMedia = mm; vi.useRealTimers() })
+
+  it('teaches drag, pinch and double-tap, each done for real', () => {
+    const { container } = render(<><canvas /><FirstFlight /></>)
+    ready()
+    const canvas = container.querySelector('canvas')
+    expect(screen.getByText('Look around')).toBeInTheDocument()
+    expect(container.querySelector('.ff-more')).toHaveTextContent('the ? button')
+
+    fireEvent.pointerDown(canvas, { clientX: 100, clientY: 100, pointerType: 'touch', pointerId: 1 })
+    fireEvent.pointerMove(window, { clientX: 160, clientY: 130, pointerType: 'touch', pointerId: 1 })
+    fireEvent.pointerUp(window, { pointerType: 'touch', pointerId: 1 })
+    expect(screen.getByText('Zoom and move')).toBeInTheDocument()
+
+    fireEvent.pointerDown(canvas, { pointerType: 'touch', pointerId: 2 })
+    expect(screen.getByText('Zoom and move')).toBeInTheDocument()
+    fireEvent.pointerDown(canvas, { pointerType: 'touch', pointerId: 3 })
+    expect(screen.getByText('Go somewhere')).toBeInTheDocument()
+
+    act(() => useStore.getState().startFlight({ position: [0, 100, 0], target: [0, 0, 0] }, 'here'))
+    expect(screen.queryByRole('status')).toBeNull()
+    expect(localStorage.getItem(SEEN_KEY)).toBe('1')
+  })
+})
