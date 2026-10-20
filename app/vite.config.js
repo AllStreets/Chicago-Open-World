@@ -33,6 +33,22 @@ function scheduleApiDev() {
 export default defineConfig({
   plugins: [react(), scheduleApiDev()],
   server: { fs: { allow: ['..'] } },
+  // 2026-10-19: the libraries ship as their own long-cached chunks, so a deploy that only changes app code
+  // re-downloads the app chunk (~0.7 MB) instead of the whole 2.5 MB bundle. Measured with e2e/loadtime.mjs.
+  build: {
+    rolldownOptions: {
+      output: {
+        advancedChunks: {
+          groups: [
+            { name: 'vendor-react', test: /[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/ },
+            { name: 'vendor-three', test: /[\\/]node_modules[\\/](three|three-stdlib|three-mesh-bvh|camera-controls)[\\/]/ },
+            { name: 'vendor-r3f', test: /[\\/]node_modules[\\/](@react-three|its-fine|zustand|suspend-react|react-use-measure)[\\/]/ },
+            { name: 'vendor-fx', test: /[\\/]node_modules[\\/](postprocessing|n8ao)[\\/]/ },
+          ],
+        },
+      },
+    },
+  },
   // a few workers: the jsdom HUD tests oversubscribe the machine at full parallelism and time out (P4)
   test: { environment: 'jsdom', setupFiles: ['./src/test-setup.js'], include: ['src/**/*.test.{js,jsx}'], maxWorkers: 4 },
 })
