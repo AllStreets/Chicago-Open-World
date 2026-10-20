@@ -1,0 +1,8 @@
+.nowebgl { position: fixed; inset: 0; background: #05080f; display: grid; place-items: end start; overflow: hidden; }
+.nowebgl-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.78; }
+.nowebgl-card { position: relative; margin: clamp(16px, 5vw, 56px); max-width: 520px; padding: 22px 24px; display: grid; gap: 10px; }
+.nowebgl-title { margin: 0; font-size: clamp(20px, 2.6vw, 26px); line-height: 1.2; color: var(--text, #e8eefc); font-weight: 600; }
+.nowebgl-card p { margin: 0; font-size: 14px; line-height: 1.55; color: var(--text-muted, #a8b6cf); }
+.nowebgl-links { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 4px !important; }
+.nowebgl-links a { color: var(--accent, #41B6E6); text-decoration: none; font-size: 14px; }
+.nowebgl-links a:hover, .nowebgl-links a:focus-visible { text-decoration: underline; }
