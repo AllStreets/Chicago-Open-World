@@ -1,5 +1,7 @@
 // app/src/hud/HelpOverlay.jsx — every control in plain words (opens on "?", the dock's help button and ⌘K).
 // 2026-10-19: a first visit no longer opens this sheet; FirstFlight teaches three controls in the world instead.
+// 2026-10-20: the sheet leads with the three things everyone needs (move, look, search and fly). Everything else
+// (city life, rides, games, the guide, the live city, time and quality) sits behind one "More" disclosure.
 // F-3 (2026-10-01): a key named inside a sentence is a keycap too ({Space}, {,}, {⌘K} … drawn by withKeys).
 // Team lights pass (2026-10-05): a wide sheet whose sections flow through as many columns as the screen holds (rows,
 // not sections, are the unit that never splits, so the columns end level — no dead space). It renders on <body>, so the
@@ -42,6 +44,16 @@ export const GROUPS = [
   ['Time and quality', [['1 – 7', 'live Chicago time, dawn, day, dusk, night, a sunny summer day, a snowy Christmas (snow falling, the lake frozen)'], ['Quality', 'button on the right if things feel slow · Low also turns off water reflections'], ['Stats', '{⌘K} “performance” shows draw calls and frame rate']]],
 ]
 
+// The first ESSENTIAL groups show open; the rest fold into "More".
+export const ESSENTIAL = 3
+
+const Section = ({ title, rows }) => (
+  <section className="help-sec">
+    <h3 className="hud-label">{title}</h3>
+    {rows.map(([k, v]) => <p key={k}><Kbd k={k} /> <span>{withKeys(v)}</span></p>)}
+  </section>
+)
+
 export default function HelpOverlay() {
   const open = useStore((s) => s.helpOpen)
   if (!open) return null
@@ -55,13 +67,14 @@ export default function HelpOverlay() {
           <button type="button" className="hud-pill active help-ok" onClick={close}>Got it</button>
         </div>
         <div className="help-grid">
-          {GROUPS.map(([title, rows]) => (
-            <section key={title} className="help-sec">
-              <h3 className="hud-label">{title}</h3>
-              {rows.map(([k, v]) => <p key={k}><Kbd k={k} /> <span>{withKeys(v)}</span></p>)}
-            </section>
-          ))}
+          {GROUPS.slice(0, ESSENTIAL).map(([title, rows]) => <Section key={title} title={title} rows={rows} />)}
         </div>
+        <details className="help-more">
+          <summary><span className="hud-label">More</span> <span className="help-more-list">{GROUPS.slice(ESSENTIAL).map(([t]) => t).join(' · ')}</span></summary>
+          <div className="help-grid">
+            {GROUPS.slice(ESSENTIAL).map(([title, rows]) => <Section key={title} title={title} rows={rows} />)}
+          </div>
+        </details>
       </div>
     </div>,
     document.body,

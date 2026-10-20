@@ -125,6 +125,14 @@
 .help-grid h3 { margin: 10px 0 5px; padding-top: 2px; color: var(--accent); opacity: 0.85; break-after: avoid; }
 .help-grid > .help-sec:first-child h3 { margin-top: 0; }
 .help-grid p { font-size: 11.5px; line-height: 1.36; color: var(--text-muted); margin: 0 0 4px; display: grid; grid-template-columns: 80px minmax(0, 1fr); gap: 8px; align-items: baseline; break-inside: avoid; }
+.help-more { margin-top: 14px; border-top: 1px solid rgba(148, 187, 255, 0.12); padding-top: 10px; flex-shrink: 0; }
+.help-more > summary { cursor: pointer; list-style: none; display: flex; align-items: baseline; gap: 10px; padding: 4px 0; color: var(--text-muted); }
+.help-more > summary::-webkit-details-marker { display: none; }
+.help-more > summary::before { content: '▸'; color: var(--accent); font-size: 11px; }
+.help-more[open] > summary::before { content: '▾'; }
+.help-more > summary:hover, .help-more > summary:focus-visible { color: var(--text); }
+.help-more-list { font-size: 11.5px; }
+.help-more .help-grid { margin-top: 10px; }
 .help-grid p > .hud-kbd { padding: 1px 4px; justify-content: center; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
 .help-grid p > span { min-width: 0; }
 @media (max-width: 640px) {

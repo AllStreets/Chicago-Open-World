@@ -40,7 +40,7 @@ describe('help: City life from the registry', () => {
   it('help lists every city-life control with its key and button', () => {
     useStore.getState().setHelpOpen(true)
     render(<HelpOverlay />)
-    expect(screen.getByText(/City life/i)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /City life/i })).toBeInTheDocument()
     for (const c of FEATURE_CONTROLS.filter((x) => BUTTONED.has(x.id))) expect(screen.getByText(new RegExp(`${c.label} button`))).toBeInTheDocument()
     expect(screen.getByText(/Follow a train/i)).toBeInTheDocument()
   })
@@ -123,5 +123,20 @@ describe('help: Team lights and the grouped sheet', () => {
     expect(row('Win night')).toMatch(/two colours until 2 a\.m\..*I.*turns Team lights off or on.*Preview Bears lights/)
     expect(GROUPS.map(([t]) => t).slice(0, 6)).toEqual(['Move around', 'Look around', 'Search and fly', 'City life', 'Rides and tours', 'Games'])
     expect(d.querySelectorAll('.help-sec').length).toBe(GROUPS.length)
+  })
+})
+
+describe('help: essentials first', () => {
+  it('opens on move, look and search; everything else sits under More', async () => {
+    const { GROUPS, ESSENTIAL } = await import('../HelpOverlay.jsx')
+    useStore.setState({ helpOpen: true })
+    render(<HelpOverlay />)
+    const d = screen.getByRole('dialog', { name: 'Controls' })
+    const more = d.querySelector('details.help-more')
+    expect(more).not.toBeNull()
+    expect(more.open).toBe(false)
+    const outside = [...d.querySelectorAll('.help-sec h3')].filter((h) => !more.contains(h)).map((h) => h.textContent)
+    expect(outside).toEqual(GROUPS.slice(0, ESSENTIAL).map(([t]) => t))
+    expect(more.querySelectorAll('.help-sec').length).toBe(GROUPS.length - ESSENTIAL)
   })
 })
