@@ -115,6 +115,8 @@ npm test               # pipeline and app unit tests
 ```
 
 The generated world (about 182 MB) is committed, so `npm run dev` works straight after install.
+Because of that, the full history is a large download (about 500 MB). If you only want to run it,
+`git clone --depth 1` fetches just the current version.
 To rebuild it from the source data, run `npm run fetch`, `npm run textures` and
 `npm run build:world`.
 
