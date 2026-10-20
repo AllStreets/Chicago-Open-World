@@ -81,7 +81,7 @@ reflections while adding what a city needs:
 
 The city covers 110 km², too much to load at once.
 [`TileStreamer.jsx`](app/src/world/TileStreamer.jsx) keeps detailed 500 m tiles near the
-camera, simpler tiles in the blocks that touch them, and whole 2 km blocks beyond. Tiles decode
+camera, simpler tiles for the rest of each 2 km block those sit in, and whole 2 km blocks beyond. Tiles decode
 six at a time, nearest first, so the city fills in outward from where you are. The swap to a new
 level of detail runs inside a React transition, which keeps the old tiles on screen until the new
 ones are ready, so nothing blinks. The loading screen only waits for the tiles within 3 km.
