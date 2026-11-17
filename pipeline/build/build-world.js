@@ -64,6 +64,7 @@ import { riverLevels, sunkWater, wallRuns, wallMesh, runsByTile, cutMeshOutside,
 import { buildRiverwalk, meshByTile } from '../lib/riverwalk.js'
 import { buildRiverBases, checkReachesWater } from '../lib/riverbases.js'
 import { riverBoats, writeBoats } from '../lib/boats.js'
+import { writeVehicles } from '../lib/vehicles.js'
 import { merge } from '../lib/meshkit.js'
 import { findGaps, closeGap, auditGap, trisOf } from '../lib/gaps.js'
 import { dressBridgehouses, loadReliefs } from '../lib/bridgehouses.js'
@@ -983,6 +984,8 @@ async function main() {
   writeFileSync(join(OUT, 'traffic.bin'), Buffer.from(new Int16Array(roadEnc).buffer))
   log(`traffic graph: ${roadGraph.nodes.length} nodes, ${roadGraph.edges.length} edges, ${((roadEnc.length * 2) / 1e3).toFixed(0)} kB`)
   const boatsEntry = await writeBoats(OUT, boatList)
+  const vehiclesEntry = await writeVehicles(OUT) // the Blender road vehicles the traffic draws (null: the app keeps its boxes)
+  log(`vehicles: ${vehiclesEntry ? vehiclesEntry.kinds.join(', ') : 'none (no heroes/out/vehicles — run heroes/scripts/vehicles.py)'}`)
   if (boatsEntry) log(`boats: ${boatsEntry.count} placements → ${boatsEntry.file}`)
   writeFileSync(join(OUT, 'manifest.json'), JSON.stringify({
     version: MANIFEST_VERSION, ...manifestStamp(), origin: ORIGIN, tileSize: TILE_SIZE, bbox: WORLD_BBOX,
@@ -1009,7 +1012,7 @@ async function main() {
     pois: poiIndex.length ? { index: 'pois-index.json', count: poiIndex.length, categories: POI_CATEGORIES } : null,
     ...(harbourEntry ? { harbours: harbourEntry } : {}),
     ...(netsEntry ? { beachNets: netsEntry } : {}),
-    venues: 'venues.json', bridges: 'bridges.json', riverBoats: boatsEntry?.file ?? null, landmarkRuntime: 'landmarks.json', schedules: existsSync(join(ROOT, 'data', 'schedules.json')) ? 'schedules.json' : null,
+    venues: 'venues.json', bridges: 'bridges.json', riverBoats: boatsEntry?.file ?? null, vehicles: vehiclesEntry, landmarkRuntime: 'landmarks.json', schedules: existsSync(join(ROOT, 'data', 'schedules.json')) ? 'schedules.json' : null,
     ...(lv || lowerEntry || ll ? { levels: { ...(lv ? { river: { y: lv.river, riverwalk: lv.riverwalk, file: RIVER_LEVELS_FILE } } : {}), ...(lowerEntry ? { lower: lowerEntry } : {}),
       ...(ll ? { lake: { y: ll.lake, ponds: perched.filter((p) => p.tags.name).map((p) => ({ name: p.tags.name, y: +p.tags._pond.toFixed(2) })), shore: lakeShoreReport?.metres ?? null } } : {}) } } : {}), // D1-8 / D2 / D5: absent = the flat world
   })) // minified (X-0d)

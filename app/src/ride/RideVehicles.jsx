@@ -1,10 +1,22 @@
 // app/src/ride/RideVehicles.jsx — the bus you ride and the hang-glider you fly (P7): one small mesh each, drawn only
 // during that ride (+1 draw call). The L ride's train is a V4 consist in the instanced train renderer (0 calls).
-import { useEffect, useMemo } from 'react'
+// The bus is the traffic's Blender bus (vehicleModels.js) once it loads; the box outline below until then, or without it.
+import { useEffect, useMemo, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useStore } from '../state/store.js'
 import { vehiclePose } from './rideSession.js'
+import { facadeUniforms } from '../world/materials/facadeMaterial.js'
+import { loadVehicleModels, createVehicleMaterial, vehicleUniforms, addInstanceAttrs, paintOf, paint2Of } from '../traffic/vehicleModels.js'
+
+// the Blender bus as a one-instance mesh in the shared vehicle material
+function modelBus(geometry) {
+  const g = geometry.clone(), a = addInstanceAttrs(g, 1), p = paintOf('bus', 0), p2 = paint2Of(0)
+  a.aPaint.setXYZ(0, p.r, p.g, p.b); a.aPaint2.setXYZ(0, p2.r, p2.g, p2.b); a.aBrake.setX(0, 0)
+  const m = new THREE.InstancedMesh(g, createVehicleMaterial({ ...vehicleUniforms(), uNight: facadeUniforms.uNight }), 1)
+  m.setMatrixAt(0, new THREE.Matrix4())
+  return m
+}
 
 // boxes with vertex colours merged into one geometry
 function boxes(parts) {
@@ -59,15 +71,24 @@ export function gliderGeometry() {
 const eu = new THREE.Euler(0, 0, 0, 'YZX')
 export default function RideVehicles() {
   const kind = useStore((s) => (s.ride && (s.ride.kind === 'bus' || s.ride.kind === 'drive' || s.ride.kind === 'glide') ? (s.ride.kind === 'drive' ? 'bus' : s.ride.kind) : null))
+  const entry = useStore((s) => s.manifest?.vehicles), version = useStore((s) => s.manifest?.version)
+  const [busModel, setBusModel] = useState(null)
+  useEffect(() => {
+    if (kind !== 'bus' || !entry?.kinds?.includes('bus')) return
+    let dead = false
+    loadVehicleModels(entry, version).then((m) => { if (!dead && m.bus) setBusModel(m.bus.lod0) })
+    return () => { dead = true }
+  }, [kind, entry, version])
   const mesh = useMemo(() => {
     if (!kind) return null
+    if (kind === 'bus' && busModel) { const m = modelBus(busModel); m.castShadow = true; m.frustumCulled = false; return m }
     const geo = kind === 'bus' ? busGeometry() : gliderGeometry()
     const mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: kind === 'bus' ? 0.45 : 0.8, metalness: kind === 'bus' ? 0.2 : 0, side: kind === 'glide' ? THREE.DoubleSide : THREE.FrontSide })
     const m = new THREE.Mesh(geo, mat)
     m.castShadow = true
     m.frustumCulled = false
     return m
-  }, [kind])
+  }, [kind, busModel])
   useEffect(() => () => { if (mesh) { mesh.geometry.dispose(); mesh.material.dispose() } }, [mesh])
   useFrame(() => {
     if (!mesh) return

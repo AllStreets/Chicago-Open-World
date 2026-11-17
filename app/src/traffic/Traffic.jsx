@@ -1,11 +1,14 @@
 // app/src/traffic/Traffic.jsx — draws the traffic sim (sim.js): one instanced mesh each for cars, buses and trucks,
 // one for every head- and tail-lamp pair (lit after dusk, tail lamps brighter under braking), and the traffic signals
-// within range — poles in one mesh, the lit lamps in another. Six draw calls; the sim runs within ~1.5 km.
+// within range — poles in one mesh, the lit lamps in another. The sim runs within ~1.5 km.
+// Beauty pass (2026-11): the vehicles are the Blender models (vehicleModels.js: sedans, SUVs, hatchbacks, pickups, taxis,
+// vans, the CTA bus, semis and box trucks) — the full model within LOD0_M (at most LOD0_CAP of them), the light one to
+// LOD1_M, and the box models (models.js) only beyond, where a car is a few pixels. One draw call per kind and level in use.
 // D3-2: vehicles ride at their roadway's height — up and down the ramps, on Lower Wacker and the other lower decks
 // (the same six meshes: no extra draw call). Those under the street are drawn only while the lower decks are
 // (LowerLevels.jsx: the U cut-away, a ride, or a low camera close by), with their headlights on at any hour. Every
 // vehicle waits short of a raised bascule (or one about to lift) and none is left on a rising leaf.
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useStore } from '../state/store.js'
@@ -23,6 +26,7 @@ import { decodeRoadGraph, buildNetwork, pointOnLink, bridgeCrossings, closedBrid
 import { createTraffic, TYPES, CAP, RANGE_M } from './sim.js'
 import { skipInCube } from '../landmarks/cubeFaces.js'
 import { carGeometry, busGeometry, truckGeometry, lampGeometry, signalPoleGeometry, SIGNAL_LAMP_Y, SIGNAL_RGB, PAINTS } from './models.js'
+import { VEHICLE_KINDS, variantOf, paintOf, paint2Of, loadVehicleModels, createVehicleMaterial, vehicleUniforms, addInstanceAttrs } from './vehicleModels.js'
 
 const IDLE = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('traffic') === 'idle'
 
@@ -38,6 +42,8 @@ const LOWER_NEAR_M = 450 // from down there the roadway falls into the dark with
 const REFRESH_S = 1, SIGNAL_MAX = 2400
 const VEHICLE_CAP = { car: 3500, bus: 300, truck: 800 } // ULTRA's 3200 plus the lower decks' share
 const LAMP_CAP = (VEHICLE_CAP.car + VEHICLE_CAP.bus + VEHICLE_CAP.truck) * 2
+const LOD0_M = 130, LOD0_CAP = 240, LOD1_M = 520 // the full model near the camera, the light one to LOD1_M, boxes beyond
+const TYPE_OF = { sedan: 'car', suv: 'car', hatch: 'car', pickup: 'car', taxi: 'car', van: 'car', bus: 'bus', semi: 'truck', boxtruck: 'truck' }
 
 // the hour the scene shows: the live Chicago clock, or the time a preset stands for
 export function sceneHour(preset, now = new Date()) {
@@ -118,6 +124,36 @@ export default function Traffic({ file, version }) {
     return out
   }, [])
 
+  // the Blender models: one instanced mesh per kind and level, made once they load
+  const manifestVehicles = useStore((s) => s.manifest?.vehicles)
+  const [models, setModels] = useState(null)
+  useEffect(() => {
+    if (!manifestVehicles) return
+    let dead = false
+    loadVehicleModels(manifestVehicles, version).then((loaded) => {
+      if (dead || !Object.keys(loaded).length) return
+      const mat = createVehicleMaterial({ ...vehicleUniforms(), uNight: facadeUniforms.uNight })
+      const out = {}
+      for (const k of VEHICLE_KINDS) {
+        if (!loaded[k]) continue
+        const cap1 = VEHICLE_CAP[TYPE_OF[k]]
+        out[k] = [[loaded[k].lod0, LOD0_CAP], [loaded[k].lod1, cap1]].map(([g, cap]) => {
+          const geo = g.clone(), m = instanced(geo, mat, cap)
+          m.userData.attrs = addInstanceAttrs(geo, cap)
+          m.userData.cap = cap
+          m.visible = false
+          return m
+        })
+      }
+      setModels(out)
+    })
+    return () => { dead = true }
+  }, [manifestVehicles, version])
+  useEffect(() => () => { if (!models) return; const all = Object.values(models).flat(); for (const m of all) m.geometry.dispose(); all[0]?.material.dispose() }, [models])
+  useEffect(() => (models ? skipInCube(Object.values(models).flat()) : undefined), [models])
+  const modelsRef = useRef(null)
+  modelsRef.current = models
+
   useEffect(() => {
     if (!file) return
     let dead = false
@@ -142,7 +178,8 @@ export default function Traffic({ file, version }) {
   useFrame(({ camera, clock }, dt) => {
     const st = state.current, sim = st.sim, vis = on && !!sim
     for (const m of Object.values(meshes)) m.visible = vis
-    if (!vis) return
+    const mods = modelsRef.current
+    if (!vis) { if (mods) for (const pair of Object.values(mods)) for (const m of pair) m.visible = false; return }
     const t0 = performance.now(), now = clock.elapsedTime
     // the range follows the point the camera looks down on
     // ?traffic=idle (tests only): the seeded vehicles placed once and held still, so reference shots are deterministic
@@ -171,6 +208,10 @@ export default function Traffic({ file, version }) {
     if (!idle) sim.step(dt)
     // vehicles
     const night = facadeUniforms.uNight.value, buckets = { car: 0, bus: 0, truck: 0 }
+    const mb = {} // per model kind: [lod0 count, lod1 count]
+    if (mods) for (const k of Object.keys(mods)) mb[k] = [0, 0]
+    let near = 0
+    const cx = camera.position.x, cy = camera.position.y, cz = camera.position.z
     const rideBus = vehiclePose() // the bus you ride (a bus or a drive): no traffic vehicle drawn inside it
     const clearOfRide = (v) => !rideBus || rideBus.kind !== 'bus' || Math.abs(v.y + ROAD_Y - rideBus.pos[1]) > 2.5 || Math.hypot(v.x - rideBus.pos[0], v.z - rideBus.pos[2]) > RIDE_CLEAR_M
     let li = 0
@@ -183,23 +224,39 @@ export default function Traffic({ file, version }) {
       if (under && !lowerOn && portalOpenDepth(v.x, v.z) < -PORTAL_TAIL_M) continue // under the street (not in a portal's trench), the decks not drawn
       if (l.hide && (hiddenAt(l, v.s) || hiddenAt(l, v.s - T.length))) continue // where the deck mesh leaves a ramp out
       if (!clearOfRide(v)) continue
-      buckets[v.type]++
       const y0 = ROAD_Y + v.y
-      mesh.setMatrixAt(i, m4.compose(P.set(v.x, y0, v.z), q.setFromEuler(e.set(0, v.yaw, v.pitch, 'YZX')), S.set(1, 1, 1)))
-      if (v.type === 'bus') col.setRGB(0.92, 0.92, 0.9); else if (v.type === 'truck') col.copy(paints[(v.colour >> 3) % paints.length]); else col.copy(paints[v.colour % paints.length])
-      mesh.setColorAt(i, col)
-      // lamps: headlights and tail lights after dusk; brake lights any time
-      const brake = v.acc < -0.6 || (v.v < 0.3)
+      const brake = v.acc < -0.6 || (v.v < 0.3) // brake lights any time
+      const cp = Math.cos(v.pitch), fx = Math.cos(v.yaw) * cp, fz = -Math.sin(v.yaw) * cp, fy = Math.sin(v.pitch)
+      // the model: its kind from the vehicle's seed; its level from the distance; boxes beyond LOD1_M or until the models load
+      const V = variantOf(v.type, v.colour), pair = mods?.[V.kind]
+      const d = pair ? Math.hypot(v.x - cx, y0 - cy, v.z - cz) : Infinity
+      const lod = d > LOD1_M ? -1 : d < LOD0_M && near < LOD0_CAP ? 0 : 1
+      if (lod >= 0 && mb[V.kind][lod] >= pair[lod].userData.cap) continue
+      if (lod >= 0) {
+        // shorter or longer than the sim's slot: keep the front where the sim has it
+        const off = (T.length - V.L) / 2, m = pair[lod], n = mb[V.kind][lod]++
+        if (lod === 0) near++
+        m.setMatrixAt(n, m4.compose(P.set(v.x + fx * off, y0 + fy * off, v.z + fz * off), q.setFromEuler(e.set(0, v.yaw, v.pitch, 'YZX')), S.set(1, 1, 1)))
+        const p1 = paintOf(V.kind, v.colour), p2 = paint2Of(v.colour), a = m.userData.attrs
+        a.aPaint.setXYZ(n, p1.r, p1.g, p1.b); a.aPaint2.setXYZ(n, p2.r, p2.g, p2.b); a.aBrake.setX(n, brake ? 1 : 0)
+      } else {
+        buckets[v.type]++
+        mesh.setMatrixAt(i, m4.compose(P.set(v.x, y0, v.z), q.setFromEuler(e.set(0, v.yaw, v.pitch, 'YZX')), S.set(1, 1, 1)))
+        if (v.type === 'bus') col.setRGB(0.92, 0.92, 0.9); else if (v.type === 'truck') col.copy(paints[(v.colour >> 3) % paints.length]); else col.copy(paints[v.colour % paints.length])
+        mesh.setColorAt(i, col)
+      }
+      // lamps: headlights and tail lights after dusk
       // under the deck the lamps are on at any hour (the decks are dark)
       const lit = v.y < UNDER_DECK_M ? Math.max(night, 0.85) : night
-      const cp = Math.cos(v.pitch), fx = Math.cos(v.yaw) * cp, fz = -Math.sin(v.yaw) * cp, fy = Math.sin(v.pitch), h = T.length / 2 + 0.03, y = y0 + (v.type === 'car' ? 0.62 : 0.85)
+      const L = lod >= 0 ? V.L : T.length, c0 = lod >= 0 ? (T.length - V.L) / 2 : 0
+      const h = L / 2 + 0.03, y = y0 + (lod >= 0 ? V.lampY : v.type === 'car' ? 0.62 : 0.85)
       if (lit > 0.05) {
-        meshes.lamps.setMatrixAt(li, m4.compose(P.set(v.x + fx * h, y + fy * h, v.z + fz * h), q.setFromEuler(e.set(0, v.yaw, 0)), S.set(1, 1.1, T.width)))
+        meshes.lamps.setMatrixAt(li, m4.compose(P.set(v.x + fx * (c0 + h), y + fy * (c0 + h), v.z + fz * (c0 + h)), q.setFromEuler(e.set(0, v.yaw, 0)), S.set(1, 1.1, T.width)))
         lk.setX(li, 0); lg.setX(li, lit); li++
       }
       const tail = lit * 0.55 + (brake ? 0.75 : 0)
       if (tail > 0.05) {
-        meshes.lamps.setMatrixAt(li, m4.compose(P.set(v.x - fx * h, y - fy * h, v.z - fz * h), q.setFromEuler(e.set(0, v.yaw + Math.PI, 0)), S.set(1, 0.8, T.width)))
+        meshes.lamps.setMatrixAt(li, m4.compose(P.set(v.x + fx * (c0 - h), y + fy * (c0 - h), v.z + fz * (c0 - h)), q.setFromEuler(e.set(0, v.yaw + Math.PI, 0)), S.set(1, 0.8, T.width)))
         lk.setX(li, 1); lg.setX(li, tail); li++
       }
     }
@@ -208,6 +265,12 @@ export default function Traffic({ file, version }) {
       m.count = buckets[k]; m.instanceMatrix.needsUpdate = true
       if (m.instanceColor) m.instanceColor.needsUpdate = true
     }
+    if (mods) for (const [k, pair] of Object.entries(mods)) pair.forEach((m, j) => {
+      m.count = mb[k][j]; m.visible = m.count > 0 // no empty instanced draw
+      if (!m.count) return
+      m.instanceMatrix.needsUpdate = true
+      for (const a of Object.values(m.userData.attrs)) a.needsUpdate = true
+    })
     meshes.lamps.count = li; meshes.lamps.instanceMatrix.needsUpdate = true; lk.needsUpdate = true; lg.needsUpdate = true
     // the lit lamp in each signal head, a few times a second
     if (now - st.lastSig > 0.2) { st.lastSig = now; lightSignals(meshes.sigLamps, st.signals, sim) }
@@ -220,6 +283,7 @@ export default function Traffic({ file, version }) {
       <primitive object={meshes.car} castShadow={shadows} receiveShadow />
       <primitive object={meshes.bus} castShadow={shadows} receiveShadow />
       <primitive object={meshes.truck} castShadow={shadows} receiveShadow />
+      {models && Object.entries(models).flatMap(([k, pair]) => pair.map((m, j) => <primitive key={`${k}${j}`} object={m} castShadow={shadows} receiveShadow />))}
       <primitive object={meshes.lamps} />
       <primitive object={meshes.poles} receiveShadow />
       <primitive object={meshes.sigLamps} />

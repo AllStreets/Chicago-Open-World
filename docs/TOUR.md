@@ -985,6 +985,29 @@ A second way to be in Chicago (`L`, the Ride button or ⌘K): ride any L line fr
 </tr>
 </table>
 
+### Beauty pass · Vehicles — *Blender cars, buses, trucks and trains, to the boats' standard*
+
+The traffic and the trains are now scripted Blender models built the same way as the river boats: lofted bodies with cut wheel arches, glasshouses, lamps, mirrors and trim, materials named by role so one model wears any paint, and ambient occlusion baked by Cycles. Nine road vehicles (sedan, SUV, hatchback, pickup, taxi, delivery van, the CTA bus, a semi and a box truck) each come with a full model for the near range and a light one further out; past half a kilometre, where a car is a few pixels, the old box models still stand in. Headlamps, tail lamps (brighter under braking) and the bus and taxi signs light up after dark. The CTA 5000 and 7000 series, the Metra gallery coach and the MP36 locomotive were rebuilt the same way, and the bus you ride is the traffic's bus.
+
+<table>
+<tr>
+<td width="50%"><img src="screenshots/bp-vehicles-before-day.png" alt="Before: Michigan Avenue's traffic as box models" width="100%"/></td>
+<td width="50%"><img src="screenshots/bp-vehicles-after-day.png" alt="After: Michigan Avenue's traffic as Blender models" width="100%"/></td>
+</tr>
+<tr>
+<td><em>Before: Michigan Avenue's traffic as a few boxes each.</em></td>
+<td><em>After: SUVs, sedans, pickups and a taxi from the same spot, each in its own paint.</em></td>
+</tr>
+<tr>
+<td width="50%"><img src="screenshots/bp-vehicles-night.png" alt="Michigan Avenue's traffic at night, headlamps and tail lamps lit" width="100%"/></td>
+<td width="50%"><img src="screenshots/bp-vehicles-metra-day.png" alt="A Metra train led by the rebuilt MP36 locomotive at Canal and Wacker" width="100%"/></td>
+</tr>
+<tr>
+<td><em>The same street at night: headlamps and red tail lamps on the models themselves.</em></td>
+<td><em>The rebuilt MP36 at the head of a Metra train by Canal and Wacker: hood doors, louvres, handrails and the blue and red band.</em></td>
+</tr>
+</table>
+
 ---
 
 ## Live data

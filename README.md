@@ -93,6 +93,8 @@ ones are ready, so nothing blinks. The loading screen only waits for the tiles w
 - The river and the lake at their real levels, the harbours with about 1,200 moored boats, and the
   beaches
 - Lower Wacker, Lower Michigan and the other streets under the streets, with their own traffic
+- Traffic and trains built in Blender from scripts: nine kinds of road vehicle, from sedans and
+  taxis to the CTA bus and semis, plus the L cars and Metra, with lamps that light up after dark
 - The L, Metra and eight bus routes in their true colours, on real headways, and rides from the
   front window
 - Wrigley, Rate Field, Soldier Field and the United Center, which light up and fill on real game
