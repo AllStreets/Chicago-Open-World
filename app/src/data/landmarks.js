@@ -1,7 +1,7 @@
 // app/src/data/landmarks.js — the VISIT lens's curated landmarks: CHI ATLAS's 32 Explore landmarks, plus Fulton
 // Market's Flexport and BCG offices four Lincoln Park stone structures (user requests) and four Lincoln Park houses (B-4/B-5), (name, category,
 // description and insider tip written for CHI ATLAS, frontend/src/data/landmarks.js), with a heroKey where this world
-// models the landmark. Entries outside the world stay listed as "Beyond the map".
+// models the landmark. Entries outside the world are kept for when it grows; the Visit panel lists only those inside it.
 export const LANDMARKS = [
   {"id":"millennium-park","name":"Millennium Park","category":"icon","lat":41.8827,"lon":-87.6233,"desc":"Cloud Gate (The Bean), Crown Fountain, free outdoor concerts at the Pritzker Pavilion. Grant Park's crown jewel, 5 min walk from Streeterville.","tip":"Best at golden hour or just after rain — the Bean mirrors the skyline.","heroKey":"cloudgate"},
   {"id":"navy-pier","name":"Navy Pier","category":"icon","lat":41.8917,"lon":-87.6086,"desc":"3,000-foot pier on Lake Michigan. Fireworks Wed & Sat nights in summer. Centennial Wheel (196 ft), Chicago Shakespeare Theater, lake cruises.","tip":"Weekday mornings are crowd-free. The free lakefront trail on the south side is underused.","heroKey":"navypier"},
