@@ -494,6 +494,8 @@ class Car:
             return 'trim'
         if slot == 'upper':
             if x > self.xf - S['head_len']:
+                if not S.get('_lod1'):
+                    return 'paint'                     # lod0: the lamp units (front()) sit on the band
                 return 'amber' if x < self.xf - S['head_len'] + 0.08 else 'head'
             if x < self.xr + S['tail_len']:
                 return 'tail'
@@ -601,32 +603,123 @@ class Car:
                 wheel(b, xa, side * S['track'], S['R'], S['rin'], S['tw'], side, spokes=S.get('spokes', 5),
                       style=S.get('spoke_style', 'spoke'))
 
+    # the nose: lamp units that wrap the corner, a framed grille with slats, the intake, a splitter and the hood's shut line
+    def nose_path(self, side, y0, wrap, n_face=3, n_arc=7):
+        """Points (x, y, nx, ny) along the nose in plan: across the face from y0 to the corner, round the corner's
+        quarter ellipse, then back along the side to xf - wrap. (nx, ny) is the outward normal in plan."""
+        S, xf, hw = self.S, self.xf, self.W / 2
+        rf, pf = S['rcf'], S.get('pf', S['rcf'])
+        s = self.plan(xf)
+        pts = [(xf, side * (y0 + (s - y0) * i / n_face), 1.0, 0.0) for i in range(n_face)]
+        x_end = xf - wrap
+        a_end = math.asin(clamp((x_end - (xf - rf)) / rf, 0.0, 1.0))
+        for i in range(n_arc + 1):
+            a = math.pi / 2 - (math.pi / 2 - a_end) * i / n_arc
+            nx, ny = math.sin(a) / rf, math.cos(a) / pf
+            d = math.hypot(nx, ny)
+            pts.append((xf - rf + rf * math.sin(a), side * (hw - pf + pf * math.cos(a)), nx / d, side * ny / d))
+        if x_end < xf - rf - 0.02:
+            pts.append((x_end, side * self.plan(x_end), 0.0, float(side)))
+        return pts
+
+    def band(self, b, path, zf, off, role):
+        """A strip standing on a nose path: zf(x) → (z_lo, z_hi); pushed `off` out along the plan normal."""
+        L = [b.v((x + nx * off, y + ny * off, zf(x)[0])) for x, y, nx, ny in path]
+        U = [b.v((x + nx * off, y + ny * off, zf(x)[1])) for x, y, nx, ny in path]
+        for i in range(len(path) - 1):
+            f = b.face((L[i], L[i + 1], U[i + 1], U[i]), role)
+            f.normal_update()
+            x, y, nx, ny = path[i]
+            if f.normal.x * nx + f.normal.y * ny < 0:
+                f.normal_flip()
+
+    def top_z(self, x, y):
+        """The hood's height at (x, |y|) (the section's top: yte → yte·0.55 → the crown)."""
+        zte, ztc, yte = self.k['zte'](x), self.k['zte'](x) + self.k['crown'](x), self.plan(x) - self.k['inset'](x)
+        y = abs(y)
+        if y >= yte * 0.55:
+            return lerp(zte, ztc - 0.01, (yte - y) / (yte * 0.45))
+        return lerp(ztc - 0.01, ztc, (yte * 0.55 - y) / (yte * 0.55))
+
     def front(self, b):
         S, xf = self.S, self.xf
         F = S['front']
         if b.lod:
             return
         zg0, zg1, gw = F['grille']
+        gr = min(0.05, (zg1 - zg0) * 0.3)
+        # the grille: a dark recess, slats, a chrome surround and a badge
         b.box((xf - 0.01, 0, (zg0 + zg1) / 2), (0.06, 2 * gw, zg1 - zg0), F.get('grille_role', 'trim'))
-        if F.get('grille_bar'):
-            b.box((xf + 0.012, 0, zg1 - 0.012), (0.03, 2 * gw + 0.02, 0.024), 'chrome')
-            if F.get('grille_bars'):
-                for zz in F['grille_bars']:
-                    b.box((xf + 0.01, 0, zz), (0.024, 2 * gw - 0.04, 0.03), F.get('grille_bar_role', 'chrome'))
+        bars = F.get('grille_bars') or [zg0 + (zg1 - zg0) * k / 4 for k in (1, 2, 3)]
+        for zz in bars:
+            b.box((xf + 0.022, 0, zz), (0.012, 2 * gw - 0.05, 0.018 if F.get('grille_bars') else 0.012),
+                  F.get('grille_bar_role', 'rim'), skip=('-x',))
+        if F.get('grille_bar', True):
+            ring = []
+            for cy, cz, a0 in ((gw - gr, zg1 - gr, 0), (-gw + gr, zg1 - gr, 90), (-gw + gr, zg0 + gr, 180), (gw - gr, zg0 + gr, 270)):
+                for k in range(3):
+                    a = math.radians(a0 + 45 * k)
+                    ring.append((xf + 0.024, cy + gr * math.cos(a), cz + gr * math.sin(a)))
+            b.tube(ring, 0.013, 'chrome', sides=5, closed=True)
+        if not F.get('no_badge'):
+            zb_ = (zg0 + zg1) / 2 if not F.get('grille_bars') else zg1 - (zg1 - zg0) * 0.5
+            b.rod((xf + 0.026, 0, zb_), (xf + 0.042, 0, zb_), min(0.045, (zg1 - zg0) * 0.28), 'chrome', sides=10, caps=True)
+        # the intake and a splitter lip under it
         zi0, zi1, iw = F['intake']
         b.box((xf - 0.015, 0, (zi0 + zi1) / 2), (0.05, 2 * iw, zi1 - zi0), 'trim')
+        for k in (1, 2):
+            b.box((xf + 0.012, 0, zi0 + (zi1 - zi0) * k / 3), (0.01, 2 * iw - 0.04, 0.012), 'under', skip=('-x',))
+        if not F.get('no_splitter'):
+            b.box((xf - 0.02, 0, zi0 - 0.035), (0.09, 2 * iw + 0.3, 0.022), 'trim')
         zp = F['plate_z']
-        b.box((xf + 0.02, 0, zp), (0.025, 0.31, 0.155), 'plate')
-        # the headlamps' fronts, across the nose face from the grille to the corner
-        s = self.plan(xf)
-        z6, z7 = self.k['zsh'](xf), self.k['zs2'](xf)
+        b.box((xf + 0.03, 0, zp), (0.025, 0.31, 0.155), 'plate')
+        b.box((xf + 0.02, 0, zp), (0.02, 0.33, 0.175), 'trim', skip=('-x',))
+        # the headlamps: a dark housing wrapping the corner, a chrome reflector, projectors, an LED strip, an amber tip
+        k6, k7 = self.k['zsh'], self.k['zs2']
         y0 = gw + F.get('lamp_gap', 0.04)
-        if s - 0.01 > y0:
+        wrap = F.get('wrap', S['head_len'] * 0.85)
+        dz = F.get('lamp_dz', (0.04, 0.02))
+        if self.plan(xf) - 0.02 > y0:
             for side in (1, -1):
-                b.box((xf + 0.005, side * (y0 + s) / 2, (z6 + z7) / 2), (0.03, s - y0, z7 - z6), 'head')
+                P = self.nose_path(side, y0, wrap)
+                Pa = P[:-2] if len(P) > 6 else P
+                hs = lambda x: (k6(x) - dz[0], k7(x) + dz[1])
+                self.band(b, P, hs, 0.008, 'trim')
+                lens = lambda x: (lerp(k6(x), k7(x), 0.1), k7(x) + dz[1] * 0.4)
+                self.band(b, Pa, lens, 0.013, 'glass')
+                self.band(b, P[-3:], lens, 0.013, 'amber')
+                rim_ = lambda x: (k7(x) + dz[1] * 0.4, k7(x) + dz[1] * 0.75)
+                self.band(b, P, rim_, 0.012, 'chrome')
+                drl = lambda x: (k6(x) - dz[0] * 0.6, lerp(k6(x), k7(x), 0.12))
+                self.band(b, Pa, drl, 0.016, 'head')
+                # projectors: along the face, looking forward
+                h = k7(xf) - k6(xf)
+                for f in F.get('projectors', (0.25, 0.6)):
+                    x, y, nx, ny = P[min(int(f * (len(Pa) - 1)), len(Pa) - 1)]
+                    zc = lerp(k6(x), k7(x), 0.62)
+                    r = max(0.024, min(0.05, h * 0.4))
+                    b.rod((x + nx * 0.011, y + ny * 0.011, zc), (x + nx * 0.02, y + ny * 0.02, zc), r * 1.35, 'chrome', sides=10, caps=True)
+                    b.rod((x + nx * 0.012, y + ny * 0.012, zc), (x + nx * 0.03, y + ny * 0.03, zc), r, 'head', sides=10, caps=True)
         if F.get('fog'):
             for side in (1, -1):
-                b.box((xf + 0.005, side * (iw + 0.06), (zi0 + zi1) / 2), (0.03, 0.1, 0.06), 'head')
+                y = side * (iw + 0.08)
+                zc = (zi0 + zi1) / 2
+                b.box((xf - 0.005, y, zc), (0.04, 0.16, 0.1), 'trim')
+                b.rod((xf + 0.012, y, zc), (xf + 0.03, y, zc), 0.036, 'head', sides=10, caps=True)
+        # the hood's shut line: along each side and across the nose
+        if F.get('hood') is not None or S.get('gh'):
+            x0 = F.get('hood', S['gh']['rings'][0][1] - 0.04 if S.get('gh') else xf - 1.0)
+            xn = xf - F.get('hood_front', 0.07)
+            for side in (1, -1):
+                pts = []
+                for i in range(7):
+                    x = lerp(x0, xn, i / 6)
+                    y = self.plan(x) - self.k['inset'](x) - 0.07
+                    pts.append((x, side * y, self.top_z(x, y)))
+                b.ribbon(pts, 0.009, 'trim', lambda p, side=side: (0, side * 0.25, 1))
+            yn = self.plan(xn) - self.k['inset'](xn) - 0.07
+            pts = [(xn, yn * t, self.top_z(xn, yn * t)) for t in [k / 6 for k in range(-6, 7)]]
+            b.ribbon(pts, 0.009, 'trim', lambda p: (0.3, 0, 1))
 
     def rear(self, b):
         S, xr = self.S, self.xr
