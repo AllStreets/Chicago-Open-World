@@ -5,22 +5,34 @@ import { useFrame } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
 import { useStore } from '../state/store.js'
 import { scanUniforms } from './scanShader.js'
-import { scanUniformsAt, SCAN_MAX_R } from './scanMath.js'
+import { scanUniformsAt, scanReach, SCAN_MAX_R, SCAN_SECONDS } from './scanMath.js'
+import { project } from '../../../shared/project.js'
 
 export const scanNow = { sky: 0, on: false } // read by SkyRig and the overlays
 
 export default function ScanController() {
   const reduced = useMemo(() => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false, [])
-  const run = useRef({ changedAt: null, on: false, origin: [0, 0], prevRadius: 0, radius: 0 })
+  const run = useRef({ changedAt: null, on: false, origin: [0, 0], prevRadius: 0, radius: 0, maxR: SCAN_MAX_R, seconds: SCAN_SECONDS })
+  // the world's rectangle in metres, so the sweep reaches its far corner from wherever it starts
+  const bbox = useStore((s) => s.manifest?.bbox)
+  const rect = useMemo(() => {
+    if (!bbox) return null
+    const [xa, za] = project(bbox.w, bbox.s), [xb, zb] = project(bbox.e, bbox.n)
+    return [Math.min(xa, xb), Math.min(za, zb), Math.max(xa, xb), Math.max(za, zb)]
+  }, [bbox])
   useFrame(({ camera }) => {
     const s = useStore.getState(), r = run.current
     if (s.scan !== r.on) {
       // a toggle: the new front starts at the camera, from the radius the old one had reached
       r.prevRadius = r.radius; r.on = s.scan; r.changedAt = performance.now()
-      if (r.prevRadius < 1) r.origin = [camera.position.x, camera.position.z]
+      if (r.prevRadius < 1) {
+        r.origin = [camera.position.x, camera.position.z]
+        Object.assign(r, scanReach(r.origin, rect))
+      }
     }
-    const u = scanUniformsAt({ on: r.on, changedAt: r.changedAt ?? -Infinity, now: performance.now(), origin: r.origin, reducedMotion: reduced, prevRadius: r.prevRadius })
-    r.radius = Number.isFinite(u.uScanRadius) ? u.uScanRadius : r.on ? SCAN_MAX_R : 0
+    const u = scanUniformsAt({ on: r.on, changedAt: r.changedAt ?? -Infinity, now: performance.now(), origin: r.origin, reducedMotion: reduced, prevRadius: r.prevRadius, maxR: r.maxR, seconds: r.seconds })
+    r.radius = Number.isFinite(u.uScanRadius) ? u.uScanRadius : r.on ? r.maxR : 0
+    scanUniforms.uScanMax.value = r.maxR
     scanUniforms.uScan.value = u.uScan
     scanUniforms.uScanRadius.value = Number.isFinite(u.uScanRadius) ? u.uScanRadius : 1e7
     scanUniforms.uScanOrigin.value.set(r.origin[0], r.origin[1])

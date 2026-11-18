@@ -20,15 +20,26 @@ export function scanBlend(distM, radiusM, band = 80) {
 // Scan on grows it out to the horizon in 1.2 s, turning it off draws it back in to the camera. A re-toggle mid-sweep
 // starts from the radius the disc had reached (`prevRadius`, kept by the controller), so nothing jumps or strobes.
 // uScanMode says which way the front is heading (1 out, 0 back in).
-export function scanUniformsAt({ on, changedAt, now, origin, reducedMotion = false, prevRadius = 0, maxR = SCAN_MAX_R }) {
+export function scanUniformsAt({ on, changedAt, now, origin, reducedMotion = false, prevRadius = 0, maxR = SCAN_MAX_R, seconds = SCAN_SECONDS }) {
   const t = Number.isFinite(changedAt) ? Math.max(0, (now - changedAt) / 1000) : Infinity
   if (reducedMotion) {
     const f = Math.min(1, t / FADE_S)
     return { uScanMode: on ? 1 : 0, uScanRadius: Infinity, uScanOrigin: origin, uScan: on ? f : 1 - f }
   }
-  const start = Math.max(0, Math.min(prevRadius, maxR)), k = Math.min(1, t / SCAN_SECONDS)
+  const start = Math.max(0, Math.min(prevRadius, maxR)), k = Math.min(1, t / seconds)
   const radius = on ? start + (maxR - start) * easeOutCubic(k) : start * (1 - k) ** 3
   return { uScanMode: on ? 1 : 0, uScanRadius: radius, uScanOrigin: origin, uScan: radius > 0.5 ? 1 : 0 }
+}
+
+// How far the sweep must run from `origin` to cover the whole world: the farthest corner of its rectangle (metres,
+// [minX, minZ, maxX, maxZ]) plus a margin, never less than SCAN_MAX_R; and a sweep time that grows gently with it so the
+// front keeps its pace near the camera.
+export function scanReach(origin, rect, margin = 600) {
+  if (!rect) return { maxR: SCAN_MAX_R, seconds: SCAN_SECONDS }
+  const [x0, z0, x1, z1] = rect
+  const far = Math.max(...[[x0, z0], [x0, z1], [x1, z0], [x1, z1]].map(([x, z]) => Math.hypot(x - origin[0], z - origin[1])))
+  const maxR = Math.max(SCAN_MAX_R, far + margin)
+  return { maxR, seconds: SCAN_SECONDS * Math.min(1.6, Math.sqrt(maxR / SCAN_MAX_R)) }
 }
 
 // VISIT under Scan: where the landmarks cluster, as a normalised grid (gaussian, sigma 400 m).

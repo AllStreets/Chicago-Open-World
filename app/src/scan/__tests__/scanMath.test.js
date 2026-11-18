@@ -43,3 +43,18 @@ describe('scan overlays', () => {
     expect(columnHeights(zones, 'rent').get('a')).toBe(1)
   })
 })
+
+describe('scanReach', async () => {
+  const { scanReach, SCAN_MAX_R, SCAN_SECONDS } = await import('../scanMath.js')
+  it('reaches the far corner of the world from wherever Scan starts', () => {
+    const rect = [-5000, -8000, 3000, 6000]
+    const { maxR, seconds } = scanReach([0, 6000], rect)
+    expect(maxR).toBeGreaterThanOrEqual(Math.hypot(-5000, -14000))
+    expect(seconds).toBeGreaterThan(SCAN_SECONDS)
+    expect(seconds).toBeLessThanOrEqual(SCAN_SECONDS * 1.6)
+  })
+  it('never shrinks below the default, and falls back without a world', () => {
+    expect(scanReach([0, 0], [-100, -100, 100, 100]).maxR).toBe(SCAN_MAX_R)
+    expect(scanReach([0, 0], null)).toEqual({ maxR: SCAN_MAX_R, seconds: SCAN_SECONDS })
+  })
+})
